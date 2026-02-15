@@ -88,7 +88,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const MAILCHIMP_API_KEY = process.env.MAILCHIMP_API_KEY;
+    const MAILCHIMP_API_KEY = process.env.MAILCHIMP_MARKETING_API_KEY;
     const MAILCHIMP_AUDIENCE_ID = process.env.MAILCHIMP_AUDIENCE_ID;
     const MAILCHIMP_SERVER_PREFIX = process.env.MAILCHIMP_SERVER_PREFIX;
 
@@ -131,7 +131,7 @@ export async function POST(request: NextRequest) {
     const response = await fetch(checkUrl, {
       method: 'PUT',
       headers: {
-        'Authorization': `Bearer ${MAILCHIMP_API_KEY}`,
+        'Authorization': `Basic ${Buffer.from(`anystring:${MAILCHIMP_API_KEY}`).toString('base64')}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(memberData),
@@ -230,7 +230,7 @@ export async function GET(request: NextRequest) {
     const response = await fetch(url, {
       method: 'GET',
       headers: {
-        'Authorization': `Bearer ${MAILCHIMP_API_KEY}`,
+        'Authorization': `Basic ${Buffer.from(`anystring:${MAILCHIMP_API_KEY}`).toString('base64')}`,
       },
     });
 

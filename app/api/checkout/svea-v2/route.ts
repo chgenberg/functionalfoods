@@ -150,7 +150,11 @@ export async function POST(req: NextRequest) {
     // (Optional) Add non-course products to productMap here if needed in the future.
 
     // Helper function to resolve courseId from cart item (used for both simulated and real orders)
-    async function resolveCourseIdFromCartItem(itemId: string, itemName?: string): Promise<string | null> {
+    async function resolveCourseIdFromCartItem(
+      db: typeof prisma,
+      itemId: string, 
+      itemName?: string
+    ): Promise<string | null> {
       const id = itemId.toLowerCase();
       const name = (itemName || '').toLowerCase();
       let keyword = '';
@@ -172,7 +176,7 @@ export async function POST(req: NextRequest) {
       }
       
       if (!keyword) return null;
-      const cp = await prisma.courseProduct.findFirst({ 
+      const cp = await db.courseProduct.findFirst({ 
         where: { name: { contains: keyword, mode: 'insensitive' } }, 
         select: { id: true } 
       });
@@ -205,6 +209,7 @@ export async function POST(req: NextRequest) {
           price: product.price, // Use price from database
           name: product.name,   // Use name from database
           vatRate: product.vatRate || 0.25, // Use product VAT rate or default 25%
+          courseId: item.type === 'course' ? product.id : null,
         });
       } catch (itemError) {
         console.error(`❌ Error validating item "${item.id}":`, itemError);
@@ -327,7 +332,7 @@ export async function POST(req: NextRequest) {
                 type: item.type,
                 quantity: item.quantity,
                 price: item.price,
-                courseId: item.type === 'course' ? await resolveCourseIdFromCartItem(item.id, item.name) : null
+                courseId: item.type === 'course' ? item.courseId : null
               })))
             }
           }
@@ -601,9 +606,11 @@ export async function POST(req: NextRequest) {
         userId = created.id;
       }
 
-      // Create order + purchases
-      await prisma.$transaction(async (tx) => {
-        await tx.order.create({
+      const ops: Prisma.PrismaPromise<any>[] = [];
+
+      // 1) FREE Order + order items (BATCH-style)
+      ops.push(
+        prisma.order.create({
           data: {
             id: orderId,
             orderNumber: orderId,
@@ -611,62 +618,70 @@ export async function POST(req: NextRequest) {
             totalAmount: 0,
             currency: 'SEK',
             userId: userId as string,
-            customerEmail: customerEmail,
-            customerName: customerName,
+            customerEmail,
+            customerName,
             metadata: {
               items: validatedItems,
               couponCode: appliedCoupon?.code || null,
-              discountAmount: discountAmount > 0 ? SveaCheckoutService.formatPriceFromMinorUnits(discountAmount) : null,
+              discountAmount:
+                discountAmount > 0
+                ? SveaCheckoutService.formatPriceFromMinorUnits(discountAmount)
+                : null,
               freeOrder: true,
-              attribution: attribution || null
+              attribution: attribution || null,
             },
             items: {
-              create: await Promise.all(validatedItems.map(async (item) => ({
-                courseId: item.type === 'course' ? await resolveCourseIdFromCartItem(item.id, item.name) : null,
+              create: validatedItems.map((item: any) => ({
+                courseId: item.type === 'course' ? item.courseId : null,
                 name: item.name,
                 quantity: item.quantity,
                 price: 0,
-                type: item.type
-              })))
-            }
-          }
-        });
+                type: item.type,
+              })),
+            },
+          },
+        })
+      );
 
-        // Increment coupon usage (only once)
-        if (appliedCoupon) {
-          try {
-            await tx.coupon.update({
-              where: { id: appliedCoupon.id },
-              data: { timesUsed: { increment: 1 } }
-            });
-          } catch (e) {
-            console.warn('⚠️ Failed to increment coupon usage for free order (non-critical):', e);
-          }
-        }
+      // 2) Coupon usage 
+      if (appliedCoupon) {
+        ops.push(
+          prisma.coupon.update({
+            where: { id: appliedCoupon.id },
+            data: { timesUsed: { increment: 1 } },
+          })
+        );
+      }
 
-        // Create purchases for courses
-        const order = await tx.order.findUnique({ where: { id: orderId }, include: { items: true } });
-        for (const it of order?.items || []) {
-          if (it.type === 'course' && it.courseId) {
-            const exists = await tx.purchase.findUnique({
-              where: { userId_courseId: { userId: userId as string, courseId: it.courseId } }
-            });
-            if (!exists) {
-              await tx.purchase.create({
-                data: {
-                  userId: userId as string,
-                  courseId: it.courseId,
-                  amount: 0,
-                  status: 'completed',
-                  orderId: orderId,
-                  accessExpiresAt: new Date(new Date().setFullYear(new Date().getFullYear() + 1))
-                }
-              });
-            }
-          }
-        }
-      });
+      // 3) Purchases (idempotent)
+      for (const item of validatedItems) {
+        if (item.type !== 'course' || !item.courseId) continue;
 
+        ops.push(
+          prisma.purchase.upsert({
+            where: {
+              userId_courseId: {
+                userId: userId as string,
+                courseId: item.courseId,
+              },
+            },
+            update: {},
+            create: {
+              userId: userId as string,
+              courseId: item.courseId,
+              amount: 0,
+              status: 'completed',
+              orderId,
+              accessExpiresAt: new Date(
+                new Date().setFullYear(new Date().getFullYear() + 1)
+              ),
+            },
+          })
+        );
+      }
+
+      await prisma.$transaction(ops);
+    
       // Send confirmation email
       try {
         const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || process.env.NEXT_PUBLIC_BASE_URL || 'https://www.functionalfoods.se';
@@ -767,7 +782,7 @@ export async function POST(req: NextRequest) {
       merchantSettings: {
         termsUri: `${origin}/anvandarvillkor`,
         checkoutUri: `${origin}/checkout`,
-        confirmationUri: `${origin}/checkout/success/svea-v2?orderId=${orderId}`,
+        confirmationUri: `${origin}/checkout/success/svea-v2?orderId=${encodeURIComponent(orderId)}`,
         pushUri: `${origin}/api/webhooks/svea-v2`
       },
       cart: {
@@ -966,20 +981,23 @@ export async function POST(req: NextRequest) {
           metadata: {
             items: validatedItems, // Use validated items
             couponCode: appliedCoupon?.code || null,
-            discountAmount: discountAmount > 0 ? SveaCheckoutService.formatPriceFromMinorUnits(discountAmount) : null,
+            discountAmount: discountAmount > 0 
+              ? SveaCheckoutService.formatPriceFromMinorUnits(discountAmount) 
+              : null,
             attribution: attribution || null
           },
           items: {
-            create: await Promise.all(itemsWithDiscountedPrice.map(async (item) => ({
-              courseId: item.type === 'course' ? await resolveCourseIdFromCartItem(item.id, item.name) : null,
+            create: itemsWithDiscountedPrice.map((item) => ({
+              courseId: item.type === 'course' ? item.courseId : null,
               name: item.name,
               quantity: item.quantity,
-              price: item.discountedPrice, // Use discounted price instead of original
+              price: item.discountedPrice,
               type: item.type
-            })))
-          }
-        }
+            })),
+          },
+        },
       });
+      
       console.log('✅ Order stored in database successfully');
     } catch (dbError: any) {
       console.error('❌ Failed to store order in database:', {
@@ -1067,29 +1085,23 @@ export async function POST(req: NextRequest) {
       userMessage = 'Ett fel uppstod vid sparande av order. Kontakta support om problemet kvarstår.';
     }
     
-    return NextResponse.json(
-      { 
+    return NextResponse.json({
         error: userMessage,
         details: process.env.NODE_ENV === 'development' ? errorMessage : undefined,
-        errorType: isConfigError ? 'CONFIG_ERROR' : 
-                   isSveaError ? 'SVEA_API_ERROR' : 
-                   isValidationError ? 'VALIDATION_ERROR' : 
-                   isDbError ? 'DATABASE_ERROR' :
-                   'UNKNOWN_ERROR',
-        fullError: process.env.NODE_ENV === 'development' ? {
-          message: errorMessage,
-          stack: errorStack,
-          name: errorObj.name,
-          code: (error as any)?.code
-        } : undefined
-      },
+        errorType: isConfigError
+          ? 'CONFIG_ERROR'
+          : isSveaError
+            ? 'SVEA_API_ERROR'
+            : isValidationError
+              ? 'VALIDATION_ERROR'
+              : isDbError
+                ? 'DATABASE_ERROR'
+                : 'UNKNOWN_ERROR',
+          fullError: process.env.NODE_ENV === 'development'
+            ? { message: errorMessage, stack: errorStack, name: errorObj.name, code: (error as any)?.code }
+            : undefined,
+      }, 
       { status: statusCode }
     );
-  } finally {
-    try {
-      await prisma.$disconnect();
-    } catch (disconnectError) {
-      console.error('⚠️ Failed to disconnect Prisma:', disconnectError);
-    }
   }
 }

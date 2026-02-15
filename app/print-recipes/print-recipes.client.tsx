@@ -41,14 +41,23 @@ export default function Client() {
     async function fetchRecipes() {
       try {
         const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
-        const listRes = await fetch(`/api/shopping-list/${course}/${week}`);
+
+        const headersBase: Record<string, string> = { 'Content-Type': 'application/json' };
+        if (token) headersBase['Authorization'] = `Bearer ${token}`;
+
+        const listRes = await fetch(`/api/shopping-list/${course}/${week}`, { headers: headersBase });
+
         const listData = listRes.ok ? await listRes.json() : null;
         
-        const entries: Array<{ day: string; mealType: string; slug: string }> = Array.isArray(listData?.recipeEntries) ? listData.recipeEntries : [];
-        const slugs: string[] = Array.isArray(listData?.recipes)
-        ? listData.recipes
-        : entries.map(e => e.slug);
+        const entries: Array<{ day: string; mealType: string; slug: string }> =
+          Array.isArray(listData?.recipeEntries) ? listData.recipeEntries : [];
 
+        const slugs = Array.from(
+          new Set([
+          ...entries.map(e => e.slug).filter(Boolean),
+          ...(Array.isArray(listData?.recipes) ? listData.recipes : []).filter(Boolean),
+          ])
+        );
 
         let fetched: any[] = [];
         if (slugs.length > 0) {
