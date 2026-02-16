@@ -6,17 +6,6 @@ import { ArrowRight, BookOpen, Clock, TrendingUp } from 'lucide-react';
 export default function UtbildningPage() {
   const courses = [
     {
-      id: 'prova-pa',
-      title: 'Prova på vecka',
-      description: 'Gratis prova-på-kurs med functional foods-recept som ger dig en stabil start. Perfekt för att testa innan du väljer längre kurs.',
-      href: '/utbildning/prova-pa-vecka',
-      image: '/prova-pa/prova-pa.png',
-      duration: '1 vecka',
-      level: 'Gratis',
-      highlights: ['7 dagars kostschema', '15 näringsrika recept', 'Inköpslista & kunskapsdokument'],
-      isFree: true
-    },
-    {
       id: 'basics',
       title: 'Functional Basics',
       description: 'Lär dig grunderna i Functional Foods och bygg hållbara vanor som ger energi och balans.',
