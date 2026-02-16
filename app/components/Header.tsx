@@ -56,7 +56,6 @@ export default function Header() {
     { label: t('nav.book','BOKEN'), href: "/boken" },
     { label: t('nav.education','UTBILDNING'), href: "/utbildning", submenu: [
       { label: t('nav.allCourses','Alla kurser'), href: "/utbildning" },
-      { label: "Prova på vecka (gratis)", href: "/utbildning/prova-pa-vecka" },
       { label: "Functional Basics", href: "/utbildning/functional-basics" },
       { label: "Functional Gut Health/Flow", href: "/utbildning/functional-flow" },
       { label: "Functional Insulin balance/Energy", href: "/utbildning/functional-energy" },
