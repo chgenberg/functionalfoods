@@ -615,10 +615,6 @@ export default function Home() {
         </div>
       )}
 
-      <div className="fixed bottom-2 right-2 z-[9999] bg-white border px-2 py-1 text-xs rounded shadow">
-        popup_flag: {String(ENABLE_PROVAPA_POPUP)}
-      </div>
-
       {ENABLE_PROVAPA_POPUP && (
         <>
           <ProvaPaPopup 
