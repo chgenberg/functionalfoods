@@ -1,7 +1,8 @@
 "use client";
+
 import Link from 'next/link';
 import Image from 'next/image';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useCart } from '../../context/CartContext';
@@ -12,24 +13,39 @@ import { Clock, CheckCircle, ArrowLeft, Heart, Zap, ShoppingCart, Users, Book, S
 import { formatPrice } from '@/app/lib/utils';
 import { trackAddToCart, trackViewContent } from '@/app/lib/analytics';
 
+const ENABLE_PROVAPA_PAGE =
+  process.env.NEXT_PUBLIC_ENABLE_PROVAPA_PAGE === "true";
+
 export default function ProvaPaVeckaPage() {
   const router = useRouter();
+
+  useEffect(() => {
+    if (!ENABLE_PROVAPA_PAGE) {
+      router.replace("/utbildning");
+    }
+  }, [router]);
+
+  if (!ENABLE_PROVAPA_PAGE) return null;
+
   const [imageLoaded, setImageLoaded] = useState(false);
   const { addItem } = useCart();
+
+  const course = useMemo(
+    () => ({
+      id: "prova-pa-vecka",
+      name: "Prova på vecka med Functional Foods!",
+      price: 0,
+      type: "course" as const,
+      image: "/prova-pa/prova-pa.png",
+      quantity: 1,
+    }),
+    []
+  );
 
   // Fire ViewContent once
   useEffect(() => {
     trackViewContent({ id: 'prova-pa-vecka', name: 'Prova på vecka med Functional Foods!', price: 0 });
   }, []);
-
-  const course = {
-    id: 'prova-pa-vecka',
-    name: 'Prova på vecka med Functional Foods!',
-    price: 0,
-    type: 'course' as const,
-    image: '/prova-pa/prova-pa.png',
-    quantity: 1
-  };
 
   const handleStartCourse = () => {
     addItem(course);

@@ -1,7 +1,5 @@
 "use client";
 
-export const dynamic = "force-dynamic";
-export const revalidate = 0;
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
@@ -23,12 +21,17 @@ import { useT, useLanguage } from "./lib/i18n/LanguageProvider";
 import { useSearchParams } from "next/navigation";
 import { trackGenerateLead } from "./lib/analytics";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
+const ENABLE_PROVAPA_POPUP = process.env.NEXT_PUBLIC_ENABLE_PROVAPA_POPUP === 'true';
+
 export default function Home() {
   const t = useT();
   const { locale, setLocale } = useLanguage();
   const [showQuiz, setShowQuiz] = useState(false);
   const [quizResults, setQuizResults] = useState<{ answers: Record<number, string | string[]>; context?: any } | null>(null);
-
+  
   const [selectedFeature, setSelectedFeature] = useState<any>(null);
   const [showProvaPaPopup, setShowProvaPaPopup] = useState(false);
   const router = useRouter();
@@ -611,15 +614,16 @@ export default function Home() {
           <button className="px-3 py-1.5 rounded-lg bg-[#F3EFE3] text-[#112A12] text-sm" onClick={() => setShowGeoSuggest(false)}>{t('home.geo.noThanks','Nej tack')}</button>
         </div>
       )}
-
-      {/* Prova-på popup - shows after 3 seconds */}
-      <ProvaPaPopup 
-        forceOpen={showProvaPaPopup} 
-        onClose={() => setShowProvaPaPopup(false)} 
-      />
-
-      {/* Floating button to reopen popup */}
-      <ProvaPaFloatingButton onClick={() => setShowProvaPaPopup(true)} />
+      
+      {ENABLE_PROVAPA_POPUP && (
+        <>
+          <ProvaPaPopup 
+            forceOpen={showProvaPaPopup} 
+            onClose={() => setShowProvaPaPopup(false)} 
+          />
+          <ProvaPaFloatingButton onClick={() => setShowProvaPaPopup(true)} />
+        </>
+      )}
     </div>
   );
 }
