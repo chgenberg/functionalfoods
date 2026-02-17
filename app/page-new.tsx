@@ -614,7 +614,11 @@ export default function Home() {
           <button className="px-3 py-1.5 rounded-lg bg-[#F3EFE3] text-[#112A12] text-sm" onClick={() => setShowGeoSuggest(false)}>{t('home.geo.noThanks','Nej tack')}</button>
         </div>
       )}
-      
+
+      <div className="fixed bottom-2 right-2 z-[9999] bg-white border px-2 py-1 text-xs rounded shadow">
+        popup_flag: {String(ENABLE_PROVAPA_POPUP)}
+      </div>
+
       {ENABLE_PROVAPA_POPUP && (
         <>
           <ProvaPaPopup 
