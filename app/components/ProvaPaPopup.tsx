@@ -45,8 +45,6 @@ export default function ProvaPaPopup({ forceOpen, onClose }: ProvaPaPopupProps) 
     onClose?.();
   };
 
-  if (!isVisible) return null;
-
   return (
     <AnimatePresence>
       {isVisible && (
