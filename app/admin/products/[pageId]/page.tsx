@@ -39,6 +39,7 @@ interface PageConfig {
   pageId: string;
   name: string;
   path: string;
+  kind: 'book' | 'course';
   fields: {
     key: keyof PageContent;
     label: string;
@@ -53,6 +54,7 @@ const PAGE_CONFIGS: Record<string, PageConfig> = {
     pageId: 'brodboken',
     name: 'Brödboken (E-bok)',
     path: '/brodboken',
+    kind: 'book',
     fields: [
       { key: 'title', label: 'Rubrik', type: 'text', placeholder: 'Brödboken' },
       { key: 'subtitle', label: 'Underrubrik', type: 'text', placeholder: 'E-bok: baka gott, smart och enkelt' },
@@ -69,6 +71,7 @@ const PAGE_CONFIGS: Record<string, PageConfig> = {
     pageId: 'boken',
     name: 'Functional Foods Boken',
     path: '/boken',
+    kind: 'book',
     fields: [
       { key: 'title', label: 'Rubrik', type: 'text', placeholder: 'Functional Foods: Mat för ett friskare liv' },
       { key: 'subtitle', label: 'Underrubrik', type: 'text', placeholder: 'Din guide till en hälsosammare livsstil genom smart kost' },
@@ -85,6 +88,7 @@ const PAGE_CONFIGS: Record<string, PageConfig> = {
     pageId: 'functional-basics',
     name: 'Functional Basics Kurs',
     path: '/utbildning/functional-basics',
+    kind: 'course',
     fields: [
       { key: 'title', label: 'Kursnamn', type: 'text', placeholder: 'Functional Basics' },
       { key: 'subtitle', label: 'Undertitel', type: 'text', placeholder: 'Grunden i functional foods' },
@@ -99,6 +103,7 @@ const PAGE_CONFIGS: Record<string, PageConfig> = {
     pageId: 'functional-flow',
     name: 'Functional Flow Kurs',
     path: '/utbildning/functional-flow',
+    kind: 'course',
     fields: [
       { key: 'title', label: 'Kursnamn', type: 'text', placeholder: 'Functional Flow' },
       { key: 'subtitle', label: 'Undertitel', type: 'text', placeholder: 'För hormoner & ämnesomsättning' },
@@ -113,6 +118,7 @@ const PAGE_CONFIGS: Record<string, PageConfig> = {
     pageId: 'functional-energy',
     name: 'Functional Energy Kurs',
     path: '/utbildning/functional-energy',
+    kind: 'course',
     fields: [
       { key: 'title', label: 'Kursnamn', type: 'text', placeholder: 'Functional Energy' },
       { key: 'subtitle', label: 'Undertitel', type: 'text', placeholder: 'Mer energi varje dag' },
@@ -127,6 +133,7 @@ const PAGE_CONFIGS: Record<string, PageConfig> = {
     pageId: 'hormonell-balans',
     name: 'Hormonell Balans Kurs',
     path: '/utbildning/hormonell-balans',
+    kind: 'course',
     fields: [
       { key: 'title', label: 'Kursnamn', type: 'text', placeholder: 'Hormonell Balans' },
       { key: 'subtitle', label: 'Undertitel', type: 'text', placeholder: 'Balansera dina hormoner naturligt' },
@@ -281,7 +288,7 @@ export default function EditProductPage() {
 
       const formData = new FormData();
       formData.append('file', file);
-      formData.append('type', 'course');
+      formData.append('type', config.kind ?? 'course');
 
       const response = await fetch('/api/admin/upload', {
         method: 'POST',
