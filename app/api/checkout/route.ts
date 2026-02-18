@@ -82,21 +82,41 @@ export async function POST(req: NextRequest) {
       }
     
     // Validate and enrich items with server-side data
+
     const now = new Date();
-    const validatedItems = items.map(item => {
-      let product = productMap.get(item.id);
-      // Fallback: try to match by name if ID didn't match
-      if (!product && item.name) {
-        product = productMap.get(item.name.toLowerCase()) || 
-                  productMap.get(item.name) ||
-                  courseProducts.find(p => p.name.toLowerCase() === item.name.toLowerCase());
-        if (product && !product.vatRate) {
-          product = { ...product, type: 'course', vatRate: 0.25 };
-        }
+
+    const validatedItems = items.map((item) => {
+      const idKey = String(item.id || '').trim();
+      const nameKey = String(item.name || '').trim();
+
+      const candidates = [
+        idKey,
+        idKey.toLowerCase(),
+        slugify(idKey),
+        nameKey,
+        nameKey.toLowerCase(),
+        slugify(nameKey),
+        nameKey.toLowerCase().replace(/\s+/g, '-'),
+      ];
+
+      let product: any | undefined;
+      for (const k of candidates) {
+        product = productMap.get(k);
+        if (product) break;
       }
+
+      // (endast som absolut sista fallback för kurser)
+      if (!product && item.name) {
+        const byDbName = courseProducts.find(
+          (p) => p.name.toLowerCase() === item.name.toLowerCase()
+        );
+        if (byDbName) product = { ...byDbName, type: 'course', vatRate: 0.25 };
+      }
+
       if (!product) {
         throw new Error(`Produkten med id "${item.id}" och namn "${item.name}" hittades inte.`);
       }
+    
       // Determine effective price (excl. VAT) using campaign if active
       const basePrice = typeof product.basePrice === 'number' ? product.basePrice : product.price;
       const saleActive = product.salePrice && (
