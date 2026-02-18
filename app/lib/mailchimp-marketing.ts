@@ -234,6 +234,12 @@ class MailchimpMarketingService {
       // A few extra common variants (normalized)
       [normalize('Hormonell balans')]: 'Köp – Hormonell Balans',
       [normalize('Prova på vecka')]: 'Köp – Prova på vecka',
+
+      // Brödboken (ebook)
+      [normalize('brodboken')]: 'Köp – Brödboken',
+      [normalize('Brödboken')]: 'Köp – Brödboken',
+      [normalize('Brödboken (E-bok)')]: 'Köp – Brödboken',
+      [normalize('Brödboken ebook')]: 'Köp – Brödboken',
     };
 
     const tags: string[] = ['kund'];
