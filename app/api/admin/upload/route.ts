@@ -54,6 +54,8 @@ export async function POST(req: NextRequest) {
       uploadDir = 'Blogginlagg';
     } else if (type === 'course') {
       uploadDir = 'kurser';
+    } else if (type === 'book') {
+      uploadDir = 'bocker';
     }
 
     // Create upload directory if it doesn't exist
