@@ -58,6 +58,28 @@ export async function POST(req: NextRequest) {
       productMap.set(p.name.toLowerCase(), { ...p, type: 'course', vatRate: 0.25 });
       productMap.set(p.name, { ...p, type: 'course', vatRate: 0.25 });
     }
+
+      const books = [
+        {
+          id: 'brodboken',
+          name: 'Brödboken (E-bok)',
+          price: 199,
+          vatRate: 0.06,
+          type: 'book'
+        }
+      ];
+
+      for (const b of books) {
+        const idKey = String(b.id).toLowerCase();
+        const nameKey = String(b.name).toLowerCase();
+
+        productMap.set(b.id, b);
+        productMap.set(idKey, b);
+        productMap.set(b.name, b);
+        productMap.set(nameKey, b);
+        productMap.set(slugify(b.name), b);
+        productMap.set(nameKey.replace(/\s+/g, '-'), b);
+      }
     
     // Validate and enrich items with server-side data
     const now = new Date();
