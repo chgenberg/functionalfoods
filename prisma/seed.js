@@ -62,6 +62,35 @@ async function main() {
 
   console.log('Forum categories seeded!');
 
+    // ===== Page content: Brödboken =====
+  const brodbokenContent = {
+    title: "Brödboken",
+    subtitle: "E-bok: baka gott, smart och enkelt",
+    description:
+      "Brödboken är en praktisk e-bok som hjälper dig lyckas med bröd i vardagen – med tydliga steg, smarta tips och recept som faktiskt blir av.",
+    shortDescription:
+      "Du får recept, tekniker och genvägar som gör att du kan baka mer hemma – oavsett om du vill ha snabbare bröd, bättre struktur eller mer smak.",
+    image: "/brodboken.png",
+    price: "199",
+    features: ["E-bok (PDF)", "30+ recept", "Steg-för-steg"],
+    authorSection:
+      "Ulrika Davidsson är kostrådgivare, receptkreatör och bästsäljande författare till över 40 böcker. Hennes online-kurser har hjälpt tiotusentals personer att finna en mer hållbar och hälsosam livsstil.",
+    quote: "Bröd behöver inte vara krångligt – det ska vara gott, enkelt och kul.",
+    details: [
+      { label: "Format", value: "PDF (e-bok)" },
+      { label: "Leverans", value: "Direkt efter köp" },
+      { label: "Enhet", value: "Mobil, surfplatta & dator" }
+    ]
+  };
+
+  await prisma.siteSettings.upsert({
+    where: { key: "page_brodboken" },
+    update: { value: JSON.stringify(brodbokenContent) },
+    create: { key: "page_brodboken", value: JSON.stringify(brodbokenContent) }
+  });
+
+  console.log("Page seeded: page_brodboken");
+
   // Skapa admin-användare
   const adminPassword = await bcrypt.hash('admin123', 10);
   const admin = await prisma.user.upsert({
