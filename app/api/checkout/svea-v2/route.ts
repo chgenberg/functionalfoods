@@ -165,6 +165,10 @@ export async function POST(req: NextRequest) {
       else if (id.includes('basic')) keyword = 'Basics';
       else if (id.includes('flow') || id.includes('gut')) keyword = 'Flow';
       else if (id.includes('hormone') || id.includes('hormon')) keyword = 'Hormonell';
+
+      // Match by ID pattern
+      if (id.includes('brodboken') || id.includes('brödboken')) keyword = 'boken';
+      else if (id.includes('book') || id.includes('e-book')) keyword = 'book';
       
       // Fallback: match by name
       if (!keyword) {
@@ -210,6 +214,7 @@ export async function POST(req: NextRequest) {
           name: product.name,   // Use name from database
           vatRate: product.vatRate || 0.25, // Use product VAT rate or default 25%
           courseId: item.type === 'course' ? product.id : null,
+          productId: item.id,
         });
       } catch (itemError) {
         console.error(`❌ Error validating item "${item.id}":`, itemError);
@@ -332,7 +337,8 @@ export async function POST(req: NextRequest) {
                 type: item.type,
                 quantity: item.quantity,
                 price: item.price,
-                courseId: item.type === 'course' ? item.courseId : null
+                courseId: item.type === 'course' ? item.courseId : null,
+                productId: item.id,
               })))
             }
           }
@@ -363,6 +369,7 @@ export async function POST(req: NextRequest) {
                   data: {
                     userId: customerId!,
                     courseId: it.courseId,
+                    productId: item.id,
                     amount: it.price * it.quantity,
                     status: 'completed',
                     orderId: order.id,
@@ -633,6 +640,7 @@ export async function POST(req: NextRequest) {
             items: {
               create: validatedItems.map((item: any) => ({
                 courseId: item.type === 'course' ? item.courseId : null,
+                productId: item.id,
                 name: item.name,
                 quantity: item.quantity,
                 price: 0,
@@ -663,12 +671,14 @@ export async function POST(req: NextRequest) {
               userId_courseId: {
                 userId: userId as string,
                 courseId: item.courseId,
+                productId: item.id,
               },
             },
             update: {},
             create: {
               userId: userId as string,
               courseId: item.courseId,
+              productId: item.id,
               amount: 0,
               status: 'completed',
               orderId,
@@ -989,6 +999,7 @@ export async function POST(req: NextRequest) {
           items: {
             create: itemsWithDiscountedPrice.map((item) => ({
               courseId: item.type === 'course' ? item.courseId : null,
+              productId: item.id,
               name: item.name,
               quantity: item.quantity,
               price: item.discountedPrice,
