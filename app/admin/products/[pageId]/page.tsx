@@ -49,6 +49,22 @@ interface PageConfig {
 }
 
 const PAGE_CONFIGS: Record<string, PageConfig> = {
+  'brodboken': {
+    pageId: 'brodboken',
+    name: 'Brödboken (E-bok)',
+    path: '/brodboken',
+    fields: [
+      { key: 'title', label: 'Rubrik', type: 'text', placeholder: 'Brödboken' },
+      { key: 'subtitle', label: 'Underrubrik', type: 'text', placeholder: 'E-bok: baka gott, smart och enkelt' },
+      { key: 'description', label: 'Beskrivning', type: 'textarea', placeholder: 'Huvudbeskrivning...' },
+      { key: 'shortDescription', label: 'Kort beskrivning', type: 'textarea', placeholder: 'Kort beskrivning...' },
+      { key: 'image', label: 'Bokbild', type: 'image', help: 'Omslagsbild/produktbild för Brödboken' },
+      { key: 'price', label: 'Pris (endast siffror)', type: 'text', placeholder: '199' },
+      { key: 'features', label: 'Funktioner (max 3)', type: 'array', placeholder: 'T.ex. "E-bok (PDF)"' },
+      { key: 'quote', label: 'Citat', type: 'textarea', placeholder: 'Ett inspirerande citat...' },
+      { key: 'authorSection', label: 'Om författaren', type: 'textarea', placeholder: 'Text om Ulrika...' },
+    ]
+  },
   'boken': {
     pageId: 'boken',
     name: 'Functional Foods Boken',
