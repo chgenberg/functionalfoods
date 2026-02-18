@@ -362,9 +362,8 @@ export async function POST(req: NextRequest) {
             const mailchimpMarketing = getMailchimpMarketing();
 
             if (mailchimpMarketing.isConfigured()) {
-              const courseNames = refreshedOrder.items
-                .filter((i) => i.type === 'course')
-                .map((i) => i.name);
+              const productKeys = refreshedOrder.items
+                .map((i) => i.id || i.courseId || i.name);
 
               const nameParts = (refreshedOrder.customerName || refreshedOrder.user?.name || '')
                 .trim()
@@ -374,7 +373,7 @@ export async function POST(req: NextRequest) {
               const firstName = nameParts[0] || '';
               const lastName = nameParts.slice(1).join(' ') || '';
 
-              await mailchimpMarketing.addCustomerWithCourseTags(emailToTag, courseNames, firstName, lastName);
+              await mailchimpMarketing.addCustomerWithCourseTags(emailToTag, productKeys, firstName, lastName);
 
               await prisma.order.update({
                 where: { id: refreshedOrder.id },
