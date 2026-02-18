@@ -663,17 +663,23 @@ export async function POST(req: NextRequest) {
                 landingSite = `https://functionalfoods.se/?${params.toString()}`;
               }
 
+              const metaItems =
+                (((updatedOrder.metadata as any)?.items || []) as Array<{ id?: string; name?: string; type?: string }>);
+
               await mailchimpEcommerce.trackPurchase({
                 orderId: updatedOrder.orderNumber,
                 customerEmail: emailForTracking,
                 customerName: updatedOrder.user?.name || updatedOrder.customerName || undefined,
-                items: updatedOrder.items.map((it) => ({
-                  id: it.courseId || it.id,
+
+                items: updatedOrder.items.map((it, idx) => ({
+                  // IMPORTANT: prefer original cart id from metadata to avoid using OrderItem.id (often a UUID)
+                  id: it.courseId || metaItems[idx]?.id || it.name,
                   name: it.name,
                   price: it.price,
                   quantity: it.quantity,
-                  type: (it.type as any) || 'course'
+                  type: (it.type as any) || (metaItems[idx]?.type as any) || 'course'
                 })),
+
                 totalAmount,
                 currency: updatedOrder.currency || 'SEK',
                 orderDate: updatedOrder.createdAt,
