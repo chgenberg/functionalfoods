@@ -43,7 +43,7 @@ export async function POST(req: NextRequest) {
           customerEmail: order.customerEmail,
           customerName: order.customerName,
           items: order.items.map((i) => ({
-            productId: i.courseId || i.id,
+            productId: i.courseId || i.name,
             productName: i.name,
             productType: i.type,
             quantity: i.quantity,
@@ -150,23 +150,25 @@ export async function POST(req: NextRequest) {
       const vatRate = item.type === 'book' ? 1.06 : 1.25;
 
       for (const [articleNumber, sveaItem] of sveaItemsMap.entries()) {
-        const itemIdLower = item.id?.toLowerCase() || '';
-        const articleLower = articleNumber.toLowerCase();
+        const articleLower = String(articleNumber || '').toLowerCase().trim();
 
-        if (
-          itemIdLower.includes(articleLower) ||
-          articleLower.includes(itemIdLower) ||
-          item.name.toLowerCase().includes(articleLower) ||
-          articleLower.includes(item.name.toLowerCase())
-        ) {
+        const courseIdLower = String(item.courseId || '').toLowerCase().trim();
+        const nameLower = String(item.name || '').toLowerCase().trim();
+
+        // Prioritera courseId (CourseProduct.id) eftersom OrderItem.id är UUID och inte matchar Svea
+        const matches =
+          (courseIdLower && (courseIdLower === articleLower || courseIdLower.includes(articleLower) || articleLower.includes(courseIdLower))) ||
+          (nameLower && (nameLower.includes(articleLower) || articleLower.includes(nameLower)));
+
+        if (matches) {
           const priceInclVAT = (sveaItem.unitPrice || 0) / 100;
-          displayPrice = priceInclVAT / vatRate;
+          displayPrice = priceInclVAT / vatRate; // tillbaka till ex moms i UI
           break;
         }
       }
 
       return {
-        productId: item.courseId || item.id,
+        productId: item.courseId || item.name,
         productName: item.name,
         productType: item.type,
         quantity: item.quantity,
@@ -362,8 +364,7 @@ export async function POST(req: NextRequest) {
             const mailchimpMarketing = getMailchimpMarketing();
 
             if (mailchimpMarketing.isConfigured()) {
-              const productKeys = refreshedOrder.items
-                .map((i) => i.id || i.courseId || i.name);
+              const productKeys = refreshedOrder.items.map((i) => i.courseId || i.name);
 
               const nameParts = (refreshedOrder.customerName || refreshedOrder.user?.name || '')
                 .trim()
@@ -406,10 +407,15 @@ export async function POST(req: NextRequest) {
           for (const sveaItem of sveaOrder.cart.items) {
             if (sveaItem.articleNumber === 'DISCOUNT') continue;
 
-            const itemIdLower = orderItem.id?.toLowerCase() || '';
-            const articleLower = sveaItem.articleNumber.toLowerCase();
+            const articleLower = String(sveaItem.articleNumber || '').toLowerCase().trim();
+            const courseIdLower = String(orderItem.courseId || '').toLowerCase().trim();
+            const nameLower = String(orderItem.name || '').toLowerCase().trim();
 
-            if (
+            const matches =
+              (courseIdLower && (courseIdLower === articleLower || courseIdLower.includes(articleLower) || articleLower.includes(courseIdLower))) ||
+              (nameLower && (nameLower.includes(articleLower) || articleLower.includes(nameLower)));
+            
+            if (matches) {
               itemIdLower.includes(articleLower) ||
               articleLower.includes(itemIdLower) ||
               orderItem.name.toLowerCase().includes(articleLower)
@@ -666,19 +672,30 @@ export async function POST(req: NextRequest) {
               const metaItems =
                 (((updatedOrder.metadata as any)?.items || []) as Array<{ id?: string; name?: string; type?: string }>);
 
+              const metaLookup = new Map<string, { id?: string; name?: string; type?: string }>();
+              for (const mi of metaItems) {
+                if (mi?.id) metaLookup.set(String(mi.id).toLowerCase().trim(), mi);
+                if (mi?.name) metaLookup.set(String(mi.name).toLowerCase().trim(), mi);
+              }
+
               await mailchimpEcommerce.trackPurchase({
                 orderId: updatedOrder.orderNumber,
                 customerEmail: emailForTracking,
                 customerName: updatedOrder.user?.name || updatedOrder.customerName || undefined,
 
-                items: updatedOrder.items.map((it, idx) => ({
-                  // IMPORTANT: prefer original cart id from metadata to avoid using OrderItem.id (often a UUID)
-                  id: it.courseId || metaItems[idx]?.id || it.name,
-                  name: it.name,
-                  price: it.price,
-                  quantity: it.quantity,
-                  type: (it.type as any) || (metaItems[idx]?.type as any) || 'course'
-                })),
+                items: updatedOrder.items.map((it) => {
+                  const key1 = String(it.courseId || '').toLowerCase().trim();
+                  const key2 = String(it.name || '').toLowerCase().trim();
+                  const mi = (key1 && metaLookup.get(key1)) || (key2 && metaLookup.get(key2));
+
+                  return {
+                    id: it.courseId || mi?.id || it.name,      // stabil produktnyckel
+                    name: it.name,
+                    price: it.price,                          // ex moms (som ni kör i DB)
+                    quantity: it.quantity,
+                    type: (it.type as any) || (mi?.type as any) || 'course'
+                  };
+                }),
 
                 totalAmount,
                 currency: updatedOrder.currency || 'SEK',
