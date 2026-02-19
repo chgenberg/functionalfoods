@@ -26,28 +26,32 @@ function rateLimited(ip: string): boolean {
 async function getCourseInfo() {
   try {
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
-    const [basicsResponse, flowResponse] = await Promise.all([
+    const [basicsResponse, flowResponse, energyResponse, balansResponse] = await Promise.all([
       fetch(`${baseUrl}/functionalbasics.txt`, { cache: 'no-store' }),
       fetch(`${baseUrl}/functionalflow.txt`, { cache: 'no-store' }),
       fetch(`${baseUrl}/functionalenergy.txt`, { cache: 'no-store' }),
       fetch(`${baseUrl}/hormonellbalans.txt`, { cache: 'no-store' })
     ]);
     
-    if (!basicsResponse.ok || !flowResponse.ok) {
+    if (!basicsResponse.ok || !flowResponse.ok || !energyResponse.ok || !balansResponse.ok) {
       console.error('Failed to load course info:', {
         basics: basicsResponse.status,
-        flow: flowResponse.status
+        flow: flowResponse.status,
+        energy: energyResponse.status,
+        balans: balansResponse.status
       });
-      return { basicsText: '', flowText: '' };
+      return { basicsText: '', flowText: '', energyText: '', balansText: '' };
     }
     
     const basicsText = await basicsResponse.text();
     const flowText = await flowResponse.text();
+    const energyText = await energyResponse.text();
+    const balansText = await balansResponse.text();
     
-    return { basicsText, flowText };
+    return { basicsText, flowText, energyText, balansText };
   } catch (error) {
     console.error('Error loading course info:', error);
-    return { basicsText: '', flowText: '' };
+    return { basicsText: '', flowText: '', energyText: '', balansText: '' };
   }
 }
 
@@ -180,7 +184,7 @@ export async function POST(request: Request) {
     }
     
     // Hämta kursinformation och databas-data
-    const { basicsText, flowText } = await getCourseInfo();
+    const { basicsText, flowText, energyText, balansText } = await getCourseInfo();
     
     // Hämta recept och råvaror för AI-kontexten
     const { recipes, rawMaterials } = await getRecipesAndRawMaterials();
@@ -198,6 +202,8 @@ Du har djup kunskap om:
 Kursinformation:
 Functional Basics: ${basicsText.substring(0, 500)}...
 Functional Gut Health/Flow: ${flowText.substring(0, 500)}
+Functional Energy: ${energyText.substring(0, 500)}
+Hormonell Balans: ${balansText.substring(0, 500)}
 
 VÅRA RECEPT (${recipes.length} tillgängliga):
 ${recipes.slice(0, 10).map((recipe: any) => 
