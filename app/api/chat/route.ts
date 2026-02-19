@@ -28,7 +28,9 @@ async function getCourseInfo() {
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
     const [basicsResponse, flowResponse] = await Promise.all([
       fetch(`${baseUrl}/functionalbasics.txt`, { cache: 'no-store' }),
-      fetch(`${baseUrl}/functionalflow.txt`, { cache: 'no-store' })
+      fetch(`${baseUrl}/functionalflow.txt`, { cache: 'no-store' }),
+      fetch(`${baseUrl}/functionalenergy.txt`, { cache: 'no-store' }),
+      fetch(`${baseUrl}/hormonellbalans.txt`, { cache: 'no-store' })
     ]);
     
     if (!basicsResponse.ok || !flowResponse.ok) {
@@ -219,7 +221,7 @@ VIKTIGA REGLER:
 9. Skapa listor med - för punkter när det är lämpligt
 10. Börja nya stycken med stor bokstav för att skapa naturliga avbrott
 11. Håll svaren koncisa men kompletta, men ge gärna utförliga råd när det behövs
-12. Rekommendera gärna våra kurser när det är relevant
+12. Rekommendera gärna våra kurser när det är relevant men uttala dig inte om aktuellt pris
 13. Använd emojis sparsamt men effektivt för att göra konversationen mer personlig
 14. När du nämner recept, skriv bara receptnamnet - SKAPA ALDRIG markdown-länkar [text](url)
 15. När du nämner råvaror, hänvisa till "vår råvarudatabas" - SKAPA ALDRIG markdown-länkar
