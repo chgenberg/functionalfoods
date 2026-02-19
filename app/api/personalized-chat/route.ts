@@ -362,7 +362,7 @@ VIKTIGA REGLER:
 10. Skapa listor med - för punkter när det är lämpligt
 11. Börja nya stycken med stor bokstav för att skapa naturliga avbrott
 12. Håll svaren koncisa men kompletta, men ge gärna utförliga råd när det behövs
-13. Rekommendera gärna våra kurser när det är relevant men uppge inte aktuella priser
+13. Rekommendera gärna våra kurser när det är relevant men hänvisa frågor om aktuellt pris till respektive kurssida 
 14. Använd emojis sparsamt men effektivt
 15. När du nämner recept, skriv bara receptnamnet - SKAPA ALDRIG markdown-länkar [text](url)
 16. När du nämner råvaror, hänvisa till "vår råvarudatabas" - SKAPA ALDRIG markdown-länkar
