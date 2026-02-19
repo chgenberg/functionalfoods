@@ -10,39 +10,31 @@ export async function POST(req: NextRequest) {
   if ((admin as any)?.status === 401) return admin as any;
 
   try {
-    // Best practice: använd ett "canonical" name som matchar cart-id via slugify
-    // Om cart skickar id="brodboken" så vill vi att slugify(name) => "brodboken"
-    const NAME = 'Brödboken';
-    const DESCRIPTION = 'Brödboken (E-bok)';
+    const name = 'Brödboken (E-bok)';
 
     let product = await prisma.courseProduct.findFirst({
-      where: { name: NAME }
+      where: { name }
     });
 
     if (!product) {
       product = await prisma.courseProduct.create({
         data: {
-          name: NAME,
-          description: DESCRIPTION,
-          price: 188,      // EXKL moms (samma som kurser)
-          basePrice: 188,  // EXKL moms
-          // Om din modell har salePrice/saleStartsAt/saleEndsAt, sätt dem null här
+          name,
+          description: 'Brödboken (E-bok)',
+          price: 199,         // EXKL moms (som kurserna idag)
+          basePrice: 199,
           content: {},
           features: {}
         }
       });
-      console.log('✅ Created CourseProduct:', product);
+      console.log('✅ Created CourseProduct (ebook):', product);
     } else {
-      console.log('✅ CourseProduct already exists:', product);
+      console.log('ℹ️ CourseProduct already exists (ebook):', product);
     }
 
-    return NextResponse.json({
-      ok: true,
-      message: 'Brödboken ready',
-      courseProduct: { id: product.id, name: product.name }
-    });
-  } catch (error) {
-    console.error('Error creating Brödboken product:', error);
-    return NextResponse.json({ error: String(error) }, { status: 500 });
+    return NextResponse.json({ ok: true, id: product.id, name: product.name });
+  } catch (e) {
+    console.error(e);
+    return NextResponse.json({ error: String(e) }, { status: 500 });
   }
 }
