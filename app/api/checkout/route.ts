@@ -84,6 +84,8 @@ export async function POST(req: NextRequest) {
         productMap.set(slugify(key), { ...prod, type: 'book', vatRate: 0.06 });
       }
     }  
+    console.log('✅ Found products in DB:', courseProducts.map(p => p.name));
+    console.log('🔎 Has Brödboken?', courseProducts.some(p => p.name.toLowerCase().includes('brödboken')));
     
     // Validate and enrich items with server-side data
 
