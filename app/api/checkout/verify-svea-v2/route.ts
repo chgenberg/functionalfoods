@@ -416,10 +416,6 @@ export async function POST(req: NextRequest) {
               (nameLower && (nameLower.includes(articleLower) || articleLower.includes(nameLower)));
             
             if (matches) {
-              itemIdLower.includes(articleLower) ||
-              articleLower.includes(itemIdLower) ||
-              orderItem.name.toLowerCase().includes(articleLower)
-            ) {
               const vatRate = orderItem.type === 'book' ? 1.06 : 1.25;
               const priceInclVAT = (sveaItem.unitPrice || 0) / 100;
               const priceExclVAT = priceInclVAT / vatRate;
@@ -431,6 +427,7 @@ export async function POST(req: NextRequest) {
                 });
                 console.log(`✅ Updated item price: ${orderItem.name} from ${orderItem.price} to ${priceExclVAT}`);
               }
+            
               break;
             }
           }
