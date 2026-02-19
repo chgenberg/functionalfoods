@@ -46,24 +46,30 @@ async function getCourseInfo() {
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
     const [basicsResponse, flowResponse] = await Promise.all([
       fetch(`${baseUrl}/functionalbasics.txt`, { cache: 'no-store' }),
-      fetch(`${baseUrl}/functionalflow.txt`, { cache: 'no-store' })
+      fetch(`${baseUrl}/functionalflow.txt`, { cache: 'no-store' }),
+      fetch(`${baseUrl}/functionalenergy.txt`, { cache: 'no-store' }),
+      fetch(`${baseUrl}/hormonellbalans.txt`, { cache: 'no-store' })
     ]);
     
     if (!basicsResponse.ok || !flowResponse.ok) {
       console.error('Failed to load course info:', {
         basics: basicsResponse.status,
-        flow: flowResponse.status
+        flow: flowResponse.status,
+        energy: energyResponse.status,
+        balans: balansResponse.status
       });
-      return { basicsText: '', flowText: '' };
+      return { basicsText: '', flowText: '', energyText: '', balansText: '' };
     }
     
     const basicsText = await basicsResponse.text();
     const flowText = await flowResponse.text();
+    const energyText = await energyResponse.text();
+    const balansText = await balansResponse.text();
     
-    return { basicsText, flowText };
+    return { basicsText, flowText, energyText, balansText };
   } catch (error) {
     console.error('Error loading course info:', error);
-    return { basicsText: '', flowText: '' };
+    return { basicsText: '', flowText: '', energyText: '', balansText: '' };
   }
 }
 
@@ -311,7 +317,7 @@ ${user.chatMessages.map((chat: any) =>
     }
     
     // Hämta kursinformation och databas-data
-    const { basicsText, flowText } = await getCourseInfo();
+    const { basicsText, flowText, energyText, balansText } = await getCourseInfo();
     const { recipes, rawMaterials } = await getRecipesAndRawMaterials();
     
     const targetLang = locale === 'en' ? 'engelska' : locale === 'es' ? 'spanska' : locale === 'de' ? 'tyska' : locale === 'fr' ? 'franska' : 'svenska';
@@ -324,12 +330,14 @@ Du har djup kunskap om:
 - Hälsa, nutrition och välmående
 - Recept och matlagning för optimal hälsa
 - Longevity och livsstilsfaktorer
-- Våra kurser: Functional Basics och Functional Gut Health/Flow
+- Våra kurser: Functional Basics, Functional Gut Health/Flow, Functional Insulin Balance / Energy och Hormonell Balans
 - Funktionella råvaror och deras hälsofördelar
 
 Kursinformation:
 Functional Basics: ${basicsText.substring(0, 500)}...
 Functional Gut Health/Flow: ${flowText.substring(0, 500)}...
+Functional Insulin Balance/Energy: ${energyText.substring(0, 500)}...
+Hormonell Balans: ${balansText.substring(0, 500)}...
 
 VÅRA RECEPT (${recipes.length} tillgängliga):
 ${recipes.slice(0, 10).map((recipe: any) => 
@@ -354,7 +362,7 @@ VIKTIGA REGLER:
 10. Skapa listor med - för punkter när det är lämpligt
 11. Börja nya stycken med stor bokstav för att skapa naturliga avbrott
 12. Håll svaren koncisa men kompletta, men ge gärna utförliga råd när det behövs
-13. Rekommendera gärna våra kurser när det är relevant
+13. Rekommendera gärna våra kurser när det är relevant men uppge inte aktuella priser
 14. Använd emojis sparsamt men effektivt
 15. När du nämner recept, skriv bara receptnamnet - SKAPA ALDRIG markdown-länkar [text](url)
 16. När du nämner råvaror, hänvisa till "vår råvarudatabas" - SKAPA ALDRIG markdown-länkar
