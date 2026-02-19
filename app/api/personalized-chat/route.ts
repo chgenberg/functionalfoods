@@ -44,14 +44,14 @@ function getUserIdFromToken(token: string) {
 async function getCourseInfo() {
   try {
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
-    const [basicsResponse, flowResponse] = await Promise.all([
+    const [basicsResponse, flowResponse, energyResponse, balansResponse] = await Promise.all([
       fetch(`${baseUrl}/functionalbasics.txt`, { cache: 'no-store' }),
       fetch(`${baseUrl}/functionalflow.txt`, { cache: 'no-store' }),
       fetch(`${baseUrl}/functionalenergy.txt`, { cache: 'no-store' }),
       fetch(`${baseUrl}/hormonellbalans.txt`, { cache: 'no-store' })
     ]);
     
-    if (!basicsResponse.ok || !flowResponse.ok) {
+    if (!basicsResponse.ok || !flowResponse.ok || !energyResponse.ok || !balansResponse.ok) {
       console.error('Failed to load course info:', {
         basics: basicsResponse.status,
         flow: flowResponse.status,
