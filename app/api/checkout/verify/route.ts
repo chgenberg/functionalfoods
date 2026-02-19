@@ -40,7 +40,16 @@ export async function GET(req: NextRequest) {
 
         if (!existingPayment && !existingOrder) {
           // Parse items from metadata
-          let items: Array<{ id: string; name: string; price: number; quantity: number; type: string }> = [];
+          let items: Array<{
+            id?: string;          // cart-id (kan vara slug)
+            productId?: string;   // CourseProduct.id (detta är det viktiga)
+            name: string;
+            price: number;        // ex moms
+            quantity: number;
+            type: 'course' | 'book' | string;
+            vatRate?: number;     // valfritt (bra för email/kvittologik)
+          }> = [];
+
           try {
             const raw = (session.metadata as any)?.items || '';
             if (raw) items = JSON.parse(raw);
@@ -72,13 +81,15 @@ export async function GET(req: NextRequest) {
               const order = await tx.order.create({
                 data: {
                   orderNumber: session.amount_total === 0 ? `STRIPE-FREE-${session.id}` : `STRIPE-${session.id}`,
+                  metadata: { stripeSessionId: session.id, items }
                   userId: user.id,
                   status: 'COMPLETED',
                   totalAmount: totalIncl,
                   currency: String(session.currency || 'SEK').toUpperCase(),
                   items: {
                     create: items.map((it) => ({
-                      courseId: null,
+                      // Viktigt: CourseProduct.id gäller även för böcker 
+                      courseId: it.productId || null,
                       name: it.name,
                       price: it.price,
                       quantity: it.quantity || 1,
@@ -124,21 +135,25 @@ export async function GET(req: NextRequest) {
                 const mappedName = courseNameMap[normalizedName] || it.name;
                 
                 // Try exact match first (case-insensitive)
-                let course = await tx.courseProduct.findFirst({
-                  where: {
-                    name: { equals: mappedName, mode: 'insensitive' }
-                  }
-                });
+                let course = null as any;
+
+                if (it.productId) {
+                  course = await tx.courseProduct.findUnique({ where: { id: it.productId } });
+                }
                 
                 // If no exact match, try original name
                 if (!course) {
                   course = await tx.courseProduct.findFirst({
-                    where: {
-                      name: { equals: it.name, mode: 'insensitive' }
-                    }
+                    where: { name: { equals: mappedName, mode: 'insensitive' } }
                   });
                 }
-                
+
+                if (!course) {
+                  course = await tx.courseProduct.findFirst({
+                    where: { name: { equals: it.name, mode: 'insensitive' } }
+                  });
+                }
+   
                 // Only use contains as last resort, and be more specific
                 if (!course && it.name.toLowerCase().includes('functional')) {
                   const functionalPart = it.name.split('Functional ')[1]?.trim();
