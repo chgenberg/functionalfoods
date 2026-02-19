@@ -48,38 +48,27 @@ export async function POST(req: NextRequest) {
     
     const productMap = new Map<string, any>();
     
-    // Add course products to map
+    // Add products to map
     for (const p of courseProducts) {
-      const key1 = p.name.toLowerCase().replace(/\s+/g, '-');
-      const key2 = slugify(p.name);
-      productMap.set(key1, { ...p, type: 'course', vatRate: 0.25 });
-      productMap.set(key2, { ...p, type: 'course', vatRate: 0.25 });
-      productMap.set(p.id, { ...p, type: 'course', vatRate: 0.25 });
-      productMap.set(p.name.toLowerCase(), { ...p, type: 'course', vatRate: 0.25 });
-      productMap.set(p.name, { ...p, type: 'course', vatRate: 0.25 });
-    }
+      const vatRate =
+        typeof (p as any).vatRate === 'number'
+          ? (p as any).vatRate
+          : 0.25;
 
-      const books = [
-        {
-          id: 'brodboken',
-          name: 'Brödboken (E-bok)',
-          price: 199,
-          vatRate: 0.06,
-          type: 'book'
-        }
-      ];
+    const type: 'course' | 'book' = vatRate === 0.06 ? 'book' : 'course';
 
-      for (const b of books) {
-        const idKey = String(b.id).toLowerCase();
-        const nameKey = String(b.name).toLowerCase();
+    const entry = { ...p, type, vatRate };
 
-        productMap.set(b.id, b);
-        productMap.set(idKey, b);
-        productMap.set(b.name, b);
-        productMap.set(nameKey, b);
-        productMap.set(slugify(b.name), b);
-        productMap.set(nameKey.replace(/\s+/g, '-'), b);
-      }
+    const key1 = p.name.toLowerCase().replace(/\s+/g, '-');
+    const key2 = slugify(p.name);
+
+    productMap.set(key1, entry);
+    productMap.set(key2, entry);
+    productMap.set(p.id, entry);
+    productMap.set(p.name.toLowerCase(), entry);
+    productMap.set(p.name, entry);
+  }
+
     
     // Validate and enrich items with server-side data
 
