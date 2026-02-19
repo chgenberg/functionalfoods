@@ -111,9 +111,10 @@ export default function ChatBot() {
   };
 
   const exampleQuestions: string[] = [
-    t('chat.example1','Vilka livsmedel är bra för inflammation?'),
-    t('chat.example2','Hur kan jag förbättra min maghälsa?'),
-    t('chat.example3','Vad är functional foods?')
+    t('chat.example1','Vad är functional foods?'),
+    t('chat.example2','Vilka livsmedel är bra för inflammation?'),
+    t('chat.example3','Hur kan jag förbättra min maghälsa?'),
+    t('chat.example4','Hur kan jag få mer energi?')
   ];
 
   if (isAdmin) return null;
