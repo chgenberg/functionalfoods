@@ -57,8 +57,6 @@ export async function POST(req: NextRequest) {
 
       const entry = { ...p, type: 'course', vatRate: 0.25 };
 
-      const entry = { ...p, type, vatRate };
-
       const key1 = p.name.toLowerCase().replace(/\s+/g, '-');
       const key2 = slugify(p.name);
 
