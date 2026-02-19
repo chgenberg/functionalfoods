@@ -81,7 +81,9 @@ export async function GET(req: NextRequest) {
               const order = await tx.order.create({
                 data: {
                   orderNumber: session.amount_total === 0 ? `STRIPE-FREE-${session.id}` : `STRIPE-${session.id}`,
-                  metadata: { stripeSessionId: session.id, items }
+                  metadata: { 
+                    stripeSessionId: session.id,
+                    cartItems: items.map(i => ({ id: i.id, productId: i.productId, name: i.name, type: i.type, qty: i.quantity }))},
                   userId: user.id,
                   status: 'COMPLETED',
                   totalAmount: totalIncl,
