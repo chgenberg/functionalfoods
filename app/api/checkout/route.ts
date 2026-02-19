@@ -106,7 +106,7 @@ export async function POST(req: NextRequest) {
       }
 
       // (endast som absolut sista fallback för kurser)
-      if (!product && item.name) {
+      if (!product && item.type === 'course' && item.name) {
         const byDbName = courseProducts.find(
           (p) => p.name.toLowerCase() === item.name.toLowerCase()
         );
@@ -126,6 +126,7 @@ export async function POST(req: NextRequest) {
       const effectivePrice = saleActive ? (product.salePrice as number) : basePrice;
       return {
         ...item,
+        productId: product.id ?? product.courseId ?? item.id,
         price: effectivePrice, // Use dynamic price (campaign-aware), excl. VAT
         name: product.name,   // Use name from database
         type: product.type || 'course',
@@ -157,7 +158,7 @@ export async function POST(req: NextRequest) {
       const now = new Date();
       if (coupon && coupon.active && (!coupon.startsAt || now >= coupon.startsAt) && (!coupon.expiresAt || now <= coupon.expiresAt) && (coupon.usageLimit == null || coupon.timesUsed < coupon.usageLimit)) {
         const applicableIds = coupon.applicableCourseIds && Array.isArray(coupon.applicableCourseIds) ? (coupon.applicableCourseIds as string[]) : null;
-        const applicableItems = applicableIds && applicableIds.length > 0 ? validatedItems.filter(i => applicableIds.includes(i.id)) : validatedItems;
+        const applicableItems = applicableIds && applicableIds.length > 0 ? validatedItems.filter(i => applicableIds.includes(i.productId)) : validatedItems;
         const applicableSubtotalExVat = applicableItems.reduce((sum, i) => sum + Math.round(i.price * 100) * i.quantity, 0);
         const applicableSubtotalGross = applicableItems.reduce((sum, i) => {
           const itemVatRate = i.vatRate || 0.25;
@@ -240,7 +241,9 @@ export async function POST(req: NextRequest) {
       metadata: {
         items: JSON.stringify(validatedItems), // Use validated items in metadata
         website: 'ulrika-functional-foods',
-        orderType: 'course_purchase',
+        orderType: validatedItems.some(i => i.type === 'book')
+          ? 'mixed_purchase'
+          : 'course_purchase',
         couponCode: couponCode || '',
         courseNames: validatedItems.map(item => item.name).join(', '),
         totalItems: validatedItems.length.toString(),
