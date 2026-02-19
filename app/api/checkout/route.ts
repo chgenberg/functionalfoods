@@ -55,20 +55,35 @@ export async function POST(req: NextRequest) {
           ? (p as any).vatRate
           : 0.25;
 
-    const type: 'course' | 'book' = vatRate === 0.06 ? 'book' : 'course';
+      const entry = { ...p, type: 'course', vatRate: 0.25 };
 
-    const entry = { ...p, type, vatRate };
+      const entry = { ...p, type, vatRate };
 
-    const key1 = p.name.toLowerCase().replace(/\s+/g, '-');
-    const key2 = slugify(p.name);
+      const key1 = p.name.toLowerCase().replace(/\s+/g, '-');
+      const key2 = slugify(p.name);
 
-    productMap.set(key1, entry);
-    productMap.set(key2, entry);
-    productMap.set(p.id, entry);
-    productMap.set(p.name.toLowerCase(), entry);
-    productMap.set(p.name, entry);
-  }
+      productMap.set(key1, entry);
+      productMap.set(key2, entry);
+      productMap.set(p.id, entry);
+      productMap.set(p.name.toLowerCase(), entry);
+      productMap.set(p.name, entry);
+    }
 
+      const aliases: Record<string, string> = {
+        brodboken: 'Brödboken (E-bok)',
+        'brodboken (e-bok)': 'Brödboken (E-bok)',
+        'brödboken': 'Brödboken (E-bok)',
+        'brödboken (e-bok)': 'Brödboken (E-bok)',
+      };
+
+    for (const [alias, canonicalName] of Object.entries(aliases)) {
+      const key = alias.toLowerCase();
+      const prod = courseProducts.find(p => p.name.toLowerCase() === canonicalName.toLowerCase());
+      if (prod) {
+        productMap.set(key, { ...prod, type: 'book', vatRate: 0.06 }); // tills vi har vatRate i DB
+        productMap.set(slugify(key), { ...prod, type: 'book', vatRate: 0.06 });
+      }
+    }  
     
     // Validate and enrich items with server-side data
 
@@ -115,12 +130,14 @@ export async function POST(req: NextRequest) {
       const effectivePrice = saleActive ? (product.salePrice as number) : basePrice;
       return {
         ...item,
-        productId: product.id ?? product.courseId ?? item.id,
+        productId: product.id,
         price: effectivePrice, // Use dynamic price (campaign-aware), excl. VAT
         name: product.name,   // Use name from database
-        type: product.type || 'course',
-        vatRate: product.vatRate || 0.25
-      };
+        type: (product.type as any) || item.type || 'course',
+        vatRate: typeof product.vatRate === 'number'
+          ? product.vatRate
+          : ((product.type === 'book' || item.type === 'book') ? 0.06 : 0.25),
+        };
     });
     // --- END SECURITY FIX ---
 
@@ -133,7 +150,7 @@ export async function POST(req: NextRequest) {
 
     // Calculate subtotal using price INCLUDING VAT (dynamic per item: 6% for books, 25% for courses)
     const subtotal = validatedItems.reduce((sum: number, i) => {
-      const itemVatRate = i.vatRate || 0.25;
+      const itemVatRate = i.vatRate ?? 0.25;
       const grossInOre = Math.round(i.price * (1 + itemVatRate) * 100);
       return sum + grossInOre * i.quantity;
     }, 0);
@@ -150,7 +167,7 @@ export async function POST(req: NextRequest) {
         const applicableItems = applicableIds && applicableIds.length > 0 ? validatedItems.filter(i => applicableIds.includes(i.productId)) : validatedItems;
         const applicableSubtotalExVat = applicableItems.reduce((sum, i) => sum + Math.round(i.price * 100) * i.quantity, 0);
         const applicableSubtotalGross = applicableItems.reduce((sum, i) => {
-          const itemVatRate = i.vatRate || 0.25;
+          const itemVatRate = i.vatRate ?? 0.25;
           const grossInOre = Math.round(i.price * (1 + itemVatRate) * 100);
           return sum + grossInOre * i.quantity;
         }, 0);
@@ -201,11 +218,11 @@ export async function POST(req: NextRequest) {
         type: i.type,
         vatRate: i.vatRate,
         priceExVatSEK: i.price,
-        priceInclVatSEK: Math.round(i.price * (1 + (i.vatRate || 0.25))),
+        priceInclVatSEK: Math.round(i.price * (1 + (i.vatRate ?? 0.25))),
         quantity: i.quantity,
-        stripeUnitAmount: Math.round(i.price * (1 + (i.vatRate || 0.25)) * 100),
-        totalInOre: Math.round(i.price * (1 + (i.vatRate || 0.25)) * 100) * i.quantity,
-        totalInSEK: Math.round(i.price * (1 + (i.vatRate || 0.25))) * i.quantity
+        stripeUnitAmount: Math.round(i.price * (1 + (i.vatRate ?? 0.25)) * 100),
+        totalInOre: Math.round(i.price * (1 + (i.vatRate ?? 0.25)) * 100) * i.quantity,
+        totalInSEK: Math.round(i.price * (1 + (i.vatRate ?? 0.25))) * i.quantity
       })),
       subtotalInOre: subtotal,
       subtotalInSEK: subtotal / 100,
