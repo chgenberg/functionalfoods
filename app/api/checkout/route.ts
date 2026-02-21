@@ -68,22 +68,51 @@ export async function POST(req: NextRequest) {
     }
 
       const aliases: Record<string, string> = {
-        brodboken: 'Brödboken (E-bok)',
-        'brodboken (e-bok)': 'Brödboken (E-bok)',
+        'brodboken': 'Brödboken (E-bok)',
         'brödboken': 'Brödboken (E-bok)',
+        'brodboken (e-bok)': 'Brödboken (E-bok)',
         'brödboken (e-bok)': 'Brödboken (E-bok)',
+        'brodboken e-bok': 'Brödboken (E-bok)',
+        'brödboken e-bok': 'Brödboken (E-bok)',
       };
 
-    for (const [alias, canonicalName] of Object.entries(aliases)) {
-      const key = alias.toLowerCase();
-      const prod = courseProducts.find(p => p.name.toLowerCase() === canonicalName.toLowerCase());
-      if (prod) {
-        productMap.set(key, { ...prod, type: 'book', vatRate: 0.06 }); // tills vi har vatRate i DB
-        productMap.set(slugify(key), { ...prod, type: 'book', vatRate: 0.06 });
+      for (const [alias, canonicalName] of Object.entries(aliases)) {
+        const key = alias.toLowerCase().trim();
+        const prod = courseProducts.find(
+          p => p.name.toLowerCase().trim() === canonicalName.toLowerCase().trim()
+        );
+
+        if (prod) {
+          const entry = { ...prod, type: 'book', vatRate: 0.06 };
+
+          // db name as key
+          productMap.set(prod.name, entry);
+          productMap.set(prod.name.toLowerCase(), entry);
+          productMap.set(slugify(prod.name), entry);
+          productMap.set(prod.name.toLowerCase().replace(/\s+/g, '-'), entry);
+
+          // alias exakt
+          productMap.set(key, entry);
+          productMap.set(slugify(key), entry);
+        
+          // ✅ base key "brodboken"
+          const base = key
+            .replace(/\(.*?\)/g, '')   
+            .replace(/\be-bok\b/g, '') 
+            .replace(/\s+/g, ' ')
+            .trim();
+
+          if (base) {
+            productMap.set(base, entry);
+            productMap.set(slugify(base), entry);
+          }
+        }
       }
-    }  
-    console.log('✅ Found products in DB:', courseProducts.map(p => p.name));
-    console.log('🔎 Has Brödboken?', courseProducts.some(p => p.name.toLowerCase().includes('brödboken')));
+      
+      console.log('✅ Found products in DB:', courseProducts.map(p => p.name));
+      console.log('🔎 Has Brödboken?', courseProducts.some(p => p.name.toLowerCase().includes('brödboken')));
+      console.log('🔑 Has key "brodboken"?', productMap.has('brodboken'));
+      console.log('🔑 Has key "brödboken"?', productMap.has('brödboken'));
     
     // Validate and enrich items with server-side data
 
