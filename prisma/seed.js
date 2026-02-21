@@ -250,6 +250,27 @@ async function main() {
     }
   });
 
+  // ===== Product: Brödboken (E-bok) =====
+  const brodbokenProduct = await prisma.courseProduct.upsert({
+    where: { name: 'Brödboken (E-bok)' },
+    update: {
+      description: 'Brödboken - E-bok (PDF)',
+      price: 188,
+      // om du har basePrice/salePrice i modellen: sätt dem här också
+      // basePrice: 188,
+    },
+    create: {
+      name: 'Brödboken (E-bok)',
+      description: 'Brödboken - E-bok (PDF)',
+      price: 188,
+      // basePrice: 188,
+      content: {},      // måste finnas eftersom din modell kräver Json
+      features: {}      // måste finnas eftersom din modell kräver Json
+    }
+  });
+
+  console.log('✅ Seeded CourseProduct: Brödboken (E-bok)', brodbokenProduct.id);
+  
   // Skapa köp för användarna
   
   // Flow-användaren köper Functional Flow
