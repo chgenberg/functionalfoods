@@ -113,6 +113,23 @@ export async function POST(req: NextRequest) {
       console.log('🔎 Has Brödboken?', courseProducts.some(p => p.name.toLowerCase().includes('brödboken')));
       console.log('🔑 Has key "brodboken"?', productMap.has('brodboken'));
       console.log('🔑 Has key "brödboken"?', productMap.has('brödboken'));
+
+      // --- Hard fallback: map "brodboken" to the Brödboken product if it exists ---
+      if (!productMap.has('brodboken')) {
+        const brod =
+          courseProducts.find(p => slugify(p.name) === 'brodboken-e-bok') ||
+          courseProducts.find(p => p.name.toLowerCase().includes('brödboken'));
+
+      if (brod) {
+        const entry = { ...brod, type: 'book', vatRate: 0.06 };
+          productMap.set('brodboken', entry);
+          productMap.set('brödboken', entry);
+
+          console.log('✅ Hard-mapped alias "brodboken" ->', brod.name, brod.id);
+        } else {
+          console.warn('⚠️ Could not find Brödboken in courseProducts for hard alias mapping');
+        }
+      }
     
     // Validate and enrich items with server-side data
 
