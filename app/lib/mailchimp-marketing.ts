@@ -235,7 +235,7 @@ class MailchimpMarketingService {
       [normalize('Hormonell balans')]: 'Köp – Hormonell Balans',
       [normalize('Prova på vecka')]: 'Köp – Prova på vecka',
 
-      // Brödboken (ebook) — lägg in flera realistiska varianter
+      // Brödboken (ebook)
       [normalize('brodboken')]: 'Köp – Brödboken',
       [normalize('brödboken')]: 'Köp – Brödboken',
       [normalize('Brödboken')]: 'Köp – Brödboken',
