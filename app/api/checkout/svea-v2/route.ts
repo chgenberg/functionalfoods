@@ -147,8 +147,25 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    // (Optional) Add non-course products to productMap here if needed in the future.
+    // (Optional) Add book products not in CourseProduct table
+    const bookProducts: Record<
+      string,
+      { id: string; name: string; price: number; type: 'book'; vatRate: number }
+    > = {
+      'brodboken-2026': {
+        id: 'brodboken-2026',
+        name: 'Brödboken – E-bok av Ulrika Davidsson',
+        price: 140.57, // 149 kr inkl 6% moms => exkl moms
+        type: 'book',
+        vatRate: 0.06,
+      },
+    };
 
+    // Add book products to productMap
+    for (const [bookId, bookProduct] of Object.entries(bookProducts)) {
+      productMap.set(bookId, bookProduct);
+    }
+    
     // Helper function to resolve courseId from cart item (used for both simulated and real orders)
     async function resolveCourseIdFromCartItem(
       db: typeof prisma,
@@ -441,6 +458,7 @@ export async function POST(req: NextRequest) {
       if (key.includes('functional basics') || key.includes('functional-basics') || key.includes('basics')) return '21122';
       if (key.includes('functional flow') || key.includes('functional-flow') || key.includes('gut')) return '21127';
       if (key.includes('functional energy') || key.includes('insulin') || key.includes('functional-energy')) return '21128';
+      if (key.includes('brödboken') || key.includes('brodboken')) return 'EBOOK-BRODBOKEN-2026';
       return item.id; // fallback
     };
 
