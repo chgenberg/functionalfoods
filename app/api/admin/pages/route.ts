@@ -34,7 +34,7 @@ export async function GET(req: NextRequest) {
       pageId: 'brodboken',
       name: 'Brödboken E-bok',
       description: 'E-boken som säljs på /brodboken',
-      path: '/brodboken',
+      path: '/brodboken'
       },
       { 
         pageId: 'boken', 
