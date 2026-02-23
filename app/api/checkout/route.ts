@@ -58,6 +58,26 @@ export async function POST(req: NextRequest) {
       productMap.set(p.name.toLowerCase(), { ...p, type: 'course', vatRate: 0.25 });
       productMap.set(p.name, { ...p, type: 'course', vatRate: 0.25 });
     }
+
+    // Add hardcoded book products (not in CourseProduct table)
+    const bookProducts = [
+      {
+        id: 'brodboken-2026',
+        name: 'Brödboken – E-bok av Ulrika Davidsson',
+        price: 140.57, // 149 kr inkl 6% moms => 140.57 kr exkl moms
+        basePrice: 140.57,
+        type: 'book' as const,
+        vatRate: 0.06,
+      },
+    ];
+
+    // Add book products to map
+    for (const p of bookProducts) {
+      productMap.set(p.id, p);
+      productMap.set(p.name.toLowerCase(), p);
+      productMap.set(p.name, p);
+      productMap.set(slugify(p.name), p);
+    }
     
     // Validate and enrich items with server-side data
     const now = new Date();
