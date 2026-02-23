@@ -181,7 +181,34 @@ export async function POST(request: NextRequest) {
           }
         }
       }
-
+    
+      // Ensure ebook download tokens
+      for (const book of bookItems) {
+        const existing = await tx.ebookDownload.findFirst({
+          where: {
+            orderNumber: order.orderNumber,
+            ebookName: book.name
+          }
+        });
+        if (!existing) {
+          const downloadToken = (await import('crypto')).randomBytes(16).toString('hex').toUpperCase();
+          let ebookId = 'brodboken-2026';
+          if (book.name.toLowerCase().includes('brodboken') || book.name.toLowerCase().includes('brodbok')) {
+            ebookId = 'brodboken-2026';
+          }
+          await tx.ebookDownload.create({
+            data: {
+              token: downloadToken,
+              orderNumber: order.orderNumber,
+              customerEmail: customerEmail,
+              ebookId,
+              ebookName: book.name,
+              maxDownloads: 5,
+              expiresAt: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000)
+            }
+          });
+        }
+      }
     });
 
     // Send emails (outside transaction)
@@ -197,6 +224,7 @@ export async function POST(request: NextRequest) {
 
     const freshMetadata = (updatedOrder.metadata as any) || {};
     const courseItemsNow = updatedOrder.items.filter(i => i.type === 'course');
+    const bookItemsNow = updatedOrder.items.filter(i => i.type === 'book');
 
     // Course confirmation email (if not already sent)
     if (courseItemsNow.length > 0 && !freshMetadata.confirmationEmailSent) {
@@ -232,6 +260,53 @@ export async function POST(request: NextRequest) {
       results.push('order_confirmation_sent');
     }
 
+    // E-book emails
+    if (bookItemsNow.length > 0) {
+      for (const book of bookItemsNow) {
+        const downloadRecord = await prisma.ebookDownload.findFirst({
+          where: { orderNumber: updatedOrder.orderNumber, ebookName: book.name }
+        });
+        if (downloadRecord) {
+          const downloadUrl = `${baseUrl}/brodboken/ladda-ner?token=${downloadRecord.token}`;
+          const sent = await emailService.sendEbookDownloadEmail({
+            email: customerEmail,
+            name: customerName,
+            ebookName: book.name,
+            downloadUrl,
+            downloadPassword: downloadRecord.token,
+            orderNumber: updatedOrder.orderNumber
+          });
+          if (sent) results.push(`ebook_email_sent:${book.name}`);
+
+          // After successful e-book send: sync to Mailchimp (non-blocking + timeout)
+          if (sent) {
+            try {
+              const mailchimpMarketing = getMailchimpMarketing();
+              if (mailchimpMarketing.isConfigured()) {
+                const normalizedEmail = customerEmail.toLowerCase().trim();
+                const name = (customerName || '').trim();
+                const [firstName, ...rest] = name ? name.split(/\s+/) : [];
+                const lastName = rest.length ? rest.join(' ') : undefined;
+
+                await Promise.race([
+                  mailchimpMarketing.addSubscriber({
+                    email: normalizedEmail,
+                    firstName: firstName || undefined,
+                    lastName,
+                    tags: ['kund', 'Köp - Brödboken'],
+                    status: 'subscribed'
+                  }),
+                  new Promise((resolve) => setTimeout(resolve, 1500))
+                ]);
+              }
+            } catch (e) {
+              console.warn('⚠️ Mailchimp Marketing subscriber add failed (non-critical):', e);
+            }
+          }
+        }
+      }
+    }
+    
     return NextResponse.json({
       success: true,
       orderId: updatedOrder.id,
