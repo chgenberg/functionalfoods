@@ -363,7 +363,7 @@ export async function POST(req: NextRequest) {
 
             if (mailchimpMarketing.isConfigured()) {
               const courseNames = refreshedOrder.items
-                .filter((i) => i.type === 'course')
+                .filter((i) => i.type === 'course' || i.type === 'book')
                 .map((i) => i.name);
 
               const nameParts = (refreshedOrder.customerName || refreshedOrder.user?.name || '')
@@ -548,6 +548,50 @@ export async function POST(req: NextRequest) {
               const BOOK_VAT_RATE = 0.06;
               const courseItems = updatedOrder.items.filter((item) => item.type === 'course');
               const bookItems = updatedOrder.items.filter(item => item.type === 'book');
+
+              // --- E-book download email (inside same scope as updatedOrder/emailToUse/baseUrl/bookItems) ---
+              if (bookItems.length > 0) {
+                const crypto = await import('crypto');
+                const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://www.functionalfoods.se';
+
+                for (const book of bookItems) {
+                  const downloadToken = crypto.randomBytes(16).toString('hex').toUpperCase();
+
+                  let ebookId = 'brodboken-2026';
+                  const n = book.name.toLowerCase();
+                  if (n.includes('brodboken') || n.includes('brodbok')) {
+                    ebookId = 'brodboken-2026';
+                  }
+
+                  await prisma.ebookDownload.create({
+                    data: {
+                      token: downloadToken,
+                      orderNumber: updatedOrder.orderNumber,
+                      customerEmail: emailToUse,
+                      ebookId,
+                      ebookName: book.name,
+                      maxDownloads: 5,
+                      expiresAt: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000)
+                    }
+                  });
+
+                  const downloadUrl = `${baseUrl}/brodboken/ladda-ner?token=${downloadToken}`;
+
+                  await emailService.sendEbookDownloadEmail({
+                    email: emailToUse,
+                    name: nameToUse,
+                    ebookName: book.name,
+                    downloadUrl,
+                    downloadPassword: downloadToken,
+                    orderNumber: updatedOrder.orderNumber
+                  });
+
+                  console.log(
+                    `✅ E-book download email sent for: ${book.name} with token: ${downloadToken.substring(0, 8)}...`
+                  );
+                }
+              }
+              
               const emailCourses = courseItems.map((item) => ({
                 name: item.name,
                 price: (Math.round(item.price * (1 + COURSE_VAT_RATE) * 100) / 100) * (item.quantity || 1)
@@ -603,47 +647,7 @@ export async function POST(req: NextRequest) {
           console.error('❌ Failed to send order confirmation email via verify:', emailError);
         }
       }
-      // Send e-book download email for e-book purchases
-      if (bookItems.length > 0) {
-        for (const book of bookItems) {
-          // Generate unique download token
-          const crypto = await import('crypto');
-          const downloadToken = crypto.randomBytes(16).toString('hex').toUpperCase();
-                    
-          // Determine ebookId based on book name
-          let ebookId = 'brodboken-2026';
-          if (book.name.toLowerCase().includes('brodboken') || book.name.toLowerCase().includes('brodbok')) {
-            ebookId = 'brodboken-2026';
-          }
-                    
-          // Store the download token in database
-          await prisma.ebookDownload.create({
-            data: {
-              token: downloadToken,
-              orderNumber: updatedOrder.orderNumber,
-              customerEmail: emailToUse,
-              ebookId,
-              ebookName: book.name,
-              maxDownloads: 5,
-              expiresAt: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000) // 1 year
-            }
-          });
-                    
-          const downloadUrl = `${baseUrl}/brodboken/ladda-ner?token=${downloadToken}`;
-                    
-          await emailService.sendEbookDownloadEmail({
-            email: emailToUse,
-            name: nameToUse,
-            ebookName: book.name,
-            downloadUrl,
-            downloadPassword: downloadToken, // Now using unique token instead of static password
-            orderNumber: updatedOrder.orderNumber
-          });
-                    
-          console.log(`✅ E-book download email sent for: ${book.name} with token: ${downloadToken.substring(0, 8)}...`);
-
-        }
-      }
+      
       // --- Mailchimp E-commerce purchase tracking (run from verify to avoid webhook dependency) ---
       try {
         const updatedOrder = await prisma.order.findUnique({
