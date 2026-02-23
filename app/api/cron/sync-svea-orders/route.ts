@@ -241,6 +241,7 @@ async function completeOrder(order: any, sveaOrder: any) {
   // Send emails
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://www.functionalfoods.se';
   const courseItems = order.items.filter((item: any) => item.type === 'course');
+  const bookItems = order.items.filter((item: any) => item.type === 'book');
 
   // Send course confirmation email
   if (courseItems.length > 0 && customerEmail) {
@@ -267,6 +268,68 @@ async function completeOrder(order: any, sveaOrder: any) {
     console.log(`📧 Order confirmation sent to ${customerEmail}`);
   }
 
+  // Send e-book download email
+  if (bookItems.length > 0 && customerEmail) {
+    for (const book of bookItems) {
+      const crypto = await import('crypto');
+      const downloadToken = crypto.randomBytes(16).toString('hex').toUpperCase();
+      
+      let ebookId = 'brodboken-2026';
+      if (book.name.toLowerCase().includes('brodboken') || book.name.toLowerCase().includes('brodbok')) {
+        ebookId = 'brodboken-2026';
+      }
+      
+      await prisma.ebookDownload.create({
+        data: {
+          token: downloadToken,
+          orderNumber: order.orderNumber,
+          customerEmail: customerEmail,
+          ebookId,
+          ebookName: book.name,
+          maxDownloads: 5,
+          expiresAt: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000)
+        }
+      });
+      
+      const downloadUrl = `${baseUrl}/brodboken/ladda-ner?token=${downloadToken}`;
+      
+      await emailService.sendEbookDownloadEmail({
+        email: customerEmail,
+        name: customerName,
+        ebookName: book.name,
+        downloadUrl,
+        downloadPassword: downloadToken,
+        orderNumber: order.orderNumber
+      });
+      
+      console.log(`📧 E-book email sent: ${book.name} to ${customerEmail}`);
+
+      // After successful e-book send: sync to Mailchimp (non-blocking + timeout)
+      try {
+        const mailchimpMarketing = getMailchimpMarketing();
+        if (mailchimpMarketing.isConfigured()) {
+          const normalizedEmail = customerEmail.toLowerCase().trim();
+          const name = (customerName || '').trim();
+          const [firstName, ...rest] = name ? name.split(/\s+/) : [];
+          const lastName = rest.length ? rest.join(' ') : undefined;
+
+          await Promise.race([
+            mailchimpMarketing.addSubscriber({
+              email: normalizedEmail,
+              firstName: firstName || undefined,
+              lastName,
+              tags: ['kund', 'Köp - Brödboken'],
+              status: 'subscribed'
+            }),
+            new Promise((resolve) => setTimeout(resolve, 1500))
+          ]);
+        }
+      } catch (e) {
+        console.warn('⚠️ Mailchimp Marketing subscriber add failed (non-critical):', e);
+      }
+    }
+  }
+  
   // Update metadata to mark email as sent
   await prisma.order.update({
     where: { id: order.id },
