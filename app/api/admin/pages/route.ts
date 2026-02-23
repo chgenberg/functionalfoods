@@ -30,6 +30,12 @@ export async function GET(req: NextRequest) {
 
     // Define available pages with defaults
     const availablePages = [
+      {
+      pageId: 'brodboken',
+      name: 'Brödboken E-bok',
+      description: 'E-boken som säljs på /brodboken',
+      path: '/brodboken',
+      },
       { 
         pageId: 'boken', 
         name: 'Functional Foods Boken',
