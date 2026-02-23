@@ -393,7 +393,21 @@ function CheckoutSuccessContent() {
                 )}
               </div>
             </div>
-
+            
+            {/* If order also has e-books, show download info */}
+            {hasEbooks && (
+              <div className="mt-6 p-4 bg-red-50 rounded-lg border border-red-100">
+                <div className="flex items-start gap-3">
+                  <Download className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
+                  <div>
+                    <h4 className="font-medium text-gray-900 text-sm">E-bok ingår i din beställning</h4>
+                    <p className="text-sm text-gray-600 mt-1">
+                      Du får ett separat mejl med nerladdningslänk för din e-bok till {customerEmail || user?.email || 'din e-postadress'}.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         </div>
 
