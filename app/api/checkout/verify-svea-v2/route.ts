@@ -641,7 +641,9 @@ export async function POST(req: NextRequest) {
           });
                     
           console.log(`✅ E-book download email sent for: ${book.name} with token: ${downloadToken.substring(0, 8)}...`);
-          
+
+        }
+      }
       // --- Mailchimp E-commerce purchase tracking (run from verify to avoid webhook dependency) ---
       try {
         const updatedOrder = await prisma.order.findUnique({
