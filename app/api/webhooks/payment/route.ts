@@ -479,9 +479,56 @@ async function handleCheckoutSessionCompleted(session: any) {
       // Send emails based on product types
       try {
         const VAT_RATE = 0.25;
+        const BOOK_VAT_RATE = 0.06;
         const courseItems = items.filter(i => i.type === 'course');
+        const bookItems = items.filter(i => i.type === 'book');
         
         const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://www.functionalfoods.se';
+
+        // Send e-book download email for book purchases
+        if (bookItems.length > 0) {
+          for (const book of bookItems) {
+            try {
+              // Generate unique download token
+              const crypto = await import('crypto');
+              const downloadToken = crypto.randomBytes(16).toString('hex').toUpperCase();
+              
+              // Determine ebookId based on book name
+              let ebookId = 'brodboken-2026';
+              if (book.name.toLowerCase().includes('brodboken') || book.name.toLowerCase().includes('brodbok')) {
+                ebookId = 'brodboken-2026';
+              }
+              
+              // Store the download token in database
+              await prisma.ebookDownload.create({
+                data: {
+                  token: downloadToken,
+                  orderNumber: order.orderNumber,
+                  customerEmail: user.email,
+                  ebookId,
+                  ebookName: book.name,
+                  maxDownloads: 5,
+                  expiresAt: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000) // 1 year
+                }
+              });
+              
+              const downloadUrl = `${baseUrl}/brodboken/ladda-ner?token=${downloadToken}`;
+              
+              await emailService.sendEbookDownloadEmail({
+                email: user.email,
+                name: user.name || user.email,
+                ebookName: book.name,
+                downloadUrl,
+                downloadPassword: downloadToken,
+                orderNumber: order.orderNumber
+              });
+              
+              console.log(`✅ E-book download email sent for: ${book.name} with token: ${downloadToken.substring(0, 8)}...`);
+            } catch (ebookError) {
+              console.error(`❌ Failed to send e-book email for ${book.name}:`, ebookError);
+            }
+          }
+        }
         
         // Send order confirmation for course purchases (with credentials for new users)
         if (courseItems.length > 0) {
