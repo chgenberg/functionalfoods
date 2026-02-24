@@ -651,6 +651,7 @@ export async function POST(req: NextRequest) {
             items: {
               create: validatedItems.map((item: any) => ({
                 courseId: item.type === 'course' ? item.courseId : null,
+                ebookId: item.type === 'book' ? item.id : null, // "brodboken-2026"
                 name: item.name,
                 quantity: item.quantity,
                 price: 0,
@@ -699,10 +700,67 @@ export async function POST(req: NextRequest) {
       }
 
       await prisma.$transaction(ops);
-    
+
+      // E-book delivery for free orders (idempotent-ish: check existing token per order+ebook)
+      try {
+        const bookItems = validatedItems.filter(i => i.type === 'book');
+        if (bookItems.length > 0 && customerEmail && !customerEmail.startsWith('guest-')) {
+          const crypto = await import('crypto');
+          const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || process.env.NEXT_PUBLIC_BASE_URL || 'https://www.functionalfoods.se';
+
+          for (const book of bookItems) {
+            const ebookId = (book.id && typeof book.id === 'string') ? book.id : 'brodboken-2026';
+
+            // Optional: avoid duplicates if route is retried
+            const existing = await prisma.ebookDownload.findFirst({
+              where: { orderNumber: orderId, ebookId }
+            });
+
+            if (existing) {
+              console.log('ℹ️ Ebook token already exists (skipping create+email):', { orderId, ebookId });
+              continue;
+            }
+            // If you have a unique constraint on (orderNumber, ebookId), you can upsert.
+            const downloadToken = crypto.randomBytes(16).toString('hex').toUpperCase();
+
+            await prisma.ebookDownload.create({
+              data: {
+                token: downloadToken,
+                orderNumber: orderId,
+                customerEmail,
+                ebookId,
+                ebookName: book.name,
+                maxDownloads: 5,
+                expiresAt: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000),
+              }
+            });
+
+            const downloadUrl = `${baseUrl}/brodboken/ladda-ner?token=${downloadToken}`;
+
+            await emailService.sendEbookDownloadEmail({
+              email: customerEmail,
+              name: customerName || customerEmail.split('@')[0],
+              ebookName: book.name,
+              downloadUrl,
+              downloadPassword: downloadToken,
+              orderNumber: orderId
+            });
+          }
+
+          console.log(`✅ E-book delivery email sent (free order): ${customerEmail}`);
+        }
+        console.log(`✅ E-book delivery flow done (free order): ${customerEmail}`);
+      }
+    } catch (e) {
+      console.warn('⚠️ Failed to send ebook email (free order, non-critical):', e);
+    }
+      
       // Send confirmation email
       try {
         const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || process.env.NEXT_PUBLIC_BASE_URL || 'https://www.functionalfoods.se';
+        const courseItems = validatedItems.filter(i => i.type === 'course');
+        const bookItems = validatedItems.filter(i => i.type === 'book');
+        
         await emailService.sendOrderConfirmation({
           customerEmail,
           customerName,
@@ -724,8 +782,8 @@ export async function POST(req: NextRequest) {
       try {
         const mailchimpMarketing = getMailchimpMarketing();
         if (mailchimpMarketing.isConfigured()) {
-          const courseNames = validatedItems
-            .filter(item => item.type === 'course')
+          const productNames = validatedItems
+            .filter(item => item.type === 'course' || i.type === 'book')
             .map(item => item.name);
           const nameParts = (customerName || '').split(' ');
           const firstName = nameParts[0] || '';
@@ -1007,6 +1065,7 @@ export async function POST(req: NextRequest) {
           items: {
             create: itemsWithDiscountedPrice.map((item) => ({
               courseId: item.type === 'course' ? item.courseId : null,
+              ebookId: item.type === 'book' ? item.id : null, // "brodboken-2026"
               name: item.name,
               quantity: item.quantity,
               price: item.discountedPrice,
