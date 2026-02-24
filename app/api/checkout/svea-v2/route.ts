@@ -750,10 +750,9 @@ export async function POST(req: NextRequest) {
           console.log(`✅ E-book delivery email sent (free order): ${customerEmail}`);
         }
         console.log(`✅ E-book delivery flow done (free order): ${customerEmail}`);
-      }
-    } catch (e) {
+      } catch (e) {
       console.warn('⚠️ Failed to send ebook email (free order, non-critical):', e);
-    }
+      }
       
       // Send confirmation email
       try {
@@ -783,13 +782,13 @@ export async function POST(req: NextRequest) {
         const mailchimpMarketing = getMailchimpMarketing();
         if (mailchimpMarketing.isConfigured()) {
           const productNames = validatedItems
-            .filter(item => item.type === 'course' || i.type === 'book')
+            .filter(item => item.type === 'course' || item.type === 'book')
             .map(item => item.name);
           const nameParts = (customerName || '').split(' ');
           const firstName = nameParts[0] || '';
           const lastName = nameParts.slice(1).join(' ') || '';
-          await mailchimpMarketing.addCustomerWithCourseTags(customerEmail, courseNames, firstName, lastName);
-          console.log(`✅ Customer added to Mailchimp with course tags (free order): ${customerEmail}`);
+          await mailchimpMarketing.addCustomerWithCourseTags(customerEmail, productNames, firstName, lastName);
+          console.log(`✅ Customer added to Mailchimp with product tags (free order): ${customerEmail}`);
         }
       } catch (mailchimpError) {
         console.warn('⚠️ Failed to add to Mailchimp (non-critical):', mailchimpError);
