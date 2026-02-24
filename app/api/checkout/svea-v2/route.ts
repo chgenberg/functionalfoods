@@ -651,7 +651,6 @@ export async function POST(req: NextRequest) {
             items: {
               create: validatedItems.map((item: any) => ({
                 courseId: item.type === 'course' ? item.courseId : null,
-                ebookId: item.type === 'book' ? item.id : null, // "brodboken-2026"
                 name: item.name,
                 quantity: item.quantity,
                 price: 0,
@@ -1064,7 +1063,6 @@ export async function POST(req: NextRequest) {
           items: {
             create: itemsWithDiscountedPrice.map((item) => ({
               courseId: item.type === 'course' ? item.courseId : null,
-              ebookId: item.type === 'book' ? item.id : null, // "brodboken-2026"
               name: item.name,
               quantity: item.quantity,
               price: item.discountedPrice,
