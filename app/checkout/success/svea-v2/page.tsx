@@ -370,7 +370,7 @@ function SveaSuccessContent() {
                 <div className="flex items-center gap-4">
                   <div className="relative w-20 h-28 rounded-lg overflow-hidden shadow-lg flex-shrink-0">
                     <Image
-                      src="/brodboken/Produktbild.png"
+                      src="/baka-glutenfritt.png"
                       alt="Brödboken E-bok"
                       fill
                       className="object-cover"
