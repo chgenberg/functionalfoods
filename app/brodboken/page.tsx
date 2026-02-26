@@ -16,7 +16,7 @@ const DEFAULT_CONTENT = {
     "Vill du baka bröd som smakar fantastiskt och samtidigt känns lätt i magen? Brödboken samlar Ulrikas bästa brödrecept med fokus på functional foods – för ett jämnare blodsocker, stabil energi och mer näring i varje tugga.",
   shortDescription:
     "I e-boken får du en komplett samling brödrecept och smarta tips som gör det enkelt att lyckas – oavsett om du vill baka glutenfritt, fiberrikt eller proteinrikare alternativ.",
-  image: "/Brodboken/Produktbild.png",
+  image: "/baka-glutenfritt.png",
   price: "149 kr",
   features: [
     "En komplett brödguide med functional foods",
@@ -58,7 +58,7 @@ export default function BrodbokenPage() {
     price: 140.57, // 149 kr inkl 6% moms = 140.57 kr exkl moms (149 / 1.06)
     quantity: 1,
     type: "book" as const,
-    image: content.image || "/Brodboken/Produktbild.png"
+    image: content.image || "/baka-glutenfritt.png"
   };
 
   // Fetch custom page content
@@ -169,7 +169,7 @@ export default function BrodbokenPage() {
               <div className="relative">
                 <div className={`transition-all duration-700 ${imageLoaded ? "opacity-100 scale-100" : "opacity-0 scale-95"}`}>
                   <Image
-                    src={content.image || "/Brodboken/Produktbild.png"}
+                    src={content.image || "/baka-glutenfritt.png"}
                     alt={`${content.title} – ${content.subtitle}`}
                     width={400}
                     height={500}
