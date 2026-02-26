@@ -117,7 +117,7 @@ function DownloadContent() {
           <div className="p-6 border-b border-white/10 flex items-center gap-4">
             <div className="relative w-16 h-20 rounded-lg overflow-hidden shadow-lg flex-shrink-0">
               <Image
-                src="/brodbok/Produktbild.png"
+                src="/baka-glutenfritt.png"
                 alt="Brödboken E-bok"
                 fill
                 className="object-cover"
