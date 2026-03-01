@@ -73,7 +73,7 @@ function DownloadContent() {
     // Trigger download
     const link = document.createElement('a');
     link.href = downloadPath;
-    link.download = 'Brodboken_2026.pdf';
+    link.download = 'test-baka-glutenfritt-ebok.pdf';
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -100,7 +100,7 @@ function DownloadContent() {
           </div>
 
           <h1 className="text-3xl md:text-4xl font-bold text-white mb-4">
-            Brödboken – E-bok
+            Baka Glutenfritt – E-bok
           </h1>
           <p className="text-gray-400">
             av Ulrika Davidsson
@@ -118,14 +118,14 @@ function DownloadContent() {
             <div className="relative w-16 h-20 rounded-lg overflow-hidden shadow-lg flex-shrink-0">
               <Image
                 src="/baka-glutenfritt.png"
-                alt="Brödboken E-bok"
+                alt="Baka Glutenfritt E-bok"
                 fill
                 className="object-cover"
               />
             </div>
             <div>
-              <h2 className="text-white font-semibold">{ebookName || 'Brödboken – E-bok'}</h2>
-              <p className="text-gray-400 text-sm">PDF • 20+ recept</p>
+              <h2 className="text-white font-semibold">{ebookName || 'Baka Glutenfritt – E-bok'}</h2>
+              <p className="text-gray-400 text-sm">PDF • 21 recept</p>
             </div>
           </div>
 
