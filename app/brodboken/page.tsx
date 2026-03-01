@@ -270,21 +270,21 @@ export default function BrodbokenPage() {
                 <ChefHat className="w-6 h-6 text-[#93C560]" />
               </div>
               <h3 className="text-white font-semibold mb-2">Glutenfria recept</h3>
-              <p className="text-gray-400 text-sm">Näringsrika, mättande och riktigt goda recept - som är enkla att baka</p>
+              <p className="text-gray-400 text-sm">Du får näringsrika, mättande och riktigt goda recept - som är enkla att baka</p>
             </div>
             <div className="bg-white/5 backdrop-blur-sm rounded-2xl p-6 border border-white/10">
               <div className="w-12 h-12 bg-emerald-400/20 rounded-xl flex items-center justify-center mx-auto mb-4">
                 <BookOpen className="w-6 h-6 text-emerald-300" />
               </div>
-              <h3 className="text-white font-semibold mb-2">Komplett e-bok</h3>
-              <p className="text-gray-400 text-sm">Goda recept för både vardag och fest som du kommer baka om och om igen</p>
+              <h3 className="text-white font-semibold mb-2">En komplett e-bok</h3>
+              <p className="text-gray-400 text-sm">Goda recept till frukost och middag, för vardag och fest - som du kommer baka om och om igen</p>
             </div>
             <div className="bg-white/5 backdrop-blur-sm rounded-2xl p-6 border border-white/10">
               <div className="w-12 h-12 bg-lime-300/20 rounded-xl flex items-center justify-center mx-auto mb-4">
                 <Leaf className="w-6 h-6 text-lime-200" />
               </div>
               <h3 className="text-white font-semibold mb-2">Functional Foods</h3>
-              <p className="text-gray-400 text-sm">Välj glutenfritt av hälsoskäl, för magen eller för att få jämnare energi</p>
+              <p className="text-gray-400 text-sm">Oavsett om du väljer glutenfritt av hälsoskäl, för magen eller för att få jämnare energi</p>
             </div>
           </div>
         </motion.div>
