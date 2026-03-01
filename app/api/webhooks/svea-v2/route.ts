@@ -659,7 +659,7 @@ async function handleOrderCompleted(webhookData: ReturnType<typeof normalizeWebh
                 
                 // Determine ebookId based on book name
                 let ebookId = 'brodboken-2026';
-                if (book.name.toLowerCase().includes('brodboken') || book.name.toLowerCase().includes('brodbok')) {
+                if (book.name.toLowerCase().includes('glutenfritt') || book.name.toLowerCase().includes('e-bok')) {
                   ebookId = 'brodboken-2026';
                 }
                 
