@@ -5,7 +5,7 @@ import { useSearchParams, useRouter } from 'next/navigation';
 
 import Link from 'next/link';
 import Image from 'next/image';
-import { CheckCircle, Book, Play, Mail, AlertTriangle, Key, ArrowRight, Download } from 'lucide-react';
+import { CheckCircle, Book, Play, Mail, AlertTriangle, Key, ArrowRight, Download, Gift } from 'lucide-react';
 import { trackPurchase } from '@/app/lib/analytics';
 import { motion } from 'framer-motion';
 
