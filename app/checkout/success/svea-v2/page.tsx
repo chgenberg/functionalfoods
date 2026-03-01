@@ -3,7 +3,7 @@
 import { useEffect, useState, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
-import { CheckCircle, ArrowRight, Book, Download, X, Loader2, Mail } from 'lucide-react';
+import { CheckCircle, ArrowRight, Book, Download, X, Loader2, Mail, Gift } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { trackPurchase } from '@/app/lib/analytics';
 import Image from 'next/image';
@@ -350,7 +350,7 @@ function SveaSuccessContent() {
                   <Gift className="w-6 h-6 text-green-600" />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-gray-900 mb-1"> Njut av baka glutenfritt!</h3>
+                  <h3 className="font-semibold text-gray-900 mb-1"> Njut av att baka glutenfritt!</h3>
                   <p className="text-gray-600 text-sm mb-3">
                     Upptäck Ulrikas väg till mer hälsosam brödbakning.
                   </p>
