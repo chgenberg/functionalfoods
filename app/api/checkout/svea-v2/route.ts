@@ -855,7 +855,7 @@ export async function POST(req: NextRequest) {
       clientOrderNumber: orderId,
       merchantSettings: {
         termsUri: `${origin}/anvandarvillkor`,
-        checkoutUri: `${origin}/checkout`,
+        checkoutUri: `${origin}/checkout/svea`,
         confirmationUri: `${origin}/checkout/success/svea-v2?orderId=${encodeURIComponent(orderId)}`,
         pushUri: `${origin}/api/webhooks/svea-v2`
       },
