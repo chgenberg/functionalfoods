@@ -16,8 +16,9 @@ const isGuestEmail = (email?: string | null) => !!email && email.startsWith('gue
 
 export async function POST(req: NextRequest) {
   try {
-    const body = await req.json();
-    const { checkoutOrderId, orderId: clientOrderId } = body as VerifyRequest;
+    const body = (await req.json()) as VerifyRequest;
+    let checkoutOrderId = body.checkoutOrderId;
+    const clientOrderId = body.orderId;
 
     if (!clientOrderId) {
       return NextResponse.json({ error: 'Missing required parameters' }, { status: 400 });
