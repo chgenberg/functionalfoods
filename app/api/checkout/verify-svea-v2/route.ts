@@ -19,10 +19,32 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
     const { checkoutOrderId, orderId: clientOrderId } = body as VerifyRequest;
 
-    if (!checkoutOrderId || !clientOrderId) {
+    if (!clientOrderId) {
       return NextResponse.json({ error: 'Missing required parameters' }, { status: 400 });
     }
 
+    // ✅ If checkoutOrderId not provided by frontend, fetch it from DB
+    if (!checkoutOrderId) {
+      const dbOrder = await prisma.order.findUnique({
+        where: { id: clientOrderId },
+        select: { checkoutOrderId: true }
+      });
+
+      checkoutOrderId = dbOrder?.checkoutOrderId || undefined;
+
+      console.log('ℹ️ verify-svea-v2: checkoutOrderId missing from client; loaded from DB', {
+        clientOrderId,
+        checkoutOrderId: checkoutOrderId ? 'present' : 'missing'
+      });
+    }
+
+    if (!checkoutOrderId) {
+      return NextResponse.json(
+        { error: 'Missing checkoutOrderId (not provided and not found on order)' },
+        { status: 400 }
+      );
+    }
+      
     // If simulation is enabled, treat as completed without contacting Svea
     if (process.env.PAYMENTS_SIMULATE === 'true' || checkoutOrderId === 'SIMULATED') {
       const order = await prisma.order.findUnique({
