@@ -154,8 +154,8 @@ export async function POST(req: NextRequest) {
     > = {
       'brodboken-2026': {
         id: 'brodboken-2026',
-        name: 'Brödboken – E-bok av Ulrika Davidsson',
-        price: 140.57, // 149 kr inkl 6% moms => exkl moms
+        name: 'Baka Glutenfritt – E-bok av Ulrika Davidsson',
+        price: 65.09, // 69 kr inkl 6% moms => exkl moms
         type: 'book',
         vatRate: 0.06,
       },
@@ -458,7 +458,7 @@ export async function POST(req: NextRequest) {
       if (key.includes('functional basics') || key.includes('functional-basics') || key.includes('basics')) return '21122';
       if (key.includes('functional flow') || key.includes('functional-flow') || key.includes('gut')) return '21127';
       if (key.includes('functional energy') || key.includes('insulin') || key.includes('functional-energy')) return '21128';
-      if (key.includes('brödboken') || key.includes('brodboken')) return 'EBOOK-BRODBOKEN-2026';
+      if (key.includes('glutenfritt') || key.includes('brodboken')) return 'EBOOK-BRODBOKEN-2026';
       return item.id; // fallback
     };
 
