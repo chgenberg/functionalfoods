@@ -150,7 +150,7 @@ function CheckoutSuccessContent() {
 
   // Determine product types from order items
   const hasEbooks = orderItems.some((item: any) => 
-    item.type === 'book' || item.id?.toLowerCase().includes('brodboken') || item.name?.toLowerCase().includes('brodbok')
+    item.type === 'book' || item.id?.toLowerCase().includes('brodboken') || item.name?.toLowerCase().includes('glutenfritt')
   );
   const hasCourses = orderItems.some((item: any) => item.type === 'course');
   const onlyEbooks = hasEbooks && !hasCourses;
@@ -228,9 +228,9 @@ function CheckoutSuccessContent() {
                   <Gift className="w-6 h-6 text-green-600" />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-gray-900 mb-1">Njut av brödboken!</h3>
+                  <h3 className="font-semibold text-gray-900 mb-1">Njut av glutenfritt!</h3>
                   <p className="text-gray-600 text-sm mb-3">
-                    Upptäck allt om hälsosam brödbakning.
+                    Upptäck Ulrikas väg till mer hälsosam brödbakning.
                   </p>
                 </div>
               </div>
@@ -249,15 +249,15 @@ function CheckoutSuccessContent() {
                   <div className="relative w-20 h-28 rounded-lg overflow-hidden shadow-lg flex-shrink-0">
                     <Image
                       src="/baka-glutenfritt.png"
-                      alt="Brödboken E-bok"
+                      alt="Baka Glutenfritt E-bok"
                       fill
                       className="object-cover"
                     />
                   </div>
                   <div>
                     <h4 className="font-semibold text-gray-900">Din e-bok</h4>
-                    <p className="text-sm text-gray-600">Brödboken – E-bok av Ulrika Davidsson</p>
-                    <p className="text-xs text-gray-500 mt-1">PDF-format • 20+ recept</p>
+                    <p className="text-sm text-gray-600">Baka Glutenfritt – E-bok</p>
+                    <p className="text-xs text-gray-500 mt-1">PDF-format • 21 recept</p>
                   </div>
                 </div>
               </div>
