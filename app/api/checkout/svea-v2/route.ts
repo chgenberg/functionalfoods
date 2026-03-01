@@ -154,7 +154,7 @@ export async function POST(req: NextRequest) {
     > = {
       'brodboken-2026': {
         id: 'brodboken-2026',
-        name: 'Baka Glutenfritt – E-bok av Ulrika Davidsson',
+        name: 'Baka Glutenfritt – E-bok',
         price: 65.09, // 69 kr inkl 6% moms => exkl moms
         type: 'book',
         vatRate: 0.06,
