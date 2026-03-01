@@ -63,9 +63,9 @@ export async function POST(req: NextRequest) {
     const bookProducts = [
       {
         id: 'brodboken-2026',
-        name: 'Brödboken – E-bok av Ulrika Davidsson',
-        price: 140.57, // 149 kr inkl 6% moms => 140.57 kr exkl moms
-        basePrice: 140.57,
+        name: 'Baka Glutenfritt – E-bok av Ulrika Davidsson',
+        price: 65.09, // 69 kr inkl 6% moms => 65.09 kr exkl moms
+        basePrice: 65.09,
         type: 'book' as const,
         vatRate: 0.06,
       },
