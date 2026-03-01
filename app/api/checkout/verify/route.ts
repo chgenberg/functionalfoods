@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/app/lib/database';
 import { emailService } from '@/app/lib/email';
+import { getMailchimpMarketing } from '@/app/lib/mailchimp-marketing';
 
 export const dynamic = 'force-dynamic';
 
@@ -17,10 +18,10 @@ export async function GET(req: NextRequest) {
 
     const stripe = require('stripe')(secretKey);
     const session = await stripe.checkout.sessions.retrieve(session_id);
+    const customerEmail = (session.customer_details?.email || session.customer_email || '').trim();
 
     // Fallback finalization if webhook didn't run
     try {
-      const customerEmail = (session.customer_details?.email || session.customer_email || '').trim();
       const paymentIntentId = typeof session.payment_intent === 'string' ? session.payment_intent : session.payment_intent?.id;
 
       // Only proceed if we have an email and either paid or free order
@@ -44,6 +45,12 @@ export async function GET(req: NextRequest) {
           try {
             const raw = (session.metadata as any)?.items || '';
             if (raw) items = JSON.parse(raw);
+          } catch {}
+
+          let attribution: any = null;
+          try {
+            const rawAttr = (session.metadata as any)?.attribution || '';
+            if (rawAttr) attribution = JSON.parse(rawAttr);
           } catch {}
 
           if (items.length > 0) {
@@ -76,6 +83,10 @@ export async function GET(req: NextRequest) {
                   status: 'COMPLETED',
                   totalAmount: totalIncl,
                   currency: String(session.currency || 'SEK').toUpperCase(),
+                  metadata:  {
+                    items,
+                    attribution
+                  },  
                   items: {
                     create: items.map((it) => ({
                       courseId: null,
@@ -175,6 +186,15 @@ export async function GET(req: NextRequest) {
                   });
                   purchasedCourses.push(purchase.course);
                 }
+                await tx.orderItem.updateMany({
+                  where: {
+                    orderId: order.id,
+                    type: 'course',
+                    courseId: null,
+                    name: it.name
+                  },
+                  data: { courseId: course.id }
+                });
               }
 
               // Send email (course lines incl VAT)
@@ -201,11 +221,162 @@ export async function GET(req: NextRequest) {
                 console.error('Email send failed in verify fallback:', e);
               }
             });
+            
+            // ✅ Post-completion Mailchimp tracking (idempotent)
+            try {
+              const orderNumber = session.amount_total === 0 ? `STRIPE-FREE-${session.id}` : `STRIPE-${session.id}`;
+
+              const updatedOrder = await prisma.order.findUnique({
+                where: { orderNumber },
+                include: { items: true, user: true }
+              });
+
+              if (updatedOrder) {
+                const metadata = (updatedOrder.metadata as any) || {};
+                const emailForTracking = updatedOrder.user?.email || customerEmail;
+
+                // 1) Mailchimp Marketing tags
+                if (!metadata.mailchimpMarketingTaggedAt) {
+                  const mailchimpMarketing = getMailchimpMarketing();
+                  if (mailchimpMarketing.isConfigured() && emailForTracking && !emailForTracking.startsWith('guest-')) {
+                    const productNames = updatedOrder.items.map(i => i.name); // courses + books
+
+                    const nameParts = (updatedOrder.customerName || updatedOrder.user?.name || '')
+                      .trim()
+                      .split(' ')
+                      .filter(Boolean);
+
+                    const firstName = nameParts[0] || '';
+                    const lastName = nameParts.slice(1).join(' ') || '';
+
+                    await mailchimpMarketing.addCustomerWithCourseTags(emailForTracking, productNames, firstName, lastName);
+
+                    await prisma.order.update({
+                      where: { id: updatedOrder.id },
+                      data: { metadata: { ...metadata, mailchimpMarketingTaggedAt: new Date().toISOString() } }
+                    });
+
+                    console.log(`✅ Mailchimp Marketing tagged (stripe verify fallback): ${emailForTracking}`);
+                  }
+                }
+
+                // 2) Mailchimp E-commerce tracking
+                const metadata2 = ((await prisma.order.findUnique({
+                  where: { id: updatedOrder.id },
+                  select: { metadata: true }
+                }))?.metadata as any) || {};
+
+                if (!metadata2.mailchimpEcommerceTrackedAt) {
+                  const { getMailchimpEcommerce } = await import('@/app/lib/mailchimp-ecommerce');
+                  const mc = getMailchimpEcommerce();
+
+                  if (mc.isConfigured() && emailForTracking && !emailForTracking.startsWith('guest-')) {
+                    const attr = metadata2.attribution || null;
+                    const campaignId = attr?.mc_cid || undefined;
+                    const trackingCode = attr?.utm_campaign || campaignId || undefined;
+
+                    await mc.trackPurchase({
+                      orderId: updatedOrder.orderNumber,
+                      customerEmail: emailForTracking,
+                      customerName: updatedOrder.user?.name || updatedOrder.customerName || undefined,
+                      items: updatedOrder.items.map((it) => ({
+                        id: it.courseId || `ebook:${it.name}` // now course items should have courseId
+                        name: it.name,
+                        price: it.price,
+                        quantity: it.quantity,
+                        type: (it.type as any) || 'course'
+                      })),
+                      totalAmount: updatedOrder.totalAmount || 0,
+                      currency: updatedOrder.currency || 'SEK',
+                      orderDate: updatedOrder.createdAt,
+                      discountTotal: 0,
+                      shippingTotal: 0,
+                      taxTotal: 0,
+                      campaignId,
+                      landingSite: undefined,
+                      trackingCode
+                    });
+
+                    await prisma.order.update({
+                      where: { id: updatedOrder.id },
+                      data: { metadata: { ...metadata2, mailchimpEcommerceTrackedAt: new Date().toISOString() } }
+                    });
+
+                    console.log('✅ Mailchimp E-commerce tracked (stripe verify fallback):', {
+                      orderId: updatedOrder.orderNumber,
+                      email: emailForTracking,
+                      itemsCount: updatedOrder.items.length
+                    });
+                  }
+                }
+              }
+            } catch (e) {
+              console.warn('⚠️ Stripe verify fallback: Mailchimp tracking failed (non-critical):', e);
+            }
           }
         }
       }
     } catch (e) {
       console.error('Checkout verify fallback failed:', e);
+    }
+
+    try {
+      const orderNumber = session.amount_total === 0 ? `STRIPE-FREE-${session.id}` : `STRIPE-${session.id}`;
+      
+      const order = await prisma.order.findUnique({
+        where: { orderNumber },
+        include: { items: true, user: true }
+      });
+
+      if (order) {
+        const emailToUse = order.user?.email || order.customerEmail || customerEmail;
+        const nameToUse = order.customerName || order.user?.name || emailToUse?.split('@')[0] || 'Kund';
+        
+        const bookItems = order.items.filter(i => i.type === 'book');
+
+        if (bookItems.length > 0 && emailToUse && !emailToUse.startsWith('guest-')) {
+          const crypto = await import('crypto');
+          const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || process.env.NEXT_PUBLIC_BASE_URL || 'https://www.functionalfoods.se';
+
+          for (const book of bookItems) {
+            const ebookId = 'brodboken-2026'; // eller härled via book.name
+
+            const existing = await prisma.ebookDownload.findFirst({
+              where: { orderNumber: order.orderNumber, ebookId }
+            });
+            if (existing) continue;
+
+            const token = crypto.randomBytes(16).toString('hex').toUpperCase();
+
+            await prisma.ebookDownload.create({
+              data: {
+                token,
+                orderNumber: order.orderNumber,
+                customerEmail: emailToUse,
+                ebookId,
+                ebookName: book.name,
+                maxDownloads: 5,
+                expiresAt: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000)
+              }
+            });
+
+            const downloadUrl = `${baseUrl}/brodboken/ladda-ner?token=${token}`;
+
+            await emailService.sendEbookDownloadEmail({
+              email: emailToUse,
+              name: nameToUse,
+              ebookName: book.name,
+              downloadUrl,
+              downloadPassword: token,
+              orderNumber: order.orderNumber
+            });
+
+            console.log(`✅ E-book download email sent (stripe verify fallback): ${emailToUse}`);
+          }
+        }
+      }
+    } catch (e) {
+    console.warn('⚠️ Stripe verify fallback: ebook delivery failed (non-critical):', e);
     }
 
     // NOTE: Coupon usage is incremented in webhook, not here
