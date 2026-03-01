@@ -10,18 +10,18 @@ import { trackAddToCart, trackViewContent } from "@/app/lib/analytics";
 
 // Default content (fallback)
 const DEFAULT_CONTENT = {
-  title: "Brödboken",
+  title: "Baka Glutenfritt",
   subtitle: "E-bok av Ulrika Davidsson",
   description:
     "Vill du baka bröd som smakar fantastiskt och samtidigt känns lätt i magen? Brödboken samlar Ulrikas bästa brödrecept med fokus på functional foods – för ett jämnare blodsocker, stabil energi och mer näring i varje tugga.",
   shortDescription:
     "I e-boken får du en komplett samling brödrecept och smarta tips som gör det enkelt att lyckas – oavsett om du vill baka glutenfritt, fiberrikt eller proteinrikare alternativ.",
   image: "/baka-glutenfritt.png",
-  price: "149 kr",
+  price: "69 kr",
   features: [
     "En komplett brödguide med functional foods",
     "Recept för vardagsbröd, frallor & bröd till helgen",
-    "Naturligt glutenfria alternativ (där det passar)",
+    "Naturligt glutenfria alternativ",
     "Fiber- & proteinrika varianter",
     "Tips för jämnare blodsocker & mindre uppblåsthet",
     "Smarta basrecept + variationer"
@@ -54,8 +54,8 @@ export default function BrodbokenPage() {
 
   const ebook = {
     id: "brodboken-2026",
-    name: "Brödboken – E-bok av Ulrika Davidsson",
-    price: 140.57, // 149 kr inkl 6% moms = 140.57 kr exkl moms (149 / 1.06)
+    name: "Baka Glutenfritt – E-bok av Ulrika Davidsson",
+    price: 65.09, // 69 kr inkl 6% moms = 65.09 kr exkl moms (69 / 1.06)
     quantity: 1,
     type: "book" as const,
     image: content.image || "/baka-glutenfritt.png"
@@ -269,22 +269,22 @@ export default function BrodbokenPage() {
               <div className="w-12 h-12 bg-[#93C560]/20 rounded-xl flex items-center justify-center mx-auto mb-4">
                 <ChefHat className="w-6 h-6 text-[#93C560]" />
               </div>
-              <h3 className="text-white font-semibold mb-2">Praktiska recept</h3>
-              <p className="text-gray-400 text-sm">Bröd som passar både vardag och helg – med tydliga instruktioner</p>
+              <h3 className="text-white font-semibold mb-2">Glutenfria recept</h3>
+              <p className="text-gray-400 text-sm">Näringsrika, mättande och riktigt goda recept - som är enkla att baka</p>
             </div>
             <div className="bg-white/5 backdrop-blur-sm rounded-2xl p-6 border border-white/10">
               <div className="w-12 h-12 bg-emerald-400/20 rounded-xl flex items-center justify-center mx-auto mb-4">
                 <BookOpen className="w-6 h-6 text-emerald-300" />
               </div>
-              <h3 className="text-white font-semibold mb-2">En komplett e-bok</h3>
-              <p className="text-gray-400 text-sm">Samlat material som du kan använda om och om igen i ditt kök</p>
+              <h3 className="text-white font-semibold mb-2">Komplett e-bok</h3>
+              <p className="text-gray-400 text-sm">Goda recept för både vardag och fest som du kommer baka om och om igen</p>
             </div>
             <div className="bg-white/5 backdrop-blur-sm rounded-2xl p-6 border border-white/10">
               <div className="w-12 h-12 bg-lime-300/20 rounded-xl flex items-center justify-center mx-auto mb-4">
                 <Leaf className="w-6 h-6 text-lime-200" />
               </div>
-              <h3 className="text-white font-semibold mb-2">Functional foods-fokus</h3>
-              <p className="text-gray-400 text-sm">Tips på ingredienser som kan bidra till jämnare energi och bättre mage</p>
+              <h3 className="text-white font-semibold mb-2">Functional Foods</h3>
+              <p className="text-gray-400 text-sm">Välj glutenfritt av hälsoskäl, för magen eller för att få jämnare energi</p>
             </div>
           </div>
         </motion.div>
