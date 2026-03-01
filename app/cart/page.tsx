@@ -1,7 +1,7 @@
 "use client";
 import { useCart } from '../context/CartContext';
 import Link from 'next/link';
-import { ArrowLeft, Book, Check, Clock, CreditCard, Lightbulb, Minus, Plus, Shield, Sparkles, Tag, Trash2, X, Zap } from "lucide-react";
+import { ArrowLeft, Book, Check, Clock, CreditCard, Gift, Lightbulb, Minus, Plus, Shield, Sparkles, Tag, Trash2, X, Zap } from "lucide-react";
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import { trackAddToCart, trackViewContent } from '@/app/lib/analytics';
