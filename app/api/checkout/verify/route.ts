@@ -280,7 +280,7 @@ export async function GET(req: NextRequest) {
                       customerEmail: emailForTracking,
                       customerName: updatedOrder.user?.name || updatedOrder.customerName || undefined,
                       items: updatedOrder.items.map((it) => ({
-                        id: it.courseId || `ebook:${it.name}` // now course items should have courseId
+                        id: it.courseId || `ebook:${it.name}`, // now course items should have courseId
                         name: it.name,
                         price: it.price,
                         quantity: it.quantity,
