@@ -83,8 +83,8 @@ export default function ProvaPaPopup({ forceOpen, onClose }: ProvaPaPopupProps) 
               {/* Image section */}
               <div className="relative h-48 sm:h-56">
                 <Image
-                  src="/kurser/prova-pa/prova-pa.png"
-                  alt="Prova på vecka med Functional Foods"
+                  src="/baka-glutenfritt-popup.png"
+                  alt="Baka glutenfritt bröd med Ulrika"
                   fill
                   className="object-cover"
                   priority
@@ -95,14 +95,14 @@ export default function ProvaPaPopup({ forceOpen, onClose }: ProvaPaPopupProps) 
                 <div className="absolute top-4 left-4">
                   <div className="bg-[#014421] text-white px-4 py-2 rounded-full font-bold text-sm flex items-center gap-2 shadow-lg">
                     <Sparkles className="w-4 h-4" />
-                    GRATIS
+                    69 kr
                   </div>
                 </div>
 
                 {/* Title overlay */}
                 <div className="absolute bottom-4 left-4 right-4 text-white">
                   <h2 className="text-2xl sm:text-3xl font-bold leading-tight">
-                    Prova på vecka
+                    Baka Glutenfritt
                   </h2>
                   <p className="text-white/90 text-sm sm:text-base mt-1">
                     med Functional Foods
@@ -113,39 +113,39 @@ export default function ProvaPaPopup({ forceOpen, onClose }: ProvaPaPopupProps) 
               {/* Content */}
               <div className="p-6">
                 <p className="text-gray-700 mb-6 leading-relaxed">
-                  Testa functional foods helt gratis i en vecka! Få tillgång till recept, kostschema och kunskapsdokument.
+                  Ulrika har samlat sina mest omtyckta glutenfria brödrecept i en e-bok. Näringsrikt, mättande och riktigt gott.
                 </p>
 
                 {/* Features */}
                 <div className="grid grid-cols-3 gap-3 mb-6">
                   <div className="text-center p-3 bg-[#014421]/5 rounded-xl">
                     <Calendar className="w-5 h-5 mx-auto text-[#014421] mb-1" />
-                    <span className="text-xs text-gray-700 font-medium">7 dagar</span>
+                    <span className="text-xs text-gray-700 font-medium">69 kr</span>
                   </div>
                   <div className="text-center p-3 bg-[#014421]/5 rounded-xl">
                     <Utensils className="w-5 h-5 mx-auto text-[#014421] mb-1" />
-                    <span className="text-xs text-gray-700 font-medium">15 recept</span>
+                    <span className="text-xs text-gray-700 font-medium">21 recept</span>
                   </div>
                   <div className="text-center p-3 bg-[#014421]/5 rounded-xl">
                     <ShoppingCart className="w-5 h-5 mx-auto text-[#014421] mb-1" />
-                    <span className="text-xs text-gray-700 font-medium">Inköpslista</span>
+                    <span className="text-xs text-gray-700 font-medium">Glutenfritt</span>
                   </div>
                 </div>
 
                 {/* CTA */}
-                <Link href="/utbildning/prova-pa-vecka" onClick={handleClose}>
+                <Link href="/brodboken" onClick={handleClose}>
                   <motion.button
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                     className="w-full bg-[#014421] text-white py-4 rounded-xl font-bold text-lg hover:bg-[#116530] transition-colors flex items-center justify-center gap-2 shadow-lg"
                   >
-                    Starta gratis nu
+                    Köp e-boken nu
                     <ArrowRight className="w-5 h-5" />
                   </motion.button>
                 </Link>
 
                 <p className="text-center text-xs text-gray-500 mt-4">
-                  Ingen betalning krävs • Direkt tillgång
+                  • Boken skickas som pdf direkt
                 </p>
               </div>
             </motion.div>
@@ -196,12 +196,12 @@ export function ProvaPaFloatingButton({ onClick }: { onClick: () => void }) {
       {/* Desktop version */}
       <span className="hidden sm:flex items-center gap-2 px-5 py-3 font-semibold">
         <Sparkles className="w-4 h-4" />
-        Prova-på kurs
+        Baka Glutenfritt
       </span>
       {/* Mobile version */}
       <span className="sm:hidden flex items-center gap-2 px-4 py-3 font-semibold text-sm">
         <Sparkles className="w-4 h-4" />
-        prova-på
+        Baka Glutenfritt
       </span>
     </motion.button>
   );
