@@ -80,7 +80,7 @@ function DownloadContent() {
   };
 
   return (
-    <main className="min-h-screen bg-gradient-to-b from-[#0a1f14] via-[#102a1c] to-[#0a1f14] relative overflow-hidden">
+    <main className="min-h-screen bg-gradient-to-b from-[#F0FDF4] via-[#93C560] to-[#014421] relative overflow-hidden">
       {/* Decorative background */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-20 left-10 w-32 h-32 bg-red-500/10 rounded-full blur-3xl" />
@@ -99,10 +99,10 @@ function DownloadContent() {
             <span className="text-red-300 text-sm font-medium">E-bok nedladdning</span>
           </div>
 
-          <h1 className="text-3xl md:text-4xl font-bold text-white mb-4">
+          <h1 className="text-3xl md:text-4xl font-bold text-color: #014421 mb-4">
             Baka Glutenfritt – E-bok
           </h1>
-          <p className="text-gray-400">
+          <p className="text-gray-500">
             av Ulrika Davidsson
           </p>
         </motion.div>
@@ -177,7 +177,7 @@ function DownloadContent() {
                   <button
                     type="submit"
                     disabled={isChecking || !token}
-                    className="w-full px-6 py-3 bg-gradient-to-r from-[#93C560] to-[#7fb050] text-white font-semibold rounded-xl hover:from-[#7fb050] hover:to-[#6fa040] disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-2"
+                    className="w-full px-6 py-3 bg-gradient-to-r from-[#FF7E70] to-[#FF7E70] text-white font-semibold rounded-xl hover:from-[#660C21] hover:to-[#660C21] disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-2"
                   >
                     {isChecking ? (
                       <>
@@ -211,13 +211,13 @@ function DownloadContent() {
 
                 <button
                   onClick={handleDownload}
-                  className="w-full px-6 py-4 bg-gradient-to-r from-red-500 to-red-600 text-white font-bold rounded-xl hover:from-red-600 hover:to-red-700 transition-all flex items-center justify-center gap-3 shadow-lg shadow-red-500/30"
+                  className="w-full px-6 py-4 bg-gradient-to-r from-#FF7E70 to-#FF7E70 text-white font-bold rounded-xl hover:from-#660C21 hover:to-#660C21 transition-all flex items-center justify-center gap-3 shadow-lg shadow-red-500/30"
                 >
                   <Download className="w-5 h-5" />
                   Ladda ner E-bok (PDF)
                 </button>
 
-                <p className="text-gray-500 text-xs mt-4">
+                <p className="text-gray-400 text-xs mt-4">
                   {downloadsRemaining > 0 
                     ? `Du har ${downloadsRemaining} nedladdning${downloadsRemaining !== 1 ? 'ar' : ''} kvar`
                     : 'Detta var din sista nedladdning'
