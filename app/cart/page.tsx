@@ -15,7 +15,7 @@ const courseImages: Record<string, string> = {
 
 // Prefer the image stored on the cart item; fall back to id-based mapping
 const getItemImage = (item: { id: string; name: string; image?: string; productType?: 'course' | 'book' }): string => {
-  if (item.productType === 'book') return '/baka-glutenfritt-square.png';
+  if (item.id === 'brodboken-2026') return '/baka-glutenfritt-square.png';
 
   if (item.image) return item.image;
   if (courseImages[item.id]) return courseImages[item.id];
