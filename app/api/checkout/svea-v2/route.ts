@@ -811,23 +811,64 @@ export async function POST(req: NextRequest) {
       });
     }
 
-    // Add discount as negative item if applicable
+    function splitDiscountByVat(
+      validatedItems: any[],
+      totalDiscountOre: number
+    ): { discount6: number; discount25: number } {
+      // Beräkna subtotal (inkl moms) per momssats
+      let subtotal6 = 0;
+      let subtotal25 = 0;
+
+      for (const it of validatedItems) {
+        const vat = it.vatRate ?? (it.type === 'book' ? 0.06 : 0.25);
+        const priceInclVat = it.price * (1 + vat); // it.price exkl moms
+        // OBS: här behöver vi vara konsekventa med din avrundningslogik (du rundar till kronor innan öre)
+        const priceInclVatRoundedKr = Math.round(priceInclVat);
+        const ore = priceInclVatRoundedKr * 100 * it.quantity;
+
+        if (Math.abs(vat - 0.06) < 0.001) subtotal6 += ore;
+        else subtotal25 += ore;
+      }
+
+      const total = subtotal6 + subtotal25;
+      if (total <= 0) return { discount6: 0, discount25: totalDiscountOre };
+
+      // Proportionell fördelning
+      let discount6 = Math.round(totalDiscountOre * (subtotal6 / total));
+      let discount25 = totalDiscountOre - discount6;
+
+      // Säkerställ inga negativa
+      if (discount6 < 0) discount6 = 0;
+      if (discount25 < 0) discount25 = 0;
+
+      return { discount6, discount25 };
+    }
+
+    // Add discount as negative item(s) if applicable (split by VAT when mixed)
     if (discountAmount > 0 && appliedCoupon) {
-      // Determine VAT rate for discount - use the same VAT as the items
-      // If all items are books (6% VAT), discount should also be 6%
-      // If mixed or courses only, use 25%
-      const allBooks = validatedItems.every(item => item.type === 'book');
-      const discountVatPercent = allBooks ? 600 : 2500;
+      const { discount6, discount25 } = splitDiscountByVat(validatedItems, discountAmount);
       
-      // discountAmount är redan inkl moms i öre - använd direkt som negativt belopp
-      sveaItems.push({
-        articleNumber: 'DISCOUNT',
-        name: `Rabatt (${appliedCoupon.code})`,
-        quantity: 100, // Quantity in minor units: 100 = 1 unit
-        unitPrice: -discountAmount, // Negativt belopp INKLUSIVE moms i ÖRE
-        vatPercent: discountVatPercent, // Dynamisk moms baserat på varor
-        unit: 'st'
-      });
+      if (discount6 > 0) {
+         sveaItems.push({
+           articleNumber: 'DISCOUNT-6',
+           name: `Rabatt 6% (${appliedCoupon.code})`,
+           quantity: 100,
+           unitPrice: -discount6,   // öre, inkl moms
+           vatPercent: 600,
+           unit: 'st',
+         });
+      }
+
+      if (discount25 > 0) {
+         sveaItems.push({
+           articleNumber: 'DISCOUNT-25',
+           name: `Rabatt 25% (${appliedCoupon.code})`,
+           quantity: 100,
+           unitPrice: -discount25,  // öre, inkl moms
+           vatPercent: 2500,
+           unit: 'st',
+         });
+      }
     }
 
     // Generate order ID
