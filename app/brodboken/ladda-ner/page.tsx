@@ -80,7 +80,7 @@ function DownloadContent() {
   };
 
   return (
-    <main className="min-h-screen bg-gradient-to-b from-[#93C560] via-[#014421] to-[#112A12] relative overflow-hidden">
+    <main className="min-h-screen bg-gradient-to-b from-[#112A12] via-[#112A12] to-[#112A12] relative overflow-hidden">
       {/* Decorative background */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute top-20 left-10 w-32 h-32 bg-red-500/10 rounded-full blur-3xl" />
@@ -94,12 +94,12 @@ function DownloadContent() {
           animate={{ opacity: 1, y: 0 }}
           className="text-center mb-8"
         >
-          <div className="inline-flex items-center gap-2 px-4 py-2 bg:#FF7E70 rounded-full border border-red-500/30 mb-6">
+          <div className="inline-flex items-center gap-2 px-4 py-2 bg-[#FF7E70] rounded-full border border-[#FF7E70]/30 mb-6">
             <Gift className="w-4 h-4 text-red-400" />
             <span className="text-red-400 text-sm font-medium">E-bok nedladdning</span>
           </div>
 
-          <h1 className="text-3xl md:text-4xl font-bold text-color: #014421 mb-4">
+          <h1 className="text-3xl md:text-4xl font-bold text-color: #93C560 mb-4">
             Baka Glutenfritt – E-bok
           </h1>
           <p className="text-gray-500">
@@ -211,7 +211,7 @@ function DownloadContent() {
 
                 <button
                   onClick={handleDownload}
-                  className="w-full px-6 py-4 bg-gradient from-#FF7E70 to-#FF7E70 text-white font-bold rounded-xl hover:from-#660C21 hover:to-#660C21 transition-all flex items-center justify-center gap-3 shadow-lg shadow-#FF7E70/30"
+                  className="w-full px-6 py-4 bg-gradient from-[#FF7E70] to-[#FF7E70] text-white font-bold rounded-xl hover:from-[#660C21] hover:to-[#660C21] transition-all flex items-center justify-center gap-3 shadow-lg shadow-[#FF7E70]/30"
                 >
                   <Download className="w-5 h-5" />
                   Ladda ner E-bok (PDF)
