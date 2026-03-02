@@ -388,7 +388,7 @@ function SveaSuccessContent() {
                   <div>
                     <h4 className="font-semibold text-gray-900">Din e-bok</h4>
                     <p className="text-sm text-gray-600">Baka Glutenfritt – E-bok av Ulrika Davidsson</p>
-                    <p className="text-xs text-gray-500 mt-1">PDF-format • 21 recept</p>
+                    <p className="text-xs text-gray-500 mt-1">PDF-format • 26 recept</p>
                   </div>
                 </div>
               </div>
