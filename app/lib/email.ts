@@ -906,7 +906,7 @@ export class EmailService {
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
       </head>
-      <body style="margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background-color: #F3EFE3; color: #fff;">
+      <body style="margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background-color: #F0FDF4; color: #fff;">
         <div style="max-width: 600px; margin: 0 auto; background: linear-gradient(180deg, ##F3EFE3 0%, #93C560 50%, #F3EFE3 100%);">
           
           <!-- Header -->
@@ -930,10 +930,10 @@ export class EmailService {
               </div>
             </div>
             
-            <h2 style="color: #fff; font-size: 20px; font-weight: 600; text-align: center; margin: 0 0 8px 0;">
+            <h2 style="color: #014421; font-size: 20px; font-weight: 600; text-align: center; margin: 0 0 8px 0;">
               ${ebookName}
             </h2>
-            <p style="color: #9ca3af; font-size: 14px; text-align: center; margin: 0 0 24px 0;">
+            <p style="color: #fff; font-size: 14px; text-align: center; margin: 0 0 24px 0;">
               Digital E-bok (PDF)
             </p>
             
@@ -955,7 +955,7 @@ export class EmailService {
             <!-- CTA Button -->
             <div style="text-align: center;">
               <a href="${downloadUrl}" 
-                 style="display: inline-block; background: linear-gradient(135deg, #FF7E70 0%, #dc2626 100%); color: #fff; padding: 16px 40px; border-radius: 12px; font-size: 16px; font-weight: 700; text-decoration: none; box-shadow: 0 4px 20px rgba(239, 68, 68, 0.4);">
+                 style="display: inline-block; background: linear-gradient(135deg, #FF7E70 0%, #FF7E70 100%); color: #fff; padding: 16px 40px; border-radius: 12px; font-size: 16px; font-weight: 700; text-decoration: none; box-shadow: 0 4px 20px rgba(239, 68, 68, 0.4);">
                 Ladda ner din E-bok
               </a>
             </div>
