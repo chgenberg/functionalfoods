@@ -120,15 +120,15 @@ export default function ProvaPaPopup({ forceOpen, onClose }: ProvaPaPopupProps) 
                 <div className="grid grid-cols-3 gap-3 mb-6">
                   <div className="text-center p-3 bg-[#014421]/5 rounded-xl">
                     <Calendar className="w-5 h-5 mx-auto text-[#014421] mb-1" />
-                    <span className="text-xs text-gray-700 font-medium">69 kr</span>
+                    <span className="text-xs text-gray-700 font-medium">Glutenfritt</span>
                   </div>
                   <div className="text-center p-3 bg-[#014421]/5 rounded-xl">
                     <Utensils className="w-5 h-5 mx-auto text-[#014421] mb-1" />
-                    <span className="text-xs text-gray-700 font-medium">21 recept</span>
+                    <span className="text-xs text-gray-700 font-medium">26 recept</span>
                   </div>
                   <div className="text-center p-3 bg-[#014421]/5 rounded-xl">
                     <ShoppingCart className="w-5 h-5 mx-auto text-[#014421] mb-1" />
-                    <span className="text-xs text-gray-700 font-medium">Glutenfritt</span>
+                    <span className="text-xs text-gray-700 font-medium">69 kr</span>
                   </div>
                 </div>
 
