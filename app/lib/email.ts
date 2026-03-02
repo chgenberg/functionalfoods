@@ -906,26 +906,26 @@ export class EmailService {
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
       </head>
-      <body style="margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background-color: #0a1f14; color: #fff;">
-        <div style="max-width: 600px; margin: 0 auto; background: linear-gradient(180deg, #0a1f14 0%, #102a1c 50%, #0a1f14 100%);">
+      <body style="margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background-color: #F3EFE3; color: #fff;">
+        <div style="max-width: 600px; margin: 0 auto; background: linear-gradient(180deg, ##F3EFE3 0%, #93C560 50%, #F3EFE3 100%);">
           
           <!-- Header -->
           <div style="text-align: center; padding: 40px 30px 30px;">
             <div style="display: inline-block; background: rgba(239, 68, 68, 0.2); border: 1px solid rgba(239, 68, 68, 0.3); border-radius: 100px; padding: 8px 20px; margin-bottom: 20px;">
               <span style="color: #fca5a5; font-size: 14px; font-weight: 500;">Din E-bok är redo!</span>
             </div>
-            <h1 style="color: #fff; font-size: 32px; font-weight: 700; margin: 0 0 10px 0;">
+            <h1 style="color: #014421; font-size: 32px; font-weight: 700; margin: 0 0 10px 0;">
               Tack för ditt köp!
             </h1>
-            <p style="color: #9ca3af; font-size: 16px; margin: 0;">
+            <p style="color: #014421; font-size: 16px; margin: 0;">
               Ordernummer: ${orderNumber}
             </p>
           </div>
           
           <!-- Content Box -->
-          <div style="background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 24px; margin: 0 20px 30px; padding: 30px; backdrop-filter: blur(10px);">
+          <div style="background-color: #93C560; border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 24px; margin: 0 20px 30px; padding: 30px; backdrop-filter: blur(10px);">
             <div style="text-align: center; margin-bottom: 24px;">
-              <div style="display: inline-block; width: 64px; height: 64px; background: linear-gradient(135deg, #93C560 0%, #7fb050 100%); border-radius: 16px; display: flex; align-items: center; justify-content: center;">
+              <div style="display: inline-block; width: 64px; height: 64px; background: linear-gradient(135deg, #014421 0%, #7fb050 100%); border-radius: 16px; display: flex; align-items: center; justify-content: center;">
                 <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
               </div>
             </div>
@@ -938,7 +938,7 @@ export class EmailService {
             </p>
             
             <!-- Download Info Box -->
-            <div style="background: rgba(147, 197, 96, 0.1); border: 2px solid rgba(147, 197, 96, 0.3); border-radius: 16px; padding: 24px; margin-bottom: 24px;">
+            <div style="background-color: #014421; border: 2px solid rgba(147, 197, 96, 0.3); border-radius: 16px; padding: 24px; margin-bottom: 24px;">
               <h3 style="color: #93C560; font-size: 16px; font-weight: 600; margin: 0 0 16px 0;">
                 Dina nedladdningsuppgifter
               </h3>
@@ -955,7 +955,7 @@ export class EmailService {
             <!-- CTA Button -->
             <div style="text-align: center;">
               <a href="${downloadUrl}" 
-                 style="display: inline-block; background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); color: #fff; padding: 16px 40px; border-radius: 12px; font-size: 16px; font-weight: 700; text-decoration: none; box-shadow: 0 4px 20px rgba(239, 68, 68, 0.4);">
+                 style="display: inline-block; background: linear-gradient(135deg, #FF7E70 0%, #dc2626 100%); color: #fff; padding: 16px 40px; border-radius: 12px; font-size: 16px; font-weight: 700; text-decoration: none; box-shadow: 0 4px 20px rgba(239, 68, 68, 0.4);">
                 Ladda ner din E-bok
               </a>
             </div>
@@ -963,7 +963,7 @@ export class EmailService {
           
           <!-- Instructions -->
           <div style="padding: 0 30px 30px;">
-            <div style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 16px; padding: 24px;">
+            <div style="background-color: #014421; border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 16px; padding: 24px;">
               <h3 style="color: #fff; font-size: 16px; font-weight: 600; margin: 0 0 16px 0;">
                 Så här gör du:
               </h3>
@@ -978,15 +978,15 @@ export class EmailService {
           
           <!-- Help Section -->
           <div style="padding: 0 30px 30px; text-align: center;">
-            <p style="color: #6b7280; font-size: 14px; margin: 0;">
+            <p style="color: #9ca3af; font-size: 14px; margin: 0;">
               Problem med nedladdningen?<br>
               Kontakta oss på <a href="mailto:info@functionalfoods.se" style="color: #93C560; text-decoration: none;">info@functionalfoods.se</a>
             </p>
           </div>
           
           <!-- Footer -->
-          <div style="background: rgba(0, 0, 0, 0.3); padding: 24px; text-align: center; border-top: 1px solid rgba(255, 255, 255, 0.1);">
-            <p style="color: #6b7280; font-size: 12px; margin: 0;">
+          <div style="background-color: #014421; padding: 24px; text-align: center; border-top: 1px solid rgba(255, 255, 255, 0.1);">
+            <p style="color: #9ca3af; font-size: 12px; margin: 0;">
               © ${new Date().getFullYear()} Functional Foods • functionalfoods.se
             </p>
           </div>
@@ -998,7 +998,7 @@ export class EmailService {
     return this.sendEmail({
       to: email,
       toName: name,
-      subject: `Din E-bok är redo att laddas ner – ${ebookName}`,
+      subject: `Din e-bok är redo att laddas ner – ${ebookName}`,
       html,
       fromEmail: 'info@functionalfoods.se',
       fromName: 'Functional Foods',
