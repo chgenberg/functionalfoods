@@ -125,7 +125,7 @@ function DownloadContent() {
             </div>
             <div>
               <h2 className="text-white font-semibold">{ebookName || 'Baka Glutenfritt – E-bok'}</h2>
-              <p className="text-gray-400 text-sm">PDF • 21 recept</p>
+              <p className="text-gray-400 text-sm">PDF • 26 recept</p>
             </div>
           </div>
 
