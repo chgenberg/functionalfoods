@@ -99,7 +99,7 @@ function DownloadContent() {
             <span className="text-white text-sm font-medium">E-bok nedladdning</span>
           </div>
 
-          <h1 className="text-3xl md:text-4xl font-bold text-#93C560 mb-4">
+          <h1 className="text-3xl md:text-4xl font-bold text-[#93C560] mb-4">
             Baka Glutenfritt – E-bok
           </h1>
           <p className="text-gray-500">
