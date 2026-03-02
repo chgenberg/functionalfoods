@@ -709,7 +709,7 @@ export async function POST(req: NextRequest) {
 
               const totalAmount = updatedOrder.totalAmount || 0;
               const vatRate = 0.25;
-              const taxTotal = totalAmount * vatRate / (1 + vatRate);
+              const taxTotal = 0;
 
               let discountTotal = 0;
               if (typeof metadata.discountAmount === 'number') {
