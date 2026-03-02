@@ -73,7 +73,7 @@ function DownloadContent() {
     // Trigger download
     const link = document.createElement('a');
     link.href = downloadPath;
-    link.download = 'test-baka-glutenfritt-ebok.pdf';
+    link.download = 'baka-glutenfritt-ebok.pdf';
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
