@@ -202,7 +202,7 @@ export default function BrodbokenPage() {
 
             <p className="text-gray-300 text-lg leading-relaxed">{content.description}</p>
 
-            <p className="text-gray-400 leading-relaxed">{content.shortDescription}</p>
+            <p className="text-gray-300 leading-relaxed">{content.shortDescription}</p>
 
             {/* Features grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-4">
@@ -230,7 +230,7 @@ export default function BrodbokenPage() {
                 className={`w-full sm:w-auto px-8 py-4 rounded-xl font-bold text-lg flex items-center justify-center gap-3 transition-all duration-300 shadow-lg ${
                   added
                     ? "bg-green-500 text-white"
-                    : "bg-gradient-to-r from-[#93C560] to-emerald-500 hover:from-emerald-500 hover:to-[#93C560] text-[#0a1f14] shadow-[#93C560]/25 hover:shadow-[#93C560]/40"
+                    : "bg-gradient-to-r from-[#FF7E70] to-emerald-500 hover:from-emerald-500 hover:to-[##FF7E70] text-[#F3EFE3] shadow-[#FF7E70]/25 hover:shadow-[#FF7E70]/40"
                 }`}
               >
                 {added ? (
@@ -251,7 +251,7 @@ export default function BrodbokenPage() {
                 )}
               </motion.button>
 
-              <p className="text-gray-500 text-sm">E-boken skickas direkt till din e-post efter köp</p>
+              <p className="text-gray-300 text-sm">E-boken skickas direkt till din e-post efter köp</p>
             </div>
           </motion.div>
         </div>
@@ -270,21 +270,21 @@ export default function BrodbokenPage() {
                 <ChefHat className="w-6 h-6 text-[#93C560]" />
               </div>
               <h3 className="text-white font-semibold mb-2">Glutenfria recept</h3>
-              <p className="text-gray-400 text-sm">Du får näringsrika, mättande och riktigt goda recept - som är enkla att baka</p>
+              <p className="text-gray-300 text-sm">Du får näringsrika, mättande och riktigt goda recept - som är enkla att baka</p>
             </div>
             <div className="bg-white/5 backdrop-blur-sm rounded-2xl p-6 border border-white/10">
               <div className="w-12 h-12 bg-emerald-400/20 rounded-xl flex items-center justify-center mx-auto mb-4">
                 <BookOpen className="w-6 h-6 text-emerald-300" />
               </div>
               <h3 className="text-white font-semibold mb-2">En komplett e-bok</h3>
-              <p className="text-gray-400 text-sm">Goda recept till frukost och middag, för vardag och fest - som du kommer baka om och om igen</p>
+              <p className="text-gray-300 text-sm">Goda recept till frukost och middag, för vardag och fest - som du kommer baka om och om igen</p>
             </div>
             <div className="bg-white/5 backdrop-blur-sm rounded-2xl p-6 border border-white/10">
               <div className="w-12 h-12 bg-lime-300/20 rounded-xl flex items-center justify-center mx-auto mb-4">
                 <Leaf className="w-6 h-6 text-lime-200" />
               </div>
               <h3 className="text-white font-semibold mb-2">Functional Foods</h3>
-              <p className="text-gray-400 text-sm">Oavsett om du väljer glutenfritt av hälsoskäl, för magen eller för att få jämnare energi</p>
+              <p className="text-gray-300 text-sm">Oavsett om du väljer glutenfritt av hälsoskäl, för magen eller för att få jämnare energi</p>
             </div>
           </div>
         </motion.div>
@@ -302,7 +302,7 @@ export default function BrodbokenPage() {
             </div>
             <div>
               <h3 className="text-xl font-semibold text-white mb-2">Om Ulrika Davidsson</h3>
-              <p className="text-gray-400">{content.authorSection}</p>
+              <p className="text-gray-300">{content.authorSection}</p>
             </div>
           </div>
         </motion.div>
