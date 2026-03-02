@@ -911,8 +911,8 @@ export class EmailService {
           
           <!-- Header -->
           <div style="text-align: center; padding: 40px 30px 30px;">
-            <div style="display: inline-block; background: rgba(239, 68, 68, 0.2); border: 1px solid rgba(239, 68, 68, 0.3); border-radius: 100px; padding: 8px 20px; margin-bottom: 20px;">
-              <span style="color: #fca5a5; font-size: 14px; font-weight: 500;">Din E-bok är redo!</span>
+            <div style="display: inline-block; background: #FF7E70; border: 1px solid rgba(239, 68, 68, 0.3); border-radius: 100px; padding: 8px 20px; margin-bottom: 20px;">
+              <span style="color: #fff; font-size: 14px; font-weight: 500;">Din E-bok är redo!</span>
             </div>
             <h1 style="color: #014421; font-size: 32px; font-weight: 700; margin: 0 0 10px 0;">
               Tack för ditt köp!
@@ -925,7 +925,7 @@ export class EmailService {
           <!-- Content Box -->
           <div style="background-color: #C0DEA3; border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 24px; margin: 0 20px 30px; padding: 30px; backdrop-filter: blur(10px);">
             <div style="text-align: center; margin-bottom: 24px;">
-              <div style="display: inline-block; width: 64px; height: 64px; background: #014421; border-radius: 16px; display: flex; align-items: center; justify-content: center;">
+              <div style="display: inline-block; width: 64px; height: 64px; background: #C0DEA3; border-radius: 16px; display: flex; align-items: center; justify-content: center;">
                 <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
               </div>
             </div>
@@ -980,7 +980,7 @@ export class EmailService {
           <div style="padding: 0 30px 30px; text-align: center;">
             <p style="color: #9ca3af; font-size: 14px; margin: 0;">
               Problem med nedladdningen?<br>
-              Kontakta oss på <a href="mailto:info@functionalfoods.se" style="color: #93C560; text-decoration: none;">info@functionalfoods.se</a>
+              Kontakta oss på <a href="mailto:info@functionalfoods.se" style="color: #014421; text-decoration: none;">info@functionalfoods.se</a>
             </p>
           </div>
           
