@@ -246,6 +246,11 @@ class MailchimpMarketingService {
       [normalize('Ebok Brödboken')]: 'Köp – Brödboken',
       [normalize('Brödboken - e-bok')]: 'Köp – Brödboken',
       [normalize('Brödboken – e-bok')]: 'Köp – Brödboken',
+      [normalize('Baka Glutenfritt - E-bok')]: 'Köp – Brödboken',
+      [normalize('baka glutenfritt - e-bok')]: 'Köp – Brödboken',
+      [normalize('Baka Glutenfritt ebook')]: 'Köp – Brödboken',
+      [normalize('E-bok Baka Glutenfritt')]: 'Köp – Brödboken',
+      [normalize('baka glutenfritt')]: 'Köp – Brödboken',
     };
 
     const tags: string[] = ['kund'];
