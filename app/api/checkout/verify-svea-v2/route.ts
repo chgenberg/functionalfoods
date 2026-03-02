@@ -108,7 +108,7 @@ export async function POST(req: NextRequest) {
     if (sveaOrder.cart?.items) {
       for (const sveaItem of sveaOrder.cart.items) {
         // Skip discount items for item mapping, but include in total
-        if (sveaItem.articleNumber !== 'DISCOUNT') {
+        if (!String(sveaItem.articleNumber || '').startsWith ('DISCOUNT')) {
           sveaItemsMap.set(sveaItem.articleNumber, sveaItem);
         }
         // All items (including negative discount) contribute to total
@@ -428,7 +428,7 @@ export async function POST(req: NextRequest) {
       if (actualPaidAmountSEK > 0 && sveaOrder.cart?.items && sveaOrder.cart.items.length > 0) {
         for (const orderItem of order.items) {
           for (const sveaItem of sveaOrder.cart.items) {
-            if (sveaItem.articleNumber === 'DISCOUNT') continue;
+            if (String(sveaItem.articleNumber || '').startsWith('DISCOUNT')) continue;
 
             const itemIdLower = orderItem.id?.toLowerCase() || '';
             const articleLower = sveaItem.articleNumber.toLowerCase();
