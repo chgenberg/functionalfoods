@@ -7,6 +7,7 @@ import { CheckCircle, ArrowRight, Book, Download, X, Loader2, Mail, Gift } from 
 import { motion } from 'framer-motion';
 import { trackPurchase } from '@/app/lib/analytics';
 import Image from 'next/image';
+import { useCart } from '@/app/context/CartContext';
 
 function SveaSuccessContent() {
   const searchParams = useSearchParams();
@@ -14,7 +15,8 @@ function SveaSuccessContent() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [retryCount, setRetryCount] = useState(0);
-  const maxRetries = 20; // Max 1 minute (20 * 3 seconds)
+  const maxRetries = 20; // Max 1 minute (20 * 3 seconds);
+  const { clearCart } = useCart();
 
   useEffect(() => {
     const orderId = searchParams?.get('orderId');
@@ -95,10 +97,17 @@ function SveaSuccessContent() {
         console.log('✅ Payment completed! Setting order details and stopping loader');
         setOrderDetails(data.order);
         setRetryCount(0);
-        setLoading(false); // IMPORTANT: Stop loading when payment is completed
-        // Clear session storage
+
+        // 1) Clear cart + session
+        clearCart(); // från CartContext (importera/useCart)
+        
         sessionStorage.removeItem('svea_order_id');
         sessionStorage.removeItem('svea_checkout_id');
+        sessionStorage.removeItem('checkout_data');
+
+        // 2) Then stop loader
+        setLoading(false); // IMPORTANT: Stop loading when payment is completed
+        
         // GA4: purchase event
         try {
           const normalizeGaItemId = (rawId: string | undefined) => rawId;
