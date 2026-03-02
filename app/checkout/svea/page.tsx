@@ -21,7 +21,6 @@ export default function SveaCheckoutPage() {
     
     if (storedData) {
       const checkoutData = JSON.parse(storedData);
-      sessionStorage.removeItem('checkout_data');
       initializeCheckout(checkoutData);
     } else if (items.length > 0) {
       // If user is not logged in, we require checkout details (name/email) from /checkout
@@ -32,7 +31,12 @@ export default function SveaCheckoutPage() {
       // Logged-in users can continue without stored checkout data
       initializeCheckout();
     } else {
-      // No items and no stored data, redirect to cart
+      const activeCheckout = sessionStorage.getItem('svea_checkout_id') || sessionStorage.getItem('svea_order_id');
+      if (activeCheckout) {
+        // Vi är mitt i ett Svea-flöde: stanna kvar så iframe kan fortsätta
+        setIsLoading(false);
+        return;
+      }
       router.push('/cart');
     }
   }, []);
@@ -79,8 +83,6 @@ export default function SveaCheckoutPage() {
         sessionStorage.setItem('svea_order_id', result.orderId);
         sessionStorage.setItem('svea_checkout_id', result.checkoutOrderId.toString());
         
-        // Clear cart after successful checkout creation
-        clearCart();
       } else {
         throw new Error('No checkout GUI received');
       }
