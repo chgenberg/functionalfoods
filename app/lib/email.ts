@@ -907,7 +907,7 @@ export class EmailService {
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
       </head>
       <body style="margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background-color: #F0FDF4; color: #fff;">
-        <div style="max-width: 600px; margin: 0 auto; background: linear-gradient(180deg, ##F3EFE3 0%, #93C560 50%, #F3EFE3 100%);">
+        <div style="max-width: 600px; margin: 0 auto; background: #C0DEA3 ">
           
           <!-- Header -->
           <div style="text-align: center; padding: 40px 30px 30px;">
@@ -923,14 +923,14 @@ export class EmailService {
           </div>
           
           <!-- Content Box -->
-          <div style="background-color: #93C560; border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 24px; margin: 0 20px 30px; padding: 30px; backdrop-filter: blur(10px);">
+          <div style="background-color: #C0DEA3; border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 24px; margin: 0 20px 30px; padding: 30px; backdrop-filter: blur(10px);">
             <div style="text-align: center; margin-bottom: 24px;">
-              <div style="display: inline-block; width: 64px; height: 64px; background: linear-gradient(135deg, #014421 0%, #7fb050 100%); border-radius: 16px; display: flex; align-items: center; justify-content: center;">
+              <div style="display: inline-block; width: 64px; height: 64px; background: #014421; border-radius: 16px; display: flex; align-items: center; justify-content: center;">
                 <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
               </div>
             </div>
             
-            <h2 style="color: #014421; font-size: 20px; font-weight: 600; text-align: center; margin: 0 0 8px 0;">
+            <h2 style="color: #014421; font-size: 26px; font-weight: 600; text-align: center; margin: 0 0 8px 0;">
               ${ebookName}
             </h2>
             <p style="color: #fff; font-size: 14px; text-align: center; margin: 0 0 24px 0;">
