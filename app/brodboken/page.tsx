@@ -230,7 +230,7 @@ export default function BrodbokenPage() {
                 className={`w-full sm:w-auto px-8 py-4 rounded-xl font-bold text-lg flex items-center justify-center gap-3 transition-all duration-300 shadow-lg ${
                   added
                     ? "bg-green-500 text-white"
-                    : "bg-gradient-to-r from-[#FF7E70] to-[#FF7E70] hover:from-[#FF7E70] hover:to-[#660C21] text-[#F3EFE3] shadow-[#FF7E70]/25 hover:shadow-[#FF7E70]/40"
+                    : "bg-gradient-to-r from-[#FF7E70] to-[#FF7E70] hover:from-[#660C21] hover:to-[#660C21] text-[#F3EFE3] shadow-[#FF7E70]/25 hover:shadow-[#FF7E70]/40"
                 }`}
               >
                 {added ? (
