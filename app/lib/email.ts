@@ -933,7 +933,7 @@ export class EmailService {
             <h2 style="color: #014421; font-size: 26px; font-weight: 600; text-align: center; margin: 0 0 8px 0;">
               ${ebookName}
             </h2>
-            <p style="color: #fff; font-size: 14px; text-align: center; margin: 0 0 24px 0;">
+            <p style="color: #014421; font-size: 14px; text-align: center; margin: 0 0 24px 0;">
               Digital E-bok (PDF)
             </p>
             
