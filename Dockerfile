@@ -27,6 +27,10 @@ COPY . .
 ARG RAILWAY_GIT_COMMIT_SHA
 ENV NEXT_PUBLIC_BUILD_ID=${RAILWAY_GIT_COMMIT_SHA}
 
+# Feature flags for client bundle (must exist at build time)
+ARG NEXT_PUBLIC_ENABLE_PROVAPA_POPUP
+ENV NEXT_PUBLIC_ENABLE_PROVAPA_POPUP=${NEXT_PUBLIC_ENABLE_PROVAPA_POPUP}
+
 # Build (clear Next cache before build to avoid stale)
 RUN rm -rf .next tsconfig.tsbuildinfo && npm run build
 
