@@ -49,7 +49,7 @@ export async function POST(request: NextRequest) {
     // Get the download URL based on ebookId
     let downloadPath = '';
     if (downloadToken.ebookId === 'brodboken-2026') {
-      downloadPath = '/baka-glutenfritt-ebok.pdf';
+      downloadPath = '/baka-glutenfritt-ulrika-davidsson.pdf';
     }
 
     if (!downloadPath) {
