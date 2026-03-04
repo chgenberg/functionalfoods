@@ -57,7 +57,7 @@ async function getCourseInfo() {
         basics: basicsResponse.status,
         flow: flowResponse.status,
         energy: energyResponse.status,
-        balans: balansResponse.status
+        balans: balansResponse.status,
         breadbook: breadbookResponse.status
       });
       return { basicsText: '', flowText: '', energyText: '', balansText: '', breadbookText: '' };
