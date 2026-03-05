@@ -492,7 +492,7 @@ export async function POST(req: NextRequest) {
         sveaItems.push({
           articleNumber: getArticleNumber(item),
           name: item.name,
-          quantity: item.quantity, // Not minor units, e.g 1 course = 1 unit
+          quantity: item.quantity * 100, // Quantity in minor units: 100 = 1 unit
           unitPrice: priceInOre, // Pris INKLUSIVE moms i ÖRE (vatPercent används bara för momsrapportering)
           vatPercent: sveaVatPercent, // VAT in Svea format (600 = 6%, 2500 = 25%)
           unit: 'st',
@@ -852,7 +852,7 @@ export async function POST(req: NextRequest) {
          sveaItems.push({
            articleNumber: 'DISCOUNT-6',
            name: `Rabatt 6% (${appliedCoupon.code})`,
-           quantity: 1,
+           quantity: 100,
            unitPrice: -discount6,   // öre, inkl moms
            vatPercent: 600,
            unit: 'st',
@@ -863,7 +863,7 @@ export async function POST(req: NextRequest) {
          sveaItems.push({
            articleNumber: 'DISCOUNT-25',
            name: `Rabatt 25% (${appliedCoupon.code})`,
-           quantity: 1,
+           quantity: 100,
            unitPrice: -discount25,  // öre, inkl moms
            vatPercent: 2500,
            unit: 'st',
