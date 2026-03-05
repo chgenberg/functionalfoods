@@ -950,6 +950,25 @@ export async function POST(req: NextRequest) {
     
     console.log('📤 FULL Svea checkout request:', JSON.stringify(checkoutRequest, null, 2));
     console.log('📤 VERIFICATION - cart.items.length:', checkoutRequest.cart.items.length);
+
+    // 🔥 HOTFIX: Ensure Svea unitPrice is ALWAYS in minor units (öre) right before createOrder
+    checkoutRequest.cart.items = checkoutRequest.cart.items.map((i: any) => {
+      let unitPrice = i.unitPrice;
+
+      // Convert SEK -> öre if it looks like SEK (e.g. 995 instead of 99500)
+      // Heuristic: for your products, any non-zero abs(unitPrice) < 1000 is almost certainly SEK.
+      if (Number.isFinite(unitPrice) && Math.abs(unitPrice) > 0 && Math.abs(unitPrice) < 1000) {
+        unitPrice = Math.round(unitPrice * 100);
+      }
+
+      // Ensure integer
+      unitPrice = Math.trunc(unitPrice);
+
+      return { ...i, unitPrice };
+    });
+
+    // Log to verify
+    console.log('🧾 FINAL SVEA ITEMS (post-normalize):', JSON.stringify(checkoutRequest.cart.items, null, 2));
     
     // Calculate expected total
     const expectedTotal = checkoutRequest.cart.items.reduce((sum, item) => sum + (item.unitPrice * item.quantity), 0);
