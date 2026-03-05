@@ -852,7 +852,7 @@ export async function POST(req: NextRequest) {
          sveaItems.push({
            articleNumber: 'DISCOUNT-6',
            name: `Rabatt 6% (${appliedCoupon.code})`,
-           quantity: 100,
+           quantity: 1,
            unitPrice: -discount6,   // öre, inkl moms
            vatPercent: 600,
            unit: 'st',
@@ -863,7 +863,7 @@ export async function POST(req: NextRequest) {
          sveaItems.push({
            articleNumber: 'DISCOUNT-25',
            name: `Rabatt 25% (${appliedCoupon.code})`,
-           quantity: 100,
+           quantity: 1,
            unitPrice: -discount25,  // öre, inkl moms
            vatPercent: 2500,
            unit: 'st',
