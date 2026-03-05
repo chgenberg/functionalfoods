@@ -260,19 +260,19 @@ function generateReceiptHTML(purchase: any, user: any) {
               <div class="badge">Utbildningstjänst - Moms 25%</div>
             </td>
             <td style="text-align: center;">1</td>
-            <td class="amount">${purchase.amount.toFixed(2)} kr inkl. moms</td>
+            <td class="amount">${(purchase.amount * 1.25).toFixed(2)} kr inkl. moms</td>
           </tr>
           <tr style="border-bottom: none;">
             <td colspan="2" style="text-align: right; padding-top: 8px; padding-bottom: 3px;">Summa exkl. moms:</td>
-            <td class="amount" style="padding-top: 8px; padding-bottom: 3px;">${(purchase.amount / 1.25).toFixed(2)} kr</td>
+            <td class="amount" style="padding-top: 8px; padding-bottom: 3px;">${purchase.amount.toFixed(2)} kr</td>
           </tr>
           <tr style="border-bottom: none;">
             <td colspan="2" style="text-align: right; padding-top: 3px; padding-bottom: 3px; color: #666;">Moms (25%):</td>
-            <td class="amount" style="padding-top: 3px; padding-bottom: 3px; color: #666;">${(purchase.amount - (purchase.amount / 1.25)).toFixed(2)} kr</td>
+            <td class="amount" style="padding-top: 3px; padding-bottom: 3px; color: #666;">${(purchase.amount * 0.25).toFixed(2)} kr</td>
           </tr>
           <tr class="total-row">
             <td colspan="2">Totalt inkl. moms</td>
-            <td class="amount">${purchase.amount.toFixed(2)} kr</td>
+            <td class="amount">${(purchase.amount * 1.25).toFixed(2)} kr</td>
           </tr>
         </tbody>
       </table>
