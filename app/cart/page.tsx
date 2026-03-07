@@ -28,7 +28,7 @@ const UPSELL_BOOK = {
   price: 65.09,
   type: 'book' as const,
   image: '/baka-glutenfritt-square.png',
-  description: 'Ulrika Davidssons bästa glutenfria brödrecept samlade i en inspirerande e-bok.'
+  description: '26 glutenfria brödrecept du kan börja baka direkt.'
 };
 
 export default function CartPage() {
@@ -348,49 +348,51 @@ export default function CartPage() {
             ))}
 
             {showUpsell && (
-              <div className="bg-white rounded-2xl shadow-sm p-4 sm:p-6 border border-[#93C560] hover:shadow-md transition-all duration-300">
-                <div className="flex flex-col sm:flex-row gap-4 sm:gap-5">
-                  <div className="flex-shrink-0 w-full sm:w-32 h-48 sm:h-32 rounded-xl overflow-hidden bg-gray-100">
+              <div className="bg-white rounded-2xl shadow-sm p-3 sm:p-5 border border-[#93C560] transition-all duration-300">
+                <div className="flex gap-3 sm:gap-5">
+                  <div className="flex-shrink-0 w-20 h-20 sm:w-28 sm:h-28 rounded-xl overflow-hidden bg-gray-100">
                     <Image
                       src={UPSELL_BOOK.image}
                       alt={UPSELL_BOOK.name}
-                      width={128}
-                      height={128}
+                      width={112}
+                      height={112}
                       className="w-full h-full object-cover"
                     />
                   </div>
 
-                  <div className="flex-1">
-                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#93C560]/15 text-[#014421] text-xs font-semibold mb-3">
-                      <Sparkles className="w-3.5 h-3.5" />
+                  <div className="flex-1 min-w-0">
+                    <div className="inline-flex items-center gap-1.5 px-2 py-1 rounded-full bg-[#93C560]/15 text-[#014421] text-[11px] sm:text-xs font-semibold mb-2">
+                      <Sparkles className="w-3 h-3" />
                       Rekommenderat tillägg
                     </div>
 
-                    <h3 className="text-base sm:text-lg font-semibold text-[#014421] mb-2">
-                      Lägg till {UPSELL_BOOK.name}
+                    <h3 className="text-sm sm:text-lg font-semibold text-[#014421] leading-snug mb-1">
+                      Lägg till Baka Glutenfritt
                     </h3>
 
-                    <p className="text-sm text-gray-600 mb-3">
-                      {UPSELL_BOOK.description}
+                    <p className="text-xs sm:text-sm text-gray-600 leading-snug mb-2 line-clamp-2 sm:line-clamp-none">
+                      26 glutenfria brödrecept – perfekt komplement till kursen.
                     </p>
 
-                    <div className="flex items-center gap-2 text-sm text-gray-600 mb-4">
-                      <Book className="w-4 h-4" />
-                      <span>Digital bok med direkt leverans efter köp</span>
+                    <div className="flex items-center gap-2 text-[11px] sm:text-sm text-gray-500 mb-2 sm:mb-3">
+                      <Book className="w-3 h-3 sm:w-4 sm:h-4" />
+                      <span>Digital bok med direkt leverans</span>
                     </div>
 
-                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-                      <div>
-                        <div className="text-2xl font-bold text-[#014421]">
+                    <div className="flex items-end justify-between gap-3">
+                      <div className="min-w-0">
+                        <div className="text-lg sm:text-2xl font-bold text-[#014421] leading-none">
                           {Math.round(UPSELL_BOOK.price * 1.06).toLocaleString('sv-SE')} kr
                         </div>
-                        <div className="text-sm text-gray-500">inkl. 6% moms</div>
+                        <div className="text-[11px] sm:text-sm text-gray-500 mt-1">
+                          inkl. 6% moms
+                        </div>
                       </div>
 
                       <button
                         onClick={handleAddUpsell}
                         disabled={addingUpsell || hasUpsellBook}
-                        className={`inline-flex items-center justify-center gap-2 px-5 py-3 rounded-lg font-medium transition-all duration-200 ${
+                        className={`inline-flex items-center justify-center gap-1.5 sm:gap-2 px-3 sm:px-5 py-2.5 sm:py-3 rounded-lg text-sm font-medium transition-all duration-200 whitespace-nowrap ${
                           upsellAdded
                             ? 'bg-[#93C560] text-[#014421]'
                             : 'bg-[#FF7e70] text-white hover:bg-[#e56b5e]'
@@ -398,18 +400,19 @@ export default function CartPage() {
                       >
                         {addingUpsell ? (
                           <>
-                            <span className="inline-block h-4 w-4 rounded-full border-2 border-white/40 border-t-white animate-spin" />
-                            Lägger till...
+                            <span className="inline-block h-3.5 w-3.5 sm:h-4 sm:w-4 rounded-full border-2 border-white/40 border-t-white animate-spin" />
+                            <span className="hidden sm:inline">Lägger till...</span>
                           </>
                         ) : upsellAdded ? (
                           <>
                             <Check className="w-4 h-4" />
-                            Tillagd
+                            <span className="hidden sm:inline">Tillagd</span>
                           </>
                         ) : (
                           <>
                             <Gift className="w-4 h-4" />
-                            Lägg till
+                            <span className="hidden sm:inline">Lägg till</span>
+                            <span className="sm:hidden">69 kr</span>
                           </>
                         )}
                       </button>
