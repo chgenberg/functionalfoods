@@ -22,13 +22,29 @@ const getItemImage = (item: { id: string; name: string; image?: string; productT
   return '/images/blog-placeholder.jpg';
 };
 
+const UPSELL_BOOK = {
+  id: 'brodboken-2026',
+  name: 'Baka Glutenfritt – E-bok',
+  price: 65.09,
+  type: 'book' as const,
+  image: '/baka-glutenfritt-square.png',
+  description: 'Ulrika Davidssons bästa glutenfria brödrecept samlade i en inspirerande e-bok.'
+};
+
 export default function CartPage() {
-  const { items, removeItem, updateQuantity, total, isLoaded, discount, finalTotal, appliedCoupon, applyCoupon, removeCoupon } = useCart();
+  const { items, addItem, removeItem, updateQuantity, total, isLoaded, discount, finalTotal, appliedCoupon, applyCoupon, removeCoupon } = useCart();
   const [removingItem, setRemovingItem] = useState<string | null>(null);
   const [couponInput, setCouponInput] = useState('');
   const [couponError, setCouponError] = useState<string | null>(null);
   const [applying, setApplying] = useState(false);
+  
+  const [addingUpsell, setAddingUpsell] = useState(false);
+  const [upsellAdded, setUpsellAdded] = useState(false);
 
+  const hasUpsellBook = items.some(item => item.id === UPSELL_BOOK.id);
+  const hasCourseInCart = items.some(item => item.type === 'course');
+  const showUpsell = !hasUpsellBook && hasCourseInCart;
+  
   // Fire view/add events for items already in cart (covers direct-to-cart flows)
   useEffect(() => {
     if (!isLoaded || items.length === 0) return;
@@ -74,6 +90,45 @@ export default function CartPage() {
     if (!res.success) setCouponError(res.message || 'Ogiltig rabattkod');
     else setCouponInput('');
     setApplying(false);
+  };
+
+  const handleAddUpsell = () => {
+    if (!isLoaded || hasUpsellBook) return;
+
+    setAddingUpsell(true);
+
+    try {
+      addItem({
+        id: UPSELL_BOOK.id,
+        name: UPSELL_BOOK.name,
+        price: UPSELL_BOOK.price,
+        type: UPSELL_BOOK.type,
+        image: UPSELL_BOOK.image,
+        quantity: 1
+      });
+
+      try {
+        trackAddToCart(
+          {
+            id: UPSELL_BOOK.id,
+            name: UPSELL_BOOK.name,
+            price: UPSELL_BOOK.price,
+            quantity: 1
+          },
+          'SEK'
+        );
+      } catch {}
+
+      setUpsellAdded(true);
+
+      setTimeout(() => {
+        setUpsellAdded(false);
+      }, 2000);
+    } catch (error) {
+      console.error('Error adding upsell item to cart:', error);
+    } finally {
+      setAddingUpsell(false);
+    }
   };
 
   if (!isLoaded) {
@@ -291,6 +346,78 @@ export default function CartPage() {
                 </div>
               </div>
             ))}
+
+            {showUpsell && (
+              <div className="bg-white rounded-2xl shadow-sm p-4 sm:p-6 border border-[#93C560] hover:shadow-md transition-all duration-300">
+                <div className="flex flex-col sm:flex-row gap-4 sm:gap-5">
+                  <div className="flex-shrink-0 w-full sm:w-32 h-48 sm:h-32 rounded-xl overflow-hidden bg-gray-100">
+                    <Image
+                      src={UPSELL_BOOK.image}
+                      alt={UPSELL_BOOK.name}
+                      width={128}
+                      height={128}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+
+                  <div className="flex-1">
+                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#93C560]/15 text-[#014421] text-xs font-semibold mb-3">
+                      <Sparkles className="w-3.5 h-3.5" />
+                      Rekommenderat tillägg
+                    </div>
+
+                    <h3 className="text-lg sm:text-xl font-semibold text-[#014421] mb-2">
+                      Lägg till {UPSELL_BOOK.name}
+                    </h3>
+
+                    <p className="text-sm sm:text-base text-gray-600 mb-3">
+                      {UPSELL_BOOK.description}
+                    </p>
+
+                    <div className="flex items-center gap-2 text-sm text-gray-600 mb-4">
+                      <Book className="w-4 h-4" />
+                      <span>Digital bok med direkt leverans efter köp</span>
+                    </div>
+
+                    <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                      <div>
+                        <div className="text-2xl font-bold text-[#014421]">
+                          {Math.round(UPSELL_BOOK.price * 1.06).toLocaleString('sv-SE')} kr
+                        </div>
+                        <div className="text-sm text-gray-500">inkl. 6% moms</div>
+                      </div>
+
+                      <button
+                        onClick={handleAddUpsell}
+                        disabled={addingUpsell || hasUpsellBook}
+                        className={`inline-flex items-center justify-center gap-2 px-5 py-3 rounded-lg font-medium transition-all duration-200 ${
+                          upsellAdded
+                            ? 'bg-[#93C560] text-[#014421]'
+                            : 'bg-[#FF7e70] text-white hover:bg-[#e56b5e]'
+                        } disabled:opacity-60 disabled:cursor-not-allowed`}
+                      >
+                        {addingUpsell ? (
+                          <>
+                            <span className="inline-block h-4 w-4 rounded-full border-2 border-white/40 border-t-white animate-spin" />
+                            Lägger till...
+                          </>
+                        ) : upsellAdded ? (
+                          <>
+                            <Check className="w-4 h-4" />
+                            Tillagd
+                          </>
+                        ) : (
+                          <>
+                            <Gift className="w-4 h-4" />
+                            Lägg till
+                          </>
+                        )}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
 
           </div>
 
