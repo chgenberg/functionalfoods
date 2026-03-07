@@ -366,11 +366,11 @@ export default function CartPage() {
                       Rekommenderat tillägg
                     </div>
 
-                    <h3 className="text-lg sm:text-xl font-semibold text-[#014421] mb-2">
+                    <h3 className="text-base sm:text-lg font-semibold text-[#014421] mb-2">
                       Lägg till {UPSELL_BOOK.name}
                     </h3>
 
-                    <p className="text-sm sm:text-base text-gray-600 mb-3">
+                    <p className="text-sm text-gray-600 mb-3">
                       {UPSELL_BOOK.description}
                     </p>
 
