@@ -950,39 +950,6 @@ export async function POST(req: NextRequest) {
     
     console.log('📤 FULL Svea checkout request:', JSON.stringify(checkoutRequest, null, 2));
     console.log('📤 VERIFICATION - cart.items.length:', checkoutRequest.cart.items.length);
-
-    // 🔥 PROD HOTFIX v2: Force unitPrice into öre (integer) right before Svea createOrder
-    checkoutRequest.cart.items = checkoutRequest.cart.items.map((i: any) => {
-      const raw = i.unitPrice;
-      let n = typeof raw === 'string' ? Number(raw.replace(',', '.')) : Number(raw);
-
-      if (!Number.isFinite(n)) {
-        console.error('❌ unitPrice is not numeric', { articleNumber: i.articleNumber, raw });
-        throw new Error(`Invalid unitPrice for Svea: ${raw}`);
-      }
-
-      // Case 1: unitPrice has decimals -> almost certainly SEK (e.g. 9.95 or 995.00)
-      if (!Number.isInteger(n)) {
-        n = Math.round(n * 100); // SEK -> öre
-      } else {
-        // Case 2: integer but "small" -> likely SEK (e.g. 995) not öre
-        if (n !== 0 && Math.abs(n) < 1000) {
-          n = n * 100; // SEK -> öre
-        }
-        // else assume it's already öre (e.g. 99500)
-      }
-
-      return { ...i, unitPrice: n };
-    });
-
-    // HARD FAIL if we still look like SEK
-    const maxAbs = Math.max(...checkoutRequest.cart.items.map((x: any) => Math.abs(Number(x.unitPrice) || 0)));
-    if (maxAbs > 0 && maxAbs < 1000) {
-      console.error('❌ unitPrice still looks like SEK after normalization', checkoutRequest.cart.items);
-      throw new Error(`Svea unitPrice still in SEK after normalization (maxAbs=${maxAbs})`);
-    }
-
-    console.log('🧾 FINAL SVEA ITEMS (post-normalize v2):', JSON.stringify(checkoutRequest.cart.items, null, 2));
     
     // Calculate expected total
     const expectedTotal = checkoutRequest.cart.items.reduce((sum, item) => sum + (item.unitPrice * item.quantity), 0);
