@@ -22,13 +22,29 @@ const getItemImage = (item: { id: string; name: string; image?: string; productT
   return '/images/blog-placeholder.jpg';
 };
 
+const UPSELL_BOOK = {
+  id: 'brodboken-2026',
+  name: 'Baka Glutenfritt – E-bok',
+  price: 65.09,
+  type: 'book' as const,
+  image: '/baka-glutenfritt-square.png',
+  description: '26 glutenfria brödrecept du kan börja baka direkt.'
+};
+
 export default function CartPage() {
-  const { items, removeItem, updateQuantity, total, isLoaded, discount, finalTotal, appliedCoupon, applyCoupon, removeCoupon } = useCart();
+  const { items, addItem, removeItem, updateQuantity, total, isLoaded, discount, finalTotal, appliedCoupon, applyCoupon, removeCoupon } = useCart();
   const [removingItem, setRemovingItem] = useState<string | null>(null);
   const [couponInput, setCouponInput] = useState('');
   const [couponError, setCouponError] = useState<string | null>(null);
   const [applying, setApplying] = useState(false);
+  
+  const [addingUpsell, setAddingUpsell] = useState(false);
+  const [upsellAdded, setUpsellAdded] = useState(false);
 
+  const hasUpsellBook = items.some(item => item.id === UPSELL_BOOK.id);
+  const hasCourseInCart = items.some(item => item.type === 'course');
+  const showUpsell = !hasUpsellBook && hasCourseInCart;
+  
   // Fire view/add events for items already in cart (covers direct-to-cart flows)
   useEffect(() => {
     if (!isLoaded || items.length === 0) return;
@@ -74,6 +90,45 @@ export default function CartPage() {
     if (!res.success) setCouponError(res.message || 'Ogiltig rabattkod');
     else setCouponInput('');
     setApplying(false);
+  };
+
+  const handleAddUpsell = () => {
+    if (!isLoaded || hasUpsellBook) return;
+
+    setAddingUpsell(true);
+
+    try {
+      addItem({
+        id: UPSELL_BOOK.id,
+        name: UPSELL_BOOK.name,
+        price: UPSELL_BOOK.price,
+        type: UPSELL_BOOK.type,
+        image: UPSELL_BOOK.image,
+        quantity: 1
+      });
+
+      try {
+        trackAddToCart(
+          {
+            id: UPSELL_BOOK.id,
+            name: UPSELL_BOOK.name,
+            price: UPSELL_BOOK.price,
+            quantity: 1
+          },
+          'SEK'
+        );
+      } catch {}
+
+      setUpsellAdded(true);
+
+      setTimeout(() => {
+        setUpsellAdded(false);
+      }, 2000);
+    } catch (error) {
+      console.error('Error adding upsell item to cart:', error);
+    } finally {
+      setAddingUpsell(false);
+    }
   };
 
   if (!isLoaded) {
@@ -291,6 +346,80 @@ export default function CartPage() {
                 </div>
               </div>
             ))}
+
+            {showUpsell && (
+              <div className="bg-white rounded-2xl shadow-sm p-3 sm:p-5 border border-[#93C560] transition-all duration-300">
+                <div className="flex gap-3 sm:gap-5">
+                  <div className="flex-shrink-0 w-20 h-20 sm:w-28 sm:h-28 rounded-xl overflow-hidden bg-gray-100">
+                    <Image
+                      src={UPSELL_BOOK.image}
+                      alt={UPSELL_BOOK.name}
+                      width={112}
+                      height={112}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+
+                  <div className="flex-1 min-w-0">
+                    <div className="inline-flex items-center gap-1.5 px-2 py-1 rounded-full bg-[#93C560]/15 text-[#014421] text-[11px] sm:text-xs font-semibold mb-2">
+                      <Sparkles className="w-3 h-3" />
+                      Rekommenderat tillägg
+                    </div>
+
+                    <h3 className="text-sm sm:text-lg font-semibold text-[#014421] leading-snug mb-1">
+                      Lägg till Baka Glutenfritt E-bok
+                    </h3>
+
+                    <p className="text-xs sm:text-sm text-gray-600 leading-snug mb-2 line-clamp-2 sm:line-clamp-none">
+                      26 glutenfria brödrecept – perfekt komplement till kursen.
+                    </p>
+
+                    <div className="flex items-center gap-2 text-[11px] sm:text-sm text-gray-500 mb-2 sm:mb-3">
+                      <Book className="w-3 h-3 sm:w-4 sm:h-4" />
+                      <span>E-boken levereras direkt</span>
+                    </div>
+
+                    <div className="flex items-end justify-between gap-3">
+                      <div className="min-w-0">
+                        <div className="text-lg sm:text-2xl font-bold text-[#014421] leading-none">
+                          {Math.round(UPSELL_BOOK.price * 1.06).toLocaleString('sv-SE')} kr
+                        </div>
+                        <div className="text-[11px] sm:text-sm text-gray-500 mt-1">
+                          inkl. 6% moms
+                        </div>
+                      </div>
+
+                      <button
+                        onClick={handleAddUpsell}
+                        disabled={addingUpsell || hasUpsellBook}
+                        className={`inline-flex items-center justify-center gap-1.5 sm:gap-2 px-3 sm:px-5 py-2.5 sm:py-3 rounded-lg text-sm font-medium transition-all duration-200 whitespace-nowrap ${
+                          upsellAdded
+                            ? 'bg-[#93C560] text-[#014421]'
+                            : 'bg-[#FF7e70] text-white hover:bg-[#e56b5e]'
+                        } disabled:opacity-60 disabled:cursor-not-allowed`}
+                      >
+                        {addingUpsell ? (
+                          <>
+                            <span className="inline-block h-3.5 w-3.5 sm:h-4 sm:w-4 rounded-full border-2 border-white/40 border-t-white animate-spin" />
+                            <span className="hidden sm:inline">Lägger till...</span>
+                          </>
+                        ) : upsellAdded ? (
+                          <>
+                            <Check className="w-4 h-4" />
+                            <span className="hidden sm:inline">Tillagd</span>
+                          </>
+                        ) : (
+                          <>
+                            <Gift className="w-4 h-4" />
+                            <span>Lägg till</span>
+                          </>
+                        )}
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
 
           </div>
 
