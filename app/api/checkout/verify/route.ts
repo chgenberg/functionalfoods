@@ -40,7 +40,6 @@ export async function GET(req: NextRequest) {
       return prisma.order.findFirst({
         where: {
           OR: [
-            { stripeSessionId: session.id },
             { checkoutOrderId: session.id },
             { orderNumber: legacyOrderNumber },
           ],
@@ -123,7 +122,6 @@ export async function GET(req: NextRequest) {
               const order = await tx.order.create({
                 data: {
                   orderNumber: legacyOrderNumber,
-                  stripeSessionId: session.id,
                   checkoutOrderId: session.id,
                   customerName: session.customer_details?.name || user.name || null,
                   customerEmail,
