@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { useCart } from "../context/CartContext";
+import { useCart } from "../../context/CartContext";
 import {
   ShoppingCart,
   Check,
@@ -60,7 +60,7 @@ export default function BrodbokenPage() {
   const content = { ...DEFAULT_CONTENT, ...pageContent };
 
   const ebook = {
-    id: "brodboken-2026",
+    id: "ny-bok",
     name: "Baka Glutenfritt – E-bok av Ulrika Davidsson",
     price: 65.09, // 69 kr inkl 6% moms = 65.09 kr exkl moms (69 / 1.06)
     quantity: 1,
