@@ -2,13 +2,11 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
 import { ArrowRight, BookOpen, Tag, ShoppingCart } from "lucide-react";
 import { useCart } from "@/app/context/CartContext";
 
 export default function EBockerPage() {
   const { addItem } = useCart();
-  const router = useRouter();
 
   const ebooks = [
     {
@@ -62,8 +60,6 @@ export default function EBockerPage() {
       type: "book",
       image: ebook.image,
     });
-
-    router.push("/cart");
   };
 
   return (
@@ -145,7 +141,7 @@ export default function EBockerPage() {
                     className="inline-flex w-auto items-center justify-center gap-2 px-4 py-2 rounded-lg bg-[#FF7E70] hover:bg-[#660D22] text-white transition-colors"
                   >
                     <ShoppingCart className="w-4 h-4" />
-                    Köp nu
+                    Lägg till
                   </button>
                 </div>
               </div>
