@@ -266,6 +266,12 @@ class MailchimpEcommerceService {
         tracking_code: trackingCode || campaignId || undefined
       };
 
+      console.log('📦 Mailchimp order request:', {
+        orderUrl,
+        storeId: this.config?.storeId,
+        order
+      });
+
       // Send order to Mailchimp
       const orderUrl = `${this.baseUrl}/orders`;
       const response = await fetch(orderUrl, {
@@ -295,6 +301,7 @@ class MailchimpEcommerceService {
     } catch (error) {
       // Don't throw - tracking failures shouldn't break the purchase flow
       console.error('⚠️ Failed to track purchase in Mailchimp:', error);
+      throw error;
     }
   }
 
