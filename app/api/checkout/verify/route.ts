@@ -280,115 +280,6 @@ export async function GET(req: NextRequest) {
                 console.error('Email send failed in verify fallback:', e);
               }
             });
-
-            // ✅ Post-completion Mailchimp tracking (idempotent)
-            try {
-              const updatedOrder = await findOrder(true);
-
-              if (updatedOrder) {
-                const metadata = (updatedOrder.metadata as any) || {};
-                const emailForTracking =
-                  updatedOrder.user?.email || updatedOrder.customerEmail || customerEmail;
-
-                // 1) Mailchimp Marketing tags
-                if (!metadata.mailchimpMarketingTaggedAt) {
-                  const mailchimpMarketing = getMailchimpMarketing();
-
-                  if (
-                    mailchimpMarketing.isConfigured() &&
-                    emailForTracking &&
-                    !emailForTracking.startsWith('guest-')
-                  ) {
-                    const productNames = updatedOrder.items.map((i) => i.name);
-
-                    const nameParts = (updatedOrder.customerName || updatedOrder.user?.name || '')
-                      .trim()
-                      .split(' ')
-                      .filter(Boolean);
-
-                    const firstName = nameParts[0] || '';
-                    const lastName = nameParts.slice(1).join(' ') || '';
-
-                    await mailchimpMarketing.addCustomerWithCourseTags(
-                      emailForTracking,
-                      productNames,
-                      firstName,
-                      lastName
-                    );
-
-                    await prisma.order.update({
-                      where: { id: updatedOrder.id },
-                      data: {
-                        metadata: {
-                          ...metadata,
-                          mailchimpMarketingTaggedAt: new Date().toISOString(),
-                        },
-                      },
-                    });
-
-                    console.log(`✅ Mailchimp Marketing tagged (stripe verify fallback): ${emailForTracking}`);
-                  }
-                }
-
-                // 2) Mailchimp E-commerce tracking
-                const metadata2 =
-                  ((await prisma.order.findUnique({
-                    where: { id: updatedOrder.id },
-                    select: { metadata: true },
-                  }))?.metadata as any) || {};
-
-                if (!metadata2.mailchimpEcommerceTrackedAt) {
-                  const { getMailchimpEcommerce } = await import('@/app/lib/mailchimp-ecommerce');
-                  const mc = getMailchimpEcommerce();
-
-                  if (mc.isConfigured() && emailForTracking && !emailForTracking.startsWith('guest-')) {
-                    const attr = metadata2.attribution || null;
-                    const campaignId = attr?.mc_cid || undefined;
-                    const trackingCode = attr?.utm_campaign || campaignId || undefined;
-
-                    await mc.trackPurchase({
-                      orderId: updatedOrder.orderNumber,
-                      customerEmail: emailForTracking,
-                      customerName: updatedOrder.user?.name || updatedOrder.customerName || undefined,
-                      items: updatedOrder.items.map((it) => ({
-                        id: it.courseId || `ebook:${it.name}`,
-                        name: it.name,
-                        price: it.price,
-                        quantity: it.quantity,
-                        type: (it.type as any) || 'course',
-                      })),
-                      totalAmount: updatedOrder.totalAmount || 0,
-                      currency: updatedOrder.currency || 'SEK',
-                      orderDate: updatedOrder.createdAt,
-                      discountTotal: 0,
-                      shippingTotal: 0,
-                      taxTotal: 0,
-                      campaignId,
-                      landingSite: undefined,
-                      trackingCode,
-                    });
-
-                    await prisma.order.update({
-                      where: { id: updatedOrder.id },
-                      data: {
-                        metadata: {
-                          ...metadata2,
-                          mailchimpEcommerceTrackedAt: new Date().toISOString(),
-                        },
-                      },
-                    });
-
-                    console.log('✅ Mailchimp E-commerce tracked (stripe verify fallback):', {
-                      orderId: updatedOrder.orderNumber,
-                      email: emailForTracking,
-                      itemsCount: updatedOrder.items.length,
-                    });
-                  }
-                }
-              }
-            } catch (e) {
-              console.warn('⚠️ Stripe verify fallback: Mailchimp tracking failed (non-critical):', e);
-            }
           }
         } else if (existingOrder && !existingPayment && paymentIntentId) {
           // If order already exists but payment is missing, create payment as fallback
@@ -408,7 +299,116 @@ export async function GET(req: NextRequest) {
             console.warn('⚠️ Stripe verify fallback: payment creation skipped/failed:', e);
           }
         }
-      }
+
+        // ✅ Post-completion Mailchimp tracking (idempotent)
+        try {
+          const updatedOrder = await findOrder(true);
+
+          if (updatedOrder) {
+            const metadata = (updatedOrder.metadata as any) || {};
+            const emailForTracking =
+              updatedOrder.user?.email || updatedOrder.customerEmail || customerEmail;
+
+            // 1) Mailchimp Marketing tags
+            if (!metadata.mailchimpMarketingTaggedAt) {
+              const mailchimpMarketing = getMailchimpMarketing();
+
+              if (
+                mailchimpMarketing.isConfigured() &&
+                emailForTracking &&
+                !emailForTracking.startsWith('guest-')
+              ) {
+                const productNames = updatedOrder.items.map((i) => i.name);
+
+                const nameParts = (updatedOrder.customerName || updatedOrder.user?.name || '')
+                  .trim()
+                  .split(' ')
+                  .filter(Boolean);
+
+                const firstName = nameParts[0] || '';
+                const lastName = nameParts.slice(1).join(' ') || '';
+
+                await mailchimpMarketing.addCustomerWithCourseTags(
+                  emailForTracking,
+                  productNames,
+                  firstName,
+                  lastName
+                );
+
+                await prisma.order.update({
+                  where: { id: updatedOrder.id },
+                  data: {
+                    metadata: {
+                      ...metadata,
+                      mailchimpMarketingTaggedAt: new Date().toISOString(),
+                    },
+                  },
+                });
+
+                console.log(`✅ Mailchimp Marketing tagged (stripe verify fallback): ${emailForTracking}`);
+              }
+            }
+
+            // 2) Mailchimp E-commerce tracking
+            const metadata2 =
+              ((await prisma.order.findUnique({
+                where: { id: updatedOrder.id },
+                select: { metadata: true },
+              }))?.metadata as any) || {};
+
+            if (!metadata2.mailchimpEcommerceTrackedAt) {
+              const { getMailchimpEcommerce } = await import('@/app/lib/mailchimp-ecommerce');
+              const mc = getMailchimpEcommerce();
+
+              if (mc.isConfigured() && emailForTracking && !emailForTracking.startsWith('guest-')) {
+                const attr = metadata2.attribution || null;
+                const campaignId = attr?.mc_cid || undefined;
+                const trackingCode = attr?.utm_campaign || campaignId || undefined;
+
+                await mc.trackPurchase({
+                  orderId: updatedOrder.orderNumber,
+                  customerEmail: emailForTracking,
+                  customerName: updatedOrder.user?.name || updatedOrder.customerName || undefined,
+                  items: updatedOrder.items.map((it) => ({
+                    id: it.courseId || `ebook:${it.name}`,
+                    name: it.name,
+                    price: it.price,
+                    quantity: it.quantity,
+                    type: (it.type as any) || 'course',
+                  })),
+                  totalAmount: updatedOrder.totalAmount || 0,
+                  currency: updatedOrder.currency || 'SEK',
+                  orderDate: updatedOrder.createdAt,
+                  discountTotal: 0,
+                  shippingTotal: 0,
+                  taxTotal: 0,
+                  campaignId,
+                  landingSite: undefined,
+                  trackingCode,
+                });
+
+                await prisma.order.update({
+                  where: { id: updatedOrder.id },
+                  data: {
+                    metadata: {
+                      ...metadata2,
+                      mailchimpEcommerceTrackedAt: new Date().toISOString(),
+                    },
+                  },
+                });
+
+                console.log('✅ Mailchimp E-commerce tracked (stripe verify fallback):', {
+                  orderId: updatedOrder.orderNumber,
+                  email: emailForTracking,
+                  itemsCount: updatedOrder.items.length,
+                });
+              }
+            }
+          }
+        } catch (e) {
+          console.warn('⚠️ Stripe verify fallback: Mailchimp tracking failed (non-critical):', e);
+        }
+      }  
     } catch (e) {
       console.error('Checkout verify fallback failed:', e);
     }
