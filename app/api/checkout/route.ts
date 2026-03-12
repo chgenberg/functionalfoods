@@ -27,7 +27,7 @@ export async function POST(req: NextRequest) {
       }
 
       const customerName = (customer?.name || '').trim();
-      const customerEmail = (customer?.email || '').trim();
+      const customerEmail = (customer?.email || '').trim().toLowerCase();
 
       if (!customerName) {
         return NextResponse.json({ error: 'Namn är obligatoriskt' }, { status: 400 });
@@ -208,7 +208,7 @@ export async function POST(req: NextRequest) {
       
       // Hitta eller skapa user eftersom userId krävs av Order
       let user = await prisma.user.findUnique({
-        where: { email: customerEmail.toLowerCase() },
+        where: { email: customerEmail },
       });
       
       if (!user) {
@@ -220,7 +220,7 @@ export async function POST(req: NextRequest) {
       
         user = await prisma.user.create({
           data: {
-            email: customerEmail.toLowerCase(),
+            email: customerEmail,
             name: customerName,
             password: hashed,
             role: 'customer',
@@ -237,7 +237,7 @@ export async function POST(req: NextRequest) {
           status: 'PENDING',
           totalAmount: finalAmount / 100,
           currency: 'SEK',
-          customerEmail: customerEmail.toLowerCase(),
+          customerEmail: customerEmail,
           customerName,
           metadata: {
             attribution: attribution || {},
@@ -259,6 +259,76 @@ export async function POST(req: NextRequest) {
         },
         include: {
           items: true,
+        },
+      });
+
+      const line_items = validatedItems.map((item) => {
+        const vatRate = item.vatRate || 0.25;
+        const grossUnitAmount = Math.round(item.price * (1 + vatRate) * 100);
+      
+        return {
+          price_data: {
+            currency: 'sek',
+            product_data: {
+              name: item.name,
+              metadata: {
+                productId: item.id,
+                productType: item.type,
+                vatRate: String(item.vatRate),
+              },
+            },
+            unit_amount: grossUnitAmount,
+          },
+          quantity: item.quantity,
+        };
+      });
+      
+      const origin =
+        req.headers.get('origin') ||
+        process.env.NEXT_PUBLIC_SITE_URL ||
+        'http://localhost:3000';
+      
+      const sessionParams: any = {
+        mode: 'payment',
+        line_items,
+        success_url: `${origin}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
+        cancel_url: `${origin}/checkout`,
+        customer_email: customerEmail,
+        payment_method_types: ['card'],
+        metadata: {
+          orderId: order.id,
+          website: 'ulrika-functional-foods',
+          orderType: 'course_purchase',
+          couponCode: appliedCouponCode || '',
+          customerEmail: customerEmail,
+          customerName,
+          courseNames: validatedItems.map((item) => item.name).join(', '),
+          totalLines: String(validatedItems.length),
+          totalQuantity: String(validatedItems.reduce((sum, i) => sum + i.quantity, 0)),
+          gclid: attribution?.gclid || '',
+          gbraid: attribution?.gbraid || '',
+          wbraid: attribution?.wbraid || '',
+          fbclid: attribution?.fbclid || '',
+          mc_cid: attribution?.mc_cid || '',
+          mc_eid: attribution?.mc_eid || '',
+          utm_source: attribution?.utm_source || '',
+          utm_medium: attribution?.utm_medium || '',
+          utm_campaign: attribution?.utm_campaign || '',
+          utm_term: attribution?.utm_term || '',
+          utm_content: attribution?.utm_content || '',
+        },
+      };
+      
+      if (stripeDiscount) {
+        sessionParams.discounts = [stripeDiscount];
+      }
+      
+      const session = await stripe.checkout.sessions.create(sessionParams);
+      
+      await prisma.order.update({
+        where: { id: order.id },
+        data: {
+          checkoutOrderId: session.id,
         },
       });
 
