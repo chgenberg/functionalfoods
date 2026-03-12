@@ -365,27 +365,30 @@ export async function GET(req: NextRequest) {
                 const campaignId = attr?.mc_cid || undefined;
                 const trackingCode = attr?.utm_campaign || campaignId || undefined;
 
-                await mc.trackPurchase({
-                  orderId: updatedOrder.orderNumber,
-                  customerEmail: emailForTracking,
-                  customerName: updatedOrder.user?.name || updatedOrder.customerName || undefined,
-                  items: updatedOrder.items.map((it) => ({
-                    id: it.courseId || `ebook:${it.name}`,
-                    name: it.name,
-                    price: it.price,
-                    quantity: it.quantity,
-                    type: (it.type as any) || 'course',
-                  })),
-                  totalAmount: updatedOrder.totalAmount || 0,
-                  currency: updatedOrder.currency || 'SEK',
-                  orderDate: updatedOrder.createdAt,
-                  discountTotal: 0,
-                  shippingTotal: 0,
-                  taxTotal: 0,
-                  campaignId,
-                  landingSite: undefined,
-                  trackingCode,
-                });
+                await mc.trackPurchase(
+                  {
+                    orderId: updatedOrder.orderNumber,
+                    customerEmail: emailForTracking,
+                    customerName: updatedOrder.user?.name || updatedOrder.customerName || undefined,
+                    items: updatedOrder.items.map((it) => ({
+                      id: it.courseId || `ebook:${it.name}`,
+                      name: it.name,
+                      price: it.price,
+                      quantity: it.quantity,
+                      type: (it.type as any) || 'course',
+                    })),
+                    totalAmount: updatedOrder.totalAmount || 0,
+                    currency: updatedOrder.currency || 'SEK',
+                    orderDate: updatedOrder.createdAt,
+                    discountTotal: 0,
+                    shippingTotal: 0,
+                    taxTotal: 0,
+                    campaignId,
+                    landingSite: undefined,
+                    trackingCode,
+                  },
+                  { usePut: true }
+                );
 
                 await prisma.order.update({
                   where: { id: updatedOrder.id },
