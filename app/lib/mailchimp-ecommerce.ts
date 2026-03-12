@@ -266,6 +266,8 @@ class MailchimpEcommerceService {
         tracking_code: trackingCode || campaignId || undefined
       };
 
+      const orderUrl = `${this.baseUrl}/orders`;
+      
       console.log('📦 Mailchimp order request:', {
         orderUrl,
         storeId: this.config?.storeId,
@@ -273,7 +275,6 @@ class MailchimpEcommerceService {
       });
 
       // Send order to Mailchimp
-      const orderUrl = `${this.baseUrl}/orders`;
       const response = await fetch(orderUrl, {
         method: 'POST',
         headers: {
