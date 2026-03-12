@@ -45,7 +45,7 @@ const nextConfig = {
   },
   
   // Ensure PDFKit is handled correctly in production
-  serverExternalPackages: ['pdfkit'],
+  serverComponentsExternalPackages: ['pdfkit'],
   
   // Stable build ID for production
   generateBuildId: async () => {
