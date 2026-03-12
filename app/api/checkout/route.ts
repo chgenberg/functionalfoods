@@ -204,106 +204,61 @@ export async function POST(req: NextRequest) {
       const orderId = `FF-STRIPE-${Date.now()}-${randomUUID().slice(0, 8)}`;
 
       // Skapa intern pending order först
+      const orderNumber = orderId;
+      
+      // Hitta eller skapa user eftersom userId krävs av Order
+      let user = await prisma.user.findUnique({
+        where: { email: customerEmail.toLowerCase() },
+      });
+      
+      if (!user) {
+        const bcrypt = require('bcryptjs');
+        const tempPassword =
+          Math.random().toString(36).slice(-8) +
+          Math.random().toString(36).slice(-8).toUpperCase();
+        const hashed = await bcrypt.hash(tempPassword, 12);
+      
+        user = await prisma.user.create({
+          data: {
+            email: customerEmail.toLowerCase(),
+            name: customerName,
+            password: hashed,
+            role: 'customer',
+            mustChangePassword: true,
+          },
+        });
+      }
+      
       const order = await prisma.order.create({
         data: {
           id: orderId,
+          orderNumber,
+          userId: user.id,
           status: 'PENDING',
-          paymentProvider: 'stripe',
-          totalAmount: finalAmount / 100, // lagra gross i SEK om det matchar er övriga modell
-          customerEmail,
+          totalAmount: finalAmount / 100,
+          currency: 'SEK',
+          customerEmail: customerEmail.toLowerCase(),
           customerName,
-          couponCode: appliedCouponCode || '',
           metadata: {
             attribution: attribution || {},
             source: 'stripe_checkout',
             subtotalInOre: subtotal,
             discountInOre: discountAmount,
             finalInOre: finalAmount,
+            couponCode: appliedCouponCode || '',
           },
           items: {
             create: validatedItems.map(item => ({
-              productId: item.id,
-              productName: item.name,
-              productType: item.type,
+              courseId: item.type === 'course' ? item.id : null,
+              name: item.name,
+              price: item.price,
               quantity: item.quantity,
-              price: item.price, // ex moms SEK
-              vatRate: item.vatRate,
+              type: item.type,
             })),
           },
         },
         include: {
           items: true,
-        },
-      });
-
-      const line_items = validatedItems.map((item) => {
-        const vatRate = item.vatRate || 0.25;
-        const grossUnitAmount = Math.round(item.price * (1 + vatRate) * 100);
-
-        return {
-          price_data: {
-            currency: 'sek',
-            product_data: {
-              name: item.name,
-              metadata: {
-                productId: item.id,
-                productType: item.type,
-                vatRate: String(item.vatRate),
-              },
-            },
-            unit_amount: grossUnitAmount,
-          },
-          quantity: item.quantity,
-        };
-      });
-
-      const origin =
-        req.headers.get('origin') ||
-        process.env.NEXT_PUBLIC_SITE_URL ||
-        'http://localhost:3000';
-
-      const sessionParams: any = {
-        mode: 'payment',
-        line_items,
-        success_url: `${origin}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
-        cancel_url: `${origin}/checkout`,
-        customer_email: customerEmail,
-        payment_method_types: ['card'],
-        metadata: {
-          orderId: order.id,
-          website: 'ulrika-functional-foods',
-          orderType: 'course_purchase',
-          couponCode: appliedCouponCode || '',
-          customerEmail,
-          customerName,
-          courseNames: validatedItems.map(item => item.name).join(', '),
-          totalLines: String(validatedItems.length),
-          totalQuantity: String(validatedItems.reduce((sum, i) => sum + i.quantity, 0)),
-          gclid: attribution?.gclid || '',
-          gbraid: attribution?.gbraid || '',
-          wbraid: attribution?.wbraid || '',
-          fbclid: attribution?.fbclid || '',
-          mc_cid: attribution?.mc_cid || '',
-          mc_eid: attribution?.mc_eid || '',
-          utm_source: attribution?.utm_source || '',
-          utm_medium: attribution?.utm_medium || '',
-          utm_campaign: attribution?.utm_campaign || '',
-          utm_term: attribution?.utm_term || '',
-          utm_content: attribution?.utm_content || '',
-        },
-      };
-
-      if (stripeDiscount) {
-        sessionParams.discounts = [stripeDiscount];
-      }
-
-      const session = await stripe.checkout.sessions.create(sessionParams);
-
-      await prisma.order.update({
-        where: { id: order.id },
-        data: {
-          stripeSessionId: session.id,
-          checkoutOrderId: session.id,
         },
       });
 
