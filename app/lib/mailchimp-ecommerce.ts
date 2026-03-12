@@ -272,8 +272,6 @@ class MailchimpEcommerceService {
         landing_site: landingSite || undefined,
         tracking_code: trackingCode || campaignId || undefined
       };
-
-      const orderUrl = `${this.baseUrl}/orders`;
       
       console.log('📦 Mailchimp order request:', {
         orderUrl,
