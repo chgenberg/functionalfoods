@@ -272,12 +272,6 @@ class MailchimpEcommerceService {
         landing_site: landingSite || undefined,
         tracking_code: trackingCode || campaignId || undefined
       };
-      
-      console.log('📦 Mailchimp order request:', {
-        orderUrl,
-        storeId: this.config?.storeId,
-        order
-      });
 
       // Send order to Mailchimp
       const orderUrl = usePut
