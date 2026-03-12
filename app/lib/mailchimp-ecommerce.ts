@@ -151,28 +151,33 @@ class MailchimpEcommerceService {
    * Track a purchase/conversion
    * Automatically syncs products if they don't exist in Mailchimp
    */
-  async trackPurchase(params: {
-    orderId: string;
-    customerEmail: string;
-    customerName?: string;
-    items: Array<{
-      id: string;
-      name: string;
-      price: number;
-      quantity: number;
-      type?: string;
-    }>;
-    totalAmount: number;
-    currency?: string;
-    orderDate?: Date;
-    discountTotal?: number;
-    shippingTotal?: number;
-    taxTotal?: number;
-    // Campaign attribution
-    campaignId?: string;     // mc_cid from Mailchimp email links
-    landingSite?: string;    // Original landing URL with UTM params
-    trackingCode?: string;   // Custom tracking code (can be mc_cid or utm_campaign)
-  }): Promise<void> {
+  async trackPurchase(
+    params: {
+      orderId: string;
+      customerEmail: string;
+      customerName?: string;
+      items: Array<{
+        id: string;
+        name: string;
+        price: number;
+        quantity: number;
+        type?: string;
+      }>;
+      totalAmount: number;
+      currency?: string;
+      orderDate?: Date;
+      discountTotal?: number;
+      shippingTotal?: number;
+      taxTotal?: number;
+      // Campaign attribution
+      campaignId?: string;     // mc_cid from Mailchimp email links
+      landingSite?: string;    // Original landing URL with UTM params
+      trackingCode?: string;   // Custom tracking code (can be mc_cid or utm_campaign)
+    },
+    options?: {
+      usePut?: boolean;
+    }
+  ): Promise<void> {
     if (!this.isConfigured()) {
       console.log('ℹ️ Mailchimp E-commerce not configured, skipping purchase tracking');
       return;
@@ -193,6 +198,8 @@ class MailchimpEcommerceService {
       landingSite,
       trackingCode
     } = params;
+
+    const usePut = options?.usePut === true;
 
     try {
       // Sync products first
@@ -275,18 +282,35 @@ class MailchimpEcommerceService {
       });
 
       // Send order to Mailchimp
+      const orderUrl = usePut
+        ? `${this.baseUrl}/orders/${encodeURIComponent(orderId)}`
+        : `${this.baseUrl}/orders`;
+      
+      console.log('📦 Mailchimp order request:', {
+        method: usePut ? 'PUT' : 'POST',
+        orderUrl,
+        storeId: this.config?.storeId,
+        order
+      });
+      
       const response = await fetch(orderUrl, {
-        method: 'POST',
+        method: usePut ? 'PUT' : 'POST',
         headers: {
           'Authorization': `Basic ${Buffer.from(`anystring:${this.config!.apiKey}`).toString('base64')}`,
           'Content-Type': 'application/json'
         },
         body: JSON.stringify(order)
       });
-
+      
+      const responseText = await response.text();
+      
+      console.log('📬 Mailchimp order response:', {
+        status: response.status,
+        body: responseText
+      });
+      
       if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(`Mailchimp API error: ${response.status} ${errorText}`);
+        throw new Error(`Mailchimp API error: ${response.status} ${responseText}`);
       }
 
       // ✅ Only log success if Mailchimp accepted the order
@@ -300,7 +324,6 @@ class MailchimpEcommerceService {
       });
 
     } catch (error) {
-      // Don't throw - tracking failures shouldn't break the purchase flow
       console.error('⚠️ Failed to track purchase in Mailchimp:', error);
       throw error;
     }
