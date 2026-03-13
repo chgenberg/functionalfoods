@@ -199,6 +199,10 @@ class MailchimpEcommerceService {
       trackingCode
     } = params;
 
+    const safeOrderId = orderId.slice(0, 80);
+
+    console.log('Mailchimp safeOrderId:', safeOrderId);
+    
     const usePut = options?.usePut === true;
 
     try {
@@ -247,10 +251,10 @@ class MailchimpEcommerceService {
           price: item.price
         };
       });
-
+      
       // Create order with campaign attribution
       const order: MailchimpOrder = {
-        id: orderId,
+        id: safeOrderId,
         customer: {
           id: customerId,
           email_address: customerEmail.toLowerCase().trim(),
