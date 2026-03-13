@@ -199,7 +199,7 @@ class MailchimpEcommerceService {
       trackingCode
     } = params;
 
-    const safeOrderId = orderId.slice(0, 80);
+    const safeOrderId = `mc-${Date.now()}`;
 
     console.log('Mailchimp safeOrderId:', safeOrderId);
     
@@ -278,7 +278,7 @@ class MailchimpEcommerceService {
 
       // Send order to Mailchimp
       const orderUrl = usePut
-        ? `${this.baseUrl}/orders/${encodeURIComponent(orderId)}`
+        ? `${this.baseUrl}/orders/${encodeURIComponent(safeOrderId)}`
         : `${this.baseUrl}/orders`;
       
       console.log('📦 Mailchimp order request:', {
