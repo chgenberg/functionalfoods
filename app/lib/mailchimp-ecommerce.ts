@@ -237,15 +237,14 @@ class MailchimpEcommerceService {
 
       // ✅ Create order lines with REQUIRED product_variant_id
       const orderLines: MailchimpOrderLine[] = items.map((item, index) => {
-        const variantId = `${item.id}-default`; // MUST match the synced variant id
         return {
-          id: `${orderId}-${index + 1}`,
+          id: String(index + 1),
           product_id: item.id,
           product_title: item.name,
-          product_variant_id: `${item.id}-default`,    // sends product info to mailchimp
-          product_variant_title: item.name,       // (nice-to-have)
+          product_variant_id: `${item.id}-default`,
+          product_variant_title: item.name,
           quantity: item.quantity,
-          price: item.price                        // unit price
+          price: item.price
         };
       });
 
