@@ -199,9 +199,7 @@ class MailchimpEcommerceService {
       trackingCode
     } = params;
 
-    const safeOrderId = `mc-${Date.now()}`;
-
-    console.log('Mailchimp safeOrderId:', safeOrderId);
+    const safeOrderId = `mc-${orderId.replace(/[^a-zA-Z0-9_-]/g, '').slice(-50)}`;
     
     const usePut = options?.usePut === true;
 
@@ -281,13 +279,6 @@ class MailchimpEcommerceService {
         ? `${this.baseUrl}/orders/${encodeURIComponent(safeOrderId)}`
         : `${this.baseUrl}/orders`;
       
-      console.log('📦 Mailchimp order request:', {
-        method: usePut ? 'PUT' : 'POST',
-        orderUrl,
-        storeId: this.config?.storeId,
-        order
-      });
-      
       const response = await fetch(orderUrl, {
         method: usePut ? 'PUT' : 'POST',
         headers: {
@@ -298,11 +289,6 @@ class MailchimpEcommerceService {
       });
       
       const responseText = await response.text();
-      
-      console.log('📬 Mailchimp order response:', {
-        status: response.status,
-        body: responseText
-      });
       
       if (!response.ok) {
         throw new Error(`Mailchimp API error: ${response.status} ${responseText}`);
