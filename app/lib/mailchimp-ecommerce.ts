@@ -199,7 +199,7 @@ class MailchimpEcommerceService {
       trackingCode
     } = params;
 
-    const safeOrderId = `mc-${orderId.replace(/[^a-zA-Z0-9_-]/g, '').slice(-50)}`;
+    const safeOrderId = `mc-${Buffer.from(orderId).toString('base64').replace(/[^a-zA-Z0-9]/g, '').slice(0, 20)}`
     
     const usePut = options?.usePut === true;
 
