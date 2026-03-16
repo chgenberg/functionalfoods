@@ -25,18 +25,18 @@ export default function EBockerPage() {
       ],
     },
     {
-      id: "ny-bok",
-      title: "Baka Glutenfritt",
+      id: "paskbuffe",
+      title: "Påskbuffé",
       description:
-        "Ulrikas mest omtyckta glutenfria brödrecept samlade i en e-bok. Här får du näringsrika, mättande och riktigt goda recept som är enkla att baka och passar lika bra till frukost som till middag och fest.",
-      href: "/e-bocker/baka-glutenfritt",
-      image: "/baka-glutenfritt.png",
-      price: "69 kr",
+        "Fira påsken med smakrika, näringsrika och hälsosamma alternativ! Ulrika har samlat 50 enkla och inspirerande recept som passar perfekt till påskbordet – från frukost och lunch till middag och sötsaker.",
+      href: "/e-bocker/paskbuffe",
+      image: "/paskbuffe-samlingssida.png",
+      price: "99 kr",
       format: "PDF",
       highlights: [
-        "Glutenfria brödrecept",
+        "Hälsosamma påskrecept",
         "Näringsrika och mättande alternativ",
-        "Passar till både vardag och fest",
+        "Recept för hela påskhelgen",
       ],
     },
   ];

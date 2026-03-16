@@ -17,21 +17,19 @@ import { trackAddToCart, trackViewContent } from "@/app/lib/analytics";
 
 // Default content (fallback)
 const DEFAULT_CONTENT = {
-  title: "Baka Glutenfritt",
+  title: "Påskbuffé",
   subtitle: "E-bok av Ulrika Davidsson",
   description:
-    "Vill du baka bröd som smakar fantastiskt och samtidigt känns lätt i magen? Brödboken samlar Ulrikas bästa brödrecept med fokus på functional foods – för ett jämnare blodsocker, stabil energi och mer näring i varje tugga.",
+    "Fira påsken med smakrika, näringsrika och hälsosamma alternativ! Ulrika har samlat 50 enkla och inspirerande recept som passar perfekt till påskbordet – från frukost och lunch till middag och sötsaker.",
   shortDescription:
-    "I e-boken får du en komplett samling brödrecept och smarta tips som gör det enkelt att lyckas – oavsett om du vill baka glutenfritt, fiberrikt eller proteinrikare alternativ.",
-  image: "/baka-glutenfritt.png",
-  price: "69 kr",
+    "Upptäck allt från påskiga bröd och pajer till nyttigare sötsaker, sallader och festliga huvudrätter. Perfekt om du vill njuta av påskbordet utan att kompromissa med hälsan.",
+  image: "/paskbuffe-omslag.jpg",
+  price: "99 kr",
   features: [
-    "En komplett brödguide med functional foods",
-    "Recept för vardagsbröd, frallor & bröd till helgen",
-    "Naturligt glutenfria alternativ",
-    "Fiber- & proteinrika varianter",
-    "Tips för jämnare blodsocker & mindre uppblåsthet",
-    "Smarta basrecept + variationer",
+    "Tips på hur du planerar och förbereder påsken på ett hälsosamt sätt",
+    "Recept som ger bättre näringsvärde och stabil energi",
+    "Alternativ som passar hela familjen – även barnen kommer älska dem!",
+    "Lättlagade rätter som både är goda och mättande",
   ],
   authorSection:
     "Ulrika Davidsson är kostrådgivare, receptkreatör och bästsäljande författare till över 40 böcker. Hennes online-kurser har hjälpt tiotusentals personer att finna en mer hållbar och hälsosam livsstil.",
@@ -48,7 +46,7 @@ interface PageContent {
   authorSection?: string;
 }
 
-export default function BrodbokenPage() {
+export default function PaskbokenPage() {
   const [imageLoaded, setImageLoaded] = useState(false);
   const [isAdding, setIsAdding] = useState(false);
   const [added, setAdded] = useState(false);
@@ -60,19 +58,19 @@ export default function BrodbokenPage() {
   const content = { ...DEFAULT_CONTENT, ...pageContent };
 
   const ebook = {
-    id: "ny-bok",
-    name: "Baka Glutenfritt – E-bok av Ulrika Davidsson",
-    price: 65.09, // 69 kr inkl 6% moms = 65.09 kr exkl moms (69 / 1.06)
+    id: "paskbuffe",
+    name: "Påskbuffé – E-bok av Ulrika Davidsson",
+    price: 93.4, // 99 kr inkl 6% moms = 93.40 kr exkl moms (99 / 1.06)
     quantity: 1,
     type: "book" as const,
-    image: content.image || "/baka-glutenfritt.png",
+    image: content.image || "/paskbuffe-omslag.jpg",
   };
 
   // Fetch custom page content
   useEffect(() => {
     const fetchContent = async () => {
       try {
-        const response = await fetch("/api/pages/brodboken");
+        const response = await fetch("/api/pages/paskbuffe");
         if (response.ok) {
           const data = await response.json();
           if (data.content) setPageContent(data.content);
@@ -186,7 +184,7 @@ export default function BrodbokenPage() {
                   className={`transition-all duration-700 ${imageLoaded ? "opacity-100 scale-100" : "opacity-0 scale-95"}`}
                 >
                   <Image
-                    src={content.image || "/baka-glutenfritt.png"}
+                    src={content.image || "/paskbuffe-omslag.jpg"}
                     alt={`${content.title} – ${content.subtitle}`}
                     width={400}
                     height={500}
@@ -299,11 +297,11 @@ export default function BrodbokenPage() {
                 <ChefHat className="w-6 h-6 text-[#93C560]" />
               </div>
               <h3 className="text-white font-semibold mb-2">
-                Glutenfria recept
+                Hälsosamma recept
               </h3>
               <p className="text-gray-300 text-sm">
                 Du får näringsrika, mättande och riktigt goda recept - som är
-                enkla att baka
+                enkla att laga
               </p>
             </div>
             <div className="bg-white/5 backdrop-blur-sm rounded-2xl p-6 border border-white/10">
@@ -314,8 +312,8 @@ export default function BrodbokenPage() {
                 En komplett e-bok
               </h3>
               <p className="text-gray-300 text-sm">
-                Goda recept till frukost och middag, för vardag och fest - som
-                du kommer baka om och om igen
+                Goda recept till påsken – smakrika favoriter att njuta av under
+                påskhelgen.
               </p>
             </div>
             <div className="bg-white/5 backdrop-blur-sm rounded-2xl p-6 border border-white/10">
@@ -326,8 +324,8 @@ export default function BrodbokenPage() {
                 Functional Foods
               </h3>
               <p className="text-gray-300 text-sm">
-                Oavsett om du väljer glutenfritt av hälsoskäl, för magen eller
-                för att få jämnare energi
+                Oavsett om det är vardag eller högtid går det att njuta av både
+                god och näringsrik mat som får kroppen att må bra.
               </p>
             </div>
           </div>
