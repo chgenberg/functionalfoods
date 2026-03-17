@@ -53,7 +53,7 @@ export default function Header() {
 
   const menuItems = [
     { label: t('nav.home','HEM'), href: "/" },
-    { label: t('nav.book','BOKEN'), href: "/boken" },
+    { label: t('nav.book','BÖCKER'), href: "/e-bocker" },
     { label: t('nav.education','UTBILDNING'), href: "/utbildning", submenu: [
       { label: t('nav.allCourses','Alla kurser'), href: "/utbildning" },
       { label: "Functional Basics", href: "/utbildning/functional-basics" },
