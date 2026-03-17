@@ -8,8 +8,9 @@ export const dynamic = "force-dynamic";
 export async function GET(req: NextRequest) {
   try {
     const session_id = req.nextUrl.searchParams.get("session_id");
-    if (!session_id)
+    if (!session_id) {
       return NextResponse.json({ error: "session_id saknas" }, { status: 400 });
+    }
 
     const secretKey = process.env.STRIPE_SECRET_KEY;
     if (!secretKey) {
@@ -26,6 +27,37 @@ export async function GET(req: NextRequest) {
       session.customer_email ||
       ""
     ).trim();
+    const internalOrderId = session.metadata?.orderId || null;
+
+    const legacyOrderNumber =
+      session.amount_total === 0
+        ? `STRIPE-FREE-${session.id}`
+        : `STRIPE-${session.id}`;
+
+    const findOrder = async (includeRelations = false) => {
+      const include = includeRelations
+        ? { items: true, user: true }
+        : undefined;
+
+      if (internalOrderId) {
+        const byInternalId = await prisma.order.findUnique({
+          where: { id: internalOrderId },
+          include,
+        });
+
+        if (byInternalId) return byInternalId;
+      }
+
+      return prisma.order.findFirst({
+        where: {
+          OR: [
+            { checkoutOrderId: session.id },
+            { orderNumber: legacyOrderNumber },
+          ],
+        },
+        include,
+      });
+    };
 
     // Fallback finalization if webhook didn't run
     try {
@@ -39,7 +71,10 @@ export async function GET(req: NextRequest) {
         customerEmail &&
         (session.amount_total === 0 || session.payment_status === "paid")
       ) {
-        // Idempotency: if payment OR order with this session ID exists, assume webhook handled it
+        // 1. Försök hitta intern order först
+        let existingOrder = await findOrder(false);
+
+        // 2. Kolla payment som extra idempotens
         let existingPayment = null as any;
         if (paymentIntentId) {
           existingPayment = await prisma.payment.findFirst({
@@ -47,15 +82,9 @@ export async function GET(req: NextRequest) {
           });
         }
 
-        // Also check if order with this session ID exists
-        const existingOrder = await prisma.order.findFirst({
-          where: {
-            orderNumber: { contains: session.id },
-          },
-        });
-
+        // 3. Bara skapa ny order om inget alls hittades
         if (!existingPayment && !existingOrder) {
-          // Parse items from metadata
+          // Parse items from metadata (legacy fallback)
           let items: Array<{
             id: string;
             name: string;
@@ -68,11 +97,19 @@ export async function GET(req: NextRequest) {
             if (raw) items = JSON.parse(raw);
           } catch {}
 
-          let attribution: any = null;
-          try {
-            const rawAttr = (session.metadata as any)?.attribution || "";
-            if (rawAttr) attribution = JSON.parse(rawAttr);
-          } catch {}
+          const attribution = {
+            gclid: session.metadata?.gclid || "",
+            gbraid: session.metadata?.gbraid || "",
+            wbraid: session.metadata?.wbraid || "",
+            fbclid: session.metadata?.fbclid || "",
+            mc_cid: session.metadata?.mc_cid || "",
+            mc_eid: session.metadata?.mc_eid || "",
+            utm_source: session.metadata?.utm_source || "",
+            utm_medium: session.metadata?.utm_medium || "",
+            utm_campaign: session.metadata?.utm_campaign || "",
+            utm_term: session.metadata?.utm_term || "",
+            utm_content: session.metadata?.utm_content || "",
+          };
 
           if (items.length > 0) {
             await prisma.$transaction(async (tx) => {
@@ -82,12 +119,14 @@ export async function GET(req: NextRequest) {
               });
               const isNewUser = !user;
               let tempPassword = "";
+
               if (!user) {
                 const bcrypt = require("bcryptjs");
                 tempPassword =
                   Math.random().toString(36).slice(-8) +
                   Math.random().toString(36).slice(-8).toUpperCase();
                 const hashed = await bcrypt.hash(tempPassword, 12);
+
                 user = await tx.user.create({
                   data: {
                     email: customerEmail,
@@ -102,14 +141,16 @@ export async function GET(req: NextRequest) {
                 });
               }
 
-              // Create order if missing (use session.id for idempotency)
+              // Create order if missing (legacy fallback)
               const totalIncl = (session.amount_total || 0) / 100;
+
               const order = await tx.order.create({
                 data: {
-                  orderNumber:
-                    session.amount_total === 0
-                      ? `STRIPE-FREE-${session.id}`
-                      : `STRIPE-${session.id}`,
+                  orderNumber: legacyOrderNumber,
+                  checkoutOrderId: session.id,
+                  customerName:
+                    session.customer_details?.name || user.name || null,
+                  customerEmail,
                   userId: user.id,
                   status: "COMPLETED",
                   totalAmount: totalIncl,
@@ -149,7 +190,6 @@ export async function GET(req: NextRequest) {
               // Link order items to actual course ids and create purchases
               const purchasedCourses: any[] = [];
 
-              // Course name mapping for exact matching
               const courseNameMap: Record<string, string> = {
                 "hormonell balans": "Hormonell Balans",
                 "functional flow": "Functional Flow",
@@ -166,14 +206,12 @@ export async function GET(req: NextRequest) {
                 const normalizedName = it.name.toLowerCase().trim();
                 const mappedName = courseNameMap[normalizedName] || it.name;
 
-                // Try exact match first (case-insensitive)
                 let course = await tx.courseProduct.findFirst({
                   where: {
                     name: { equals: mappedName, mode: "insensitive" },
                   },
                 });
 
-                // If no exact match, try original name
                 if (!course) {
                   course = await tx.courseProduct.findFirst({
                     where: {
@@ -182,7 +220,6 @@ export async function GET(req: NextRequest) {
                   });
                 }
 
-                // Only use contains as last resort, and be more specific
                 if (!course && it.name.toLowerCase().includes("functional")) {
                   const functionalPart = it.name
                     .split("Functional ")[1]
@@ -219,11 +256,13 @@ export async function GET(req: NextRequest) {
                 console.log(
                   `✅ Matched course: "${it.name}" → "${course.name}"`,
                 );
+
                 const already = await tx.purchase.findUnique({
                   where: {
                     userId_courseId: { userId: user.id, courseId: course.id },
                   },
                 });
+
                 if (!already) {
                   const purchase = await tx.purchase.create({
                     data: {
@@ -240,6 +279,7 @@ export async function GET(req: NextRequest) {
                   });
                   purchasedCourses.push(purchase.course);
                 }
+
                 await tx.orderItem.updateMany({
                   where: {
                     orderId: order.id,
@@ -262,6 +302,7 @@ export async function GET(req: NextRequest) {
                       Math.round(it.price * (1 + VAT_RATE)) *
                       (it.quantity || 1),
                   }));
+
                 await emailService.sendOrderConfirmation({
                   customerEmail: user.email,
                   customerName: user.name || user.email,
@@ -273,7 +314,10 @@ export async function GET(req: NextRequest) {
                       ? {
                           email: user.email,
                           password: tempPassword,
-                          loginUrl: `${process.env.NEXT_PUBLIC_BASE_URL || "https://functionalfoods.se"}/login`,
+                          loginUrl: `${
+                            process.env.NEXT_PUBLIC_BASE_URL ||
+                            "https://functionalfoods.se"
+                          }/login`,
                         }
                       : undefined,
                   isExistingUser: !isNewUser,
@@ -282,146 +326,164 @@ export async function GET(req: NextRequest) {
                 console.error("Email send failed in verify fallback:", e);
               }
             });
+          }
+        } else if (existingOrder && !existingPayment && paymentIntentId) {
+          // If order already exists but payment is missing, create payment as fallback
+          try {
+            await prisma.payment.create({
+              data: {
+                orderId: existingOrder.id,
+                paymentMethod: "stripe",
+                status: "COMPLETED",
+                amount: (session.amount_total || 0) / 100,
+                currency: String(session.currency || "SEK").toUpperCase(),
+                externalId: String(paymentIntentId),
+                processedAt: new Date(),
+              },
+            });
+          } catch (e) {
+            console.warn(
+              "⚠️ Stripe verify fallback: payment creation skipped/failed:",
+              e,
+            );
+          }
+        }
 
-            // ✅ Post-completion Mailchimp tracking (idempotent)
-            try {
-              const orderNumber =
-                session.amount_total === 0
-                  ? `STRIPE-FREE-${session.id}`
-                  : `STRIPE-${session.id}`;
+        // ✅ Post-completion Mailchimp tracking (idempotent)
+        try {
+          const updatedOrder = await findOrder(true);
 
-              const updatedOrder = await prisma.order.findUnique({
-                where: { orderNumber },
-                include: { items: true, user: true },
-              });
+          if (updatedOrder) {
+            const metadata = (updatedOrder.metadata as any) || {};
+            const emailForTracking =
+              updatedOrder.user?.email ||
+              updatedOrder.customerEmail ||
+              customerEmail;
 
-              if (updatedOrder) {
-                const metadata = (updatedOrder.metadata as any) || {};
-                const emailForTracking =
-                  updatedOrder.user?.email || customerEmail;
+            // 1) Mailchimp Marketing tags
+            if (!metadata.mailchimpMarketingTaggedAt) {
+              const mailchimpMarketing = getMailchimpMarketing();
 
-                // 1) Mailchimp Marketing tags
-                if (!metadata.mailchimpMarketingTaggedAt) {
-                  const mailchimpMarketing = getMailchimpMarketing();
-                  if (
-                    mailchimpMarketing.isConfigured() &&
-                    emailForTracking &&
-                    !emailForTracking.startsWith("guest-")
-                  ) {
-                    const productNames = updatedOrder.items.map((i) => i.name); // courses + books
+              if (
+                mailchimpMarketing.isConfigured() &&
+                emailForTracking &&
+                !emailForTracking.startsWith("guest-")
+              ) {
+                const productNames = updatedOrder.items.map((i) => i.name);
 
-                    const nameParts = (
-                      updatedOrder.customerName ||
-                      updatedOrder.user?.name ||
-                      ""
-                    )
-                      .trim()
-                      .split(" ")
-                      .filter(Boolean);
+                const nameParts = (
+                  updatedOrder.customerName ||
+                  updatedOrder.user?.name ||
+                  ""
+                )
+                  .trim()
+                  .split(" ")
+                  .filter(Boolean);
 
-                    const firstName = nameParts[0] || "";
-                    const lastName = nameParts.slice(1).join(" ") || "";
+                const firstName = nameParts[0] || "";
+                const lastName = nameParts.slice(1).join(" ") || "";
 
-                    await mailchimpMarketing.addCustomerWithCourseTags(
-                      emailForTracking,
-                      productNames,
-                      firstName,
-                      lastName,
-                    );
+                await mailchimpMarketing.addCustomerWithCourseTags(
+                  emailForTracking,
+                  productNames,
+                  firstName,
+                  lastName,
+                );
 
-                    await prisma.order.update({
-                      where: { id: updatedOrder.id },
-                      data: {
-                        metadata: {
-                          ...metadata,
-                          mailchimpMarketingTaggedAt: new Date().toISOString(),
-                        },
-                      },
-                    });
+                await prisma.order.update({
+                  where: { id: updatedOrder.id },
+                  data: {
+                    metadata: {
+                      ...metadata,
+                      mailchimpMarketingTaggedAt: new Date().toISOString(),
+                    },
+                  },
+                });
 
-                    console.log(
-                      `✅ Mailchimp Marketing tagged (stripe verify fallback): ${emailForTracking}`,
-                    );
-                  }
-                }
-
-                // 2) Mailchimp E-commerce tracking
-                const metadata2 =
-                  ((
-                    await prisma.order.findUnique({
-                      where: { id: updatedOrder.id },
-                      select: { metadata: true },
-                    })
-                  )?.metadata as any) || {};
-
-                if (!metadata2.mailchimpEcommerceTrackedAt) {
-                  const { getMailchimpEcommerce } =
-                    await import("@/app/lib/mailchimp-ecommerce");
-                  const mc = getMailchimpEcommerce();
-
-                  if (
-                    mc.isConfigured() &&
-                    emailForTracking &&
-                    !emailForTracking.startsWith("guest-")
-                  ) {
-                    const attr = metadata2.attribution || null;
-                    const campaignId = attr?.mc_cid || undefined;
-                    const trackingCode =
-                      attr?.utm_campaign || campaignId || undefined;
-
-                    await mc.trackPurchase({
-                      orderId: updatedOrder.orderNumber,
-                      customerEmail: emailForTracking,
-                      customerName:
-                        updatedOrder.user?.name ||
-                        updatedOrder.customerName ||
-                        undefined,
-                      items: updatedOrder.items.map((it) => ({
-                        id: it.courseId || `ebook:${it.name}`, // now course items should have courseId
-                        name: it.name,
-                        price: it.price,
-                        quantity: it.quantity,
-                        type: (it.type as any) || "course",
-                      })),
-                      totalAmount: updatedOrder.totalAmount || 0,
-                      currency: updatedOrder.currency || "SEK",
-                      orderDate: updatedOrder.createdAt,
-                      discountTotal: 0,
-                      shippingTotal: 0,
-                      taxTotal: 0,
-                      campaignId,
-                      landingSite: undefined,
-                      trackingCode,
-                    });
-
-                    await prisma.order.update({
-                      where: { id: updatedOrder.id },
-                      data: {
-                        metadata: {
-                          ...metadata2,
-                          mailchimpEcommerceTrackedAt: new Date().toISOString(),
-                        },
-                      },
-                    });
-
-                    console.log(
-                      "✅ Mailchimp E-commerce tracked (stripe verify fallback):",
-                      {
-                        orderId: updatedOrder.orderNumber,
-                        email: emailForTracking,
-                        itemsCount: updatedOrder.items.length,
-                      },
-                    );
-                  }
-                }
+                console.log(
+                  `✅ Mailchimp Marketing tagged (stripe verify fallback): ${emailForTracking}`,
+                );
               }
-            } catch (e) {
-              console.warn(
-                "⚠️ Stripe verify fallback: Mailchimp tracking failed (non-critical):",
-                e,
-              );
+            }
+
+            // 2) Mailchimp E-commerce tracking
+            const metadata2 =
+              ((
+                await prisma.order.findUnique({
+                  where: { id: updatedOrder.id },
+                  select: { metadata: true },
+                })
+              )?.metadata as any) || {};
+
+            if (!metadata2.mailchimpEcommerceTrackedAt) {
+              const { getMailchimpEcommerce } =
+                await import("@/app/lib/mailchimp-ecommerce");
+              const mc = getMailchimpEcommerce();
+
+              if (
+                mc.isConfigured() &&
+                emailForTracking &&
+                !emailForTracking.startsWith("guest-")
+              ) {
+                const attr = metadata2.attribution || null;
+                const campaignId = attr?.mc_cid || undefined;
+                const trackingCode =
+                  attr?.utm_campaign || campaignId || undefined;
+
+                await mc.trackPurchase(
+                  {
+                    orderId: updatedOrder.orderNumber,
+                    customerEmail: emailForTracking,
+                    customerName:
+                      updatedOrder.user?.name ||
+                      updatedOrder.customerName ||
+                      undefined,
+                    items: updatedOrder.items.map((it) => ({
+                      id: it.courseId || `ebook:${it.name}`,
+                      name: it.name,
+                      price: it.price,
+                      quantity: it.quantity,
+                      type: (it.type as any) || "course",
+                    })),
+                    totalAmount: updatedOrder.totalAmount || 0,
+                    currency: updatedOrder.currency || "SEK",
+                    orderDate: updatedOrder.createdAt,
+                    discountTotal: 0,
+                    shippingTotal: 0,
+                    taxTotal: 0,
+                    campaignId,
+                    landingSite: undefined,
+                    trackingCode,
+                  },
+                  { usePut: true },
+                );
+
+                await prisma.order.update({
+                  where: { id: updatedOrder.id },
+                  data: {
+                    metadata: {
+                      ...metadata2,
+                      mailchimpEcommerceTrackedAt: new Date().toISOString(),
+                    },
+                  },
+                });
+
+                console.log(
+                  "✅ Mailchimp E-commerce tracked (stripe verify fallback):",
+                  {
+                    orderId: updatedOrder.orderNumber,
+                    email: emailForTracking,
+                    itemsCount: updatedOrder.items.length,
+                  },
+                );
+              }
             }
           }
+        } catch (e) {
+          console.warn(
+            "⚠️ Stripe verify fallback: Mailchimp tracking failed (non-critical):",
+            e,
+          );
         }
       }
     } catch (e) {
@@ -429,15 +491,7 @@ export async function GET(req: NextRequest) {
     }
 
     try {
-      const orderNumber =
-        session.amount_total === 0
-          ? `STRIPE-FREE-${session.id}`
-          : `STRIPE-${session.id}`;
-
-      const order = await prisma.order.findUnique({
-        where: { orderNumber },
-        include: { items: true, user: true },
-      });
+      const order = await findOrder(true);
 
       if (order) {
         const emailToUse =

@@ -151,28 +151,33 @@ class MailchimpEcommerceService {
    * Track a purchase/conversion
    * Automatically syncs products if they don't exist in Mailchimp
    */
-  async trackPurchase(params: {
-    orderId: string;
-    customerEmail: string;
-    customerName?: string;
-    items: Array<{
-      id: string;
-      name: string;
-      price: number;
-      quantity: number;
-      type?: string;
-    }>;
-    totalAmount: number;
-    currency?: string;
-    orderDate?: Date;
-    discountTotal?: number;
-    shippingTotal?: number;
-    taxTotal?: number;
-    // Campaign attribution
-    campaignId?: string;     // mc_cid from Mailchimp email links
-    landingSite?: string;    // Original landing URL with UTM params
-    trackingCode?: string;   // Custom tracking code (can be mc_cid or utm_campaign)
-  }): Promise<void> {
+  async trackPurchase(
+    params: {
+      orderId: string;
+      customerEmail: string;
+      customerName?: string;
+      items: Array<{
+        id: string;
+        name: string;
+        price: number;
+        quantity: number;
+        type?: string;
+      }>;
+      totalAmount: number;
+      currency?: string;
+      orderDate?: Date;
+      discountTotal?: number;
+      shippingTotal?: number;
+      taxTotal?: number;
+      // Campaign attribution
+      campaignId?: string;     // mc_cid from Mailchimp email links
+      landingSite?: string;    // Original landing URL with UTM params
+      trackingCode?: string;   // Custom tracking code (can be mc_cid or utm_campaign)
+    },
+    options?: {
+      usePut?: boolean;
+    }
+  ): Promise<void> {
     if (!this.isConfigured()) {
       console.log('ℹ️ Mailchimp E-commerce not configured, skipping purchase tracking');
       return;
@@ -193,6 +198,10 @@ class MailchimpEcommerceService {
       landingSite,
       trackingCode
     } = params;
+
+    const safeOrderId = `mc-${Buffer.from(orderId).toString('base64').replace(/[^a-zA-Z0-9]/g, '').slice(0, 20)}`
+    
+    const usePut = options?.usePut === true;
 
     try {
       // Sync products first
@@ -230,21 +239,20 @@ class MailchimpEcommerceService {
 
       // ✅ Create order lines with REQUIRED product_variant_id
       const orderLines: MailchimpOrderLine[] = items.map((item, index) => {
-        const variantId = `${item.id}-default`; // MUST match the synced variant id
         return {
-          id: `${orderId}-${index + 1}`,
+          id: String(index + 1),
           product_id: item.id,
           product_title: item.name,
-          product_variant_id: `${item.id}-default`,    // sends product info to mailchimp
-          product_variant_title: item.name,       // (nice-to-have)
+          product_variant_id: `${item.id}-default`,
+          product_variant_title: item.name,
           quantity: item.quantity,
-          price: item.price                        // unit price
+          price: item.price
         };
       });
-
+      
       // Create order with campaign attribution
       const order: MailchimpOrder = {
-        id: orderId,
+        id: safeOrderId,
         customer: {
           id: customerId,
           email_address: customerEmail.toLowerCase().trim(),
@@ -267,19 +275,23 @@ class MailchimpEcommerceService {
       };
 
       // Send order to Mailchimp
-      const orderUrl = `${this.baseUrl}/orders`;
+      const orderUrl = usePut
+        ? `${this.baseUrl}/orders/${encodeURIComponent(safeOrderId)}`
+        : `${this.baseUrl}/orders`;
+      
       const response = await fetch(orderUrl, {
-        method: 'POST',
+        method: usePut ? 'PUT' : 'POST',
         headers: {
           'Authorization': `Basic ${Buffer.from(`anystring:${this.config!.apiKey}`).toString('base64')}`,
           'Content-Type': 'application/json'
         },
         body: JSON.stringify(order)
       });
-
+      
+      const responseText = await response.text();
+      
       if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(`Mailchimp API error: ${response.status} ${errorText}`);
+        throw new Error(`Mailchimp API error: ${response.status} ${responseText}`);
       }
 
       // ✅ Only log success if Mailchimp accepted the order
@@ -293,8 +305,8 @@ class MailchimpEcommerceService {
       });
 
     } catch (error) {
-      // Don't throw - tracking failures shouldn't break the purchase flow
       console.error('⚠️ Failed to track purchase in Mailchimp:', error);
+      throw error;
     }
   }
 

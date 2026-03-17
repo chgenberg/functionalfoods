@@ -264,6 +264,36 @@ async function handlePaymentProcessing(paymentIntent: any) {
   }
 }
 
+async function findStripeOrder(session: any, includeRelations = false) {
+  const internalOrderId = session.metadata?.orderId || null;
+  const legacyOrderNumber =
+    session.amount_total === 0
+      ? `STRIPE-FREE-${session.id}`
+      : `STRIPE-${session.id}`;
+
+  const include = includeRelations ? { items: true, user: true } : undefined;
+
+  if (internalOrderId) {
+    const byInternalId = await prisma.order.findUnique({
+      where: { id: internalOrderId },
+      include,
+    });
+
+    if (byInternalId) return byInternalId;
+  }
+
+  return prisma.order.findFirst({
+    where: {
+      OR: [
+        { stripeSessionId: session.id },
+        { checkoutOrderId: session.id },
+        { orderNumber: legacyOrderNumber },
+      ],
+    },
+    include,
+  });
+}
+
 async function handleCheckoutSessionCompleted(session: any) {
   try {
     console.log("🎉 Checkout session completed:", {
@@ -272,6 +302,7 @@ async function handleCheckoutSessionCompleted(session: any) {
       amount_total: session.amount_total,
       payment_status: session.payment_status,
       has_payment_intent: !!session.payment_intent,
+      internalOrderId: session.metadata?.orderId || null,
     });
 
     const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
@@ -285,77 +316,10 @@ async function handleCheckoutSessionCompleted(session: any) {
       return;
     }
 
-    // Paid order path with payment_intent
     const paymentIntentId =
       typeof session.payment_intent === "string"
         ? session.payment_intent
         : session.payment_intent?.id;
-
-    // Idempotency guard: if we already recorded this payment OR session, exit
-    const alreadyPayment = await prisma.payment.findFirst({
-      where: { externalId: String(paymentIntentId) },
-    });
-    if (alreadyPayment) {
-      console.log(
-        "ℹ️ Payment already recorded for PI:",
-        paymentIntentId,
-        "- Skipping duplicate processing.",
-      );
-      return;
-    }
-    // Also check if we already processed this session ID (stored in gatewayResponse)
-    const alreadySession = await prisma.payment.findFirst({
-      where: {
-        gatewayResponse: {
-          path: ["sessionId"],
-          equals: session.id,
-        },
-      },
-    });
-    if (alreadySession) {
-      console.log(
-        "ℹ️ Session already processed:",
-        session.id,
-        "- Skipping duplicate processing.",
-      );
-      return;
-    }
-
-    // Parse items from metadata; fallback to Stripe line items if needed
-    let items: Array<{
-      id: string;
-      name: string;
-      price: number;
-      quantity: number;
-      type: string;
-    }> = [];
-    try {
-      const raw = (session.metadata as any)?.items || "";
-      if (raw) items = JSON.parse(raw);
-    } catch (e) {
-      console.warn(
-        "⚠️ Failed to parse metadata items, will try Stripe line_items",
-      );
-    }
-    if (items.length === 0) {
-      try {
-        const lineItems = await stripe.checkout.sessions.listLineItems(
-          session.id,
-          { limit: 50 },
-        );
-        items = lineItems.data.map((li: any) => ({
-          id: "course",
-          name: li.description || li.price?.product || "Kurs",
-          price: (li.amount_total || li.amount_subtotal || 0) / 100,
-          quantity: li.quantity || 1,
-          type: "course",
-        }));
-      } catch {}
-    }
-    if (items.length === 0) {
-      console.error("❌ No items found on completed session");
-      return;
-    }
 
     const customerEmail = (
       session.customer_details?.email ||
@@ -368,17 +332,93 @@ async function handleCheckoutSessionCompleted(session: any) {
       session.customer_details?.name || customerEmail.split("@")[0] || "Kund";
     const totalIncl = (session.amount_total || 0) / 100;
 
+    // 1. Idempotency: check if payment already exists
+    const alreadyPayment = await prisma.payment.findFirst({
+      where: { externalId: String(paymentIntentId) },
+    });
+    if (alreadyPayment) {
+      console.log(
+        "ℹ️ Payment already recorded for PI:",
+        paymentIntentId,
+        "- Skipping duplicate processing.",
+      );
+      return;
+    }
+
+    // 2. Try to find existing internal order first
+    let existingOrder: any = await findStripeOrder(session, false);
+
+    // 3. Parse items only as fallback / legacy support
+    let items: Array<{
+      id: string;
+      name: string;
+      price: number;
+      quantity: number;
+      type: string;
+    }> = [];
+
+    if (!existingOrder) {
+      try {
+        const raw = (session.metadata as any)?.items || "";
+        if (raw) items = JSON.parse(raw);
+      } catch (e) {
+        console.warn(
+          "⚠️ Failed to parse metadata items, will try Stripe line_items",
+        );
+      }
+
+      if (items.length === 0) {
+        try {
+          const lineItems = await stripe.checkout.sessions.listLineItems(
+            session.id,
+            { limit: 50 },
+          );
+          items = lineItems.data.map((li: any) => ({
+            id: "course",
+            name: li.description || li.price?.product || "Kurs",
+            price: (li.amount_total || li.amount_subtotal || 0) / 100,
+            quantity: li.quantity || 1,
+            type: "course",
+          }));
+        } catch {}
+      }
+
+      if (items.length === 0) {
+        console.error("❌ No items found on completed session");
+        return;
+      }
+    }
+
+    const attribution = {
+      gclid: session.metadata?.gclid || "",
+      gbraid: session.metadata?.gbraid || "",
+      wbraid: session.metadata?.wbraid || "",
+      fbclid: session.metadata?.fbclid || "",
+      mc_cid: session.metadata?.mc_cid || "",
+      mc_eid: session.metadata?.mc_eid || "",
+      utm_source: session.metadata?.utm_source || "",
+      utm_medium: session.metadata?.utm_medium || "",
+      utm_campaign: session.metadata?.utm_campaign || "",
+      utm_term: session.metadata?.utm_term || "",
+      utm_content: session.metadata?.utm_content || "",
+    };
+
+    let finalOrderId: string | null = null;
+
     await prisma.$transaction(async (tx) => {
       // Get or create user
       let user = await tx.user.findUnique({ where: { email: customerEmail } });
       const isNewUser = !user;
       let temporaryPassword = "";
+
       if (!user) {
         const bcrypt = require("bcryptjs");
         temporaryPassword =
           Math.random().toString(36).slice(-8) +
           Math.random().toString(36).slice(-8).toUpperCase();
+
         const hashed = await bcrypt.hash(temporaryPassword, 12);
+
         user = await tx.user.create({
           data: {
             email: customerEmail,
@@ -388,29 +428,80 @@ async function handleCheckoutSessionCompleted(session: any) {
             mustChangePassword: true,
           },
         });
+
         console.log(`✅ New user created via webhook: ${user.email}`);
       }
 
-      // Create order with session ID in orderNumber for idempotency
-      const order = await tx.order.create({
-        data: {
-          orderNumber: `STRIPE-${session.id}`,
-          userId: user.id,
-          status: "COMPLETED",
-          totalAmount: totalIncl,
-          currency: String(session.currency || "SEK").toUpperCase(),
-          // Note: attribution is stored on payment.gatewayResponse; avoid order metadata to match current schema
-          items: {
-            create: items.map((it) => ({
-              courseId: null,
-              name: it.name,
-              price: it.price,
-              quantity: it.quantity || 1,
-              type: it.type || "course",
-            })),
+      let order: any = existingOrder
+        ? await tx.order.findUnique({
+            where: { id: existingOrder.id },
+            include: { items: true },
+          })
+        : null;
+
+      // Preferred path: update existing internal order
+      if (order) {
+        const currentMetadata = (order.metadata as any) || {};
+
+        order = await tx.order.update({
+          where: { id: order.id },
+          data: {
+            userId: order.userId || user.id,
+            customerEmail: order.customerEmail || customerEmail,
+            customerName: order.customerName || customerName,
+            status: "COMPLETED",
+            totalAmount: order.totalAmount || totalIncl,
+            currency: String(
+              order.currency || session.currency || "SEK",
+            ).toUpperCase(),
+            stripeSessionId: session.id,
+            checkoutOrderId: session.id,
+            metadata: {
+              ...currentMetadata,
+              attribution: currentMetadata.attribution || attribution,
+            },
           },
-        },
-      });
+          include: { items: true },
+        });
+
+        console.log(
+          `✅ Existing order finalized via webhook: ${order.orderNumber}`,
+        );
+      } else {
+        // Legacy fallback: create new order from session metadata
+        order = await tx.order.create({
+          data: {
+            orderNumber: `STRIPE-${session.id}`,
+            stripeSessionId: session.id,
+            checkoutOrderId: session.id,
+            userId: user.id,
+            customerEmail,
+            customerName,
+            status: "COMPLETED",
+            totalAmount: totalIncl,
+            currency: String(session.currency || "SEK").toUpperCase(),
+            metadata: {
+              attribution,
+            },
+            items: {
+              create: items.map((it) => ({
+                courseId: null,
+                name: it.name,
+                price: it.price,
+                quantity: it.quantity || 1,
+                type: it.type || "course",
+              })),
+            },
+          },
+          include: { items: true },
+        });
+
+        console.log(
+          `✅ Legacy order created via webhook: ${order.orderNumber}`,
+        );
+      }
+
+      finalOrderId = order.id;
 
       // Record payment
       await tx.payment.create({
@@ -424,24 +515,15 @@ async function handleCheckoutSessionCompleted(session: any) {
           processedAt: new Date(),
           gatewayResponse: {
             sessionId: session.id,
-            attribution: {
-              gclid: session.metadata?.gclid,
-              gbraid: session.metadata?.gbraid,
-              wbraid: session.metadata?.wbraid,
-              utm_source: session.metadata?.utm_source,
-              utm_medium: session.metadata?.utm_medium,
-              utm_campaign: session.metadata?.utm_campaign,
-              utm_term: session.metadata?.utm_term,
-              utm_content: session.metadata?.utm_content,
-            },
+            attribution,
           },
         },
       });
 
-      // Create purchases for courses
-      const purchasedCourses: any[] = [];
+      // Link order items to actual course ids and create purchases
+      const orderItems = order.items || [];
+      const sourceItems = orderItems.length > 0 ? orderItems : items;
 
-      // Course name mapping for exact matching
       const courseNameMap: Record<string, string> = {
         "hormonell balans": "Hormonell Balans",
         "functional flow": "Functional Flow",
@@ -454,18 +536,16 @@ async function handleCheckoutSessionCompleted(session: any) {
         "prova på vecka": "Prova på vecka med Functional Foods!",
       };
 
-      for (const it of items.filter((i) => i.type === "course")) {
+      for (const it of sourceItems.filter((i: any) => i.type === "course")) {
         const normalizedName = it.name.toLowerCase().trim();
         const mappedName = courseNameMap[normalizedName] || it.name;
 
-        // Try exact match first (case-insensitive)
         let course = await tx.courseProduct.findFirst({
           where: {
             name: { equals: mappedName, mode: "insensitive" },
           },
         });
 
-        // If no exact match, try original name
         if (!course) {
           course = await tx.courseProduct.findFirst({
             where: {
@@ -474,7 +554,6 @@ async function handleCheckoutSessionCompleted(session: any) {
           });
         }
 
-        // Only use contains as last resort, and be more specific
         if (!course && it.name.toLowerCase().includes("functional")) {
           const functionalPart = it.name.split("Functional ")[1]?.trim();
           if (functionalPart) {
@@ -497,11 +576,18 @@ async function handleCheckoutSessionCompleted(session: any) {
         }
 
         console.log(`✅ Matched course: "${it.name}" → "${course.name}"`);
+
         const existingPurchase = await tx.purchase.findUnique({
-          where: { userId_courseId: { userId: user.id, courseId: course.id } },
+          where: {
+            userId_courseId: {
+              userId: user.id,
+              courseId: course.id,
+            },
+          },
         });
+
         if (!existingPurchase) {
-          const purchase = await tx.purchase.create({
+          await tx.purchase.create({
             data: {
               userId: user.id,
               courseId: course.id,
@@ -512,34 +598,38 @@ async function handleCheckoutSessionCompleted(session: any) {
                 new Date().setFullYear(new Date().getFullYear() + 1),
               ),
             },
-            include: { course: true },
           });
-          purchasedCourses.push(purchase.course);
         }
+
+        await tx.orderItem.updateMany({
+          where: {
+            orderId: order.id,
+            type: "course",
+            courseId: null,
+            name: it.name,
+          },
+          data: { courseId: course.id },
+        });
       }
 
-      // Send emails based on product types
+      // Send emails
       try {
         const VAT_RATE = 0.25;
-        const BOOK_VAT_RATE = 0.06;
-        const courseItems = items.filter((i) => i.type === "course");
-        const bookItems = items.filter((i) => i.type === "book");
+        const courseItems = order.items.filter((i: any) => i.type === "course");
+        const bookItems = order.items.filter((i: any) => i.type === "book");
 
         const baseUrl =
           process.env.NEXT_PUBLIC_BASE_URL || "https://www.functionalfoods.se";
 
-        // Send e-book download email for book purchases
         if (bookItems.length > 0) {
           for (const book of bookItems) {
             try {
-              // Generate unique download token
               const crypto = await import("crypto");
               const downloadToken = crypto
                 .randomBytes(16)
                 .toString("hex")
                 .toUpperCase();
 
-              // Determine ebookId based on book name
               let ebookId = "brodboken-2026";
               const n = book.name.toLowerCase();
 
@@ -551,37 +641,43 @@ async function handleCheckoutSessionCompleted(session: any) {
                 ebookId = "paskbuffe";
               }
 
-              // Store the download token in database
-              await prisma.ebookDownload.create({
-                data: {
-                  token: downloadToken,
+              const existingDownload = await tx.ebookDownload.findFirst({
+                where: {
                   orderNumber: order.orderNumber,
-                  customerEmail: user.email,
                   ebookId,
-                  ebookName: book.name,
-                  maxDownloads: 5,
-                  expiresAt: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000), // 1 year
                 },
               });
 
-              let downloadUrl = `${baseUrl}/brodboken/ladda-ner?token=${downloadToken}`;
+              if (!existingDownload) {
+                await tx.ebookDownload.create({
+                  data: {
+                    token: downloadToken,
+                    orderNumber: order.orderNumber,
+                    customerEmail: user.email,
+                    ebookId,
+                    ebookName: book.name,
+                    maxDownloads: 5,
+                    expiresAt: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000),
+                  },
+                });
 
-              if (ebookId === "paskbuffe") {
-                downloadUrl = `${baseUrl}/e-bocker/paskbuffe/ladda-ned?token=${downloadToken}`;
+                let downloadUrl = `${baseUrl}/brodboken/ladda-ner?token=${downloadToken}`;
+
+                if (ebookId === "paskbuffe") {
+                  downloadUrl = `${baseUrl}/e-bocker/paskbuffe/ladda-ned?token=${downloadToken}`;
+                }
+
+                await emailService.sendEbookDownloadEmail({
+                  email: user.email,
+                  name: user.name || user.email,
+                  ebookName: book.name,
+                  downloadUrl,
+                  downloadPassword: downloadToken,
+                  orderNumber: order.orderNumber,
+                });
+
+                console.log(`✅ E-book download email sent for: ${book.name}`);
               }
-
-              await emailService.sendEbookDownloadEmail({
-                email: user.email,
-                name: user.name || user.email,
-                ebookName: book.name,
-                downloadUrl,
-                downloadPassword: downloadToken,
-                orderNumber: order.orderNumber,
-              });
-
-              console.log(
-                `✅ E-book download email sent for: ${book.name} with token: ${downloadToken.substring(0, 8)}...`,
-              );
             } catch (ebookError) {
               console.error(
                 `❌ Failed to send e-book email for ${book.name}:`,
@@ -591,17 +687,17 @@ async function handleCheckoutSessionCompleted(session: any) {
           }
         }
 
-        // Send order confirmation for course purchases (with credentials for new users)
         if (courseItems.length > 0) {
-          const emailCourses = courseItems.map((it) => ({
+          const emailCourses = courseItems.map((it: any) => ({
             name: it.name,
             price: Math.round(it.price * (1 + VAT_RATE)) * (it.quantity || 1),
           }));
+
           await emailService.sendOrderConfirmation({
             customerEmail: user.email,
             customerName: user.name || user.email,
             orderNumber: order.orderNumber,
-            totalAmount: totalIncl,
+            totalAmount: order.totalAmount || totalIncl,
             courses: emailCourses,
             loginCredentials:
               isNewUser && temporaryPassword
@@ -613,8 +709,9 @@ async function handleCheckoutSessionCompleted(session: any) {
                 : undefined,
             isExistingUser: !isNewUser,
           });
+
           console.log(
-            `✅ Order confirmation sent via webhook to ${user.email}${isNewUser ? " (new user with login credentials)" : ""}`,
+            `✅ Order confirmation sent via webhook to ${user.email}`,
           );
         }
       } catch (e) {
@@ -622,35 +719,65 @@ async function handleCheckoutSessionCompleted(session: any) {
       }
     });
 
-    // --- Add new customers to Mailchimp Marketing with "kund" tag + course tags ---
-    try {
-      const user = await prisma.user.findUnique({
-        where: { email: customerEmail },
-      });
-      if (user) {
-        const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000);
-        const isNewUser = user.createdAt > oneHourAgo;
+    if (!finalOrderId) {
+      console.warn("⚠️ No order id resolved after webhook transaction");
+      return;
+    }
 
-        if (isNewUser) {
-          const mailchimpMarketing = getMailchimpMarketing();
-          if (mailchimpMarketing.isConfigured()) {
-            const courseNames = (items || [])
-              .filter((item) => item.type === "course")
-              .map((item) => item.name);
-            const nameParts = customerName.split(" ");
-            const firstName = nameParts[0] || "";
-            const lastName = nameParts.slice(1).join(" ") || "";
-            await mailchimpMarketing.addCustomerWithCourseTags(
-              customerEmail,
-              courseNames,
-              firstName,
-              lastName,
-            );
-            console.log(
-              `✅ New customer added to Mailchimp with course tags: ${customerEmail}`,
-            );
-          }
-        }
+    const finalOrder = await prisma.order.findUnique({
+      where: { id: finalOrderId },
+      include: { user: true, items: true },
+    });
+
+    if (!finalOrder) {
+      console.warn("⚠️ Final order not found after webhook transaction");
+      return;
+    }
+
+    // --- Mailchimp Marketing tags ---
+    try {
+      const metadata = (finalOrder.metadata as any) || {};
+      const mailchimpMarketing = getMailchimpMarketing();
+      const emailForTracking =
+        finalOrder.user?.email || finalOrder.customerEmail || customerEmail;
+
+      if (
+        !metadata.mailchimpMarketingTaggedAt &&
+        mailchimpMarketing.isConfigured() &&
+        emailForTracking &&
+        !emailForTracking.startsWith("guest-")
+      ) {
+        const productNames = finalOrder.items.map((item: any) => item.name);
+        const nameParts = (
+          finalOrder.customerName ||
+          finalOrder.user?.name ||
+          ""
+        )
+          .split(" ")
+          .filter(Boolean);
+        const firstName = nameParts[0] || "";
+        const lastName = nameParts.slice(1).join(" ") || "";
+
+        await mailchimpMarketing.addCustomerWithCourseTags(
+          emailForTracking,
+          productNames,
+          firstName,
+          lastName,
+        );
+
+        await prisma.order.update({
+          where: { id: finalOrder.id },
+          data: {
+            metadata: {
+              ...metadata,
+              mailchimpMarketingTaggedAt: new Date().toISOString(),
+            },
+          },
+        });
+
+        console.log(
+          `✅ Mailchimp Marketing tagged via webhook: ${emailForTracking}`,
+        );
       }
     } catch (e) {
       console.warn(
@@ -659,26 +786,23 @@ async function handleCheckoutSessionCompleted(session: any) {
       );
     }
 
-    // --- GA4 server-side purchase tracking (outside transaction) ---
+    // --- GA4 server-side purchase tracking ---
     try {
-      const { trackPurchaseServer } =
-        await import("../../../lib/server-analytics");
-      const { sendMetaEvent } = await import("../../../lib/meta-capi");
-      const gaItems = (items || []).map((it) => ({
-        item_id: it.id,
-        item_name: it.name,
-        quantity: it.quantity,
-        price: it.price,
-      }));
       await trackPurchaseServer({
         transactionId: String(paymentIntentId || session.id),
         value: (session.amount_total || 0) / 100,
         currency: String(session.currency || "SEK").toUpperCase(),
-        items: gaItems,
+        items: finalOrder.items.map((it: any) => ({
+          item_id: it.courseId ? String(it.courseId) : it.name,
+          item_name: it.name,
+          quantity: it.quantity,
+          price: it.price,
+        })),
         userId: customerEmail || undefined,
         clientSeed: customerEmail || session.id,
       });
-      // Meta CAPI purchase (dedupe occurs against client if event_id reused; here we use session.id)
+
+      const { sendMetaEvent } = await import("../../../lib/meta-capi");
       await sendMetaEvent({
         eventName: "Purchase",
         eventId: String(session.id),
@@ -687,55 +811,21 @@ async function handleCheckoutSessionCompleted(session: any) {
         params: {
           value: (session.amount_total || 0) / 100,
           currency: String(session.currency || "SEK").toUpperCase(),
-          contents: (items || []).map((it) => ({
-            id: it.id,
+          contents: finalOrder.items.map((it: any) => ({
+            id: it.courseId ? String(it.courseId) : it.name,
             quantity: it.quantity,
             item_price: it.price,
           })),
           content_type: "product",
-          content_ids: (items || []).map((it) => it.id),
+          content_ids: finalOrder.items.map((it: any) =>
+            it.courseId ? String(it.courseId) : it.name,
+          ),
         },
       });
+
       console.log("✅ GA4 purchase sent via Measurement Protocol");
     } catch (e) {
       console.warn("⚠️ GA4 purchase tracking failed:", e);
-    }
-
-    // --- Add new customers to Mailchimp Marketing with "kund" tag ---
-    try {
-      const user = await prisma.user.findUnique({
-        where: { email: customerEmail },
-      });
-      if (user) {
-        const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000);
-        const isNewUser = user.createdAt > oneHourAgo;
-
-        if (isNewUser) {
-          const mailchimpMarketing = getMailchimpMarketing();
-          if (mailchimpMarketing.isConfigured()) {
-            const courseNames = (items || [])
-              .filter((item) => item.type === "course")
-              .map((item) => item.name);
-            const nameParts = customerName.split(" ");
-            const firstName = nameParts[0] || "";
-            const lastName = nameParts.slice(1).join(" ") || "";
-            await mailchimpMarketing.addCustomerWithCourseTags(
-              customerEmail,
-              courseNames,
-              firstName,
-              lastName,
-            );
-            console.log(
-              `✅ New customer added to Mailchimp with course tags: ${customerEmail}`,
-            );
-          }
-        }
-      }
-    } catch (e) {
-      console.warn(
-        "⚠️ Mailchimp Marketing subscriber add failed (non-critical):",
-        e,
-      );
     }
 
     // --- Mailchimp E-commerce purchase tracking ---
@@ -743,15 +833,20 @@ async function handleCheckoutSessionCompleted(session: any) {
       const { getMailchimpEcommerce } =
         await import("@/app/lib/mailchimp-ecommerce");
       const mailchimpEcommerce = getMailchimpEcommerce();
+      const metadata = (finalOrder.metadata as any) || {};
+      const attr = metadata.attribution || attribution;
 
-      // Get order details for Mailchimp tracking
-      const order = await prisma.order.findFirst({
-        where: { orderNumber: `STRIPE-${session.id}` },
-        include: { user: true, items: true },
-      });
+      const emailForTracking =
+        finalOrder.user?.email || finalOrder.customerEmail || customerEmail;
 
-      if (order && order.user) {
-        const totalAmount = (session.amount_total || 0) / 100;
+      if (
+        mailchimpEcommerce.isConfigured() &&
+        emailForTracking &&
+        !emailForTracking.startsWith("guest-") &&
+        !metadata.mailchimpEcommerceTrackedAt
+      ) {
+        const totalAmount =
+          finalOrder.totalAmount || (session.amount_total || 0) / 100;
         const vatRate = 0.25;
         const taxTotal = (totalAmount * vatRate) / (1 + vatRate);
         const discountTotal = session.total_details?.amount_discount
@@ -761,47 +856,58 @@ async function handleCheckoutSessionCompleted(session: any) {
           ? session.total_details.amount_shipping / 100
           : 0;
 
-        // Extract attribution from session metadata for campaign tracking
-        const sessionMeta = session.metadata || {};
-        const campaignId = sessionMeta.mc_cid || undefined;
-        const trackingCode =
-          sessionMeta.utm_campaign || campaignId || undefined;
+        const campaignId = attr?.mc_cid || undefined;
+        const trackingCode = attr?.utm_campaign || campaignId || undefined;
 
-        // Build landing site URL from UTM params if available
         let landingSite: string | undefined;
-        if (sessionMeta.utm_source || sessionMeta.utm_campaign) {
+        if (attr?.utm_source || attr?.utm_campaign) {
           const params = new URLSearchParams();
-          if (sessionMeta.utm_source)
-            params.set("utm_source", sessionMeta.utm_source);
-          if (sessionMeta.utm_medium)
-            params.set("utm_medium", sessionMeta.utm_medium);
-          if (sessionMeta.utm_campaign)
-            params.set("utm_campaign", sessionMeta.utm_campaign);
-          if (sessionMeta.mc_cid) params.set("mc_cid", sessionMeta.mc_cid);
+          if (attr?.utm_source) params.set("utm_source", attr.utm_source);
+          if (attr?.utm_medium) params.set("utm_medium", attr.utm_medium);
+          if (attr?.utm_campaign) params.set("utm_campaign", attr.utm_campaign);
+          if (attr?.mc_cid) params.set("mc_cid", attr.mc_cid);
           landingSite = `https://functionalfoods.se/?${params.toString()}`;
         }
 
         await mailchimpEcommerce.trackPurchase({
-          orderId: order.orderNumber,
-          customerEmail: order.user.email,
-          customerName: order.user.name || undefined,
-          items: order.items.map((item) => ({
-            id: item.courseId || item.id,
+          orderId: finalOrder.orderNumber,
+          customerEmail: emailForTracking,
+          customerName:
+            finalOrder.user?.name || finalOrder.customerName || undefined,
+          items: finalOrder.items.map((item: any) => ({
+            id: item.courseId || `ebook:${item.name}`,
             name: item.name,
             price: item.price,
             quantity: item.quantity,
             type: item.type || "course",
           })),
-          totalAmount: totalAmount,
-          currency: String(session.currency || "SEK").toUpperCase(),
-          orderDate: order.createdAt,
-          discountTotal: discountTotal,
-          shippingTotal: shippingTotal,
-          taxTotal: taxTotal,
-          // Campaign attribution for Mailchimp reports
-          campaignId: campaignId,
-          landingSite: landingSite,
-          trackingCode: trackingCode,
+          totalAmount,
+          currency:
+            finalOrder.currency ||
+            String(session.currency || "SEK").toUpperCase(),
+          orderDate: finalOrder.createdAt,
+          discountTotal,
+          shippingTotal,
+          taxTotal,
+          campaignId,
+          landingSite,
+          trackingCode,
+        });
+
+        await prisma.order.update({
+          where: { id: finalOrder.id },
+          data: {
+            metadata: {
+              ...metadata,
+              mailchimpEcommerceTrackedAt: new Date().toISOString(),
+            },
+          },
+        });
+
+        console.log("✅ Mailchimp E-commerce tracked via webhook:", {
+          orderId: finalOrder.orderNumber,
+          email: emailForTracking,
+          itemsCount: finalOrder.items.length,
         });
       }
     } catch (e) {
