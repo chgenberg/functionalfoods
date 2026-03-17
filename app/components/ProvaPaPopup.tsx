@@ -1,23 +1,33 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { X, ArrowRight, Calendar, Utensils, ShoppingCart, Sparkles } from 'lucide-react';
-import Image from 'next/image';
-import Link from 'next/link';
+import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import {
+  X,
+  ArrowRight,
+  Calendar,
+  Utensils,
+  ShoppingCart,
+  Sparkles,
+} from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
 
 interface ProvaPaPopupProps {
   forceOpen?: boolean;
   onClose?: () => void;
 }
 
-export default function ProvaPaPopup({ forceOpen, onClose }: ProvaPaPopupProps) {
+export default function ProvaPaPopup({
+  forceOpen,
+  onClose,
+}: ProvaPaPopupProps) {
   const [isVisible, setIsVisible] = useState(false);
   const [hasBeenDismissed, setHasBeenDismissed] = useState(false);
 
   useEffect(() => {
     // Check if popup was already shown this session
-    const dismissed = sessionStorage.getItem('provaPaPopupDismissed');
+    const dismissed = sessionStorage.getItem("provaPaPopupDismissed");
     if (dismissed) {
       setHasBeenDismissed(true);
       return;
@@ -41,7 +51,7 @@ export default function ProvaPaPopup({ forceOpen, onClose }: ProvaPaPopupProps) 
   const handleClose = () => {
     setIsVisible(false);
     setHasBeenDismissed(true);
-    sessionStorage.setItem('provaPaPopupDismissed', 'true');
+    sessionStorage.setItem("provaPaPopupDismissed", "true");
     onClose?.();
   };
 
@@ -67,7 +77,7 @@ export default function ProvaPaPopup({ forceOpen, onClose }: ProvaPaPopupProps) 
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.9 }}
-              transition={{ duration: 0.4, type: 'spring', bounce: 0.3 }}
+              transition={{ duration: 0.4, type: "spring", bounce: 0.3 }}
               className="relative w-full max-w-lg bg-white rounded-3xl shadow-2xl overflow-hidden pointer-events-auto"
               onClick={(e) => e.stopPropagation()}
             >
@@ -90,7 +100,7 @@ export default function ProvaPaPopup({ forceOpen, onClose }: ProvaPaPopupProps) 
                   priority
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
-                
+
                 {/* Badge */}
                 <div className="absolute top-4 left-4">
                   <div className="bg-[#014421] text-white px-4 py-2 rounded-full font-bold text-sm flex items-center gap-2 shadow-lg">
@@ -113,22 +123,29 @@ export default function ProvaPaPopup({ forceOpen, onClose }: ProvaPaPopupProps) 
               {/* Content */}
               <div className="p-6">
                 <p className="text-gray-700 mb-6 leading-relaxed">
-                  Ulrika har samlat sina mest omtyckta glutenfria brödrecept i en e-bok. Näringsrikt, mättande och riktigt gott.
+                  Ulrika har samlat sina mest omtyckta glutenfria brödrecept i
+                  en e-bok. Näringsrikt, mättande och riktigt gott.
                 </p>
 
                 {/* Features */}
                 <div className="grid grid-cols-3 gap-3 mb-6">
                   <div className="text-center p-3 bg-[#014421]/5 rounded-xl">
                     <Calendar className="w-5 h-5 mx-auto text-[#014421] mb-1" />
-                    <span className="text-xs text-gray-700 font-medium">Glutenfritt</span>
+                    <span className="text-xs text-gray-700 font-medium">
+                      Glutenfritt
+                    </span>
                   </div>
                   <div className="text-center p-3 bg-[#014421]/5 rounded-xl">
                     <Utensils className="w-5 h-5 mx-auto text-[#014421] mb-1" />
-                    <span className="text-xs text-gray-700 font-medium">26 recept</span>
+                    <span className="text-xs text-gray-700 font-medium">
+                      26 recept
+                    </span>
                   </div>
                   <div className="text-center p-3 bg-[#014421]/5 rounded-xl">
                     <ShoppingCart className="w-5 h-5 mx-auto text-[#014421] mb-1" />
-                    <span className="text-xs text-gray-700 font-medium">69 kr</span>
+                    <span className="text-xs text-gray-700 font-medium">
+                      69 kr
+                    </span>
                   </div>
                 </div>
 
@@ -163,7 +180,7 @@ export function ProvaPaFloatingButton({ onClick }: { onClick: () => void }) {
   useEffect(() => {
     // Show button after popup has been dismissed
     const checkDismissed = () => {
-      const dismissed = sessionStorage.getItem('provaPaPopupDismissed');
+      const dismissed = sessionStorage.getItem("provaPaPopupDismissed");
       setIsVisible(!!dismissed);
     };
 
@@ -172,13 +189,13 @@ export function ProvaPaFloatingButton({ onClick }: { onClick: () => void }) {
 
     // Also check on storage changes (for when popup is closed)
     const handleStorageChange = () => checkDismissed();
-    window.addEventListener('storage', handleStorageChange);
+    window.addEventListener("storage", handleStorageChange);
 
     // Check periodically (fallback for same-tab updates)
     const interval = setInterval(checkDismissed, 500);
 
     return () => {
-      window.removeEventListener('storage', handleStorageChange);
+      window.removeEventListener("storage", handleStorageChange);
       clearInterval(interval);
     };
   }, []);
