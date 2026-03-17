@@ -309,7 +309,7 @@ export async function POST(request: NextRequest) {
           let downloadUrl = `${baseUrl}/brodboken/ladda-ner?token=${downloadRecord.token}`;
 
           if (downloadRecord.ebookId === "paskbuffe") {
-            downloadUrl = `${baseUrl}/e-bocker/paskbuffe/ladda-ned?token=${downloadRecord.token}`;
+            downloadUrl = `${baseUrl}/e-bocker/paskbuffe/ladda-ner?token=${downloadRecord.token}`;
           }
 
           const sent = await emailService.sendEbookDownloadEmail({
