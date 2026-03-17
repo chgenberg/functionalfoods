@@ -269,9 +269,12 @@ async function handleOrderCompleted(
     }
 
     // Skip if already processed
-    if (order.status === "COMPLETED") {
-      console.log(`ℹ️ Order ${order.id} already processed`);
-      return;
+    const orderAlreadyCompleted = order.status === "COMPLETED";
+
+    if (orderAlreadyCompleted) {
+      console.log(
+        `ℹ️ Order ${order.id} already completed - continuing to verify ebook delivery`,
+      );
     }
 
     // Variables to track user creation (needed outside transaction for email)
@@ -723,18 +726,13 @@ async function handleOrderCompleted(
             // Send e-book download email for standalone e-book purchases (or mixed orders with e-books)
             if (bookItems.length > 0) {
               for (const book of bookItems) {
-                // Generate unique download token
-                const crypto = await import("crypto");
-                const downloadToken = crypto
-                  .randomBytes(16)
-                  .toString("hex")
-                  .toUpperCase();
-
-                // Determine ebookId based on book name
-                let ebookId = "brodboken-2026";
                 const n = book.name.toLowerCase();
 
-                if (
+                let ebookId = "brodboken-2026";
+
+                if (n.includes("påskbuffé") || n.includes("paskbuffe")) {
+                  ebookId = "paskbuffe";
+                } else if (
                   n.includes("brodboken") ||
                   n.includes("brodbok") ||
                   n.includes("glutenfritt")
@@ -742,22 +740,37 @@ async function handleOrderCompleted(
                   ebookId = "brodboken-2026";
                 }
 
-                if (n.includes("påskbuffé") || n.includes("paskbuffe")) {
-                  ebookId = "paskbuffe";
-                }
-
-                // Store the download token in database
-                await prisma.ebookDownload.create({
-                  data: {
-                    token: downloadToken,
+                // Reuse existing token if it already exists for this order + ebook
+                let existingDownload = await prisma.ebookDownload.findFirst({
+                  where: {
                     orderNumber: updatedOrder.orderNumber,
-                    customerEmail: emailToUse,
                     ebookId,
-                    ebookName: book.name,
-                    maxDownloads: 5,
-                    expiresAt: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000), // 1 year
                   },
                 });
+
+                let downloadToken = existingDownload?.token;
+
+                if (!downloadToken) {
+                  const crypto = await import("crypto");
+                  downloadToken = crypto
+                    .randomBytes(16)
+                    .toString("hex")
+                    .toUpperCase();
+
+                  await prisma.ebookDownload.create({
+                    data: {
+                      token: downloadToken,
+                      orderNumber: updatedOrder.orderNumber,
+                      customerEmail: emailToUse,
+                      ebookId,
+                      ebookName: book.name,
+                      maxDownloads: 5,
+                      expiresAt: new Date(
+                        Date.now() + 365 * 24 * 60 * 60 * 1000,
+                      ),
+                    },
+                  });
+                }
 
                 let downloadUrl = `${baseUrl}/brodboken/ladda-ner?token=${downloadToken}`;
 
@@ -770,12 +783,12 @@ async function handleOrderCompleted(
                   name: nameToUse,
                   ebookName: book.name,
                   downloadUrl,
-                  downloadPassword: downloadToken, // Now using unique token instead of static password
+                  downloadPassword: downloadToken,
                   orderNumber: updatedOrder.orderNumber,
                 });
 
                 console.log(
-                  `✅ E-book download email sent for: ${book.name} with token: ${downloadToken.substring(0, 8)}...`,
+                  `✅ E-book download email sent for: ${book.name} (${ebookId})`,
                 );
 
                 // Send regular order confirmation for course purchases (ALWAYS send if there are courses)
