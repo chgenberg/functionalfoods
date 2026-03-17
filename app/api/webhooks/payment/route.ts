@@ -1,11 +1,11 @@
-import { NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
-import { PaymentService } from '../../../lib/payment';
-import { emailService } from '../../../lib/email';
-import { getMailchimpMarketing } from '../../../lib/mailchimp-marketing';
-import { trackPurchaseServer } from '@/app/lib/server-analytics';
+import { NextResponse } from "next/server";
+import { PrismaClient } from "@prisma/client";
+import { PaymentService } from "../../../lib/payment";
+import { emailService } from "../../../lib/email";
+import { getMailchimpMarketing } from "../../../lib/mailchimp-marketing";
+import { trackPurchaseServer } from "@/app/lib/server-analytics";
 
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";
 
 const prisma = new PrismaClient();
 const paymentService = new PaymentService();
@@ -13,8 +13,8 @@ const paymentService = new PaymentService();
 export async function POST(request: Request) {
   try {
     const body = await request.text();
-    const providerHeader = request.headers.get('x-payment-provider') || '';
-    const stripeSig = request.headers.get('stripe-signature');
+    const providerHeader = request.headers.get("x-payment-provider") || "";
+    const stripeSig = request.headers.get("stripe-signature");
 
     // If this is a Stripe webhook, handle it directly using Stripe's signature
     if (stripeSig) {
@@ -27,20 +27,21 @@ export async function POST(request: Request) {
 
     // Process webhook based on provider (non-Stripe)
     switch (provider) {
-      case 'klarna':
+      case "klarna":
         return await handleKlarnaWebhook(payload);
-      case 'swish':
+      case "swish":
         return await handleSwishWebhook(payload);
       default:
-        console.warn(`Unknown or missing payment provider header: ${providerHeader}`);
+        console.warn(
+          `Unknown or missing payment provider header: ${providerHeader}`,
+        );
         return NextResponse.json({ received: true });
     }
-
   } catch (error) {
-    console.error('Webhook processing error:', error);
+    console.error("Webhook processing error:", error);
     return NextResponse.json(
-      { error: 'Webhook processing failed' },
-      { status: 500 }
+      { error: "Webhook processing failed" },
+      { status: 500 },
     );
   } finally {
     await prisma.$disconnect();
@@ -48,26 +49,26 @@ export async function POST(request: Request) {
 }
 
 async function verifyWebhookSignature(
-  body: string, 
-  signature: string, 
-  provider: string
+  body: string,
+  signature: string,
+  provider: string,
 ): Promise<boolean> {
   // In development, skip signature verification
-  if (process.env.NODE_ENV !== 'production') {
+  if (process.env.NODE_ENV !== "production") {
     return true;
   }
 
   // TODO: Implement signature verification for each provider
   switch (provider) {
-    case 'klarna':
+    case "klarna":
       // Implement Klarna signature verification
       // return verifyKlarnaSignature(body, signature);
       break;
-    case 'stripe':
+    case "stripe":
       // Implement Stripe signature verification
       // return verifyStripeSignature(body, signature);
       break;
-    case 'swish':
+    case "swish":
       // Implement Swish signature verification
       // return verifySwishSignature(body, signature);
       break;
@@ -81,13 +82,13 @@ async function handleKlarnaWebhook(payload: any): Promise<NextResponse> {
     const { order_id, event_type } = payload;
 
     if (!order_id) {
-      return NextResponse.json({ error: 'Missing order_id' }, { status: 400 });
+      return NextResponse.json({ error: "Missing order_id" }, { status: 400 });
     }
 
     // Find payment by external ID
     const payment = await prisma.payment.findFirst({
       where: { externalId: order_id },
-      include: { order: { include: { items: true } } }
+      include: { order: { include: { items: true } } },
     });
 
     if (!payment) {
@@ -96,12 +97,12 @@ async function handleKlarnaWebhook(payload: any): Promise<NextResponse> {
     }
 
     switch (event_type) {
-      case 'checkout.order.completed':
-      case 'order.captured':
+      case "checkout.order.completed":
+      case "order.captured":
         await completePayment(payment.id, payload);
         break;
-      case 'order.cancelled':
-      case 'order.expired':
+      case "order.cancelled":
+      case "order.expired":
         await cancelPayment(payment.id, payload);
         break;
       default:
@@ -109,58 +110,57 @@ async function handleKlarnaWebhook(payload: any): Promise<NextResponse> {
     }
 
     return NextResponse.json({ received: true });
-
   } catch (error) {
-    console.error('Klarna webhook error:', error);
+    console.error("Klarna webhook error:", error);
     return NextResponse.json(
-      { error: 'Klarna webhook processing failed' },
-      { status: 500 }
+      { error: "Klarna webhook processing failed" },
+      { status: 500 },
     );
   }
 }
 
-async function handleStripeWebhook(body: string, signature: string): Promise<NextResponse> {
+async function handleStripeWebhook(
+  body: string,
+  signature: string,
+): Promise<NextResponse> {
   try {
     const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
 
     if (!webhookSecret) {
-      console.error('Stripe webhook secret not configured');
+      console.error("Stripe webhook secret not configured");
       return NextResponse.json(
-        { error: 'Webhook secret not configured' },
-        { status: 500 }
+        { error: "Webhook secret not configured" },
+        { status: 500 },
       );
     }
 
     let event;
 
     try {
-      const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+      const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
       event = stripe.webhooks.constructEvent(body, signature, webhookSecret);
     } catch (err) {
-      console.error('Webhook signature verification failed:', err);
-      return NextResponse.json(
-        { error: 'Invalid signature' },
-        { status: 400 }
-      );
+      console.error("Webhook signature verification failed:", err);
+      return NextResponse.json({ error: "Invalid signature" }, { status: 400 });
     }
 
-    console.log('Stripe webhook event received:', event.type);
+    console.log("Stripe webhook event received:", event.type);
 
     // Hantera olika typer av Stripe-events
     switch (event.type) {
-      case 'payment_intent.succeeded':
+      case "payment_intent.succeeded":
         await handlePaymentSuccess(event.data.object);
         break;
-      case 'payment_intent.payment_failed':
+      case "payment_intent.payment_failed":
         await handlePaymentFailure(event.data.object);
         break;
-      case 'payment_intent.canceled':
+      case "payment_intent.canceled":
         await handlePaymentCanceled(event.data.object);
         break;
-      case 'payment_intent.processing':
+      case "payment_intent.processing":
         await handlePaymentProcessing(event.data.object);
         break;
-      case 'checkout.session.completed':
+      case "checkout.session.completed":
         await handleCheckoutSessionCompleted(event.data.object);
         break;
       default:
@@ -168,59 +168,58 @@ async function handleStripeWebhook(body: string, signature: string): Promise<Nex
     }
 
     return NextResponse.json({ received: true });
-
   } catch (error) {
-    console.error('Stripe webhook error:', error);
+    console.error("Stripe webhook error:", error);
     return NextResponse.json(
-      { error: 'Stripe webhook processing failed' },
-      { status: 500 }
+      { error: "Stripe webhook processing failed" },
+      { status: 500 },
     );
   }
 }
 
 async function handlePaymentSuccess(paymentIntent: any) {
-  console.log('💰 Payment succeeded:', paymentIntent.id);
-  
+  console.log("💰 Payment succeeded:", paymentIntent.id);
+
   const payment = await prisma.payment.findFirst({
     where: { externalId: paymentIntent.id },
-    include: { order: { include: { items: true } } }
+    include: { order: { include: { items: true } } },
   });
 
   if (payment) {
     // Verify amount matches
     const expectedAmountInOre = Math.round(payment.order.totalAmount * 100);
     const actualAmountInOre = paymentIntent.amount;
-    
-    console.log('🔍 Amount Verification:', {
+
+    console.log("🔍 Amount Verification:", {
       orderNumber: payment.order.orderNumber,
       expectedInSEK: payment.order.totalAmount,
       expectedInOre: expectedAmountInOre,
       actualInOre: actualAmountInOre,
       actualInSEK: actualAmountInOre / 100,
       match: Math.abs(expectedAmountInOre - actualAmountInOre) <= 1,
-      difference: actualAmountInOre - expectedAmountInOre
+      difference: actualAmountInOre - expectedAmountInOre,
     });
-    
+
     if (Math.abs(expectedAmountInOre - actualAmountInOre) > 1) {
-      console.error('❌ AMOUNT MISMATCH DETECTED!', {
+      console.error("❌ AMOUNT MISMATCH DETECTED!", {
         expected: expectedAmountInOre,
         actual: actualAmountInOre,
         difference: actualAmountInOre - expectedAmountInOre,
-        orderNumber: payment.order.orderNumber
+        orderNumber: payment.order.orderNumber,
       });
     }
-    
+
     await completePayment(payment.id, paymentIntent);
   } else {
-    console.error('❌ Payment not found for PaymentIntent:', paymentIntent.id);
+    console.error("❌ Payment not found for PaymentIntent:", paymentIntent.id);
   }
 }
 
 async function handlePaymentFailure(paymentIntent: any) {
-  console.log('Payment failed:', paymentIntent.id);
-  
+  console.log("Payment failed:", paymentIntent.id);
+
   const payment = await prisma.payment.findFirst({
-    where: { externalId: paymentIntent.id }
+    where: { externalId: paymentIntent.id },
   });
 
   if (payment) {
@@ -229,38 +228,38 @@ async function handlePaymentFailure(paymentIntent: any) {
 }
 
 async function handlePaymentCanceled(paymentIntent: any) {
-  console.log('Payment canceled:', paymentIntent.id);
-  
+  console.log("Payment canceled:", paymentIntent.id);
+
   const payment = await prisma.payment.findFirst({
-    where: { externalId: paymentIntent.id }
+    where: { externalId: paymentIntent.id },
   });
 
   if (payment) {
     await prisma.payment.update({
       where: { id: payment.id },
       data: {
-        status: 'CANCELLED',
+        status: "CANCELLED",
         gatewayResponse: paymentIntent,
-        processedAt: new Date()
-      }
+        processedAt: new Date(),
+      },
     });
   }
 }
 
 async function handlePaymentProcessing(paymentIntent: any) {
-  console.log('Payment processing:', paymentIntent.id);
-  
+  console.log("Payment processing:", paymentIntent.id);
+
   const payment = await prisma.payment.findFirst({
-    where: { externalId: paymentIntent.id }
+    where: { externalId: paymentIntent.id },
   });
 
-  if (payment && payment.status !== 'PROCESSING') {
+  if (payment && payment.status !== "PROCESSING") {
     await prisma.payment.update({
       where: { id: payment.id },
       data: {
-        status: 'PROCESSING',
-        gatewayResponse: paymentIntent
-      }
+        status: "PROCESSING",
+        gatewayResponse: paymentIntent,
+      },
     });
   }
 }
@@ -268,7 +267,9 @@ async function handlePaymentProcessing(paymentIntent: any) {
 async function findStripeOrder(session: any, includeRelations = false) {
   const internalOrderId = session.metadata?.orderId || null;
   const legacyOrderNumber =
-    session.amount_total === 0 ? `STRIPE-FREE-${session.id}` : `STRIPE-${session.id}`;
+    session.amount_total === 0
+      ? `STRIPE-FREE-${session.id}`
+      : `STRIPE-${session.id}`;
 
   const include = includeRelations ? { items: true, user: true } : undefined;
 
@@ -295,7 +296,7 @@ async function findStripeOrder(session: any, includeRelations = false) {
 
 async function handleCheckoutSessionCompleted(session: any) {
   try {
-    console.log('🎉 Checkout session completed:', {
+    console.log("🎉 Checkout session completed:", {
       sessionId: session.id,
       customer_email: session.customer_email,
       amount_total: session.amount_total,
@@ -304,30 +305,43 @@ async function handleCheckoutSessionCompleted(session: any) {
       internalOrderId: session.metadata?.orderId || null,
     });
 
-    const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
+    const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 
     // Free orders (0 kr) → no PI → process like free
     if (session.amount_total === 0 || !session.payment_intent) {
-      console.log('💰 Free order detected (0 kr) - processing without payment_intent');
+      console.log(
+        "💰 Free order detected (0 kr) - processing without payment_intent",
+      );
       await handleFreeOrder(session);
       return;
     }
 
     const paymentIntentId =
-      typeof session.payment_intent === 'string'
+      typeof session.payment_intent === "string"
         ? session.payment_intent
         : session.payment_intent?.id;
 
-    const customerEmail = (session.customer_details?.email || session.customer_email || '').trim().toLowerCase();
-    const customerName = session.customer_details?.name || customerEmail.split('@')[0] || 'Kund';
+    const customerEmail = (
+      session.customer_details?.email ||
+      session.customer_email ||
+      ""
+    )
+      .trim()
+      .toLowerCase();
+    const customerName =
+      session.customer_details?.name || customerEmail.split("@")[0] || "Kund";
     const totalIncl = (session.amount_total || 0) / 100;
 
     // 1. Idempotency: check if payment already exists
     const alreadyPayment = await prisma.payment.findFirst({
-      where: { externalId: String(paymentIntentId) }
+      where: { externalId: String(paymentIntentId) },
     });
     if (alreadyPayment) {
-      console.log('ℹ️ Payment already recorded for PI:', paymentIntentId, '- Skipping duplicate processing.');
+      console.log(
+        "ℹ️ Payment already recorded for PI:",
+        paymentIntentId,
+        "- Skipping duplicate processing.",
+      );
       return;
     }
 
@@ -335,47 +349,58 @@ async function handleCheckoutSessionCompleted(session: any) {
     let existingOrder: any = await findStripeOrder(session, false);
 
     // 3. Parse items only as fallback / legacy support
-    let items: Array<{ id: string; name: string; price: number; quantity: number; type: string }> = [];
+    let items: Array<{
+      id: string;
+      name: string;
+      price: number;
+      quantity: number;
+      type: string;
+    }> = [];
 
     if (!existingOrder) {
       try {
-        const raw = (session.metadata as any)?.items || '';
+        const raw = (session.metadata as any)?.items || "";
         if (raw) items = JSON.parse(raw);
       } catch (e) {
-        console.warn('⚠️ Failed to parse metadata items, will try Stripe line_items');
+        console.warn(
+          "⚠️ Failed to parse metadata items, will try Stripe line_items",
+        );
       }
 
       if (items.length === 0) {
         try {
-          const lineItems = await stripe.checkout.sessions.listLineItems(session.id, { limit: 50 });
+          const lineItems = await stripe.checkout.sessions.listLineItems(
+            session.id,
+            { limit: 50 },
+          );
           items = lineItems.data.map((li: any) => ({
-            id: 'course',
-            name: li.description || li.price?.product || 'Kurs',
+            id: "course",
+            name: li.description || li.price?.product || "Kurs",
             price: (li.amount_total || li.amount_subtotal || 0) / 100,
             quantity: li.quantity || 1,
-            type: 'course'
+            type: "course",
           }));
         } catch {}
       }
 
       if (items.length === 0) {
-        console.error('❌ No items found on completed session');
+        console.error("❌ No items found on completed session");
         return;
       }
     }
 
     const attribution = {
-      gclid: session.metadata?.gclid || '',
-      gbraid: session.metadata?.gbraid || '',
-      wbraid: session.metadata?.wbraid || '',
-      fbclid: session.metadata?.fbclid || '',
-      mc_cid: session.metadata?.mc_cid || '',
-      mc_eid: session.metadata?.mc_eid || '',
-      utm_source: session.metadata?.utm_source || '',
-      utm_medium: session.metadata?.utm_medium || '',
-      utm_campaign: session.metadata?.utm_campaign || '',
-      utm_term: session.metadata?.utm_term || '',
-      utm_content: session.metadata?.utm_content || '',
+      gclid: session.metadata?.gclid || "",
+      gbraid: session.metadata?.gbraid || "",
+      wbraid: session.metadata?.wbraid || "",
+      fbclid: session.metadata?.fbclid || "",
+      mc_cid: session.metadata?.mc_cid || "",
+      mc_eid: session.metadata?.mc_eid || "",
+      utm_source: session.metadata?.utm_source || "",
+      utm_medium: session.metadata?.utm_medium || "",
+      utm_campaign: session.metadata?.utm_campaign || "",
+      utm_term: session.metadata?.utm_term || "",
+      utm_content: session.metadata?.utm_content || "",
     };
 
     let finalOrderId: string | null = null;
@@ -384,10 +409,10 @@ async function handleCheckoutSessionCompleted(session: any) {
       // Get or create user
       let user = await tx.user.findUnique({ where: { email: customerEmail } });
       const isNewUser = !user;
-      let temporaryPassword = '';
+      let temporaryPassword = "";
 
       if (!user) {
-        const bcrypt = require('bcryptjs');
+        const bcrypt = require("bcryptjs");
         temporaryPassword =
           Math.random().toString(36).slice(-8) +
           Math.random().toString(36).slice(-8).toUpperCase();
@@ -399,9 +424,9 @@ async function handleCheckoutSessionCompleted(session: any) {
             email: customerEmail,
             name: customerName,
             password: hashed,
-            role: 'customer',
-            mustChangePassword: true
-          }
+            role: "customer",
+            mustChangePassword: true,
+          },
         });
 
         console.log(`✅ New user created via webhook: ${user.email}`);
@@ -410,7 +435,7 @@ async function handleCheckoutSessionCompleted(session: any) {
       let order: any = existingOrder
         ? await tx.order.findUnique({
             where: { id: existingOrder.id },
-            include: { items: true }
+            include: { items: true },
           })
         : null;
 
@@ -424,9 +449,11 @@ async function handleCheckoutSessionCompleted(session: any) {
             userId: order.userId || user.id,
             customerEmail: order.customerEmail || customerEmail,
             customerName: order.customerName || customerName,
-            status: 'COMPLETED',
+            status: "COMPLETED",
             totalAmount: order.totalAmount || totalIncl,
-            currency: String(order.currency || session.currency || 'SEK').toUpperCase(),
+            currency: String(
+              order.currency || session.currency || "SEK",
+            ).toUpperCase(),
             stripeSessionId: session.id,
             checkoutOrderId: session.id,
             metadata: {
@@ -434,10 +461,12 @@ async function handleCheckoutSessionCompleted(session: any) {
               attribution: currentMetadata.attribution || attribution,
             },
           },
-          include: { items: true }
+          include: { items: true },
         });
 
-        console.log(`✅ Existing order finalized via webhook: ${order.orderNumber}`);
+        console.log(
+          `✅ Existing order finalized via webhook: ${order.orderNumber}`,
+        );
       } else {
         // Legacy fallback: create new order from session metadata
         order = await tx.order.create({
@@ -448,9 +477,9 @@ async function handleCheckoutSessionCompleted(session: any) {
             userId: user.id,
             customerEmail,
             customerName,
-            status: 'COMPLETED',
+            status: "COMPLETED",
             totalAmount: totalIncl,
-            currency: String(session.currency || 'SEK').toUpperCase(),
+            currency: String(session.currency || "SEK").toUpperCase(),
             metadata: {
               attribution,
             },
@@ -460,14 +489,16 @@ async function handleCheckoutSessionCompleted(session: any) {
                 name: it.name,
                 price: it.price,
                 quantity: it.quantity || 1,
-                type: it.type || 'course'
-              }))
-            }
+                type: it.type || "course",
+              })),
+            },
           },
-          include: { items: true }
+          include: { items: true },
         });
 
-        console.log(`✅ Legacy order created via webhook: ${order.orderNumber}`);
+        console.log(
+          `✅ Legacy order created via webhook: ${order.orderNumber}`,
+        );
       }
 
       finalOrderId = order.id;
@@ -476,17 +507,17 @@ async function handleCheckoutSessionCompleted(session: any) {
       await tx.payment.create({
         data: {
           orderId: order.id,
-          paymentMethod: 'stripe',
-          status: 'COMPLETED',
+          paymentMethod: "stripe",
+          status: "COMPLETED",
           amount: totalIncl,
-          currency: String(session.currency || 'SEK').toUpperCase(),
+          currency: String(session.currency || "SEK").toUpperCase(),
           externalId: String(paymentIntentId),
           processedAt: new Date(),
           gatewayResponse: {
             sessionId: session.id,
             attribution,
-          }
-        }
+          },
+        },
       });
 
       // Link order items to actual course ids and create purchases
@@ -494,50 +525,53 @@ async function handleCheckoutSessionCompleted(session: any) {
       const sourceItems = orderItems.length > 0 ? orderItems : items;
 
       const courseNameMap: Record<string, string> = {
-        'hormonell balans': 'Hormonell Balans',
-        'functional flow': 'Functional Flow',
-        'functional gut health/flow': 'Functional Flow',
-        'functional basics': 'Functional Basics',
-        'functional energy': 'Functional Energy',
-        'functional insulin balance/energy': 'Functional Energy',
-        'prova på vecka med functional foods!': 'Prova på vecka med Functional Foods!',
-        'prova på vecka': 'Prova på vecka med Functional Foods!'
+        "hormonell balans": "Hormonell Balans",
+        "functional flow": "Functional Flow",
+        "functional gut health/flow": "Functional Flow",
+        "functional basics": "Functional Basics",
+        "functional energy": "Functional Energy",
+        "functional insulin balance/energy": "Functional Energy",
+        "prova på vecka med functional foods!":
+          "Prova på vecka med Functional Foods!",
+        "prova på vecka": "Prova på vecka med Functional Foods!",
       };
 
-      for (const it of sourceItems.filter((i: any) => i.type === 'course')) {
+      for (const it of sourceItems.filter((i: any) => i.type === "course")) {
         const normalizedName = it.name.toLowerCase().trim();
         const mappedName = courseNameMap[normalizedName] || it.name;
 
         let course = await tx.courseProduct.findFirst({
           where: {
-            name: { equals: mappedName, mode: 'insensitive' }
-          }
+            name: { equals: mappedName, mode: "insensitive" },
+          },
         });
 
         if (!course) {
           course = await tx.courseProduct.findFirst({
             where: {
-              name: { equals: it.name, mode: 'insensitive' }
-            }
+              name: { equals: it.name, mode: "insensitive" },
+            },
           });
         }
 
-        if (!course && it.name.toLowerCase().includes('functional')) {
-          const functionalPart = it.name.split('Functional ')[1]?.trim();
+        if (!course && it.name.toLowerCase().includes("functional")) {
+          const functionalPart = it.name.split("Functional ")[1]?.trim();
           if (functionalPart) {
             course = await tx.courseProduct.findFirst({
               where: {
                 AND: [
-                  { name: { contains: 'Functional', mode: 'insensitive' } },
-                  { name: { contains: functionalPart, mode: 'insensitive' } }
-                ]
-              }
+                  { name: { contains: "Functional", mode: "insensitive" } },
+                  { name: { contains: functionalPart, mode: "insensitive" } },
+                ],
+              },
             });
           }
         }
 
         if (!course) {
-          console.error(`❌ Course not found for: "${it.name}" (normalized: "${normalizedName}", mapped: "${mappedName}")`);
+          console.error(
+            `❌ Course not found for: "${it.name}" (normalized: "${normalizedName}", mapped: "${mappedName}")`,
+          );
           continue;
         }
 
@@ -547,9 +581,9 @@ async function handleCheckoutSessionCompleted(session: any) {
           where: {
             userId_courseId: {
               userId: user.id,
-              courseId: course.id
-            }
-          }
+              courseId: course.id,
+            },
+          },
         });
 
         if (!existingPurchase) {
@@ -558,41 +592,53 @@ async function handleCheckoutSessionCompleted(session: any) {
               userId: user.id,
               courseId: course.id,
               amount: it.price * (it.quantity || 1),
-              status: 'completed',
+              status: "completed",
               orderId: order.id,
-              accessExpiresAt: new Date(new Date().setFullYear(new Date().getFullYear() + 1))
-            }
+              accessExpiresAt: new Date(
+                new Date().setFullYear(new Date().getFullYear() + 1),
+              ),
+            },
           });
         }
 
         await tx.orderItem.updateMany({
           where: {
             orderId: order.id,
-            type: 'course',
+            type: "course",
             courseId: null,
-            name: it.name
+            name: it.name,
           },
-          data: { courseId: course.id }
+          data: { courseId: course.id },
         });
       }
 
       // Send emails
       try {
         const VAT_RATE = 0.25;
-        const courseItems = order.items.filter((i: any) => i.type === 'course');
-        const bookItems = order.items.filter((i: any) => i.type === 'book');
+        const courseItems = order.items.filter((i: any) => i.type === "course");
+        const bookItems = order.items.filter((i: any) => i.type === "book");
 
-        const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://www.functionalfoods.se';
+        const baseUrl =
+          process.env.NEXT_PUBLIC_BASE_URL || "https://www.functionalfoods.se";
 
         if (bookItems.length > 0) {
           for (const book of bookItems) {
             try {
-              const crypto = await import('crypto');
-              const downloadToken = crypto.randomBytes(16).toString('hex').toUpperCase();
+              const crypto = await import("crypto");
+              const downloadToken = crypto
+                .randomBytes(16)
+                .toString("hex")
+                .toUpperCase();
 
-              let ebookId = 'brodboken-2026';
-              if (book.name.toLowerCase().includes('brodboken') || book.name.toLowerCase().includes('brodbok')) {
-                ebookId = 'brodboken-2026';
+              let ebookId = "brodboken-2026";
+              const n = book.name.toLowerCase();
+
+              if (n.includes("brodboken") || n.includes("brodbok")) {
+                ebookId = "brodboken-2026";
+              }
+
+              if (n.includes("påskbuffé") || n.includes("paskbuffe")) {
+                ebookId = "paskbuffe";
               }
 
               const existingDownload = await tx.ebookDownload.findFirst({
@@ -611,11 +657,15 @@ async function handleCheckoutSessionCompleted(session: any) {
                     ebookId,
                     ebookName: book.name,
                     maxDownloads: 5,
-                    expiresAt: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000)
-                  }
+                    expiresAt: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000),
+                  },
                 });
 
-                const downloadUrl = `${baseUrl}/brodboken/ladda-ner?token=${downloadToken}`;
+                let downloadUrl = `${baseUrl}/brodboken/ladda-ner?token=${downloadToken}`;
+
+                if (ebookId === "paskbuffe") {
+                  downloadUrl = `${baseUrl}/e-bocker/paskbuffe/ladda-ned?token=${downloadToken}`;
+                }
 
                 await emailService.sendEbookDownloadEmail({
                   email: user.email,
@@ -623,13 +673,16 @@ async function handleCheckoutSessionCompleted(session: any) {
                   ebookName: book.name,
                   downloadUrl,
                   downloadPassword: downloadToken,
-                  orderNumber: order.orderNumber
+                  orderNumber: order.orderNumber,
                 });
 
                 console.log(`✅ E-book download email sent for: ${book.name}`);
               }
             } catch (ebookError) {
-              console.error(`❌ Failed to send e-book email for ${book.name}:`, ebookError);
+              console.error(
+                `❌ Failed to send e-book email for ${book.name}:`,
+                ebookError,
+              );
             }
           }
         }
@@ -637,7 +690,7 @@ async function handleCheckoutSessionCompleted(session: any) {
         if (courseItems.length > 0) {
           const emailCourses = courseItems.map((it: any) => ({
             name: it.name,
-            price: Math.round(it.price * (1 + VAT_RATE)) * (it.quantity || 1)
+            price: Math.round(it.price * (1 + VAT_RATE)) * (it.quantity || 1),
           }));
 
           await emailService.sendOrderConfirmation({
@@ -646,35 +699,38 @@ async function handleCheckoutSessionCompleted(session: any) {
             orderNumber: order.orderNumber,
             totalAmount: order.totalAmount || totalIncl,
             courses: emailCourses,
-            loginCredentials: (isNewUser && temporaryPassword)
-              ? {
-                  email: user.email,
-                  password: temporaryPassword,
-                  loginUrl: `${baseUrl}/login`
-                }
-              : undefined,
-            isExistingUser: !isNewUser
+            loginCredentials:
+              isNewUser && temporaryPassword
+                ? {
+                    email: user.email,
+                    password: temporaryPassword,
+                    loginUrl: `${baseUrl}/login`,
+                  }
+                : undefined,
+            isExistingUser: !isNewUser,
           });
 
-          console.log(`✅ Order confirmation sent via webhook to ${user.email}`);
+          console.log(
+            `✅ Order confirmation sent via webhook to ${user.email}`,
+          );
         }
       } catch (e) {
-        console.error('❌ Failed to send confirmation via webhook:', e);
+        console.error("❌ Failed to send confirmation via webhook:", e);
       }
     });
 
     if (!finalOrderId) {
-      console.warn('⚠️ No order id resolved after webhook transaction');
+      console.warn("⚠️ No order id resolved after webhook transaction");
       return;
     }
 
     const finalOrder = await prisma.order.findUnique({
       where: { id: finalOrderId },
-      include: { user: true, items: true }
+      include: { user: true, items: true },
     });
 
     if (!finalOrder) {
-      console.warn('⚠️ Final order not found after webhook transaction');
+      console.warn("⚠️ Final order not found after webhook transaction");
       return;
     }
 
@@ -682,24 +738,31 @@ async function handleCheckoutSessionCompleted(session: any) {
     try {
       const metadata = (finalOrder.metadata as any) || {};
       const mailchimpMarketing = getMailchimpMarketing();
-      const emailForTracking = finalOrder.user?.email || finalOrder.customerEmail || customerEmail;
+      const emailForTracking =
+        finalOrder.user?.email || finalOrder.customerEmail || customerEmail;
 
       if (
         !metadata.mailchimpMarketingTaggedAt &&
         mailchimpMarketing.isConfigured() &&
         emailForTracking &&
-        !emailForTracking.startsWith('guest-')
+        !emailForTracking.startsWith("guest-")
       ) {
         const productNames = finalOrder.items.map((item: any) => item.name);
-        const nameParts = (finalOrder.customerName || finalOrder.user?.name || '').split(' ').filter(Boolean);
-        const firstName = nameParts[0] || '';
-        const lastName = nameParts.slice(1).join(' ') || '';
+        const nameParts = (
+          finalOrder.customerName ||
+          finalOrder.user?.name ||
+          ""
+        )
+          .split(" ")
+          .filter(Boolean);
+        const firstName = nameParts[0] || "";
+        const lastName = nameParts.slice(1).join(" ") || "";
 
         await mailchimpMarketing.addCustomerWithCourseTags(
           emailForTracking,
           productNames,
           firstName,
-          lastName
+          lastName,
         );
 
         await prisma.order.update({
@@ -712,10 +775,15 @@ async function handleCheckoutSessionCompleted(session: any) {
           },
         });
 
-        console.log(`✅ Mailchimp Marketing tagged via webhook: ${emailForTracking}`);
+        console.log(
+          `✅ Mailchimp Marketing tagged via webhook: ${emailForTracking}`,
+        );
       }
     } catch (e) {
-      console.warn('⚠️ Mailchimp Marketing subscriber add failed (non-critical):', e);
+      console.warn(
+        "⚠️ Mailchimp Marketing subscriber add failed (non-critical):",
+        e,
+      );
     }
 
     // --- GA4 server-side purchase tracking ---
@@ -723,59 +791,64 @@ async function handleCheckoutSessionCompleted(session: any) {
       await trackPurchaseServer({
         transactionId: String(paymentIntentId || session.id),
         value: (session.amount_total || 0) / 100,
-        currency: String(session.currency || 'SEK').toUpperCase(),
+        currency: String(session.currency || "SEK").toUpperCase(),
         items: finalOrder.items.map((it: any) => ({
           item_id: it.courseId ? String(it.courseId) : it.name,
           item_name: it.name,
           quantity: it.quantity,
-          price: it.price
+          price: it.price,
         })),
         userId: customerEmail || undefined,
-        clientSeed: customerEmail || session.id
+        clientSeed: customerEmail || session.id,
       });
 
-      const { sendMetaEvent } = await import('../../../lib/meta-capi');
+      const { sendMetaEvent } = await import("../../../lib/meta-capi");
       await sendMetaEvent({
-        eventName: 'Purchase',
+        eventName: "Purchase",
         eventId: String(session.id),
         email: customerEmail,
-        sourceUrl: `${process.env.NEXT_PUBLIC_BASE_URL || 'https://www.functionalfoods.se'}/checkout/success`,
+        sourceUrl: `${process.env.NEXT_PUBLIC_BASE_URL || "https://www.functionalfoods.se"}/checkout/success`,
         params: {
           value: (session.amount_total || 0) / 100,
-          currency: String(session.currency || 'SEK').toUpperCase(),
+          currency: String(session.currency || "SEK").toUpperCase(),
           contents: finalOrder.items.map((it: any) => ({
             id: it.courseId ? String(it.courseId) : it.name,
             quantity: it.quantity,
-            item_price: it.price
+            item_price: it.price,
           })),
-          content_type: 'product',
-          content_ids: finalOrder.items.map((it: any) => (it.courseId ? String(it.courseId) : it.name))
-        }
+          content_type: "product",
+          content_ids: finalOrder.items.map((it: any) =>
+            it.courseId ? String(it.courseId) : it.name,
+          ),
+        },
       });
 
-      console.log('✅ GA4 purchase sent via Measurement Protocol');
+      console.log("✅ GA4 purchase sent via Measurement Protocol");
     } catch (e) {
-      console.warn('⚠️ GA4 purchase tracking failed:', e);
+      console.warn("⚠️ GA4 purchase tracking failed:", e);
     }
 
     // --- Mailchimp E-commerce purchase tracking ---
     try {
-      const { getMailchimpEcommerce } = await import('@/app/lib/mailchimp-ecommerce');
+      const { getMailchimpEcommerce } =
+        await import("@/app/lib/mailchimp-ecommerce");
       const mailchimpEcommerce = getMailchimpEcommerce();
       const metadata = (finalOrder.metadata as any) || {};
       const attr = metadata.attribution || attribution;
 
-      const emailForTracking = finalOrder.user?.email || finalOrder.customerEmail || customerEmail;
+      const emailForTracking =
+        finalOrder.user?.email || finalOrder.customerEmail || customerEmail;
 
       if (
         mailchimpEcommerce.isConfigured() &&
         emailForTracking &&
-        !emailForTracking.startsWith('guest-') &&
+        !emailForTracking.startsWith("guest-") &&
         !metadata.mailchimpEcommerceTrackedAt
       ) {
-        const totalAmount = finalOrder.totalAmount || ((session.amount_total || 0) / 100);
+        const totalAmount =
+          finalOrder.totalAmount || (session.amount_total || 0) / 100;
         const vatRate = 0.25;
-        const taxTotal = totalAmount * vatRate / (1 + vatRate);
+        const taxTotal = (totalAmount * vatRate) / (1 + vatRate);
         const discountTotal = session.total_details?.amount_discount
           ? session.total_details.amount_discount / 100
           : 0;
@@ -789,33 +862,36 @@ async function handleCheckoutSessionCompleted(session: any) {
         let landingSite: string | undefined;
         if (attr?.utm_source || attr?.utm_campaign) {
           const params = new URLSearchParams();
-          if (attr?.utm_source) params.set('utm_source', attr.utm_source);
-          if (attr?.utm_medium) params.set('utm_medium', attr.utm_medium);
-          if (attr?.utm_campaign) params.set('utm_campaign', attr.utm_campaign);
-          if (attr?.mc_cid) params.set('mc_cid', attr.mc_cid);
+          if (attr?.utm_source) params.set("utm_source", attr.utm_source);
+          if (attr?.utm_medium) params.set("utm_medium", attr.utm_medium);
+          if (attr?.utm_campaign) params.set("utm_campaign", attr.utm_campaign);
+          if (attr?.mc_cid) params.set("mc_cid", attr.mc_cid);
           landingSite = `https://functionalfoods.se/?${params.toString()}`;
         }
 
         await mailchimpEcommerce.trackPurchase({
           orderId: finalOrder.orderNumber,
           customerEmail: emailForTracking,
-          customerName: finalOrder.user?.name || finalOrder.customerName || undefined,
+          customerName:
+            finalOrder.user?.name || finalOrder.customerName || undefined,
           items: finalOrder.items.map((item: any) => ({
             id: item.courseId || `ebook:${item.name}`,
             name: item.name,
             price: item.price,
             quantity: item.quantity,
-            type: item.type || 'course'
+            type: item.type || "course",
           })),
           totalAmount,
-          currency: finalOrder.currency || String(session.currency || 'SEK').toUpperCase(),
+          currency:
+            finalOrder.currency ||
+            String(session.currency || "SEK").toUpperCase(),
           orderDate: finalOrder.createdAt,
           discountTotal,
           shippingTotal,
           taxTotal,
           campaignId,
           landingSite,
-          trackingCode
+          trackingCode,
         });
 
         await prisma.order.update({
@@ -828,84 +904,92 @@ async function handleCheckoutSessionCompleted(session: any) {
           },
         });
 
-        console.log('✅ Mailchimp E-commerce tracked via webhook:', {
+        console.log("✅ Mailchimp E-commerce tracked via webhook:", {
           orderId: finalOrder.orderNumber,
           email: emailForTracking,
-          itemsCount: finalOrder.items.length
+          itemsCount: finalOrder.items.length,
         });
       }
     } catch (e) {
-      console.warn('⚠️ Mailchimp E-commerce tracking failed:', e);
+      console.warn("⚠️ Mailchimp E-commerce tracking failed:", e);
     }
   } catch (error) {
-    console.error('Failed to handle checkout.session.completed:', error);
+    console.error("Failed to handle checkout.session.completed:", error);
   }
 }
 
 async function handleFreeOrder(session: any) {
-  console.log('📦 Processing free order from session:', session.id);
-  
+  console.log("📦 Processing free order from session:", session.id);
+
   try {
-    const customerEmail = session.customer_email || session.customer_details?.email;
-    const customerName = session.customer_details?.name || customerEmail?.split('@')[0] || 'Kund';
-    
+    const customerEmail =
+      session.customer_email || session.customer_details?.email;
+    const customerName =
+      session.customer_details?.name || customerEmail?.split("@")[0] || "Kund";
+
     if (!customerEmail) {
-      console.error('❌ No customer email in session');
+      console.error("❌ No customer email in session");
       return;
     }
 
     // Idempotency guard: check if we already processed this free session
     const alreadyProcessed = await prisma.order.findFirst({
       where: {
-        orderNumber: { contains: session.id }
-      }
+        orderNumber: { contains: session.id },
+      },
     });
     if (alreadyProcessed) {
-      console.log('ℹ️ Free order session already processed:', session.id, '- Skipping duplicate.');
+      console.log(
+        "ℹ️ Free order session already processed:",
+        session.id,
+        "- Skipping duplicate.",
+      );
       return;
     }
 
     // Parse metadata to get items
     const metadata = session.metadata || {};
     let items: any[] = [];
-    
+
     try {
       if (metadata.items) {
         items = JSON.parse(metadata.items);
       }
     } catch (e) {
-      console.error('Failed to parse session metadata items:', e);
+      console.error("Failed to parse session metadata items:", e);
       return;
     }
 
     if (items.length === 0) {
-      console.error('❌ No items in session metadata');
+      console.error("❌ No items in session metadata");
       return;
     }
 
     await prisma.$transaction(async (tx) => {
       // Get or create user
       let user = await tx.user.findUnique({
-        where: { email: customerEmail }
+        where: { email: customerEmail },
       });
 
       const isNewUser = !user;
-      let temporaryPassword = '';
+      let temporaryPassword = "";
 
       if (!user) {
         // Create new user with temporary password
-        const bcrypt = require('bcryptjs');
-        temporaryPassword = Math.random().toString(36).slice(-8) + Math.random().toString(36).slice(-8).toUpperCase();
+        const bcrypt = require("bcryptjs");
+        temporaryPassword =
+          Math.random().toString(36).slice(-8) +
+          Math.random().toString(36).slice(-8).toUpperCase();
         const hashedPassword = await bcrypt.hash(temporaryPassword, 12);
-        
+
         user = await tx.user.create({
           data: {
             email: customerEmail,
             name: customerName,
             password: hashedPassword,
-            role: 'customer',
-            mustChangePassword: true
-          }
+            role: "customer",
+            mustChangePassword: true,
+          },
         });
         console.log(`✅ New user created: ${user.email}`);
       } else {
@@ -918,20 +1002,20 @@ async function handleFreeOrder(session: any) {
         data: {
           orderNumber,
           userId: user.id,
-          status: 'COMPLETED',
+          status: "COMPLETED",
           totalAmount: 0,
-          currency: 'SEK',
+          currency: "SEK",
           items: {
             create: items.map((item: any) => ({
               courseId: null, // Will be set when we find the course
               name: item.name,
               price: 0,
               quantity: item.quantity || 1,
-              type: item.type || 'course'
-            }))
-          }
+              type: item.type || "course",
+            })),
+          },
         },
-        include: { items: true }
+        include: { items: true },
       });
 
       console.log(`✅ Order created: ${order.orderNumber}`);
@@ -942,28 +1026,34 @@ async function handleFreeOrder(session: any) {
           const couponCode = metadata.couponCode.toUpperCase().trim();
           await tx.coupon.update({
             where: { code: couponCode },
-            data: { timesUsed: { increment: 1 } }
+            data: { timesUsed: { increment: 1 } },
           });
           console.log(`✅ Incremented usage for coupon: ${couponCode}`);
         } catch (couponError) {
-          console.warn('⚠️ Failed to increment coupon usage:', couponError);
+          console.warn("⚠️ Failed to increment coupon usage:", couponError);
         }
       }
 
       // Create purchases for courses
       const purchasedCourses = [];
-      for (const item of items.filter((i: any) => i.type === 'course')) {
+      for (const item of items.filter((i: any) => i.type === "course")) {
         // Find course by name
         const course = await tx.courseProduct.findFirst({
-          where: { 
+          where: {
             name: {
               in: [
                 item.name,
-                item.name.replace('Functional Insulin balance/Energy', 'Functional Energy'),
-                item.name.replace('Functional Gut Health/Flow', 'Functional Flow')
-              ]
-            }
-          }
+                item.name.replace(
+                  "Functional Insulin balance/Energy",
+                  "Functional Energy",
+                ),
+                item.name.replace(
+                  "Functional Gut Health/Flow",
+                  "Functional Flow",
+                ),
+              ],
+            },
+          },
         });
 
         if (!course) {
@@ -976,9 +1066,9 @@ async function handleFreeOrder(session: any) {
           where: {
             userId_courseId: {
               userId: user.id,
-              courseId: course.id
-            }
-          }
+              courseId: course.id,
+            },
+          },
         });
 
         if (!existingPurchase) {
@@ -987,10 +1077,12 @@ async function handleFreeOrder(session: any) {
               userId: user.id,
               courseId: course.id,
               amount: 0,
-              status: 'completed',
+              status: "completed",
               orderId: order.id,
-              accessExpiresAt: new Date(new Date().setFullYear(new Date().getFullYear() + 1))
-            }
+              accessExpiresAt: new Date(
+                new Date().setFullYear(new Date().getFullYear() + 1),
+              ),
+            },
           });
           purchasedCourses.push(course);
           console.log(`✅ Purchase created for: ${course.name}`);
@@ -1004,50 +1096,70 @@ async function handleFreeOrder(session: any) {
           customerName: user.name || user.email,
           orderNumber: order.orderNumber,
           totalAmount: 0,
-          courses: purchasedCourses.map(c => ({ name: c.name, price: 0 })),
+          courses: purchasedCourses.map((c) => ({ name: c.name, price: 0 })),
           // Only include login credentials for NEW users
-          loginCredentials: (isNewUser && temporaryPassword) ? {
-            email: user.email,
-            password: temporaryPassword,
-            loginUrl: `${process.env.NEXT_PUBLIC_BASE_URL || 'https://functionalfoods.se'}/login`
-          } : undefined,
+          loginCredentials:
+            isNewUser && temporaryPassword
+              ? {
+                  email: user.email,
+                  password: temporaryPassword,
+                  loginUrl: `${process.env.NEXT_PUBLIC_BASE_URL || "https://functionalfoods.se"}/login`,
+                }
+              : undefined,
           // Flag for existing users to show login reminder
-          isExistingUser: !isNewUser
+          isExistingUser: !isNewUser,
         });
-        console.log(`✅ Order confirmation email sent to: ${user.email} (${isNewUser ? 'new user' : 'existing user'})`);
+        console.log(
+          `✅ Order confirmation email sent to: ${user.email} (${isNewUser ? "new user" : "existing user"})`,
+        );
       } catch (emailError) {
-        console.error('❌ Failed to send order confirmation email:', emailError);
+        console.error(
+          "❌ Failed to send order confirmation email:",
+          emailError,
+        );
       }
     });
 
     // --- Add new customers to Mailchimp Marketing with "kund" tag + course tags ---
     try {
-      const user = await prisma.user.findUnique({ where: { email: customerEmail } });
+      const user = await prisma.user.findUnique({
+        where: { email: customerEmail },
+      });
       if (user) {
         const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000);
         const isNewUser = user.createdAt > oneHourAgo;
-        
+
         if (isNewUser) {
           const mailchimpMarketing = getMailchimpMarketing();
           if (mailchimpMarketing.isConfigured()) {
             const courseNames = (items || [])
-              .filter((item: any) => item.type === 'course')
+              .filter((item: any) => item.type === "course")
               .map((item: any) => item.name);
-            const nameParts = customerName.split(' ');
-            const firstName = nameParts[0] || '';
-            const lastName = nameParts.slice(1).join(' ') || '';
-            await mailchimpMarketing.addCustomerWithCourseTags(customerEmail, courseNames, firstName, lastName);
-            console.log(`✅ New customer added to Mailchimp with course tags (free order): ${customerEmail}`);
+            const nameParts = customerName.split(" ");
+            const firstName = nameParts[0] || "";
+            const lastName = nameParts.slice(1).join(" ") || "";
+            await mailchimpMarketing.addCustomerWithCourseTags(
+              customerEmail,
+              courseNames,
+              firstName,
+              lastName,
+            );
+            console.log(
+              `✅ New customer added to Mailchimp with course tags (free order): ${customerEmail}`,
+            );
           }
         }
       }
     } catch (e) {
-      console.warn('⚠️ Mailchimp Marketing subscriber add failed (non-critical):', e);
+      console.warn(
+        "⚠️ Mailchimp Marketing subscriber add failed (non-critical):",
+        e,
+      );
     }
 
-    console.log('✅ Free order processed successfully');
+    console.log("✅ Free order processed successfully");
   } catch (error) {
-    console.error('❌ Error processing free order:', error);
+    console.error("❌ Error processing free order:", error);
   }
 }
 
@@ -1057,7 +1169,7 @@ async function handleSwishWebhook(payload: any): Promise<NextResponse> {
 
     const payment = await prisma.payment.findFirst({
       where: { externalId: id },
-      include: { order: { include: { items: true } } }
+      include: { order: { include: { items: true } } },
     });
 
     if (!payment) {
@@ -1065,25 +1177,24 @@ async function handleSwishWebhook(payload: any): Promise<NextResponse> {
     }
 
     switch (status) {
-      case 'PAID':
+      case "PAID":
         await completePayment(payment.id, payload);
         break;
-      case 'DECLINED':
-      case 'ERROR':
+      case "DECLINED":
+      case "ERROR":
         await failPayment(payment.id, payload);
         break;
-      case 'CANCELLED':
+      case "CANCELLED":
         await cancelPayment(payment.id, payload);
         break;
     }
 
     return NextResponse.json({ received: true });
-
   } catch (error) {
-    console.error('Swish webhook error:', error);
+    console.error("Swish webhook error:", error);
     return NextResponse.json(
-      { error: 'Swish webhook processing failed' },
-      { status: 500 }
+      { error: "Swish webhook processing failed" },
+      { status: 500 },
     );
   }
 }
@@ -1094,59 +1205,61 @@ async function completePayment(paymentId: string, webhookData: any) {
     const payment = await tx.payment.update({
       where: { id: paymentId },
       data: {
-        status: 'COMPLETED',
+        status: "COMPLETED",
         processedAt: new Date(),
-        gatewayResponse: webhookData
+        gatewayResponse: webhookData,
       },
-      include: { 
-        order: { 
-          include: { 
+      include: {
+        order: {
+          include: {
             items: true,
-            user: true
-          } 
-        } 
-      }
+            user: true,
+          },
+        },
+      },
     });
 
     // Update order
     await tx.order.update({
       where: { id: payment.orderId },
-      data: { status: 'COMPLETED' }
+      data: { status: "COMPLETED" },
     });
 
     // Get user and check if they need login credentials
     const user = payment.order.user;
     let needsLoginCredentials = false;
-    let temporaryPassword = '';
+    let temporaryPassword = "";
 
     // Check if user was created recently (within last hour) - indicates new user
     const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000);
     if (user.createdAt > oneHourAgo) {
       needsLoginCredentials = true;
       // Generate temporary password
-      temporaryPassword = Math.random().toString(36).slice(-8) + Math.random().toString(36).slice(-8).toUpperCase();
-      
+      temporaryPassword =
+        Math.random().toString(36).slice(-8) +
+        Math.random().toString(36).slice(-8).toUpperCase();
+
       // Update user with temporary password
-      const bcrypt = require('bcryptjs');
+      const bcrypt = require("bcryptjs");
       const hashedPassword = await bcrypt.hash(temporaryPassword, 12);
       await tx.user.update({
         where: { id: user.id },
-        data: { password: hashedPassword, mustChangePassword: true }
+        data: { password: hashedPassword, mustChangePassword: true },
       });
     }
 
     // Create purchases for courses
     const purchasedCourses = [];
     for (const item of payment.order.items) {
-      if (item.type === 'course' && item.courseId) {
+      if (item.type === "course" && item.courseId) {
         // Check if purchase already exists
         const existingPurchase = await tx.purchase.findUnique({
           where: {
             userId_courseId: {
               userId: payment.order.userId,
-              courseId: item.courseId
-            }
-          }
+              courseId: item.courseId,
+            },
+          },
         });
 
         if (!existingPurchase) {
@@ -1155,13 +1268,15 @@ async function completePayment(paymentId: string, webhookData: any) {
               userId: payment.order.userId,
               courseId: item.courseId,
               amount: item.price * item.quantity,
-              status: 'completed',
+              status: "completed",
               orderId: payment.order.id,
-              accessExpiresAt: new Date(new Date().setFullYear(new Date().getFullYear() + 1))
+              accessExpiresAt: new Date(
+                new Date().setFullYear(new Date().getFullYear() + 1),
+              ),
             },
             include: {
-              course: true
-            }
+              course: true,
+            },
           });
           purchasedCourses.push(purchase.course);
         }
@@ -1172,14 +1287,14 @@ async function completePayment(paymentId: string, webhookData: any) {
     try {
       const VAT_RATE = 0.25;
       const emailCourses = payment.order.items
-        .filter((it: any) => it.type === 'course')
+        .filter((it: any) => it.type === "course")
         .map((it: any) => ({
           name: it.name,
-          price: Math.round(it.price * (1 + VAT_RATE)) * it.quantity
+          price: Math.round(it.price * (1 + VAT_RATE)) * it.quantity,
         }));
       const emailData = {
         customerEmail: user.email,
-        customerName: user.name || user.email.split('@')[0],
+        customerName: user.name || user.email.split("@")[0],
         orderNumber: payment.order.orderNumber,
         totalAmount: payment.order.totalAmount,
         courses: emailCourses,
@@ -1188,15 +1303,18 @@ async function completePayment(paymentId: string, webhookData: any) {
           loginCredentials: {
             email: user.email,
             password: temporaryPassword,
-            loginUrl: `${process.env.NEXT_PUBLIC_BASE_URL || 'https://functionalfoods.se'}/login`
-          }
-        })
+            loginUrl: `${process.env.NEXT_PUBLIC_BASE_URL || "https://functionalfoods.se"}/login`,
+          },
+        }),
       };
 
       await emailService.sendOrderConfirmation(emailData);
-      console.log('Order confirmation email sent with login credentials:', user.email);
+      console.log(
+        "Order confirmation email sent with login credentials:",
+        user.email,
+      );
     } catch (emailError) {
-      console.error('Failed to send order confirmation email:', emailError);
+      console.error("Failed to send order confirmation email:", emailError);
     }
 
     console.log(`Payment completed for order ${payment.order.orderNumber}`);
@@ -1206,18 +1324,18 @@ async function completePayment(paymentId: string, webhookData: any) {
       await trackPurchaseServer({
         transactionId: payment.order.orderNumber,
         value: payment.order.totalAmount,
-        currency: payment.order.currency || 'SEK',
+        currency: payment.order.currency || "SEK",
         items: payment.order.items.map((it: any) => ({
           item_id: it.courseId ? String(it.courseId) : it.name,
           item_name: it.name,
           quantity: it.quantity,
-          price: it.price
+          price: it.price,
         })),
         userId: payment.order.user.id,
-        clientSeed: payment.order.user.email
+        clientSeed: payment.order.user.email,
       });
     } catch (e) {
-      console.warn('GA4 server purchase failed (non-fatal):', e);
+      console.warn("GA4 server purchase failed (non-fatal):", e);
     }
   });
 }
@@ -1228,22 +1346,22 @@ async function failPayment(paymentId: string, webhookData: any) {
     await tx.payment.update({
       where: { id: paymentId },
       data: {
-        status: 'FAILED',
+        status: "FAILED",
         gatewayResponse: webhookData,
-        failureReason: webhookData.error?.message || 'Payment failed'
-      }
+        failureReason: webhookData.error?.message || "Payment failed",
+      },
     });
 
     // Update order
     const payment = await tx.payment.findUnique({
       where: { id: paymentId },
-      include: { order: true }
+      include: { order: true },
     });
 
     if (payment) {
       await tx.order.update({
         where: { id: payment.orderId },
-        data: { status: 'CANCELLED' }
+        data: { status: "CANCELLED" },
       });
 
       console.log(`Payment failed for order ${payment.order.orderNumber}`);
@@ -1257,24 +1375,24 @@ async function cancelPayment(paymentId: string, webhookData: any) {
     await tx.payment.update({
       where: { id: paymentId },
       data: {
-        status: 'CANCELLED',
-        gatewayResponse: webhookData
-      }
+        status: "CANCELLED",
+        gatewayResponse: webhookData,
+      },
     });
 
     // Update order
     const payment = await tx.payment.findUnique({
       where: { id: paymentId },
-      include: { order: true }
+      include: { order: true },
     });
 
     if (payment) {
       await tx.order.update({
         where: { id: payment.orderId },
-        data: { status: 'CANCELLED' }
+        data: { status: "CANCELLED" },
       });
 
       console.log(`Payment cancelled for order ${payment.order.orderNumber}`);
     }
   });
-} 
+}

@@ -1,18 +1,19 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
-import bcrypt from 'bcryptjs';
-import { requireAdminAuth } from '@/app/lib/admin-auth';
-import { emailService } from '@/app/lib/email';
-import { getMailchimpMarketing } from '@/app/lib/mailchimp-marketing';
+import { NextRequest, NextResponse } from "next/server";
+import { PrismaClient } from "@prisma/client";
+import bcrypt from "bcryptjs";
+import { requireAdminAuth } from "@/app/lib/admin-auth";
+import { emailService } from "@/app/lib/email";
+import { getMailchimpMarketing } from "@/app/lib/mailchimp-marketing";
 
 const prisma = new PrismaClient();
 
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";
 
 function generateSecurePassword(): string {
   const length = 16;
-  const chars = 'abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789!@#$%';
-  let password = '';
+  const chars =
+    "abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789!@#$%";
+  let password = "";
   for (let i = 0; i < length; i++) {
     password += chars.charAt(Math.floor(Math.random() * chars.length));
   }
@@ -36,8 +37,8 @@ export async function POST(request: NextRequest) {
 
     if (!orderId && !orderNumber) {
       return NextResponse.json(
-        { error: 'orderId eller orderNumber krävs' },
-        { status: 400 }
+        { error: "orderId eller orderNumber krävs" },
+        { status: 400 },
       );
     }
 
@@ -46,25 +47,32 @@ export async function POST(request: NextRequest) {
       include: {
         user: true,
         items: true,
-        payment: true
-      }
+        payment: true,
+      },
     });
 
     if (!order) {
-      return NextResponse.json({ error: 'Order hittades inte' }, { status: 404 });
+      return NextResponse.json(
+        { error: "Order hittades inte" },
+        { status: 404 },
+      );
     }
 
     const metadata = (order.metadata as any) || {};
     const customerEmail = order.customerEmail || order.user?.email;
-    const customerName = order.customerName || order.user?.name || 'Kund';
+    const customerName = order.customerName || order.user?.name || "Kund";
 
     if (!customerEmail) {
-      return NextResponse.json({ error: 'Saknar kundens e-post' }, { status: 400 });
+      return NextResponse.json(
+        { error: "Saknar kundens e-post" },
+        { status: 400 },
+      );
     }
 
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://www.functionalfoods.se';
-    const bookItems = order.items.filter(i => i.type === 'book');
-    const courseItems = order.items.filter(i => i.type === 'course');
+    const baseUrl =
+      process.env.NEXT_PUBLIC_BASE_URL || "https://www.functionalfoods.se";
+    const bookItems = order.items.filter((i) => i.type === "book");
+    const courseItems = order.items.filter((i) => i.type === "course");
 
     let isNewUser = false;
     let temporaryPassword: string | undefined;
@@ -74,13 +82,13 @@ export async function POST(request: NextRequest) {
       // Upsert user if missing
       if (!user) {
         const existing = await tx.user.findUnique({
-          where: { email: customerEmail.toLowerCase().trim() }
+          where: { email: customerEmail.toLowerCase().trim() },
         });
         if (existing) {
           user = existing;
           await tx.order.update({
             where: { id: order.id },
-            data: { userId: existing.id }
+            data: { userId: existing.id },
           });
         } else {
           temporaryPassword = generateSecurePassword();
@@ -88,52 +96,53 @@ export async function POST(request: NextRequest) {
           user = await tx.user.create({
             data: {
               email: customerEmail.toLowerCase().trim(),
-              name: customerName || 'Ny kund',
+              name: customerName || "Ny kund",
               password: hashed,
-              role: 'customer'
-            }
+              role: "customer",
+            },
           });
           isNewUser = true;
           await tx.order.update({
             where: { id: order.id },
-            data: { userId: user.id }
+            data: { userId: user.id },
           });
         }
       }
 
       // Update order status
-            await tx.order.update({
-              where: { id: order.id },
-              data: {
-                status: 'COMPLETED',
-                metadata: {
-                  ...metadata,
-                  manuallyApproved: true,
-                  approvedAt: new Date().toISOString(),
-                  approvedBy: 'admin-manual-complete'
-                }
-              }
-            });
+      await tx.order.update({
+        where: { id: order.id },
+        data: {
+          status: "COMPLETED",
+          metadata: {
+            ...metadata,
+            manuallyApproved: true,
+            approvedAt: new Date().toISOString(),
+            approvedBy: "admin-manual-complete",
+          },
+        },
+      });
 
       // Update payment status if present
       if (order.payment) {
         await tx.payment.update({
           where: { id: order.payment.id },
           data: {
-            status: 'COMPLETED',
-            processedAt: new Date()
-          }
+            status: "COMPLETED",
+            processedAt: new Date(),
+          },
         });
       }
 
       // Map known course names to courseProducts
       const courseNameMap: Record<string, string> = {
-        'functional energy': 'Functional Energy',
-        'functional basics': 'Functional Basics',
-        'functional flow': 'Functional Flow',
-        'hormonell balans': 'Hormonell Balans',
-        'prova på vecka med functional foods!': 'Prova på vecka med Functional Foods!',
-        'prova på vecka': 'Prova på vecka med Functional Foods!'
+        "functional energy": "Functional Energy",
+        "functional basics": "Functional Basics",
+        "functional flow": "Functional Flow",
+        "hormonell balans": "Hormonell Balans",
+        "prova på vecka med functional foods!":
+          "Prova på vecka med Functional Foods!",
+        "prova på vecka": "Prova på vecka med Functional Foods!",
       };
 
       // Ensure purchases for course items
@@ -147,24 +156,29 @@ export async function POST(request: NextRequest) {
             const course = await tx.courseProduct.findFirst({
               where: {
                 OR: [
-                  { name: { equals: mapped, mode: 'insensitive' } },
-                  { name: { equals: item.name, mode: 'insensitive' } },
-                  { name: { contains: normalized.split(' ').pop() || '', mode: 'insensitive' } }
-                ]
-              }
+                  { name: { equals: mapped, mode: "insensitive" } },
+                  { name: { equals: item.name, mode: "insensitive" } },
+                  {
+                    name: {
+                      contains: normalized.split(" ").pop() || "",
+                      mode: "insensitive",
+                    },
+                  },
+                ],
+              },
             });
             if (course) {
               courseId = course.id;
               await tx.orderItem.update({
                 where: { id: item.id },
-                data: { courseId: course.id }
+                data: { courseId: course.id },
               });
             }
           }
 
           if (courseId) {
             const exists = await tx.purchase.findUnique({
-              where: { userId_courseId: { userId: user.id, courseId } }
+              where: { userId_courseId: { userId: user.id, courseId } },
             });
             if (!exists) {
               await tx.purchase.create({
@@ -172,29 +186,43 @@ export async function POST(request: NextRequest) {
                   userId: user.id,
                   courseId,
                   amount: item.price * (item.quantity || 1),
-                  status: 'completed',
+                  status: "completed",
                   orderId: order.id,
-                  accessExpiresAt: new Date(new Date().setFullYear(new Date().getFullYear() + 1))
-                }
+                  accessExpiresAt: new Date(
+                    new Date().setFullYear(new Date().getFullYear() + 1),
+                  ),
+                },
               });
             }
           }
         }
       }
-    
+
       // Ensure ebook download tokens
       for (const book of bookItems) {
         const existing = await tx.ebookDownload.findFirst({
           where: {
             orderNumber: order.orderNumber,
-            ebookName: book.name
-          }
+            ebookName: book.name,
+          },
         });
         if (!existing) {
-          const downloadToken = (await import('crypto')).randomBytes(16).toString('hex').toUpperCase();
-          let ebookId = 'brodboken-2026';
-          if (book.name.toLowerCase().includes('brodboken') || book.name.toLowerCase().includes('brodbok')) {
-            ebookId = 'brodboken-2026';
+          const downloadToken = (await import("crypto"))
+            .randomBytes(16)
+            .toString("hex")
+            .toUpperCase();
+          let ebookId = "brodboken-2026";
+          if (
+            book.name.toLowerCase().includes("brodboken") ||
+            book.name.toLowerCase().includes("brodbok")
+          ) {
+            ebookId = "brodboken-2026";
+          }
+          if (
+            book.name.toLowerCase().includes("påskbuffé") ||
+            book.name.toLowerCase().includes("paskbuffe")
+          ) {
+            ebookId = "paskbuffe";
           }
           await tx.ebookDownload.create({
             data: {
@@ -204,8 +232,8 @@ export async function POST(request: NextRequest) {
               ebookId,
               ebookName: book.name,
               maxDownloads: 5,
-              expiresAt: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000)
-            }
+              expiresAt: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000),
+            },
           });
         }
       }
@@ -215,22 +243,27 @@ export async function POST(request: NextRequest) {
     const results: string[] = [];
     const updatedOrder = await prisma.order.findUnique({
       where: { id: order.id },
-      include: { items: true, user: true }
+      include: { items: true, user: true },
     });
 
     if (!updatedOrder) {
-      return NextResponse.json({ error: 'Order hittades inte efter uppdatering' }, { status: 404 });
+      return NextResponse.json(
+        { error: "Order hittades inte efter uppdatering" },
+        { status: 404 },
+      );
     }
 
     const freshMetadata = (updatedOrder.metadata as any) || {};
-    const courseItemsNow = updatedOrder.items.filter(i => i.type === 'course');
-    const bookItemsNow = updatedOrder.items.filter(i => i.type === 'book');
+    const courseItemsNow = updatedOrder.items.filter(
+      (i) => i.type === "course",
+    );
+    const bookItemsNow = updatedOrder.items.filter((i) => i.type === "book");
 
     // Course confirmation email (if not already sent)
     if (courseItemsNow.length > 0 && !freshMetadata.confirmationEmailSent) {
-      const emailCourses = courseItemsNow.map(item => ({
+      const emailCourses = courseItemsNow.map((item) => ({
         name: item.name,
-        price: item.price * (item.quantity || 1)
+        price: item.price * (item.quantity || 1),
       }));
 
       await emailService.sendOrderConfirmation({
@@ -239,12 +272,15 @@ export async function POST(request: NextRequest) {
         orderNumber: updatedOrder.orderNumber,
         totalAmount: updatedOrder.totalAmount || 0,
         courses: emailCourses,
-        loginCredentials: (isNewUser && temporaryPassword) ? {
-          email: customerEmail,
-          password: temporaryPassword,
-          loginUrl: `${baseUrl}/login`
-        } : undefined,
-        isExistingUser: !isNewUser
+        loginCredentials:
+          isNewUser && temporaryPassword
+            ? {
+                email: customerEmail,
+                password: temporaryPassword,
+                loginUrl: `${baseUrl}/login`,
+              }
+            : undefined,
+        isExistingUser: !isNewUser,
       });
 
       await prisma.order.update({
@@ -253,28 +289,36 @@ export async function POST(request: NextRequest) {
           metadata: {
             ...freshMetadata,
             confirmationEmailSent: true,
-            confirmationEmailSentAt: new Date().toISOString()
-          }
-        }
+            confirmationEmailSentAt: new Date().toISOString(),
+          },
+        },
       });
-      results.push('order_confirmation_sent');
+      results.push("order_confirmation_sent");
     }
 
     // E-book emails
     if (bookItemsNow.length > 0) {
       for (const book of bookItemsNow) {
         const downloadRecord = await prisma.ebookDownload.findFirst({
-          where: { orderNumber: updatedOrder.orderNumber, ebookName: book.name }
+          where: {
+            orderNumber: updatedOrder.orderNumber,
+            ebookName: book.name,
+          },
         });
         if (downloadRecord) {
-          const downloadUrl = `${baseUrl}/brodboken/ladda-ner?token=${downloadRecord.token}`;
+          let downloadUrl = `${baseUrl}/brodboken/ladda-ner?token=${downloadRecord.token}`;
+
+          if (downloadRecord.ebookId === "paskbuffe") {
+            downloadUrl = `${baseUrl}/e-bocker/paskbuffe/ladda-ned?token=${downloadRecord.token}`;
+          }
+
           const sent = await emailService.sendEbookDownloadEmail({
             email: customerEmail,
             name: customerName,
             ebookName: book.name,
             downloadUrl,
             downloadPassword: downloadRecord.token,
-            orderNumber: updatedOrder.orderNumber
+            orderNumber: updatedOrder.orderNumber,
           });
           if (sent) results.push(`ebook_email_sent:${book.name}`);
 
@@ -284,43 +328,50 @@ export async function POST(request: NextRequest) {
               const mailchimpMarketing = getMailchimpMarketing();
               if (mailchimpMarketing.isConfigured()) {
                 const normalizedEmail = customerEmail.toLowerCase().trim();
-                const name = (customerName || '').trim();
+                const name = (customerName || "").trim();
                 const [firstName, ...rest] = name ? name.split(/\s+/) : [];
-                const lastName = rest.length ? rest.join(' ') : undefined;
+                const lastName = rest.length ? rest.join(" ") : undefined;
+
+                const purchaseTag =
+                  downloadRecord.ebookId === "paskbuffe"
+                    ? "Köp - Påskbuffé"
+                    : "Köp - Brödboken";
 
                 await Promise.race([
                   mailchimpMarketing.addSubscriber({
                     email: normalizedEmail,
                     firstName: firstName || undefined,
                     lastName,
-                    tags: ['kund', 'Köp - Brödboken'],
-                    status: 'subscribed'
+                    tags: ["kund", purchaseTag],
+                    status: "subscribed",
                   }),
-                  new Promise((resolve) => setTimeout(resolve, 1500))
+                  new Promise((resolve) => setTimeout(resolve, 1500)),
                 ]);
               }
             } catch (e) {
-              console.warn('⚠️ Mailchimp Marketing subscriber add failed (non-critical):', e);
+              console.warn(
+                "⚠️ Mailchimp Marketing subscriber add failed (non-critical):",
+                e,
+              );
             }
           }
         }
       }
     }
-    
+
     return NextResponse.json({
       success: true,
       orderId: updatedOrder.id,
-      status: 'COMPLETED',
-      emails: results
+      status: "COMPLETED",
+      emails: results,
     });
   } catch (error) {
-    console.error('Error manually completing order:', error);
+    console.error("Error manually completing order:", error);
     return NextResponse.json(
-      { error: 'Kunde inte slutföra ordern manuellt' },
-      { status: 500 }
+      { error: "Kunde inte slutföra ordern manuellt" },
+      { status: 500 },
     );
   } finally {
     await prisma.$disconnect();
   }
 }
-

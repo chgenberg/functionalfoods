@@ -1,18 +1,22 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { prisma } from '@/app/lib/database';
-import { getSveaCheckout, SveaCheckoutService } from '@/app/lib/svea-checkout-service';
-import { emailService } from '@/app/lib/email';
-import { getMailchimpMarketing } from '@/app/lib/mailchimp-marketing';
-import bcrypt from 'bcryptjs';
+import { NextRequest, NextResponse } from "next/server";
+import { prisma } from "@/app/lib/database";
+import {
+  getSveaCheckout,
+  SveaCheckoutService,
+} from "@/app/lib/svea-checkout-service";
+import { emailService } from "@/app/lib/email";
+import { getMailchimpMarketing } from "@/app/lib/mailchimp-marketing";
+import bcrypt from "bcryptjs";
 
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";
 
 interface VerifyRequest {
   checkoutOrderId: string;
   orderId: string;
 }
 
-const isGuestEmail = (email?: string | null) => !!email && email.startsWith('guest-');
+const isGuestEmail = (email?: string | null) =>
+  !!email && email.startsWith("guest-");
 
 export async function POST(req: NextRequest) {
   try {
@@ -21,44 +25,57 @@ export async function POST(req: NextRequest) {
     const clientOrderId = body.orderId;
 
     if (!clientOrderId) {
-      return NextResponse.json({ error: 'Missing required parameters' }, { status: 400 });
+      return NextResponse.json(
+        { error: "Missing required parameters" },
+        { status: 400 },
+      );
     }
 
     // ✅ If checkoutOrderId not provided by frontend, fetch it from DB
     if (!checkoutOrderId) {
       const dbOrder = await prisma.order.findUnique({
         where: { id: clientOrderId },
-        select: { checkoutOrderId: true }
+        select: { checkoutOrderId: true },
       });
 
       checkoutOrderId = dbOrder?.checkoutOrderId || undefined;
 
-      console.log('ℹ️ verify-svea-v2: checkoutOrderId missing from client; loaded from DB', {
-        clientOrderId,
-        checkoutOrderId: checkoutOrderId ? 'present' : 'missing'
-      });
+      console.log(
+        "ℹ️ verify-svea-v2: checkoutOrderId missing from client; loaded from DB",
+        {
+          clientOrderId,
+          checkoutOrderId: checkoutOrderId ? "present" : "missing",
+        },
+      );
     }
 
     if (!checkoutOrderId) {
       return NextResponse.json(
-        { error: 'Missing checkoutOrderId (not provided and not found on order)' },
-        { status: 400 }
+        {
+          error:
+            "Missing checkoutOrderId (not provided and not found on order)",
+        },
+        { status: 400 },
       );
     }
-      
+
     // If simulation is enabled, treat as completed without contacting Svea
-    if (process.env.PAYMENTS_SIMULATE === 'true' || checkoutOrderId === 'SIMULATED') {
+    if (
+      process.env.PAYMENTS_SIMULATE === "true" ||
+      checkoutOrderId === "SIMULATED"
+    ) {
       const order = await prisma.order.findUnique({
         where: { id: clientOrderId },
-        include: { items: true, user: true }
+        include: { items: true, user: true },
       });
 
-      if (!order) return NextResponse.json({ error: 'Order not found' }, { status: 404 });
+      if (!order)
+        return NextResponse.json({ error: "Order not found" }, { status: 404 });
 
       return NextResponse.json({
         success: true,
         paymentCompleted: true,
-        orderStatus: 'COMPLETED',
+        orderStatus: "COMPLETED",
         order: {
           id: order.id,
           status: order.status,
@@ -70,9 +87,9 @@ export async function POST(req: NextRequest) {
             productName: i.name,
             productType: i.type,
             quantity: i.quantity,
-            price: i.price
-          }))
-        }
+            price: i.price,
+          })),
+        },
       });
     }
 
@@ -80,12 +97,14 @@ export async function POST(req: NextRequest) {
     const sveaCheckout = getSveaCheckout();
 
     // Get order from Svea
-    const sveaOrder = await sveaCheckout.getOrder(parseInt(checkoutOrderId, 10));
+    const sveaOrder = await sveaCheckout.getOrder(
+      parseInt(checkoutOrderId, 10),
+    );
 
-    console.log('🔍 Verifying Svea order:', {
+    console.log("🔍 Verifying Svea order:", {
       checkoutOrderId,
       orderId: clientOrderId,
-      sveaStatus: sveaOrder.status
+      sveaStatus: sveaOrder.status,
     });
 
     // Check if payment is completed
@@ -94,11 +113,11 @@ export async function POST(req: NextRequest) {
     // Get our order from database
     let order = await prisma.order.findUnique({
       where: { id: clientOrderId },
-      include: { items: true, user: true }
+      include: { items: true, user: true },
     });
 
     if (!order) {
-      return NextResponse.json({ error: 'Order not found' }, { status: 404 });
+      return NextResponse.json({ error: "Order not found" }, { status: 404 });
     }
 
     // Calculate actual paid amount from SVEA order (includes discounts)
@@ -108,11 +127,12 @@ export async function POST(req: NextRequest) {
     if (sveaOrder.cart?.items) {
       for (const sveaItem of sveaOrder.cart.items) {
         // Skip discount items for item mapping, but include in total
-        if (!String(sveaItem.articleNumber || '').startsWith ('DISCOUNT')) {
+        if (!String(sveaItem.articleNumber || "").startsWith("DISCOUNT")) {
           sveaItemsMap.set(sveaItem.articleNumber, sveaItem);
         }
         // All items (including negative discount) contribute to total
-        actualPaidAmount += (sveaItem.unitPrice || 0) * (sveaItem.quantity || 1);
+        actualPaidAmount +=
+          (sveaItem.unitPrice || 0) * (sveaItem.quantity || 1);
       }
     }
 
@@ -124,32 +144,43 @@ export async function POST(req: NextRequest) {
       const ratio = actualPaidAmountSEK / order.totalAmount;
       if (ratio > 10) {
         actualPaidAmountSEK = actualPaidAmount; // likely already SEK
-        console.warn('⚠️ Detected amount might already be in SEK. Using as-is:', {
-          original: actualPaidAmount,
-          divided: actualPaidAmount / 100,
-          dbAmount: order.totalAmount,
-          ratio,
-          using: actualPaidAmountSEK
-        });
+        console.warn(
+          "⚠️ Detected amount might already be in SEK. Using as-is:",
+          {
+            original: actualPaidAmount,
+            divided: actualPaidAmount / 100,
+            dbAmount: order.totalAmount,
+            ratio,
+            using: actualPaidAmountSEK,
+          },
+        );
 
-        if (Math.abs(actualPaidAmountSEK - order.totalAmount) > order.totalAmount * 0.5) {
-          console.warn('⚠️ Calculated amount still seems wrong, using DB amount as fallback');
+        if (
+          Math.abs(actualPaidAmountSEK - order.totalAmount) >
+          order.totalAmount * 0.5
+        ) {
+          console.warn(
+            "⚠️ Calculated amount still seems wrong, using DB amount as fallback",
+          );
           actualPaidAmountSEK = order.totalAmount;
         }
       } else if (ratio < 0.1 && actualPaidAmountSEK > 0) {
-        console.warn('⚠️ Amount seems too small, might be double-divided');
+        console.warn("⚠️ Amount seems too small, might be double-divided");
       }
     }
 
     if (actualPaidAmountSEK < 0 || actualPaidAmountSEK > 100000) {
-      console.warn('⚠️ Calculated amount is outside reasonable range, using DB amount:', {
-        calculated: actualPaidAmountSEK,
-        dbAmount: order.totalAmount
-      });
+      console.warn(
+        "⚠️ Calculated amount is outside reasonable range, using DB amount:",
+        {
+          calculated: actualPaidAmountSEK,
+          dbAmount: order.totalAmount,
+        },
+      );
       actualPaidAmountSEK = order.totalAmount;
     }
 
-    console.log('💰 Calculated actual paid amount from SVEA:', {
+    console.log("💰 Calculated actual paid amount from SVEA:", {
       actualPaidAmountOre: actualPaidAmount,
       actualPaidAmountSEK,
       dbTotalAmount: order.totalAmount,
@@ -159,21 +190,23 @@ export async function POST(req: NextRequest) {
         name: item.name,
         unitPrice: item.unitPrice,
         quantity: item.quantity,
-        total: (item.unitPrice || 0) * (item.quantity || 1)
-      }))
+        total: (item.unitPrice || 0) * (item.quantity || 1),
+      })),
     });
 
     // Use SVEA amount if cart items exist, otherwise DB fallback
     const displayTotalAmount =
-      sveaOrder.cart?.items && sveaOrder.cart.items.length > 0 ? actualPaidAmountSEK : order.totalAmount;
+      sveaOrder.cart?.items && sveaOrder.cart.items.length > 0
+        ? actualPaidAmountSEK
+        : order.totalAmount;
 
     // Map items with actual prices from SVEA if available
     const displayItems = order.items.map((item) => {
       let displayPrice = item.price;
-      const vatRate = item.type === 'book' ? 1.06 : 1.25;
+      const vatRate = item.type === "book" ? 1.06 : 1.25;
 
       for (const [articleNumber, sveaItem] of sveaItemsMap.entries()) {
-        const itemIdLower = item.id?.toLowerCase() || '';
+        const itemIdLower = item.id?.toLowerCase() || "";
         const articleLower = articleNumber.toLowerCase();
 
         if (
@@ -193,7 +226,7 @@ export async function POST(req: NextRequest) {
         productName: item.name,
         productType: item.type,
         quantity: item.quantity,
-        price: Math.round(displayPrice * 100) / 100
+        price: Math.round(displayPrice * 100) / 100,
       };
     });
 
@@ -207,9 +240,10 @@ export async function POST(req: NextRequest) {
         totalAmount: displayTotalAmount,
         customerEmail: sveaOrder.customer?.email || order.customerEmail,
         customerName:
-          `${sveaOrder.customer?.firstName || ''} ${sveaOrder.customer?.lastName || ''}`.trim() || order.customerName,
-        items: displayItems
-      }
+          `${sveaOrder.customer?.firstName || ""} ${sveaOrder.customer?.lastName || ""}`.trim() ||
+          order.customerName,
+        items: displayItems,
+      },
     };
 
     // If payment is completed, process the order (create purchases, send email, etc.)
@@ -225,9 +259,9 @@ export async function POST(req: NextRequest) {
             sveaStatus: sveaOrder.status,
             sveaPaymentType: sveaOrder.paymentType,
             verifiedAt: new Date().toISOString(),
-            actualPaidAmount: actualPaidAmountSEK
-          }
-        }
+            actualPaidAmount: actualPaidAmountSEK,
+          },
+        },
       });
 
       let orderJustCompleted = false;
@@ -235,12 +269,13 @@ export async function POST(req: NextRequest) {
       let temporaryPassword: string | undefined;
 
       // If order was PENDING, fast-track to COMPLETED (and link/create user if needed)
-      if (order.status === 'PENDING') {
+      if (order.status === "PENDING") {
         orderJustCompleted = true;
 
         const customerEmail = sveaOrder.customer?.email || order.customerEmail;
         const customerName =
-          `${sveaOrder.customer?.firstName || ''} ${sveaOrder.customer?.lastName || ''}`.trim() || order.customerName;
+          `${sveaOrder.customer?.firstName || ""} ${sveaOrder.customer?.lastName || ""}`.trim() ||
+          order.customerName;
 
         const hasGuestUser = isGuestEmail(order.user?.email);
 
@@ -248,7 +283,7 @@ export async function POST(req: NextRequest) {
           const normalizedEmail = customerEmail.toLowerCase().trim();
 
           const existingUser = await prisma.user.findUnique({
-            where: { email: normalizedEmail }
+            where: { email: normalizedEmail },
           });
 
           if (existingUser) {
@@ -257,13 +292,13 @@ export async function POST(req: NextRequest) {
               data: {
                 userId: existingUser.id,
                 customerEmail: normalizedEmail,
-                customerName
-              }
+                customerName,
+              },
             });
 
             const updatedOrder = await prisma.order.findUnique({
               where: { id: order.id },
-              include: { items: true, user: true }
+              include: { items: true, user: true },
             });
             if (updatedOrder) order = updatedOrder;
           } else {
@@ -275,12 +310,12 @@ export async function POST(req: NextRequest) {
                 where: { id: order.userId },
                 data: {
                   email: normalizedEmail,
-                  name: customerName || 'Ny kund',
+                  name: customerName || "Ny kund",
                   password: hashedPassword,
                   mustChangePassword: true,
                   isActive: true,
-                  role: 'customer'
-                }
+                  role: "customer",
+                },
               });
 
               isNewUser = true;
@@ -289,26 +324,28 @@ export async function POST(req: NextRequest) {
                 where: { id: order.id },
                 data: {
                   customerEmail: normalizedEmail,
-                  customerName: updatedUser.name || customerName
-                }
+                  customerName: updatedUser.name || customerName,
+                },
               });
 
               const refreshedOrder = await prisma.order.findUnique({
                 where: { id: order.id },
-                include: { items: true, user: true }
+                include: { items: true, user: true },
               });
               if (refreshedOrder) order = refreshedOrder;
 
-              console.log(`📧 Guest user upgraded via verify: ${updatedUser.email}`);
+              console.log(
+                `📧 Guest user upgraded via verify: ${updatedUser.email}`,
+              );
             } else {
               const newUser = await prisma.user.create({
                 data: {
                   email: normalizedEmail,
-                  name: customerName || 'Ny kund',
+                  name: customerName || "Ny kund",
                   password: hashedPassword,
-                  role: 'customer',
-                  emailVerified: null
-                }
+                  role: "customer",
+                  emailVerified: null,
+                },
               });
 
               isNewUser = true;
@@ -318,13 +355,13 @@ export async function POST(req: NextRequest) {
                 data: {
                   userId: newUser.id,
                   customerEmail: normalizedEmail,
-                  customerName
-                }
+                  customerName,
+                },
               });
 
               const updatedOrder = await prisma.order.findUnique({
                 where: { id: order.id },
-                include: { items: true, user: true }
+                include: { items: true, user: true },
               });
               if (updatedOrder) order = updatedOrder;
 
@@ -336,23 +373,24 @@ export async function POST(req: NextRequest) {
         await prisma.order.update({
           where: { id: order.id },
           data: {
-            status: 'COMPLETED',
+            status: "COMPLETED",
             customerEmail: sveaOrder.customer?.email || order.customerEmail,
             customerName:
-              `${sveaOrder.customer?.firstName || ''} ${sveaOrder.customer?.lastName || ''}`.trim() || order.customerName,
+              `${sveaOrder.customer?.firstName || ""} ${sveaOrder.customer?.lastName || ""}`.trim() ||
+              order.customerName,
             metadata: {
               ...(order.metadata as any),
-              processedAt: new Date().toISOString()
-            }
-          }
+              processedAt: new Date().toISOString(),
+            },
+          },
         });
 
-        console.log('⚡ Fast-tracking order completion from verification');
+        console.log("⚡ Fast-tracking order completion from verification");
 
         // Refresh local order after completion update
         const refreshedAfterCompletion = await prisma.order.findUnique({
           where: { id: order.id },
-          include: { items: true, user: true }
+          include: { items: true, user: true },
         });
         if (refreshedAfterCompletion) order = refreshedAfterCompletion;
       }
@@ -361,76 +399,102 @@ export async function POST(req: NextRequest) {
       try {
         const refreshedOrder = await prisma.order.findUnique({
           where: { id: order.id },
-          include: { items: true, user: true }
+          include: { items: true, user: true },
         });
 
         const metadata = (refreshedOrder?.metadata as any) || {};
 
         if (refreshedOrder && !metadata.mailchimpMarketingTaggedAt) {
           const emailToTag =
-            refreshedOrder.user?.email && !isGuestEmail(refreshedOrder.user.email)
+            refreshedOrder.user?.email &&
+            !isGuestEmail(refreshedOrder.user.email)
               ? refreshedOrder.user.email
-              : refreshedOrder.customerEmail && !isGuestEmail(refreshedOrder.customerEmail)
+              : refreshedOrder.customerEmail &&
+                  !isGuestEmail(refreshedOrder.customerEmail)
                 ? refreshedOrder.customerEmail
                 : null;
 
           if (!emailToTag) {
-            console.warn('⚠️ Mailchimp Marketing: missing email (cannot tag):', {
-              orderId: refreshedOrder.id,
-              userId: refreshedOrder.userId,
-              userEmail: refreshedOrder.user?.email,
-              customerEmail: refreshedOrder.customerEmail
-            });
+            console.warn(
+              "⚠️ Mailchimp Marketing: missing email (cannot tag):",
+              {
+                orderId: refreshedOrder.id,
+                userId: refreshedOrder.userId,
+                userEmail: refreshedOrder.user?.email,
+                customerEmail: refreshedOrder.customerEmail,
+              },
+            );
           } else {
             const mailchimpMarketing = getMailchimpMarketing();
 
             if (mailchimpMarketing.isConfigured()) {
               const courseNames = refreshedOrder.items
-                .filter((i) => i.type === 'course' || i.type === 'book')
+                .filter((i) => i.type === "course" || i.type === "book")
                 .map((i) => i.name);
 
-              const nameParts = (refreshedOrder.customerName || refreshedOrder.user?.name || '')
+              const nameParts = (
+                refreshedOrder.customerName ||
+                refreshedOrder.user?.name ||
+                ""
+              )
                 .trim()
-                .split(' ')
+                .split(" ")
                 .filter(Boolean);
 
-              const firstName = nameParts[0] || '';
-              const lastName = nameParts.slice(1).join(' ') || '';
+              const firstName = nameParts[0] || "";
+              const lastName = nameParts.slice(1).join(" ") || "";
 
-              await mailchimpMarketing.addCustomerWithCourseTags(emailToTag, courseNames, firstName, lastName);
+              await mailchimpMarketing.addCustomerWithCourseTags(
+                emailToTag,
+                courseNames,
+                firstName,
+                lastName,
+              );
 
               await prisma.order.update({
                 where: { id: refreshedOrder.id },
                 data: {
                   metadata: {
                     ...metadata,
-                    mailchimpMarketingTaggedAt: new Date().toISOString()
-                  }
-                }
+                    mailchimpMarketingTaggedAt: new Date().toISOString(),
+                  },
+                },
               });
 
-              console.log(`✅ Mailchimp Marketing tagged (post-completion): ${emailToTag}`);
+              console.log(
+                `✅ Mailchimp Marketing tagged (post-completion): ${emailToTag}`,
+              );
             } else {
-              console.warn('⚠️ Mailchimp Marketing not configured (skipping tagging)');
+              console.warn(
+                "⚠️ Mailchimp Marketing not configured (skipping tagging)",
+              );
             }
           }
         } else if (refreshedOrder && metadata.mailchimpMarketingTaggedAt) {
-          console.log('ℹ️ Mailchimp Marketing already tagged (skipping):', {
+          console.log("ℹ️ Mailchimp Marketing already tagged (skipping):", {
             orderId: refreshedOrder.orderNumber,
-            taggedAt: metadata.mailchimpMarketingTaggedAt
+            taggedAt: metadata.mailchimpMarketingTaggedAt,
           });
         }
       } catch (err) {
-        console.warn('⚠️ Mailchimp Marketing tagging failed (non-critical):', err);
+        console.warn(
+          "⚠️ Mailchimp Marketing tagging failed (non-critical):",
+          err,
+        );
       }
 
       // Update item prices if they differ from SVEA (only if cart.items is available)
-      if (actualPaidAmountSEK > 0 && sveaOrder.cart?.items && sveaOrder.cart.items.length > 0) {
+      if (
+        actualPaidAmountSEK > 0 &&
+        sveaOrder.cart?.items &&
+        sveaOrder.cart.items.length > 0
+      ) {
         for (const orderItem of order.items) {
           for (const sveaItem of sveaOrder.cart.items) {
-            if (String(sveaItem.articleNumber || '').startsWith('DISCOUNT')) continue;
+            if (String(sveaItem.articleNumber || "").startsWith("DISCOUNT"))
+              continue;
 
-            const itemIdLower = orderItem.id?.toLowerCase() || '';
+            const itemIdLower = orderItem.id?.toLowerCase() || "";
             const articleLower = sveaItem.articleNumber.toLowerCase();
 
             if (
@@ -438,16 +502,18 @@ export async function POST(req: NextRequest) {
               articleLower.includes(itemIdLower) ||
               orderItem.name.toLowerCase().includes(articleLower)
             ) {
-              const vatRate = orderItem.type === 'book' ? 1.06 : 1.25;
+              const vatRate = orderItem.type === "book" ? 1.06 : 1.25;
               const priceInclVAT = (sveaItem.unitPrice || 0) / 100;
               const priceExclVAT = priceInclVAT / vatRate;
 
               if (Math.abs(orderItem.price - priceExclVAT) > 0.01) {
                 await prisma.orderItem.update({
                   where: { id: orderItem.id },
-                  data: { price: Math.round(priceExclVAT * 100) / 100 }
+                  data: { price: Math.round(priceExclVAT * 100) / 100 },
                 });
-                console.log(`✅ Updated item price: ${orderItem.name} from ${orderItem.price} to ${priceExclVAT}`);
+                console.log(
+                  `✅ Updated item price: ${orderItem.name} from ${orderItem.price} to ${priceExclVAT}`,
+                );
               }
               break;
             }
@@ -457,17 +523,20 @@ export async function POST(req: NextRequest) {
 
       // Create purchases for courses if user exists
       if (order.userId) {
-        const courseItems = order.items.filter((item) => item.type === 'course');
+        const courseItems = order.items.filter(
+          (item) => item.type === "course",
+        );
 
         const courseNameMap: Record<string, string> = {
-          'hormonell balans': 'Hormonell Balans',
-          'functional flow': 'Functional Flow',
-          'functional gut health/flow': 'Functional Flow',
-          'functional basics': 'Functional Basics',
-          'functional energy': 'Functional Energy',
-          'functional insulin balance/energy': 'Functional Energy',
-          'prova på vecka med functional foods!': 'Prova på vecka med Functional Foods!',
-          'prova på vecka': 'Prova på vecka med Functional Foods!'
+          "hormonell balans": "Hormonell Balans",
+          "functional flow": "Functional Flow",
+          "functional gut health/flow": "Functional Flow",
+          "functional basics": "Functional Basics",
+          "functional energy": "Functional Energy",
+          "functional insulin balance/energy": "Functional Energy",
+          "prova på vecka med functional foods!":
+            "Prova på vecka med Functional Foods!",
+          "prova på vecka": "Prova på vecka med Functional Foods!",
         };
 
         for (const item of courseItems) {
@@ -478,25 +547,27 @@ export async function POST(req: NextRequest) {
             const mappedName = courseNameMap[normalizedName] || item.name;
 
             let course = await prisma.courseProduct.findFirst({
-              where: { name: { equals: mappedName, mode: 'insensitive' } }
+              where: { name: { equals: mappedName, mode: "insensitive" } },
             });
 
             if (!course) {
               course = await prisma.courseProduct.findFirst({
-                where: { name: { equals: item.name, mode: 'insensitive' } }
+                where: { name: { equals: item.name, mode: "insensitive" } },
               });
             }
 
-            if (!course && item.name.toLowerCase().includes('functional')) {
-              const functionalPart = item.name.split('Functional ')[1]?.trim();
+            if (!course && item.name.toLowerCase().includes("functional")) {
+              const functionalPart = item.name.split("Functional ")[1]?.trim();
               if (functionalPart) {
                 course = await prisma.courseProduct.findFirst({
                   where: {
                     AND: [
-                      { name: { contains: 'Functional', mode: 'insensitive' } },
-                      { name: { contains: functionalPart, mode: 'insensitive' } }
-                    ]
-                  }
+                      { name: { contains: "Functional", mode: "insensitive" } },
+                      {
+                        name: { contains: functionalPart, mode: "insensitive" },
+                      },
+                    ],
+                  },
                 });
               }
             }
@@ -511,12 +582,12 @@ export async function POST(req: NextRequest) {
 
             await prisma.orderItem.update({
               where: { id: item.id },
-              data: { courseId: course.id }
+              data: { courseId: course.id },
             });
           }
 
           const existingPurchase = await prisma.purchase.findUnique({
-            where: { userId_courseId: { userId: order.userId, courseId } }
+            where: { userId_courseId: { userId: order.userId, courseId } },
           });
 
           if (!existingPurchase) {
@@ -525,17 +596,19 @@ export async function POST(req: NextRequest) {
                 userId: order.userId,
                 courseId,
                 amount: item.price * (item.quantity || 1),
-                status: 'completed',
+                status: "completed",
                 orderId: order.id,
-                accessExpiresAt: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000)
-              }
+                accessExpiresAt: new Date(
+                  Date.now() + 365 * 24 * 60 * 60 * 1000,
+                ),
+              },
             });
             console.log(`✅ Created purchase for course: ${courseId}`);
           }
         }
       }
 
-      response.order.status = 'COMPLETED';
+      response.order.status = "COMPLETED";
       response.order.totalAmount = displayTotalAmount;
       response.paymentCompleted = true;
 
@@ -544,7 +617,7 @@ export async function POST(req: NextRequest) {
         try {
           const updatedOrder = await prisma.order.findUnique({
             where: { id: order.id },
-            include: { items: true, user: true }
+            include: { items: true, user: true },
           });
 
           if (!updatedOrder) {
@@ -552,38 +625,53 @@ export async function POST(req: NextRequest) {
           } else {
             const emailToUse =
               updatedOrder.customerEmail ||
-              (updatedOrder.user && !isGuestEmail(updatedOrder.user.email) ? updatedOrder.user.email : null) ||
-              (sveaOrder.customer?.email || null);
+              (updatedOrder.user && !isGuestEmail(updatedOrder.user.email)
+                ? updatedOrder.user.email
+                : null) ||
+              sveaOrder.customer?.email ||
+              null;
 
             const nameToUse =
               updatedOrder.customerName ||
               updatedOrder.user?.name ||
-              `${sveaOrder.customer?.firstName || ''} ${sveaOrder.customer?.lastName || ''}`.trim() ||
-              emailToUse?.split('@')[0] ||
-              'Kund';
+              `${sveaOrder.customer?.firstName || ""} ${sveaOrder.customer?.lastName || ""}`.trim() ||
+              emailToUse?.split("@")[0] ||
+              "Kund";
 
             if (!emailToUse || isGuestEmail(emailToUse)) {
               console.warn(
-                `⚠️ No valid email address found for order ${order.id}. customerEmail: ${updatedOrder.customerEmail}, user.email: ${updatedOrder.user?.email}`
+                `⚠️ No valid email address found for order ${order.id}. customerEmail: ${updatedOrder.customerEmail}, user.email: ${updatedOrder.user?.email}`,
               );
             } else {
               const COURSE_VAT_RATE = 0.25;
               const BOOK_VAT_RATE = 0.06;
-              const courseItems = updatedOrder.items.filter((item) => item.type === 'course');
-              const bookItems = updatedOrder.items.filter(item => item.type === 'book');
+              const courseItems = updatedOrder.items.filter(
+                (item) => item.type === "course",
+              );
+              const bookItems = updatedOrder.items.filter(
+                (item) => item.type === "book",
+              );
 
               // --- E-book download email (inside same scope as updatedOrder/emailToUse/baseUrl/bookItems) ---
               if (bookItems.length > 0) {
-                const crypto = await import('crypto');
-                const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://www.functionalfoods.se';
+                const crypto = await import("crypto");
+                const baseUrl =
+                  process.env.NEXT_PUBLIC_BASE_URL ||
+                  "https://www.functionalfoods.se";
 
                 for (const book of bookItems) {
-                  const downloadToken = crypto.randomBytes(16).toString('hex').toUpperCase();
+                  const downloadToken = crypto
+                    .randomBytes(16)
+                    .toString("hex")
+                    .toUpperCase();
 
-                  let ebookId = 'brodboken-2026';
+                  let ebookId = "brodboken-2026";
                   const n = book.name.toLowerCase();
-                  if (n.includes('brodboken') || n.includes('brodbok')) {
-                    ebookId = 'brodboken-2026';
+                  if (n.includes("brodboken") || n.includes("brodbok")) {
+                    ebookId = "brodboken-2026";
+                  }
+                  if (n.includes("påskbuffé") || n.includes("paskbuffe")) {
+                    ebookId = "paskbuffe";
                   }
 
                   await prisma.ebookDownload.create({
@@ -594,11 +682,17 @@ export async function POST(req: NextRequest) {
                       ebookId,
                       ebookName: book.name,
                       maxDownloads: 5,
-                      expiresAt: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000)
-                    }
+                      expiresAt: new Date(
+                        Date.now() + 365 * 24 * 60 * 60 * 1000,
+                      ),
+                    },
                   });
 
-                  const downloadUrl = `${baseUrl}/brodboken/ladda-ner?token=${downloadToken}`;
+                  let downloadUrl = `${baseUrl}/brodboken/ladda-ner?token=${downloadToken}`;
+
+                  if (ebookId === "paskbuffe") {
+                    downloadUrl = `${baseUrl}/e-bocker/paskbuffe/ladda-ned?token=${downloadToken}`;
+                  }
 
                   await emailService.sendEbookDownloadEmail({
                     email: emailToUse,
@@ -606,27 +700,33 @@ export async function POST(req: NextRequest) {
                     ebookName: book.name,
                     downloadUrl,
                     downloadPassword: downloadToken,
-                    orderNumber: updatedOrder.orderNumber
+                    orderNumber: updatedOrder.orderNumber,
                   });
 
                   console.log(
-                    `✅ E-book download email sent for: ${book.name} with token: ${downloadToken.substring(0, 8)}...`
+                    `✅ E-book download email sent for: ${book.name} with token: ${downloadToken.substring(0, 8)}...`,
                   );
                 }
               }
-              
+
               const emailCourses = courseItems.map((item) => ({
                 name: item.name,
-                price: (Math.round(item.price * (1 + COURSE_VAT_RATE) * 100) / 100) * (item.quantity || 1)
+                price:
+                  (Math.round(item.price * (1 + COURSE_VAT_RATE) * 100) / 100) *
+                  (item.quantity || 1),
               }));
 
               const metadata = (updatedOrder.metadata as any) || {};
               const emailAlreadySent = metadata.confirmationEmailSent;
 
               if (emailAlreadySent) {
-                console.log('ℹ️ Order confirmation email already sent (skipping duplicate)');
+                console.log(
+                  "ℹ️ Order confirmation email already sent (skipping duplicate)",
+                );
               } else {
-                const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://www.functionalfoods.se';
+                const baseUrl =
+                  process.env.NEXT_PUBLIC_BASE_URL ||
+                  "https://www.functionalfoods.se";
 
                 if (courseItems.length > 0) {
                   await emailService.sendOrderConfirmation({
@@ -640,16 +740,18 @@ export async function POST(req: NextRequest) {
                         ? {
                             email: emailToUse,
                             password: temporaryPassword,
-                            loginUrl: `${baseUrl}/login`
+                            loginUrl: `${baseUrl}/login`,
                           }
                         : undefined,
-                    isExistingUser: !isNewUser
+                    isExistingUser: !isNewUser,
                   });
 
                   console.log(
                     `✅ Order confirmation email sent via verify to ${emailToUse}${
-                      isNewUser ? ' (new user with login credentials)' : ' (existing user)'
-                    }`
+                      isNewUser
+                        ? " (new user with login credentials)"
+                        : " (existing user)"
+                    }`,
                   );
                 }
 
@@ -659,52 +761,67 @@ export async function POST(req: NextRequest) {
                     metadata: {
                       ...metadata,
                       confirmationEmailSent: true,
-                      confirmationEmailSentAt: new Date().toISOString()
-                    }
-                  }
+                      confirmationEmailSentAt: new Date().toISOString(),
+                    },
+                  },
                 });
               }
             }
           }
         } catch (emailError) {
-          console.error('❌ Failed to send order confirmation email via verify:', emailError);
+          console.error(
+            "❌ Failed to send order confirmation email via verify:",
+            emailError,
+          );
         }
       }
-      
+
       // --- Mailchimp E-commerce purchase tracking (run from verify to avoid webhook dependency) ---
       try {
         const updatedOrder = await prisma.order.findUnique({
           where: { id: order.id },
-          include: { user: true, items: true }
+          include: { user: true, items: true },
         });
 
         if (!updatedOrder) {
-          console.warn('⚠️ Mailchimp E-commerce: order not found after completion:', order.id);
+          console.warn(
+            "⚠️ Mailchimp E-commerce: order not found after completion:",
+            order.id,
+          );
         } else {
           const emailForTracking =
-            updatedOrder.user?.email && !updatedOrder.user.email.startsWith('guest-')
+            updatedOrder.user?.email &&
+            !updatedOrder.user.email.startsWith("guest-")
               ? updatedOrder.user.email
-              : updatedOrder.customerEmail && !updatedOrder.customerEmail.startsWith('guest-')
+              : updatedOrder.customerEmail &&
+                  !updatedOrder.customerEmail.startsWith("guest-")
                 ? updatedOrder.customerEmail
                 : null;
 
           if (!emailForTracking) {
-            console.warn('⚠️ Mailchimp E-commerce: missing email (cannot track):', {
-              orderId: updatedOrder.id,
-              userId: updatedOrder.userId,
-              userEmail: updatedOrder.user?.email,
-              customerEmail: updatedOrder.customerEmail
-            });
+            console.warn(
+              "⚠️ Mailchimp E-commerce: missing email (cannot track):",
+              {
+                orderId: updatedOrder.id,
+                userId: updatedOrder.userId,
+                userEmail: updatedOrder.user?.email,
+                customerEmail: updatedOrder.customerEmail,
+              },
+            );
           } else {
             const metadata = (updatedOrder.metadata as any) || {};
 
             if (metadata.mailchimpEcommerceTrackedAt) {
-              console.log('ℹ️ Mailchimp E-commerce already tracked (skipping):', {
-                orderId: updatedOrder.orderNumber,
-                trackedAt: metadata.mailchimpEcommerceTrackedAt
-              });
+              console.log(
+                "ℹ️ Mailchimp E-commerce already tracked (skipping):",
+                {
+                  orderId: updatedOrder.orderNumber,
+                  trackedAt: metadata.mailchimpEcommerceTrackedAt,
+                },
+              );
             } else {
-              const { getMailchimpEcommerce } = await import('@/app/lib/mailchimp-ecommerce');
+              const { getMailchimpEcommerce } =
+                await import("@/app/lib/mailchimp-ecommerce");
               const mailchimpEcommerce = getMailchimpEcommerce();
 
               const totalAmount = updatedOrder.totalAmount || 0;
@@ -712,100 +829,121 @@ export async function POST(req: NextRequest) {
               const taxTotal = 0;
 
               let discountTotal = 0;
-              if (typeof metadata.discountAmount === 'number') {
+              if (typeof metadata.discountAmount === "number") {
                 discountTotal = metadata.discountAmount;
-              } else if (typeof metadata.discountAmount === 'string') {
+              } else if (typeof metadata.discountAmount === "string") {
                 const parsed = Number(metadata.discountAmount);
                 if (!Number.isNaN(parsed)) discountTotal = parsed;
               }
 
               const attribution = metadata.attribution || {};
               const campaignId = attribution?.mc_cid || undefined;
-              const trackingCode = attribution?.utm_campaign || campaignId || undefined;
+              const trackingCode =
+                attribution?.utm_campaign || campaignId || undefined;
 
               let landingSite: string | undefined;
-              if (attribution?.utm_source || attribution?.utm_campaign || attribution?.mc_cid) {
+              if (
+                attribution?.utm_source ||
+                attribution?.utm_campaign ||
+                attribution?.mc_cid
+              ) {
                 const params = new URLSearchParams();
-                if (attribution.utm_source) params.set('utm_source', attribution.utm_source);
-                if (attribution.utm_medium) params.set('utm_medium', attribution.utm_medium);
-                if (attribution.utm_campaign) params.set('utm_campaign', attribution.utm_campaign);
-                if (attribution.mc_cid) params.set('mc_cid', attribution.mc_cid);
+                if (attribution.utm_source)
+                  params.set("utm_source", attribution.utm_source);
+                if (attribution.utm_medium)
+                  params.set("utm_medium", attribution.utm_medium);
+                if (attribution.utm_campaign)
+                  params.set("utm_campaign", attribution.utm_campaign);
+                if (attribution.mc_cid)
+                  params.set("mc_cid", attribution.mc_cid);
                 landingSite = `https://functionalfoods.se/?${params.toString()}`;
               }
 
               await mailchimpEcommerce.trackPurchase({
                 orderId: updatedOrder.orderNumber,
                 customerEmail: emailForTracking,
-                customerName: updatedOrder.user?.name || updatedOrder.customerName || undefined,
+                customerName:
+                  updatedOrder.user?.name ||
+                  updatedOrder.customerName ||
+                  undefined,
                 items: updatedOrder.items.map((it) => ({
                   id: it.courseId || it.id,
                   name: it.name,
                   price: it.price,
                   quantity: it.quantity,
-                  type: (it.type as any) || 'course'
+                  type: (it.type as any) || "course",
                 })),
                 totalAmount,
-                currency: updatedOrder.currency || 'SEK',
+                currency: updatedOrder.currency || "SEK",
                 orderDate: updatedOrder.createdAt,
                 discountTotal,
                 shippingTotal: 0,
                 taxTotal,
                 campaignId,
                 landingSite,
-                trackingCode
+                trackingCode,
               });
 
-              console.log('✅ Mailchimp E-commerce purchase tracked (via verify):', {
-                orderId: updatedOrder.orderNumber,
-                email: emailForTracking,
-                totalAmount,
-                itemsCount: updatedOrder.items.length
-              });
+              console.log(
+                "✅ Mailchimp E-commerce purchase tracked (via verify):",
+                {
+                  orderId: updatedOrder.orderNumber,
+                  email: emailForTracking,
+                  totalAmount,
+                  itemsCount: updatedOrder.items.length,
+                },
+              );
 
               await prisma.order.update({
                 where: { id: updatedOrder.id },
                 data: {
                   metadata: {
                     ...metadata,
-                    mailchimpEcommerceTrackedAt: new Date().toISOString()
-                  }
-                }
+                    mailchimpEcommerceTrackedAt: new Date().toISOString(),
+                  },
+                },
               });
             }
           }
         }
       } catch (e) {
-        console.warn('⚠️ Mailchimp E-commerce tracking failed (verify, non-critical):', e);
+        console.warn(
+          "⚠️ Mailchimp E-commerce tracking failed (verify, non-critical):",
+          e,
+        );
       }
     }
 
-    console.log('✅ Returning verification response:', {
+    console.log("✅ Returning verification response:", {
       success: response.success,
       paymentCompleted: response.paymentCompleted,
       orderStatus: response.orderStatus,
-      orderDbStatus: response.order.status
+      orderDbStatus: response.order.status,
     });
 
     return NextResponse.json(response);
   } catch (error) {
-    console.error('❌ Verification error:', error);
+    console.error("❌ Verification error:", error);
 
-    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    const errorMessage =
+      error instanceof Error ? error.message : "Unknown error";
 
     return NextResponse.json(
       {
-        error: 'Failed to verify payment',
-        details: process.env.NODE_ENV === 'development' ? errorMessage : undefined
+        error: "Failed to verify payment",
+        details:
+          process.env.NODE_ENV === "development" ? errorMessage : undefined,
       },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
 
 function generateSecurePassword(): string {
   const length = 16;
-  const charset = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*';
-  let password = '';
+  const charset =
+    "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*";
+  let password = "";
 
   for (let i = 0; i < length; i++) {
     password += charset.charAt(Math.floor(Math.random() * charset.length));

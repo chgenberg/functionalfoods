@@ -26,10 +26,10 @@ const DEFAULT_CONTENT = {
   image: "/paskbuffe-omslag.jpg",
   price: "99 kr",
   features: [
-    "Tips på hur du planerar och förbereder påsken på ett hälsosamt sätt",
-    "Recept som ger bättre näringsvärde och stabil energi",
-    "Alternativ som passar hela familjen – även barnen kommer älska dem!",
-    "Lättlagade rätter som både är goda och mättande",
+    "Smarta tips för påskens utmaningar",
+    "50 festliga recept för hela påskbordet",
+    "Näringsrika rätter som hela familjen älskar",
+    "Snabba, goda och mättande måltider",
   ],
   authorSection:
     "Ulrika Davidsson är kostrådgivare, receptkreatör och bästsäljande författare till över 40 böcker. Hennes online-kurser har hjälpt tiotusentals personer att finna en mer hållbar och hälsosam livsstil.",
