@@ -34,9 +34,9 @@ export default function EBockerPage() {
       price: "99 kr",
       format: "PDF",
       highlights: [
-        "Hälsosamma påskrecept",
-        "Näringsrika och mättande alternativ",
-        "Recept för hela påskhelgen",
+        "50 festliga recept för hela påskbordet",
+        "Smarta tips för påskens utmaningar",
+        "Näringsrika rätter som hela familjen älskar",
       ],
     },
   ];
