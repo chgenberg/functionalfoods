@@ -4,7 +4,14 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useCart } from "../context/CartContext";
-import { ShoppingCart, Check, BookOpen, ChefHat, Leaf, Sparkles } from "lucide-react";
+import {
+  ShoppingCart,
+  Check,
+  BookOpen,
+  ChefHat,
+  Leaf,
+  Sparkles,
+} from "lucide-react";
 import { motion } from "framer-motion";
 import { trackAddToCart, trackViewContent } from "@/app/lib/analytics";
 
@@ -24,10 +31,10 @@ const DEFAULT_CONTENT = {
     "Naturligt glutenfria alternativ",
     "Fiber- & proteinrika varianter",
     "Tips för jämnare blodsocker & mindre uppblåsthet",
-    "Smarta basrecept + variationer"
+    "Smarta basrecept + variationer",
   ],
   authorSection:
-    "Ulrika Davidsson är kostrådgivare, receptkreatör och bästsäljande författare till över 40 böcker. Hennes online-kurser har hjälpt tiotusentals personer att finna en mer hållbar och hälsosam livsstil."
+    "Ulrika Davidsson är kostrådgivare, receptkreatör och bästsäljande författare till över 40 böcker. Hennes online-kurser har hjälpt tiotusentals personer att finna en mer hållbar och hälsosam livsstil.",
 };
 
 interface PageContent {
@@ -58,7 +65,7 @@ export default function BrodbokenPage() {
     price: 65.09, // 69 kr inkl 6% moms = 65.09 kr exkl moms (69 / 1.06)
     quantity: 1,
     type: "book" as const,
-    image: content.image || "/baka-glutenfritt.png"
+    image: content.image || "/baka-glutenfritt.png",
   };
 
   // Fetch custom page content
@@ -81,7 +88,10 @@ export default function BrodbokenPage() {
   // Track product view (GA/Meta server fallback included)
   useEffect(() => {
     try {
-      trackViewContent({ id: ebook.id, name: ebook.name, price: ebook.price }, "SEK");
+      trackViewContent(
+        { id: ebook.id, name: ebook.name, price: ebook.price },
+        "SEK",
+      );
     } catch {}
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -91,7 +101,10 @@ export default function BrodbokenPage() {
 
     addItem(ebook);
     try {
-      trackAddToCart({ id: ebook.id, name: ebook.name, price: ebook.price, quantity: 1 }, "SEK");
+      trackAddToCart(
+        { id: ebook.id, name: ebook.name, price: ebook.price, quantity: 1 },
+        "SEK",
+      );
     } catch {}
 
     setAdded(true);
@@ -104,10 +117,12 @@ export default function BrodbokenPage() {
 
   // Feature icons (neutral, non-seasonal)
   const featureIcons = [ChefHat, BookOpen, Leaf, Sparkles, ChefHat, BookOpen];
-  const features = (content.features || DEFAULT_CONTENT.features).map((text, index) => ({
-    icon: featureIcons[index % featureIcons.length],
-    text
-  }));
+  const features = (content.features || DEFAULT_CONTENT.features).map(
+    (text, index) => ({
+      icon: featureIcons[index % featureIcons.length],
+      text,
+    }),
+  );
 
   return (
     <main className="min-h-screen bg-gradient-to-b from-[#0a1f14] via-[#102a1c] to-[#0a1f14] relative overflow-hidden">
@@ -125,16 +140,16 @@ export default function BrodbokenPage() {
             className="absolute w-2 h-2 bg-white/10 rounded-full"
             style={{
               left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`
+              top: `${Math.random() * 100}%`,
             }}
             animate={{
               y: [0, -12, 0],
-              opacity: [0.08, 0.18, 0.08]
+              opacity: [0.08, 0.18, 0.08],
             }}
             transition={{
               duration: 4 + Math.random() * 3,
               repeat: Infinity,
-              delay: Math.random() * 2
+              delay: Math.random() * 2,
             }}
           />
         ))}
@@ -167,7 +182,9 @@ export default function BrodbokenPage() {
 
               {/* Book image */}
               <div className="relative">
-                <div className={`transition-all duration-700 ${imageLoaded ? "opacity-100 scale-100" : "opacity-0 scale-95"}`}>
+                <div
+                  className={`transition-all duration-700 ${imageLoaded ? "opacity-100 scale-100" : "opacity-0 scale-95"}`}
+                >
                   <Image
                     src={content.image || "/baka-glutenfritt.png"}
                     alt={`${content.title} – ${content.subtitle}`}
@@ -178,10 +195,12 @@ export default function BrodbokenPage() {
                     priority
                   />
                 </div>
-                {!imageLoaded && <div className="absolute inset-0 bg-white/10 rounded-2xl animate-pulse w-[400px] h-[500px]" />}
+                {!imageLoaded && (
+                  <div className="absolute inset-0 bg-white/10 rounded-2xl animate-pulse w-[400px] h-[500px]" />
+                )}
 
                 {/* Price badge */}
-                <div className="absolute -top-4 -right-4 bg-[#93C560] text-[#0a1f14] px-4 py-2 rounded-full font-bold text-lg shadow-lg transform rotate-12">
+                <div className="absolute -top-4 -right-4 bg-[#FF7E70] text-[#FFFFFF] px-4 py-2 rounded-full font-bold text-lg shadow-lg transform rotate-12">
                   {content.price}
                 </div>
               </div>
@@ -197,12 +216,18 @@ export default function BrodbokenPage() {
           >
             <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold text-white leading-tight">
               {content.title}
-              <span className="block text-[#93C560] mt-2">{content.subtitle}</span>
+              <span className="block text-[#93C560] mt-2">
+                {content.subtitle}
+              </span>
             </h1>
 
-            <p className="text-gray-300 text-lg leading-relaxed">{content.description}</p>
+            <p className="text-gray-300 text-lg leading-relaxed">
+              {content.description}
+            </p>
 
-            <p className="text-gray-300 leading-relaxed">{content.shortDescription}</p>
+            <p className="text-gray-300 leading-relaxed">
+              {content.shortDescription}
+            </p>
 
             {/* Features grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-4">
@@ -251,7 +276,9 @@ export default function BrodbokenPage() {
                 )}
               </motion.button>
 
-              <p className="text-gray-300 text-sm">E-boken skickas direkt till din e-post efter köp</p>
+              <p className="text-gray-300 text-sm">
+                E-boken skickas direkt till din e-post efter köp
+              </p>
             </div>
           </motion.div>
         </div>
@@ -263,28 +290,45 @@ export default function BrodbokenPage() {
           transition={{ delay: 0.6 }}
           className="mt-20 text-center"
         >
-          <h2 className="text-2xl md:text-3xl font-bold text-white mb-8">Du får:</h2>
+          <h2 className="text-2xl md:text-3xl font-bold text-white mb-8">
+            Du får:
+          </h2>
           <div className="grid md:grid-cols-3 gap-6 max-w-4xl mx-auto">
             <div className="bg-white/5 backdrop-blur-sm rounded-2xl p-6 border border-white/10">
               <div className="w-12 h-12 bg-[#93C560]/20 rounded-xl flex items-center justify-center mx-auto mb-4">
                 <ChefHat className="w-6 h-6 text-[#93C560]" />
               </div>
-              <h3 className="text-white font-semibold mb-2">Glutenfria recept</h3>
-              <p className="text-gray-300 text-sm">Du får näringsrika, mättande och riktigt goda recept - som är enkla att baka</p>
+              <h3 className="text-white font-semibold mb-2">
+                Glutenfria recept
+              </h3>
+              <p className="text-gray-300 text-sm">
+                Du får näringsrika, mättande och riktigt goda recept - som är
+                enkla att baka
+              </p>
             </div>
             <div className="bg-white/5 backdrop-blur-sm rounded-2xl p-6 border border-white/10">
               <div className="w-12 h-12 bg-emerald-400/20 rounded-xl flex items-center justify-center mx-auto mb-4">
                 <BookOpen className="w-6 h-6 text-emerald-300" />
               </div>
-              <h3 className="text-white font-semibold mb-2">En komplett e-bok</h3>
-              <p className="text-gray-300 text-sm">Goda recept till frukost och middag, för vardag och fest - som du kommer baka om och om igen</p>
+              <h3 className="text-white font-semibold mb-2">
+                En komplett e-bok
+              </h3>
+              <p className="text-gray-300 text-sm">
+                Goda recept till frukost och middag, för vardag och fest - som
+                du kommer baka om och om igen
+              </p>
             </div>
             <div className="bg-white/5 backdrop-blur-sm rounded-2xl p-6 border border-white/10">
               <div className="w-12 h-12 bg-lime-300/20 rounded-xl flex items-center justify-center mx-auto mb-4">
                 <Leaf className="w-6 h-6 text-lime-200" />
               </div>
-              <h3 className="text-white font-semibold mb-2">Functional Foods</h3>
-              <p className="text-gray-300 text-sm">Oavsett om du väljer glutenfritt av hälsoskäl, för magen eller för att få jämnare energi</p>
+              <h3 className="text-white font-semibold mb-2">
+                Functional Foods
+              </h3>
+              <p className="text-gray-300 text-sm">
+                Oavsett om du väljer glutenfritt av hälsoskäl, för magen eller
+                för att få jämnare energi
+              </p>
             </div>
           </div>
         </motion.div>
@@ -301,7 +345,9 @@ export default function BrodbokenPage() {
               <ChefHat className="w-10 h-10 text-white" />
             </div>
             <div>
-              <h3 className="text-xl font-semibold text-white mb-2">Om Ulrika Davidsson</h3>
+              <h3 className="text-xl font-semibold text-white mb-2">
+                Om Ulrika Davidsson
+              </h3>
               <p className="text-gray-300">{content.authorSection}</p>
             </div>
           </div>
