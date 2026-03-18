@@ -44,23 +44,25 @@ function getUserIdFromToken(token: string) {
 async function getCourseInfo() {
   try {
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
-    const [basicsResponse, flowResponse, energyResponse, balansResponse, breadbookResponse] = await Promise.all([
+    const [basicsResponse, flowResponse, energyResponse, balansResponse, breadbookResponse, paskbuffeResponse] = await Promise.all([
       fetch(`${baseUrl}/functionalbasics.txt`, { cache: 'no-store' }),
       fetch(`${baseUrl}/functionalflow.txt`, { cache: 'no-store' }),
       fetch(`${baseUrl}/functionalenergy.txt`, { cache: 'no-store' }),
       fetch(`${baseUrl}/hormonellbalans.txt`, { cache: 'no-store' }),
-      fetch(`${baseUrl}/baka-glutenfritt.txt`, { cache: 'no-store' })
+      fetch(`${baseUrl}/baka-glutenfritt.txt`, { cache: 'no-store' }),
+      fetch(`${baseUrl}/paskbuffe.txt`, { cache: 'no-store' })
     ]);
     
-    if (!basicsResponse.ok || !flowResponse.ok || !energyResponse.ok || !balansResponse.ok) {
+    if (!basicsResponse.ok || !flowResponse.ok || !energyResponse.ok || !balansResponse.ok || !breadbookResponse.ok || !paskbuffeResponse.ok) {
       console.error('Failed to load course info:', {
         basics: basicsResponse.status,
         flow: flowResponse.status,
         energy: energyResponse.status,
         balans: balansResponse.status,
-        breadbook: breadbookResponse.status
+        breadbook: breadbookResponse.status,
+        paskbuffe: paskbuffeResponse.status
       });
-      return { basicsText: '', flowText: '', energyText: '', balansText: '', breadbookText: '' };
+      return { basicsText: '', flowText: '', energyText: '', balansText: '', breadbookText: '', paskbuffeText: '' };
     }
     
     const basicsText = await basicsResponse.text();
@@ -68,11 +70,12 @@ async function getCourseInfo() {
     const energyText = await energyResponse.text();
     const balansText = await balansResponse.text();
     const breadbookText = await breadbookResponse.text();
+    const paskbuffeText = await paskbuffeResponse.text();
     
-    return { basicsText, flowText, energyText, balansText, breadbookText };
+    return { basicsText, flowText, energyText, balansText, breadbookText, paskbuffeText };
   } catch (error) {
     console.error('Error loading course info:', error);
-    return { basicsText: '', flowText: '', energyText: '', balansText: '', breakbookText: '' };
+    return { basicsText: '', flowText: '', energyText: '', balansText: '', breakbookText: '', paskbuffeText: '' };
   }
 }
 
@@ -334,7 +337,7 @@ Du har djup kunskap om:
 - Recept och matlagning för optimal hälsa
 - Longevity och livsstilsfaktorer
 - Våra kurser: Functional Basics, Functional Gut Health/Flow, Functional Insulin Balance / Energy och Hormonell Balans
-- Våra e-böcker: Baka Glutenfritt
+- Våra e-böcker: Baka Glutenfritt och Påskbuffé
 - Funktionella råvaror och deras hälsofördelar
 
 Kursinformation:
@@ -343,6 +346,7 @@ Functional Gut Health/Flow: ${flowText.substring(0, 500)}...
 Functional Insulin Balance/Energy: ${energyText.substring(0, 500)}...
 Hormonell Balans: ${balansText.substring(0, 500)}...
 Baka Glutenfritt: ${breadbookText.substring(0, 500)}...
+Påskbuffé: ${paskbuffeText.substring(0, 500)}...
 
 VÅRA RECEPT (${recipes.length} tillgängliga):
 ${recipes.slice(0, 10).map((recipe: any) => 
