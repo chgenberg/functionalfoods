@@ -323,7 +323,7 @@ ${user.chatMessages.map((chat: any) =>
     }
     
     // Hämta kursinformation och databas-data
-    const { basicsText, flowText, energyText, balansText, breadbookText } = await getCourseInfo();
+    const { basicsText, flowText, energyText, balansText, breadbookText, paskbuffeText } = await getCourseInfo();
     const { recipes, rawMaterials } = await getRecipesAndRawMaterials();
     
     const targetLang = locale === 'en' ? 'engelska' : locale === 'es' ? 'spanska' : locale === 'de' ? 'tyska' : locale === 'fr' ? 'franska' : 'svenska';
