@@ -101,11 +101,11 @@ export default function EBockerPage() {
                 <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-black/10 to-transparent" />
 
                 <div className="absolute left-4 bottom-4 flex items-center gap-3 text-white">
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 rounded-full bg-[#004422]/65 backdrop-blur-sm px-3 shadow-md">
                     <BookOpen className="w-4 h-4" />
                     <span>{ebook.format}</span>
                   </div>
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2 rounded-full bg-[#004422]/65 backdrop-blur-sm px-3 shadow-md">
                     <Tag className="w-4 h-4" />
                     <span>{ebook.price}</span>
                   </div>
