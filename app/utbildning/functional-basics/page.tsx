@@ -1,19 +1,39 @@
 "use client";
-import Link from 'next/link';
-import Image from 'next/image';
-import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import Link from "next/link";
+import Image from "next/image";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 
-import { GiBrain, GiStomach, GiWheat, GiHeartBeats, GiMuscleUp } from 'react-icons/gi';
-import { motion, AnimatePresence } from 'framer-motion';
-import { useCart } from '../../context/CartContext';
-import AddToCart from '@/app/components/AddToCart';
-import CourseReviews from '@/app/components/CourseReviews';
-import HealthDisclaimer from '@/app/components/HealthDisclaimer';
-import FaqAccordion from '@/app/components/FaqAccordion';
-import { Clock, CheckCircle, ArrowLeft, Heart, Zap, ShoppingCart, Users, Book, Star, Play, Target, Video, User } from 'lucide-react';
-import { formatPrice } from '@/app/lib/utils';
-import { trackAddToCart, trackViewContent } from '@/app/lib/analytics';
+import {
+  GiBrain,
+  GiStomach,
+  GiWheat,
+  GiHeartBeats,
+  GiMuscleUp,
+} from "react-icons/gi";
+import { motion, AnimatePresence } from "framer-motion";
+import { useCart } from "../../context/CartContext";
+import AddToCart from "@/app/components/AddToCart";
+import CourseReviews from "@/app/components/CourseReviews";
+import HealthDisclaimer from "@/app/components/HealthDisclaimer";
+import FaqAccordion from "@/app/components/FaqAccordion";
+import {
+  Clock,
+  CheckCircle,
+  ArrowLeft,
+  Heart,
+  Zap,
+  ShoppingCart,
+  Users,
+  Book,
+  Star,
+  Play,
+  Target,
+  Video,
+  User,
+} from "lucide-react";
+import { formatPrice } from "@/app/lib/utils";
+import { trackAddToCart, trackViewContent } from "@/app/lib/analytics";
 
 export default function FunctionalBasicsPage() {
   const router = useRouter();
@@ -25,27 +45,32 @@ export default function FunctionalBasicsPage() {
   useEffect(() => {
     const fetchPrice = async () => {
       try {
-        const response = await fetch('/api/admin/functional-courses', {
-          credentials: 'include'
+        const response = await fetch("/api/admin/functional-courses", {
+          credentials: "include",
         });
         if (response.ok) {
           const courses = await response.json();
-          const basics = courses.find((c: any) => c.id === 'functional-basics');
+          const basics = courses.find((c: any) => c.id === "functional-basics");
           if (basics) {
             // Calculate prices with VAT
-            const basePriceIncl = basics.basePrice ? Math.round(basics.basePrice * 1.25) : null;
-            const salePriceIncl = basics.salePrice ? Math.round(basics.salePrice * 1.25) : null;
-            
+            const basePriceIncl = basics.basePrice
+              ? Math.round(basics.basePrice * 1.25)
+              : null;
+            const salePriceIncl = basics.salePrice
+              ? Math.round(basics.salePrice * 1.25)
+              : null;
+
             // Set original price (basePrice)
             setOriginalPrice(basePriceIncl);
-            
+
             // Use salePrice if available, otherwise basePrice or price
-            const activePriceIncl = salePriceIncl ?? basePriceIncl ?? Math.round(basics.price * 1.25);
+            const activePriceIncl =
+              salePriceIncl ?? basePriceIncl ?? Math.round(basics.price * 1.25);
             setCoursePrice(activePriceIncl);
           }
         }
       } catch (error) {
-        console.error('Failed to fetch course price:', error);
+        console.error("Failed to fetch course price:", error);
         // Fallback to hardcoded prices
         setCoursePrice(995);
         setOriginalPrice(2295);
@@ -59,12 +84,16 @@ export default function FunctionalBasicsPage() {
   // Fire ViewContent once when price is available (server fallback handles blocked clients)
   useEffect(() => {
     if (!coursePrice) return; // Wait for price to load
-    trackViewContent({ id: 'functional-basics', name: 'Functional Basics', price: coursePrice });
+    trackViewContent({
+      id: "functional-basics",
+      name: "Functional Basics",
+      price: coursePrice,
+    });
   }, [coursePrice]);
-  
+
   // Add CSS for gradient animation
-  if (typeof document !== 'undefined') {
-    const style = document.createElement('style');
+  if (typeof document !== "undefined") {
+    const style = document.createElement("style");
     style.textContent = `
       @keyframes gradient {
         0% { background-position: 0% 50%; }
@@ -93,122 +122,137 @@ export default function FunctionalBasicsPage() {
     document.head.appendChild(style);
   }
   const [imageLoaded, setImageLoaded] = useState(false);
-  const [activeTab, setActiveTab] = useState('overview');
+  const [activeTab, setActiveTab] = useState("overview");
   const { addItem } = useCart();
 
   // Use fetched price or fallback
   const VAT_RATE = 0.25;
   const displayPriceIncl = coursePrice ?? 995; // Campaign price
   const displayOriginalPriceIncl = originalPrice ?? 2295; // Original price
-  const displayPriceExcl = Math.round((displayPriceIncl / (1 + VAT_RATE)) * 100) / 100;
-  const hasDiscount = originalPrice && coursePrice && originalPrice > coursePrice;
+  const displayPriceExcl =
+    Math.round((displayPriceIncl / (1 + VAT_RATE)) * 100) / 100;
+  const hasDiscount =
+    originalPrice && coursePrice && originalPrice > coursePrice;
 
   const course = {
-    id: 'functional-basics',
-    name: 'Functional Basics',
+    id: "functional-basics",
+    name: "Functional Basics",
     price: displayPriceExcl, // Pris exkl. moms
-    type: 'course' as const,
-    image: '/Kurser_bilder/Functional_Basics - Grunden i functional foods.jpg',
-    quantity: 1
+    type: "course" as const,
+    image: "/Kurser_bilder/Functional_Basics - Grunden i functional foods.jpg",
+    quantity: 1,
   };
 
   const handleAddToCart = () => {
     addItem(course);
-    try { trackAddToCart({ id: course.id, name: course.name, price: course.price, quantity: 1 }, 'SEK'); } catch {}
-    router.push('/cart');
+    try {
+      trackAddToCart(
+        { id: course.id, name: course.name, price: course.price, quantity: 1 },
+        "SEK",
+      );
+    } catch {}
+    router.push("/cart");
   };
 
   const benefits = [
     {
       icon: Zap,
       title: "Mer energi & bättre humör",
-      description: "Stabilt blodsocker minskar humörsvängningar hos både barn och vuxna.",
-      color: "text-yellow-600"
+      description:
+        "Stabilt blodsocker minskar humörsvängningar hos både barn och vuxna.",
+      color: "text-yellow-600",
     },
     {
       icon: GiStomach,
       title: "Bättre matsmältning",
-      description: "Fiberrik mat och probiotiska livsmedel stöder tarmhälsan och minskar magproblem.",
-      color: "text-primary"
+      description:
+        "Fiberrik mat och probiotiska livsmedel stöder tarmhälsan och minskar magproblem.",
+      color: "text-primary",
     },
     {
       icon: Heart,
       title: "Starkare immunförsvar",
-      description: "Näringsrik mat med antioxidanter hjälper kroppen att bekämpa sjukdomar.",
-      color: "text-red-600"
+      description:
+        "Näringsrik mat med antioxidanter hjälper kroppen att bekämpa sjukdomar.",
+      color: "text-red-600",
     },
     {
       icon: GiBrain,
       title: "Mindre inflammation & stress",
-      description: "Rätt matval kan minska inflammation och främja lugn och återhämtning.",
-      color: "text-blue-600"
+      description:
+        "Rätt matval kan minska inflammation och främja lugn och återhämtning.",
+      color: "text-blue-600",
     },
     {
       icon: GiHeartBeats,
       title: "Hormonell balans",
-      description: "Alla kroppens hormoner påverkas positivt av en näringsrik kost.",
-      color: "text-purple-600"
+      description:
+        "Alla kroppens hormoner påverkas positivt av en näringsrik kost.",
+      color: "text-purple-600",
     },
     {
       icon: GiMuscleUp,
       title: "Hälsobalans",
       description: "Främja en hälsosam vikt och välmående genom smarta matval.",
-      color: "text-orange-600"
-    }
+      color: "text-orange-600",
+    },
   ];
 
   const whatYouGet = [
     {
       icon: Book,
       title: "75 Recept & Måltidsplan",
-      description: "Enkla, goda och näringsrika måltider för hela familjen"
+      description: "Enkla, goda och näringsrika måltider för hela familjen",
     },
     {
       icon: GiBrain,
       title: "Djupgående näringslära",
-      description: "Förstå sambandet mellan mat, hälsa och longevity"
+      description: "Förstå sambandet mellan mat, hälsa och longevity",
     },
     {
       icon: ShoppingCart,
       title: "Råvaruguide & inköpslista",
-      description: "Smarta inköp för att fylla köket med rätt mat"
+      description: "Smarta inköp för att fylla köket med rätt mat",
     },
     {
       icon: CheckCircle,
       title: "Steg-för-steg-planering",
-      description: "Lär dig att planera och balansera dina måltider"
+      description: "Lär dig att planera och balansera dina måltider",
     },
     {
       icon: Play,
-      title: "Videolektioner varje vecka",
-      description: "Lättillgängligt och inspirerande innehåll"
+      title: "Livesändningar med Ulrika",
+      description: "Lättillgängligt och inspirerande innehåll",
     },
     {
       icon: Users,
-      title: "One-to-one coachning",
-      description: "Personlig coaching med Ulrika och gruppstöd"
-    }
+      title: "Coachning",
+      description: "Tillgång till en sluten grupp för coachning",
+    },
   ];
 
   const forWho = [
     "Vill förbättra din hälsa steg för steg utan att det blir krångligt",
-    "Vill bli av med ojämnt blodsocker och känna dig mätt efter måltider", 
+    "Vill bli av med ojämnt blodsocker och känna dig mätt efter måltider",
     "Vill ha mer energi och känna dig piggare hela dagen",
     "Vill lära dig mer om antiinflammatorisk kost och longevity",
-    "Vill skapa bättre matvanor på ett hållbart sätt"
+    "Vill skapa bättre matvanor på ett hållbart sätt",
   ];
 
   const functionalFoodsBenefits = [
     { icon: GiHeartBeats, text: "Stöd för hormonsystemet" },
     { icon: Heart, text: "Stärka immunförsvaret" },
     { icon: GiStomach, text: "Förbättra matsmältningen" },
-    { icon: Zap, text: "Balansera energinivåerna" }
+    { icon: Zap, text: "Balansera energinivåerna" },
   ];
 
   return (
-    <main className="min-h-screen pt-20" style={{ 
-                      background: 'var(--background-secondary)'
-    }}>
+    <main
+      className="min-h-screen pt-20"
+      style={{
+        background: "var(--background-secondary)",
+      }}
+    >
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 lg:py-12">
         {/* Back Link */}
         <motion.div
@@ -216,7 +260,10 @@ export default function FunctionalBasicsPage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3 }}
         >
-          <Link href="/utbildning" className="inline-flex items-center text-text-secondary hover:text-primary mb-8 transition-colors group">
+          <Link
+            href="/utbildning"
+            className="inline-flex items-center text-text-secondary hover:text-primary mb-8 transition-colors group"
+          >
             <ArrowLeft className="w-4 h-4 mr-2 group-hover:-translate-x-1 transition-transform" />
             Tillbaka till kurser
           </Link>
@@ -225,7 +272,7 @@ export default function FunctionalBasicsPage() {
         {/* Hero Section */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 max-w-7xl mx-auto mb-16">
           {/* Course Image */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.6 }}
@@ -233,10 +280,12 @@ export default function FunctionalBasicsPage() {
           >
             <div className="relative group">
               {/* Mobile image */}
-              <div className={`block lg:hidden transition-opacity duration-500 ${imageLoaded ? 'opacity-100' : 'opacity-0'} group-hover:scale-105 transition-transform duration-300`}>
-                <Image 
-                  src="/Kurser_bilder/Functional_Basics - Grunden i functional foods.jpg" 
-                  alt="Functional Basics" 
+              <div
+                className={`block lg:hidden transition-opacity duration-500 ${imageLoaded ? "opacity-100" : "opacity-0"} group-hover:scale-105 transition-transform duration-300`}
+              >
+                <Image
+                  src="/Kurser_bilder/Functional_Basics - Grunden i functional foods.jpg"
+                  alt="Functional Basics"
                   width={350}
                   height={350}
                   className="rounded-2xl shadow-2xl object-cover"
@@ -245,10 +294,12 @@ export default function FunctionalBasicsPage() {
                 />
               </div>
               {/* Desktop image */}
-              <div className={`hidden lg:block transition-opacity duration-500 ${imageLoaded ? 'opacity-100' : 'opacity-0'} group-hover:scale-105 transition-transform duration-300`}>
-                <Image 
-                  src="/Kurser_bilder/Functional_Basics - Grunden i functional foods.jpg" 
-                  alt="Functional Basics" 
+              <div
+                className={`hidden lg:block transition-opacity duration-500 ${imageLoaded ? "opacity-100" : "opacity-0"} group-hover:scale-105 transition-transform duration-300`}
+              >
+                <Image
+                  src="/Kurser_bilder/Functional_Basics - Grunden i functional foods.jpg"
+                  alt="Functional Basics"
                   width={450}
                   height={450}
                   className="rounded-2xl shadow-2xl object-cover"
@@ -281,22 +332,22 @@ export default function FunctionalBasicsPage() {
           </motion.div>
 
           {/* Course Info */}
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
             className="order-1 lg:order-2"
           >
-            <motion.h1 
+            <motion.h1
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3 }}
               className="text-4xl md:text-5xl lg:text-6xl font-light mb-6 tracking-tight"
             >
-                              Functional <span className="text-accent font-bold">Basics</span>
+              Functional <span className="text-accent font-bold">Basics</span>
             </motion.h1>
-            
-            <motion.div 
+
+            <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.4 }}
@@ -316,15 +367,16 @@ export default function FunctionalBasicsPage() {
               </div>
             </motion.div>
 
-            <motion.p 
+            <motion.p
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.5 }}
               className="text-lg lg:text-xl text-text-secondary mb-8 leading-relaxed"
             >
-              Vill du använda maten som ditt främsta verktyg för bättre hälsa och ett längre liv? 
-              Kursen Functional Basics ger dig kunskap, recept och måltidsplaner som stärker ditt immunförsvar 
-              och får kropp och sinne att prestera på topp.
+              Vill du använda maten som ditt främsta verktyg för bättre hälsa
+              och ett längre liv? Kursen Functional Basics ger dig kunskap,
+              recept och måltidsplaner som stärker ditt immunförsvar och får
+              kropp och sinne att prestera på topp.
             </motion.p>
 
             {/* Price Box */}
@@ -335,13 +387,22 @@ export default function FunctionalBasicsPage() {
                 transition={{ delay: 0.4 }}
                 className="bg-white/90 backdrop-blur-sm rounded-xl p-4 shadow-lg border border-white/50 max-w-[280px] flex flex-col items-center gap-3"
               >
-                <div className="text-3xl font-bold" style={{ color: '#E7345D' }}>{formatPrice(displayPriceIncl)} kr</div>
+                <div
+                  className="text-3xl font-bold"
+                  style={{ color: "#E7345D" }}
+                >
+                  {formatPrice(displayPriceIncl)} kr
+                </div>
                 {hasDiscount && (
-                  <div className="text-sm text-gray-500 line-through">Ord. pris {formatPrice(displayOriginalPriceIncl)} kr</div>
+                  <div className="text-sm text-gray-500 line-through">
+                    Ord. pris {formatPrice(displayOriginalPriceIncl)} kr
+                  </div>
                 )}
                 <div className="text-xs text-gray-500">(inkl. 25% moms)</div>
-                <div className="text-sm text-gray-600">6 veckors komplett kurs</div>
-                <button 
+                <div className="text-sm text-gray-600">
+                  6 veckors komplett kurs
+                </div>
+                <button
                   onClick={handleAddToCart}
                   className="bg-primary text-white px-6 py-2 rounded-full text-sm hover:bg-primary/90 transition-colors w-full"
                 >
@@ -358,8 +419,7 @@ export default function FunctionalBasicsPage() {
                     Coaching med Ulrika + team
                   </div>
                   <div className="flex items-center gap-2 text-sm text-gray-700">
-                    <Clock className="w-4 h-4 text-primary" />
-                    1 års åtkomst
+                    <Clock className="w-4 h-4 text-primary" />1 års åtkomst
                   </div>
                 </div>
               </motion.div>
@@ -376,7 +436,8 @@ export default function FunctionalBasicsPage() {
         >
           <div className="bg-white/90 backdrop-blur-sm rounded-2xl p-8 shadow-xl">
             <h2 className="text-2xl md:text-3xl font-light mb-6 text-center">
-              Se en förhandstitt på <span className="text-accent font-bold">kursen</span>
+              Se en förhandstitt på{" "}
+              <span className="text-accent font-bold">kursen</span>
             </h2>
             <div className="relative aspect-video rounded-xl overflow-hidden shadow-2xl">
               <iframe
@@ -388,31 +449,32 @@ export default function FunctionalBasicsPage() {
               />
             </div>
             <p className="text-center text-text-secondary mt-4 text-sm">
-              Få en känsla för kursen och se hur Ulrika guidar dig genom varje vecka
+              Få en känsla för kursen och se hur Ulrika guidar dig genom varje
+              vecka
             </p>
           </div>
         </motion.div>
 
         {/* Tab Navigation */}
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.8 }}
           className="flex flex-wrap justify-center gap-4 mb-12"
         >
           {[
-            { id: 'overview', label: 'Översikt' },
-            { id: 'benefits', label: 'Vad du uppnår' },
-            { id: 'content', label: 'Innehåll' },
-            { id: 'foods', label: 'Functional Foods' }
+            { id: "overview", label: "Översikt" },
+            { id: "benefits", label: "Vad du uppnår" },
+            { id: "content", label: "Innehåll" },
+            { id: "foods", label: "Functional Foods" },
           ].map((tab) => (
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
               className={`px-6 py-3 rounded-full font-medium transition-all duration-300 ${
                 activeTab === tab.id
-                  ? 'bg-primary text-white shadow-lg'
-                  : 'bg-white/70 text-text-secondary hover:bg-white/90 hover:text-primary'
+                  ? "bg-primary text-white shadow-lg"
+                  : "bg-white/70 text-text-secondary hover:bg-white/90 hover:text-primary"
               }`}
             >
               {tab.label}
@@ -422,7 +484,7 @@ export default function FunctionalBasicsPage() {
 
         {/* Tab Content */}
         <AnimatePresence mode="wait">
-          {activeTab === 'overview' && (
+          {activeTab === "overview" && (
             <motion.div
               key="overview"
               initial={{ opacity: 0, y: 20 }}
@@ -434,18 +496,25 @@ export default function FunctionalBasicsPage() {
               {/* Course Description */}
               <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-8 shadow-xl max-w-4xl mx-auto">
                 <h2 className="text-2xl md:text-3xl font-light mb-6 text-center">
-                  En perfekt start för <span className="text-accent font-bold">bättre hälsa</span>
+                  En perfekt start för{" "}
+                  <span className="text-accent font-bold">bättre hälsa</span>
                 </h2>
                 <p className="text-lg text-text-secondary mb-6 leading-relaxed">
-                  Ulrika har skapat näringsrika och goda recept för hela familjen, och måltidsplanerna säkerställer en varierad kost med alla viktiga näringsämnen. 
-                  Kursen är en perfekt start för dig som vill laga hälsosam mat från grunden, bygga goda vanor och göra functional foods och longevity till en naturlig del av din vardag.
+                  Ulrika har skapat näringsrika och goda recept för hela
+                  familjen, och måltidsplanerna säkerställer en varierad kost
+                  med alla viktiga näringsämnen. Kursen är en perfekt start för
+                  dig som vill laga hälsosam mat från grunden, bygga goda vanor
+                  och göra functional foods och longevity till en naturlig del
+                  av din vardag.
                 </p>
-                
+
                 <h3 className="text-xl font-medium mb-4">För vem?</h3>
                 <p className="text-text-secondary mb-6">
-                  Den här kursen är för dig som vill förbättra din hälsa steg för steg och samtidigt njuta av god och näringsrik mat – utan att det blir krångligt.
+                  Den här kursen är för dig som vill förbättra din hälsa steg
+                  för steg och samtidigt njuta av god och näringsrik mat – utan
+                  att det blir krångligt.
                 </p>
-                
+
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {forWho.map((item, index) => (
                     <div key={index} className="flex items-start gap-3">
@@ -459,24 +528,30 @@ export default function FunctionalBasicsPage() {
               {/* Food Examples */}
               <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-8 shadow-xl max-w-4xl mx-auto">
                 <h3 className="text-2xl font-light mb-6 text-center">
-                  Vad för typ av <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent font-bold">mat?</span>
+                  Vad för typ av{" "}
+                  <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent font-bold">
+                    mat?
+                  </span>
                 </h3>
                 <p className="text-text-secondary mb-6 leading-relaxed">
-                  I Functional Basics lagar vi mat baserad på näringsrika råvaror. Naturliga smaker kombineras med hälsosamma fetter, 
-                  proteinrika ingredienser och långsamma kolhydrater för att skapa balanserade måltider.
+                  I Functional Basics lagar vi mat baserad på näringsrika
+                  råvaror. Naturliga smaker kombineras med hälsosamma fetter,
+                  proteinrika ingredienser och långsamma kolhydrater för att
+                  skapa balanserade måltider.
                 </p>
                 <p className="text-text-secondary mb-6">
-                  <strong>Du får hela 75 recept i kursen</strong> och här är några exempel på rätter du får laga:
+                  <strong>Du får hela 75 recept i kursen</strong> och här är
+                  några exempel på rätter du får laga:
                 </p>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
                   {[
-                    'Pokébowl med kyckling',
-                    'Havrefrallor med morötter och aprikoser',
-                    'Laxburgare med krämig grönsaksröra',
-                    'Turkiska lammfärsspett med raita',
-                    'Vegetarisk currygryta med panéer',
-                    'Bananplättar med jordgubbar och kokos',
-                    'Mandelkaka med frukt'
+                    "Pokébowl med kyckling",
+                    "Havrefrallor med morötter och aprikoser",
+                    "Laxburgare med krämig grönsaksröra",
+                    "Turkiska lammfärsspett med raita",
+                    "Vegetarisk currygryta med panéer",
+                    "Bananplättar med jordgubbar och kokos",
+                    "Mandelkaka med frukt",
                   ].map((dish, index) => (
                     <div key={index} className="flex items-center gap-2">
                       <GiWheat className="w-4 h-4 text-accent" />
@@ -485,25 +560,31 @@ export default function FunctionalBasicsPage() {
                   ))}
                 </div>
                 <p className="text-text-secondary mt-6 italic">
-                  Maten är både njutbar och näringsrik – en enkel väg till bättre hälsa genom smarta val i köket!
+                  Maten är både njutbar och näringsrik – en enkel väg till
+                  bättre hälsa genom smarta val i köket!
                 </p>
               </div>
 
               {/* Coachning Section */}
               <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-8 shadow-xl max-w-4xl mx-auto">
                 <h3 className="text-2xl font-light mb-6 text-center">
-                  <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent font-bold">Coachning & Community</span>
+                  <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent font-bold">
+                    Coachning & Community
+                  </span>
                 </h3>
                 <div className="prose prose-lg max-w-none text-text-secondary leading-relaxed">
                   <p className="mb-4">
-                    Du får även personlig coachning och stöd i vårt community där du kan ställa frågor, dela erfarenheter och få motivation längs vägen. Ulrika livesänder även i communityn vid utvalda tillfällen.
+                    Du får även personlig coachning och stöd i vårt community
+                    där du kan ställa frågor, dela erfarenheter och få
+                    motivation längs vägen. Ulrika livesänder även i communityn
+                    vid utvalda tillfällen.
                   </p>
                 </div>
               </div>
             </motion.div>
           )}
 
-          {activeTab === 'benefits' && (
+          {activeTab === "benefits" && (
             <motion.div
               key="benefits"
               initial={{ opacity: 0, y: 20 }}
@@ -513,36 +594,45 @@ export default function FunctionalBasicsPage() {
               className="mb-16"
             >
               <h2 className="text-2xl md:text-3xl font-light text-center mb-12">
-                Vinsten med att äta enligt <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent font-bold">Functional Foods</span>
+                Vinsten med att äta enligt{" "}
+                <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent font-bold">
+                  Functional Foods
+                </span>
               </h2>
-              
+
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
                 {benefits.map((benefit, index) => (
-                  <motion.div 
+                  <motion.div
                     key={index}
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: index * 0.1 }}
                     className="bg-white/80 backdrop-blur-sm rounded-2xl p-6 shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105"
                   >
-                    <benefit.icon className={`w-10 h-10 mb-4 ${benefit.color}`} />
-                    <h3 className="text-xl font-medium text-primary mb-3">{benefit.title}</h3>
+                    <benefit.icon
+                      className={`w-10 h-10 mb-4 ${benefit.color}`}
+                    />
+                    <h3 className="text-xl font-medium text-primary mb-3">
+                      {benefit.title}
+                    </h3>
                     <p className="text-text-secondary">{benefit.description}</p>
                   </motion.div>
                 ))}
               </div>
-              
+
               <div className="mt-12 bg-white/80 backdrop-blur-sm rounded-2xl p-8 shadow-xl max-w-4xl mx-auto">
                 <p className="text-text-secondary leading-relaxed">
-                  Functional foods handlar om mat som inte bara mättar, utan också stärker kroppen inifrån. 
-                  Vi fokuserar på råvaror som är vetenskapligt bevisade att stötta kroppen på olika sätt. 
-                  Genom att inkludera dessa näringsrika livsmedel i hela familjens kost kan ni uppleva förbättringar inom alla dessa områden.
+                  Functional foods handlar om mat som inte bara mättar, utan
+                  också stärker kroppen inifrån. Vi fokuserar på råvaror som är
+                  vetenskapligt bevisade att stötta kroppen på olika sätt. Genom
+                  att inkludera dessa näringsrika livsmedel i hela familjens
+                  kost kan ni uppleva förbättringar inom alla dessa områden.
                 </p>
               </div>
             </motion.div>
           )}
 
-          {activeTab === 'content' && (
+          {activeTab === "content" && (
             <motion.div
               key="content"
               initial={{ opacity: 0, y: 20 }}
@@ -552,12 +642,15 @@ export default function FunctionalBasicsPage() {
               className="mb-16"
             >
               <h2 className="text-2xl md:text-3xl font-light text-center mb-12">
-                Vad får du i <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent font-bold">programmet?</span>
+                Vad får du i{" "}
+                <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent font-bold">
+                  programmet?
+                </span>
               </h2>
-              
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-5xl mx-auto">
                 {whatYouGet.map((item, index) => (
-                  <motion.div 
+                  <motion.div
                     key={index}
                     initial={{ opacity: 0, x: index % 2 === 0 ? -20 : 20 }}
                     animate={{ opacity: 1, x: 0 }}
@@ -569,8 +662,12 @@ export default function FunctionalBasicsPage() {
                         <item.icon className="w-6 h-6 text-primary" />
                       </div>
                       <div>
-                        <h3 className="text-lg font-medium text-primary mb-2">{item.title}</h3>
-                        <p className="text-text-secondary">{item.description}</p>
+                        <h3 className="text-lg font-medium text-primary mb-2">
+                          {item.title}
+                        </h3>
+                        <p className="text-text-secondary">
+                          {item.description}
+                        </p>
                       </div>
                     </div>
                   </motion.div>
@@ -579,7 +676,7 @@ export default function FunctionalBasicsPage() {
             </motion.div>
           )}
 
-          {activeTab === 'foods' && (
+          {activeTab === "foods" && (
             <motion.div
               key="foods"
               initial={{ opacity: 0, y: 20 }}
@@ -589,15 +686,19 @@ export default function FunctionalBasicsPage() {
               className="mb-16"
             >
               <h2 className="text-2xl md:text-3xl font-light text-center mb-8">
-                Vad är <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent font-bold">Functional Foods?</span>
+                Vad är{" "}
+                <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent font-bold">
+                  Functional Foods?
+                </span>
               </h2>
-              
+
               <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-8 shadow-xl max-w-4xl mx-auto mb-8">
                 <p className="text-lg text-text-secondary mb-8 leading-relaxed text-center">
-                  Functional Foods är naturliga livsmedel med specifika hälsofrämjande egenskaper. 
-                  De hjälper kroppen att fungera optimalt genom att ge stöd åt olika system i kroppen.
+                  Functional Foods är naturliga livsmedel med specifika
+                  hälsofrämjande egenskaper. De hjälper kroppen att fungera
+                  optimalt genom att ge stöd åt olika system i kroppen.
                 </p>
-                
+
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
                   {functionalFoodsBenefits.map((benefit, index) => (
                     <motion.div
@@ -610,7 +711,9 @@ export default function FunctionalBasicsPage() {
                       <div className="bg-primary/10 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-3">
                         <benefit.icon className="w-8 h-8 text-primary" />
                       </div>
-                      <p className="text-sm text-text-secondary font-medium">{benefit.text}</p>
+                      <p className="text-sm text-text-secondary font-medium">
+                        {benefit.text}
+                      </p>
                     </motion.div>
                   ))}
                 </div>
@@ -621,24 +724,28 @@ export default function FunctionalBasicsPage() {
 
         {/* CTA Section */}
         <div className="bg-primary rounded-2xl p-8 text-white text-center">
-            <h3 className="text-2xl font-bold mb-4">Redo att börja din hälsoresa?</h3>
-            <p className="text-lg mb-6 text-white/90">
-              Få tillgång till hela kursen och börja din transformation redan idag
-            </p>
-            <div className="flex justify-center">
-              <AddToCart 
-                id="functional-basics"
-                name="Functional Basics"
-                price={course.price}
-                type="course"
-                image={course.image}
-              />
-            </div>
+          <h3 className="text-2xl font-bold mb-4">
+            Redo att börja din hälsoresa?
+          </h3>
+          <p className="text-lg mb-6 text-white/90">
+            Få tillgång till hela kursen och börja din transformation redan idag
+          </p>
+          <div className="flex justify-center">
+            <AddToCart
+              id="functional-basics"
+              name="Functional Basics"
+              price={course.price}
+              type="course"
+              image={course.image}
+            />
           </div>
+        </div>
       </div>
       <section className="py-16 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-bold text-gray-900 mb-8">Vanliga frågor</h2>
+          <h2 className="text-3xl font-bold text-gray-900 mb-8">
+            Vanliga frågor
+          </h2>
           <FaqAccordion className="max-w-3xl mx-auto" />
         </div>
       </section>
@@ -646,9 +753,9 @@ export default function FunctionalBasicsPage() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
         {/* Health Disclaimer */}
         <HealthDisclaimer variant="banner" />
-        
+
         <CourseReviews courseId="functional-basics" />
       </div>
     </main>
   );
-} 
+}

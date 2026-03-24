@@ -996,11 +996,11 @@ export class EmailService {
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
       </head>
       <body style="margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background-color: #F0FDF4; color: #fff;">
-        <div style="max-width: 600px; margin: 0 auto; background: #C0DEA3 ">
+        <div style="max-width: 600px; margin: 0 auto; background: #C0DEA3 overflow: hidden">
           
           <!-- Header -->
-          <div style="text-align: center; padding: 40px 30px 30px;">
-            <div style="display: inline-block; background: #FF7E70; border: 1px solid rgba(239, 68, 68, 0.3); border-radius: 100px; padding: 8px 20px; margin-bottom: 20px;">
+          <div style="text-align: center; padding: 28px 24px 20px;">
+            <div style="display: inline-block; background: #FF7E70; border: 1px solid rgba(239, 68, 68, 0.3); border-radius: 100px; padding: 8px 20px; margin-bottom: 16px;">
               <span style="color: #fff; font-size: 14px; font-weight: 500;">Din E-bok är redo!</span>
             </div>
             <h1 style="color: #014421; font-size: 32px; font-weight: 700; margin: 0 0 10px 0;">
@@ -1012,14 +1012,11 @@ export class EmailService {
           </div>
           
           <!-- Content Box -->
-          <div style="background-color: #C0DEA3; border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 24px; margin: 0 20px 30px; padding: 30px; backdrop-filter: blur(10px);">
-          <div style="margin: 0 auto 24px auto; width: 64px; height: 64px; background: #C0DEA3; border-radius: 16px; text-align: center; line-height: 64px;">
-  <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle;">
-    <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
-    <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
-  </svg>
-</div>
-
+          <div style="background-color: #C0DEA3; border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 24px; margin: 0 20px 24px; padding: 20px 24px; backdrop-filter: blur(10px);">
+            <div style="text-align: center; margin-bottom: 12px;">
+             <div style="display: inline-flex; width: 64px; height: 64px; background: #C0DEA3; border-radius: 16px; align-items: center; justify-content: center;">
+      <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+    </div>
             </div>
             
             <h2 style="color: #014421; font-size: 26px; font-weight: 600; text-align: center; margin: 0 0 8px 0;">
