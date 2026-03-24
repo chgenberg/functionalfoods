@@ -22,6 +22,16 @@ export default function Checkout() {
   const t = useT();
   const { items, total, discount, finalTotal, appliedCoupon, applyCoupon, removeCoupon } = useCart();
   const { user } = useAuth();
+  const splitFullName = (fullName?: string | null) => {
+    const trimmed = (fullName || '').trim();
+    if (!trimmed) return { firstName: '', lastName: '' };
+    const parts = trimmed.split(/\s+/);
+    return {
+      firstName: parts[0] || '',
+      lastName: parts.slice(1).join(' ')
+    };
+  };
+  const initialName = splitFullName(user?.name);
   const [isProcessing, setIsProcessing] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [selectedPayment, setSelectedPayment] = useState('svea');
@@ -33,24 +43,29 @@ export default function Checkout() {
   // Guest checkout form data
   const [guestMode, setGuestMode] = useState(!user);
   const [customerInfo, setCustomerInfo] = useState({
-    name: user?.name || '',
+    firstName: initialName.firstName,
+    lastName: initialName.lastName,
     email: user?.email || '',
     createAccount: false
   });
 
-  const nameIsValid = customerInfo.name.trim().length > 1;
+  const firstNameIsValid = customerInfo.firstName.trim().length > 1;
+  const lastNameIsValid = customerInfo.lastName.trim().length > 1;
+  const fullName = `${customerInfo.firstName.trim()} ${customerInfo.lastName.trim()}`.trim();
   const emailIsValid = customerInfo.email.trim().length > 3;
   const canCheckout = !isProcessing && (
     guestMode
-      ? (nameIsValid && emailIsValid)
-      : (!!user && nameIsValid)
+      ? (firstNameIsValid && lastNameIsValid && emailIsValid)
+      : (!!user && firstNameIsValid && lastNameIsValid)
   );
 
   useEffect(() => {
     if (user) {
+      const userName = splitFullName(user.name);
       setGuestMode(false);
       setCustomerInfo({
-        name: user.name || '',
+        firstName: userName.firstName,
+        lastName: userName.lastName,
         email: user.email || '',
         createAccount: false
       });
@@ -71,9 +86,14 @@ export default function Checkout() {
     setError(null);
 
     try {
-      // Validate required fields (name is mandatory for all purchases)
-      if (!nameIsValid) {
-        setError('Vänligen fyll i ditt namn');
+      // Validate required fields
+      if (!firstNameIsValid) {
+        setError('Vänligen fyll i ditt förnamn');
+        setIsProcessing(false);
+        return;
+      }
+      if (!lastNameIsValid) {
+        setError('Vänligen fyll i ditt efternamn');
         setIsProcessing(false);
         return;
       }
@@ -94,10 +114,10 @@ export default function Checkout() {
           type: item.type
         })),
         customer: guestMode ? {
-          name: customerInfo.name,
+          name: fullName,
           email: customerInfo.email
         } : (user ? {
-          name: customerInfo.name,
+          name: fullName,
           email: user.email,
           id: user.id
         } : undefined),
@@ -229,13 +249,21 @@ export default function Checkout() {
 
               {guestMode ? (
                 <div className="space-y-3 sm:space-y-4">
-                  <div>
+                  <div className="grid sm:grid-cols-2 gap-3 sm:gap-4">
                     <input
                       type="text"
-                      value={customerInfo.name}
-                      onChange={(e) => setCustomerInfo({ ...customerInfo, name: e.target.value })}
+                      value={customerInfo.firstName}
+                      onChange={(e) => setCustomerInfo({ ...customerInfo, firstName: e.target.value })}
                       className="w-full px-3 sm:px-4 py-2.5 sm:py-3 text-sm sm:text-base border border-gray-200 rounded-lg sm:rounded-xl focus:outline-none focus:border-[#93C560] transition-colors"
-                      placeholder="Namn *"
+                      placeholder="Förnamn *"
+                      required
+                    />
+                    <input
+                      type="text"
+                      value={customerInfo.lastName}
+                      onChange={(e) => setCustomerInfo({ ...customerInfo, lastName: e.target.value })}
+                      className="w-full px-3 sm:px-4 py-2.5 sm:py-3 text-sm sm:text-base border border-gray-200 rounded-lg sm:rounded-xl focus:outline-none focus:border-[#93C560] transition-colors"
+                      placeholder="Efternamn *"
                       required
                     />
                   </div>
@@ -280,13 +308,21 @@ export default function Checkout() {
                     </div>
                   </div>
 
-                  <div>
+                  <div className="grid sm:grid-cols-2 gap-3 sm:gap-4">
                     <input
                       type="text"
-                      value={customerInfo.name}
-                      onChange={(e) => setCustomerInfo({ ...customerInfo, name: e.target.value })}
+                      value={customerInfo.firstName}
+                      onChange={(e) => setCustomerInfo({ ...customerInfo, firstName: e.target.value })}
                       className="w-full px-3 sm:px-4 py-2.5 sm:py-3 text-sm sm:text-base border border-gray-200 rounded-lg sm:rounded-xl focus:outline-none focus:border-[#93C560] transition-colors"
-                      placeholder="Namn *"
+                      placeholder="Förnamn *"
+                      required
+                    />
+                    <input
+                      type="text"
+                      value={customerInfo.lastName}
+                      onChange={(e) => setCustomerInfo({ ...customerInfo, lastName: e.target.value })}
+                      className="w-full px-3 sm:px-4 py-2.5 sm:py-3 text-sm sm:text-base border border-gray-200 rounded-lg sm:rounded-xl focus:outline-none focus:border-[#93C560] transition-colors"
+                      placeholder="Efternamn *"
                       required
                     />
                   </div>
