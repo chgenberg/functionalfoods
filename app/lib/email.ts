@@ -1,8 +1,8 @@
 // @ts-expect-error - Mailchimp Transactional doesn't have TypeScript types
-import mailchimp from '@mailchimp/mailchimp_transactional';
+import mailchimp from "@mailchimp/mailchimp_transactional";
 
 // Initialize Mailchimp Transactional client
-const mailchimpClient = process.env.MAILCHIMP_TRANSACTIONAL_API_KEY 
+const mailchimpClient = process.env.MAILCHIMP_TRANSACTIONAL_API_KEY
   ? mailchimp(process.env.MAILCHIMP_TRANSACTIONAL_API_KEY)
   : null;
 
@@ -45,9 +45,9 @@ export interface WelcomeEmailData {
 
 export class EmailService {
   private static instance: EmailService;
-  
+
   private constructor() {}
-  
+
   static getInstance(): EmailService {
     if (!EmailService.instance) {
       EmailService.instance = new EmailService();
@@ -57,53 +57,70 @@ export class EmailService {
 
   private async sendEmail(data: EmailData): Promise<boolean> {
     if (!mailchimpClient) {
-      console.error('❌ Mailchimp Transactional not configured - MAILCHIMP_TRANSACTIONAL_API_KEY missing');
-      console.error('❌ Please set MAILCHIMP_TRANSACTIONAL_API_KEY in environment variables');
+      console.error(
+        "❌ Mailchimp Transactional not configured - MAILCHIMP_TRANSACTIONAL_API_KEY missing",
+      );
+      console.error(
+        "❌ Please set MAILCHIMP_TRANSACTIONAL_API_KEY in environment variables",
+      );
       return false;
     }
 
     try {
       const message = {
-        from_email: data.fromEmail || 'info@functionalfoods.se',
-        from_name: data.fromName || 'Functional Foods',
-        to: [{
-          email: data.to,
-          name: data.toName || data.to,
-          type: 'to' as const
-        }],
+        from_email: data.fromEmail || "info@functionalfoods.se",
+        from_name: data.fromName || "Functional Foods",
+        to: [
+          {
+            email: data.to,
+            name: data.toName || data.to,
+            type: "to" as const,
+          },
+        ],
         subject: data.subject,
         html: data.html,
         text: data.text || this.htmlToText(data.html),
         important: true,
         track_opens: true,
         track_clicks: true,
-        tags: data.tags || ['transactional'],
-        merge_language: 'handlebars',
-        global_merge_vars: []
+        tags: data.tags || ["transactional"],
+        merge_language: "handlebars",
+        global_merge_vars: [],
       };
 
-      console.log('📧 Attempting to send email to:', data.to, 'Subject:', data.subject);
+      console.log(
+        "📧 Attempting to send email to:",
+        data.to,
+        "Subject:",
+        data.subject,
+      );
       const response = await mailchimpClient.messages.send({ message });
-      console.log('✅ Email sent successfully:', JSON.stringify(response, null, 2));
-      
+      console.log(
+        "✅ Email sent successfully:",
+        JSON.stringify(response, null, 2),
+      );
+
       // Check if email was actually sent (Mailchimp returns status per recipient)
       if (Array.isArray(response) && response.length > 0) {
         const firstRecipient = response[0];
-        if (firstRecipient.status === 'rejected' || firstRecipient.status === 'invalid') {
-          console.error('❌ Email was rejected by Mailchimp:', firstRecipient);
+        if (
+          firstRecipient.status === "rejected" ||
+          firstRecipient.status === "invalid"
+        ) {
+          console.error("❌ Email was rejected by Mailchimp:", firstRecipient);
           return false;
         }
       }
-      
+
       return true;
     } catch (error: any) {
-      console.error('❌ Error sending email:', error);
-      console.error('❌ Error details:', {
+      console.error("❌ Error sending email:", error);
+      console.error("❌ Error details:", {
         message: error?.message,
         name: error?.name,
         status: error?.status,
         code: error?.code,
-        response: error?.response?.body || error?.response
+        response: error?.response?.body || error?.response,
       });
       return false;
     }
@@ -112,11 +129,11 @@ export class EmailService {
   // Convert HTML to plain text (basic implementation)
   private htmlToText(html: string): string {
     return html
-      .replace(/<[^>]*>/g, '') // Remove HTML tags
-      .replace(/&nbsp;/g, ' ')
-      .replace(/&amp;/g, '&')
-      .replace(/&lt;/g, '<')
-      .replace(/&gt;/g, '>')
+      .replace(/<[^>]*>/g, "") // Remove HTML tags
+      .replace(/&nbsp;/g, " ")
+      .replace(/&amp;/g, "&")
+      .replace(/&lt;/g, "<")
+      .replace(/&gt;/g, ">")
       .replace(/&quot;/g, '"')
       .replace(/&#39;/g, "'")
       .trim();
@@ -127,7 +144,7 @@ export class EmailService {
     const COURSE_VAT = 0.25;
 
     // Compute exkl./inkl. moms per rad och totalsummera
-    const coursesWithVat = data.courses.map(course => {
+    const coursesWithVat = data.courses.map((course) => {
       const priceIncl = Math.round(course.price * 100) / 100;
       const priceExcl = Math.round((priceIncl / (1 + COURSE_VAT)) * 100) / 100;
       return { ...course, priceIncl, priceExcl };
@@ -136,23 +153,31 @@ export class EmailService {
     const totalIncl = coursesWithVat.reduce((sum, c) => sum + c.priceIncl, 0);
     const totalExcl = coursesWithVat.reduce((sum, c) => sum + c.priceExcl, 0);
 
-    const coursesHtml = coursesWithVat.map(course => `
+    const coursesHtml = coursesWithVat
+      .map(
+        (course) => `
       <tr>
         <td style="padding: 12px; border-bottom: 1px solid #f0f0f0; color: #1a4324; font-size: 15px;">
           <strong>${course.name}</strong>
         </td>
         <td style="padding: 12px; border-bottom: 1px solid #f0f0f0; text-align: right; color: #1a4324; font-size: 15px;">
-          ${course.priceExcl.toLocaleString('sv-SE', { minimumFractionDigits: 2 })} kr
+          ${course.priceExcl.toLocaleString("sv-SE", { minimumFractionDigits: 2 })} kr
         </td>
         <td style="padding: 12px; border-bottom: 1px solid #f0f0f0; text-align: right; color: #1a4324; font-size: 15px; font-weight: 600;">
-          ${course.priceIncl.toLocaleString('sv-SE', { minimumFractionDigits: 2 })} kr
+          ${course.priceIncl.toLocaleString("sv-SE", { minimumFractionDigits: 2 })} kr
         </td>
       </tr>
-    `).join('');
+    `,
+      )
+      .join("");
 
-    const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || process.env.NEXT_PUBLIC_BASE_URL || 'https://www.functionalfoods.se';
-    
-    const loginSection = data.loginCredentials ? `
+    const baseUrl =
+      process.env.NEXT_PUBLIC_SITE_URL ||
+      process.env.NEXT_PUBLIC_BASE_URL ||
+      "https://www.functionalfoods.se";
+
+    const loginSection = data.loginCredentials
+      ? `
       <div style="background: linear-gradient(135deg, #f0fdf4 0%, #e6f7ed 100%); border: 2px solid #9dc46d; border-radius: 12px; padding: 24px; margin: 30px 0; position: relative; overflow: hidden;">
         <div style="position: absolute; top: -20px; right: -20px; width: 80px; height: 80px; background: #9dc46d; border-radius: 50%; opacity: 0.1;"></div>
         <h3 style="color: #1a4324; margin: 0 0 16px 0; font-size: 20px; display: flex; align-items: center;">
@@ -168,7 +193,9 @@ export class EmailService {
           Tips: Ändra ditt lösenord efter första inloggningen för ökad säkerhet.
         </p>
       </div>
-    ` : (data.isExistingUser ? `
+    `
+      : data.isExistingUser
+        ? `
       <div style="background: linear-gradient(135deg, #f0fdf4 0%, #e6f7ed 100%); border: 2px solid #9dc46d; border-radius: 12px; padding: 24px; margin: 30px 0; position: relative; overflow: hidden;">
         <div style="position: absolute; top: -20px; right: -20px; width: 80px; height: 80px; background: #9dc46d; border-radius: 50%; opacity: 0.1;"></div>
         <h3 style="color: #1a4324; margin: 0 0 16px 0; font-size: 20px; display: flex; align-items: center;">
@@ -189,7 +216,8 @@ export class EmailService {
           Har du glömt ditt lösenord? <a href="${baseUrl}/forgot-password" style="color: #1a4324;">Klicka här för att återställa det</a>.
         </p>
       </div>
-    ` : '');
+    `
+        : "";
 
     const html = `
       <!DOCTYPE html>
@@ -230,12 +258,13 @@ export class EmailService {
                 <span style="color: white; font-size: 28px; font-weight: bold;">✓</span>
               </div>
               <h2 style="color: #1a4324; margin: 0 0 16px 0; font-size: 28px; font-weight: 600;">
-                ${data.loginCredentials ? 'Välkommen till Functional Foods!' : 'Tack för ditt förtroende!'}
+                ${data.loginCredentials ? "Välkommen till Functional Foods!" : "Tack för ditt förtroende!"}
               </h2>
               <p style="color: #555; line-height: 1.8; font-size: 16px; margin: 0;">
-                ${data.loginCredentials 
-                  ? `Hej ${data.customerName}!<br>Din beställning är bekräftad och du har nu tillgång till dina kurser.<br>Vi är så glada att du är med på denna hälsoresa!`
-                  : `Hej ${data.customerName}!<br>Tack för ditt återkommande förtroende! Din nya beställning är bekräftad.<br>Vi är glada att du fortsätter din hälsoresa tillsammans med oss!`
+                ${
+                  data.loginCredentials
+                    ? `Hej ${data.customerName}!<br>Din beställning är bekräftad och du har nu tillgång till dina kurser.<br>Vi är så glada att du är med på denna hälsoresa!`
+                    : `Hej ${data.customerName}!<br>Tack för ditt återkommande förtroende! Din nya beställning är bekräftad.<br>Vi är glada att du fortsätter din hälsoresa tillsammans med oss!`
                 }
               </p>
             </div>
@@ -254,7 +283,7 @@ export class EmailService {
               
               <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
                 <span style="color: #666;">Datum:</span>
-                <span style="color: #1a4324;">${new Date().toLocaleDateString('sv-SE')}</span>
+                <span style="color: #1a4324;">${new Date().toLocaleDateString("sv-SE")}</span>
               </div>
               
               <table style="width: 100%; margin-top: 20px; border-collapse: collapse;">
@@ -272,10 +301,10 @@ export class EmailService {
                       Totalt
                     </td>
                     <td style="padding: 18px 12px 0 12px; border-top: 2px solid #1a4324; text-align: right; font-weight: bold; color: #1a4324; font-size: 16px;">
-                      ${totalExcl.toLocaleString('sv-SE', { minimumFractionDigits: 2 })} kr
+                      ${totalExcl.toLocaleString("sv-SE", { minimumFractionDigits: 2 })} kr
                     </td>
                     <td style="padding: 18px 12px 0 12px; border-top: 2px solid #1a4324; text-align: right; font-weight: bold; color: #1a4324; font-size: 18px;">
-                      ${totalIncl.toLocaleString('sv-SE', { minimumFractionDigits: 2 })} kr
+                      ${totalIncl.toLocaleString("sv-SE", { minimumFractionDigits: 2 })} kr
                     </td>
                   </tr>
                 </tbody>
@@ -299,21 +328,25 @@ export class EmailService {
                 <span style="display: inline-block; width: 24px; height: 24px; background: #9dc46d; border-radius: 6px; text-align: center; line-height: 24px; color: white; font-size: 14px; margin-right: 8px;">→</span>
                 Dina nästa steg:
               </h3>
-              ${data.loginCredentials ? `
+              ${
+                data.loginCredentials
+                  ? `
                 <ol style="color: #555; line-height: 2; margin: 0; padding-left: 20px;">
                   <li>Logga in med dina nya uppgifter</li>
                   <li>Utforska ditt kursmaterial</li>
                   <li>Börja med vecka 1</li>
                   <li>Anslut till vår community</li>
                 </ol>
-              ` : `
+              `
+                  : `
                 <ol style="color: #555; line-height: 2; margin: 0; padding-left: 20px;">
                   <li>Logga in på ditt konto</li>
                   <li>Dina nya kurser finns redan i din dashboard</li>
                   <li>Börja där det passar dig bäst</li>
                   <li>Fortsätt din hälsoresa i din egen takt</li>
                 </ol>
-              `}
+              `
+              }
             </div>
 
             <!-- Help Section med ikoner -->
@@ -363,13 +396,20 @@ export class EmailService {
       toName: data.customerName,
       subject: `Orderbekräftelse #${data.orderNumber} - Välkommen till Functional Foods`,
       html,
-      tags: ['order-confirmation', 'transactional']
+      tags: ["order-confirmation", "transactional"],
     });
   }
 
   // Send temporary password to a user (bulk reset helper)
-  async sendTemporaryPasswordEmail(params: { email: string; name?: string | null; password: string }): Promise<boolean> {
-    const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || process.env.NEXT_PUBLIC_BASE_URL || 'https://www.functionalfoods.se';
+  async sendTemporaryPasswordEmail(params: {
+    email: string;
+    name?: string | null;
+    password: string;
+  }): Promise<boolean> {
+    const baseUrl =
+      process.env.NEXT_PUBLIC_SITE_URL ||
+      process.env.NEXT_PUBLIC_BASE_URL ||
+      "https://www.functionalfoods.se";
     const html = `
       <!DOCTYPE html>
       <html>
@@ -399,9 +439,9 @@ export class EmailService {
     return this.sendEmail({
       to: params.email,
       toName: params.name || params.email,
-      subject: 'Dina inloggningsuppgifter – Functional Foods',
+      subject: "Dina inloggningsuppgifter – Functional Foods",
       html,
-      tags: ['temporary-password','account']
+      tags: ["temporary-password", "account"],
     });
   }
 
@@ -470,12 +510,17 @@ export class EmailService {
       toName: data.name,
       subject: `Välkommen till ${data.courseName}! 🎉`,
       html,
-      tags: ['welcome-email', 'course-access']
+      tags: ["welcome-email", "course-access"],
     });
   }
 
   // Publik metod: skicka notifiering från kontaktformulär
-  async sendContactNotification(params: { namn: string; email: string; amne: string; meddelande: string; }): Promise<boolean> {
+  async sendContactNotification(params: {
+    namn: string;
+    email: string;
+    amne: string;
+    meddelande: string;
+  }): Promise<boolean> {
     const { namn, email, amne, meddelande } = params;
     const html = `
       <!DOCTYPE html>
@@ -485,7 +530,7 @@ export class EmailService {
         <div style="max-width:640px;margin:0 auto;background:#ffffff;border:1px solid #e5efe2;border-radius:12px;box-shadow:0 8px 20px rgba(26,67,36,0.06);overflow:hidden;">
           <div style="background:linear-gradient(135deg,#1a4324 0%,#2d5a3d 100%);padding:24px;color:#fff;">
             <h1 style="margin:0;font-size:20px;">Nytt meddelande från kontaktformuläret</h1>
-            <p style="margin:8px 0 0 0;opacity:0.9;">${new Date().toLocaleString('sv-SE')}</p>
+            <p style="margin:8px 0 0 0;opacity:0.9;">${new Date().toLocaleString("sv-SE")}</p>
           </div>
           <div style="padding:24px;">
             <p style="margin:0 0 8px 0;"><strong>Namn:</strong> ${namn}</p>
@@ -501,23 +546,31 @@ export class EmailService {
     `;
 
     return this.sendEmail({
-      to: 'info@functionalfoods.se',
-      toName: 'Functional Foods',
+      to: "info@functionalfoods.se",
+      toName: "Functional Foods",
       subject: `Kontaktformulär: ${amne}`,
       html,
-      fromEmail: 'no-reply@functionalfoods.se',
-      fromName: 'Functional Foods Kontaktformulär',
+      fromEmail: "no-reply@functionalfoods.se",
+      fromName: "Functional Foods Kontaktformulär",
       replyTo: email,
-      tags: ['contact-form', 'website']
+      tags: ["contact-form", "website"],
     });
   }
 
   // Send newsletter subscription notification
-  async sendNewsletterNotification(params: { email: string; firstName: string; lastName: string; lang: string; source?: string; }): Promise<boolean> {
+  async sendNewsletterNotification(params: {
+    email: string;
+    firstName: string;
+    lastName: string;
+    lang: string;
+    source?: string;
+  }): Promise<boolean> {
     const { email, firstName, lastName, lang, source } = params;
-    const name = [firstName, lastName].filter(Boolean).join(' ') || 'Ingen namn angiven';
-    const sourceLabel = source === 'health-quiz' ? '🧪 Hälsoquiz' : '🌐 Hemsida';
-    
+    const name =
+      [firstName, lastName].filter(Boolean).join(" ") || "Ingen namn angiven";
+    const sourceLabel =
+      source === "health-quiz" ? "🧪 Hälsoquiz" : "🌐 Hemsida";
+
     const html = `
       <!DOCTYPE html>
       <html>
@@ -526,7 +579,7 @@ export class EmailService {
         <div style="max-width:640px;margin:0 auto;background:#ffffff;border:1px solid #e5efe2;border-radius:12px;box-shadow:0 8px 20px rgba(26,67,36,0.06);overflow:hidden;">
           <div style="background:linear-gradient(135deg,#FF7e70 0%,#e56b5e 100%);padding:24px;color:#fff;">
             <h1 style="margin:0;font-size:20px;">📬 Ny nyhetsbrevsprenumerant!</h1>
-            <p style="margin:8px 0 0 0;opacity:0.9;">${new Date().toLocaleString('sv-SE')}</p>
+            <p style="margin:8px 0 0 0;opacity:0.9;">${new Date().toLocaleString("sv-SE")}</p>
           </div>
           <div style="padding:24px;">
             <p style="margin:0 0 8px 0;"><strong>Namn:</strong> ${name}</p>
@@ -534,7 +587,7 @@ export class EmailService {
             <p style="margin:0 0 8px 0;"><strong>Källa:</strong> ${sourceLabel}</p>
             <p style="margin:0 0 16px 0;"><strong>Språk:</strong> ${lang.toUpperCase()}</p>
             <div style="background:#f8fbf7;border:1px solid #e5efe2;border-radius:8px;padding:16px;">
-              <p style="margin:0;color:#254a31;">✅ Prenumeranten har automatiskt lagts till i er Mailchimp audience lista${source === 'health-quiz' ? ' med tagg "Health Quiz"' : ''}.</p>
+              <p style="margin:0;color:#254a31;">✅ Prenumeranten har automatiskt lagts till i er Mailchimp audience lista${source === "health-quiz" ? ' med tagg "Health Quiz"' : ""}.</p>
             </div>
           </div>
         </div>
@@ -543,20 +596,26 @@ export class EmailService {
     `;
 
     return this.sendEmail({
-      to: 'info@functionalfoods.se',
-      toName: 'Functional Foods',
+      to: "info@functionalfoods.se",
+      toName: "Functional Foods",
       subject: `📬 Ny nyhetsbrevsprenumerant: ${email}`,
       html,
-      fromEmail: 'no-reply@functionalfoods.se',
-      fromName: 'Functional Foods Nyhetsbrev',
-      tags: ['newsletter', 'notification', 'website']
+      fromEmail: "no-reply@functionalfoods.se",
+      fromName: "Functional Foods Nyhetsbrev",
+      tags: ["newsletter", "notification", "website"],
     });
   }
 
   // Send password reset email
-  async sendCourseReviewRequest(data: { email: string; name: string; courseId: string; courseName: string; userId: string }): Promise<boolean> {
-    const reviewLink = `${process.env.NEXT_PUBLIC_BASE_URL || 'https://functionalfoods.se'}/review/email?courseId=${encodeURIComponent(data.courseId)}&userId=${encodeURIComponent(data.userId)}&courseName=${encodeURIComponent(data.courseName)}`;
-    
+  async sendCourseReviewRequest(data: {
+    email: string;
+    name: string;
+    courseId: string;
+    courseName: string;
+    userId: string;
+  }): Promise<boolean> {
+    const reviewLink = `${process.env.NEXT_PUBLIC_BASE_URL || "https://functionalfoods.se"}/review/email?courseId=${encodeURIComponent(data.courseId)}&userId=${encodeURIComponent(data.userId)}&courseName=${encodeURIComponent(data.courseName)}`;
+
     const html = `
       <div style="font-family: 'Inter', Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #fff;">
         <div style="background: linear-gradient(135deg, #014421 0%, #116530 100%); color: white; padding: 40px 30px; text-align: center; border-radius: 20px 20px 0 0;">
@@ -608,14 +667,20 @@ export class EmailService {
       toName: data.name,
       subject: `🎉 Grattis! Hur upplevde du ${data.courseName}?`,
       html,
-      tags: ['course-completion', 'review-request']
+      tags: ["course-completion", "review-request"],
     });
   }
 
-  async sendPasswordResetEmail(email: string, resetToken: string): Promise<boolean> {
-    const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || process.env.NEXT_PUBLIC_BASE_URL || 'https://www.functionalfoods.se';
+  async sendPasswordResetEmail(
+    email: string,
+    resetToken: string,
+  ): Promise<boolean> {
+    const baseUrl =
+      process.env.NEXT_PUBLIC_SITE_URL ||
+      process.env.NEXT_PUBLIC_BASE_URL ||
+      "https://www.functionalfoods.se";
     const resetLink = `${baseUrl}/reset-password?token=${resetToken}`;
-    
+
     const html = `
       <!DOCTYPE html>
       <html>
@@ -667,17 +732,25 @@ export class EmailService {
 
     return this.sendEmail({
       to: email,
-      subject: 'Återställ ditt lösenord - Functional Foods',
+      subject: "Återställ ditt lösenord - Functional Foods",
       html,
-      tags: ['password-reset', 'transactional']
+      tags: ["password-reset", "transactional"],
     });
   }
 
   // Send platform live announcement email to existing customers
-  async sendPlatformLiveEmail(params: { email: string; name: string; tempPassword: string; courses: string[] }): Promise<boolean> {
+  async sendPlatformLiveEmail(params: {
+    email: string;
+    name: string;
+    tempPassword: string;
+    courses: string[];
+  }): Promise<boolean> {
     const { email, name, tempPassword, courses } = params;
-    const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || process.env.NEXT_PUBLIC_BASE_URL || 'https://www.functionalfoods.se';
-    
+    const baseUrl =
+      process.env.NEXT_PUBLIC_SITE_URL ||
+      process.env.NEXT_PUBLIC_BASE_URL ||
+      "https://www.functionalfoods.se";
+
     const html = `
       <!DOCTYPE html>
       <html>
@@ -762,19 +835,27 @@ export class EmailService {
     return this.sendEmail({
       to: email,
       toName: name,
-      subject: 'Nu är det dags: Vår nya plattform är live!',
+      subject: "Nu är det dags: Vår nya plattform är live!",
       html,
-      fromEmail: 'info@functionalfoods.se',
-      fromName: 'Functional Foods',
-      tags: ['platform-live', 'announcement', 'migration']
+      fromEmail: "info@functionalfoods.se",
+      fromName: "Functional Foods",
+      tags: ["platform-live", "announcement", "migration"],
     });
   }
 
   // Send migration welcome email to existing customers
-  async sendMigrationWelcomeEmail(params: { email: string; name: string; tempPassword: string; courses: string[] }): Promise<boolean> {
+  async sendMigrationWelcomeEmail(params: {
+    email: string;
+    name: string;
+    tempPassword: string;
+    courses: string[];
+  }): Promise<boolean> {
     const { email, name, tempPassword, courses } = params;
-    const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || process.env.NEXT_PUBLIC_BASE_URL || 'https://www.functionalfoods.se';
-    
+    const baseUrl =
+      process.env.NEXT_PUBLIC_SITE_URL ||
+      process.env.NEXT_PUBLIC_BASE_URL ||
+      "https://www.functionalfoods.se";
+
     const html = `
       <!DOCTYPE html>
       <html>
@@ -816,7 +897,7 @@ export class EmailService {
             <div style="background: #f8f9fa; border: 1px solid #e9ecef; border-radius: 12px; padding: 20px; margin: 25px 0;">
               <h3 style="color: #1a4324; margin: 0 0 15px 0; font-size: 18px;">📚 Dina kurser:</h3>
               <ul style="margin: 0; padding-left: 20px; color: #2c3e50;">
-                ${courses.map(course => `<li style="margin: 8px 0;">${course}</li>`).join('')}
+                ${courses.map((course) => `<li style="margin: 8px 0;">${course}</li>`).join("")}
               </ul>
             </div>
             
@@ -880,25 +961,33 @@ export class EmailService {
     return this.sendEmail({
       to: email,
       toName: name,
-      subject: '🎉 Välkommen till nya Functional Foods - Dina inloggningsuppgifter',
+      subject:
+        "🎉 Välkommen till nya Functional Foods - Dina inloggningsuppgifter",
       html,
-      fromEmail: 'info@functionalfoods.se',
-      fromName: 'Functional Foods',
-      tags: ['migration', 'welcome', 'platform-upgrade']
+      fromEmail: "info@functionalfoods.se",
+      fromName: "Functional Foods",
+      tags: ["migration", "welcome", "platform-upgrade"],
     });
   }
 
   // Send e-book download email (for standalone e-book purchases)
-  async sendEbookDownloadEmail(params: { 
-    email: string; 
-    name: string; 
+  async sendEbookDownloadEmail(params: {
+    email: string;
+    name: string;
     ebookName: string;
     downloadUrl: string;
     downloadPassword: string;
     orderNumber: string;
   }): Promise<boolean> {
-    const { email, name, ebookName, downloadUrl, downloadPassword, orderNumber } = params;
-    
+    const {
+      email,
+      name,
+      ebookName,
+      downloadUrl,
+      downloadPassword,
+      orderNumber,
+    } = params;
+
     const html = `
       <!DOCTYPE html>
       <html>
@@ -924,10 +1013,13 @@ export class EmailService {
           
           <!-- Content Box -->
           <div style="background-color: #C0DEA3; border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 24px; margin: 0 20px 30px; padding: 30px; backdrop-filter: blur(10px);">
-            <div style="text-align: center; margin-bottom: 24px;">
-              <div style="display: inline-block; width: 64px; height: 64px; background: #C0DEA3; border-radius: 16px; display: flex; align-items: center; justify-content: center;">
-                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
-              </div>
+          <div style="margin: 0 auto 24px auto; width: 64px; height: 64px; background: #C0DEA3; border-radius: 16px; text-align: center; line-height: 64px;">
+  <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align: middle;">
+    <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+    <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+  </svg>
+</div>
+
             </div>
             
             <h2 style="color: #014421; font-size: 26px; font-weight: 600; text-align: center; margin: 0 0 8px 0;">
@@ -1000,12 +1092,12 @@ export class EmailService {
       toName: name,
       subject: `Din e-bok är redo att laddas ner – ${ebookName}`,
       html,
-      fromEmail: 'info@functionalfoods.se',
-      fromName: 'Functional Foods',
-      tags: ['ebook-download', 'transactional']
+      fromEmail: "info@functionalfoods.se",
+      fromName: "Functional Foods",
+      tags: ["ebook-download", "transactional"],
     });
   }
 }
 
 // Export singleton instance
-export const emailService = EmailService.getInstance(); 
+export const emailService = EmailService.getInstance();
