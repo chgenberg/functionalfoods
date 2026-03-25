@@ -1,13 +1,23 @@
 "use client";
-import { useCart } from '../../context/CartContext';
-import { useEffect, useState, Suspense } from 'react';
-import { useSearchParams, useRouter } from 'next/navigation';
+import { useCart } from "../../context/CartContext";
+import { useEffect, useState, Suspense } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
 
-import Link from 'next/link';
-import Image from 'next/image';
-import { CheckCircle, Book, Play, Mail, AlertTriangle, Key, ArrowRight, Download, Gift } from 'lucide-react';
-import { trackPurchase } from '@/app/lib/analytics';
-import { motion } from 'framer-motion';
+import Link from "next/link";
+import Image from "next/image";
+import {
+  CheckCircle,
+  Book,
+  Play,
+  Mail,
+  AlertTriangle,
+  Key,
+  ArrowRight,
+  Download,
+  Gift,
+} from "lucide-react";
+import { trackPurchase } from "@/app/lib/analytics";
+import { motion } from "framer-motion";
 
 function CheckoutSuccessContent() {
   const { clearCart } = useCart();
@@ -17,23 +27,28 @@ function CheckoutSuccessContent() {
   const [paymentVerified, setPaymentVerified] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [orderItems, setOrderItems] = useState<any[]>([]);
-  const [customerEmail, setCustomerEmail] = useState<string>('');
+  const [customerEmail, setCustomerEmail] = useState<string>("");
   const searchParams = useSearchParams();
   const router = useRouter();
 
   useEffect(() => {
     const verify = async () => {
       try {
-        const sessionId = searchParams?.get('session_id');
-        const paymentIntentId = searchParams?.get('payment_intent');
+        const sessionId = searchParams?.get("session_id");
+        const paymentIntentId = searchParams?.get("payment_intent");
 
         if (sessionId) {
-          const res = await fetch(`/api/checkout/verify?session_id=${encodeURIComponent(sessionId)}`);
+          const res = await fetch(
+            `/api/checkout/verify?session_id=${encodeURIComponent(sessionId)}`,
+          );
           const data = await res.json();
-          if (res.ok && (data.payment_status === 'paid' || data.status === 'complete')) {
+          if (
+            res.ok &&
+            (data.payment_status === "paid" || data.status === "complete")
+          ) {
             setPaymentVerified(true);
             clearCart();
-            
+
             // Parse items from metadata to determine product types
             try {
               const itemsRaw = data.metadata?.items;
@@ -42,39 +57,54 @@ function CheckoutSuccessContent() {
                 setOrderItems(items);
               }
             } catch {}
-            
+
             // Store customer email
-            setCustomerEmail(data.customer_email || '');
-            
+            setCustomerEmail(data.customer_email || "");
+
             // GA4 purchase for Stripe session
             try {
-              const normalizeGaItemId = (rawId: string | undefined, name: string | undefined) => {
+              const normalizeGaItemId = (
+                rawId: string | undefined,
+                name: string | undefined,
+              ) => {
                 return rawId;
               };
 
               trackPurchase({
                 transactionId: data.order?.id || data.session_id || sessionId,
-                value: Number(data.amount_total ? data.amount_total / 100 : data.total_amount || 0),
-                currency: (data.currency || 'SEK').toUpperCase(),
-                items: Array.isArray(data.line_items) ? data.line_items.map((li: any) => ({
-                  id: normalizeGaItemId(li.price?.product || li.id, li.description),
-                  name: li.description,
-                  quantity: li.quantity,
-                  price: li.price?.unit_amount ? li.price.unit_amount / 100 : undefined,
-                })) : []
+                value: Number(
+                  data.amount_total
+                    ? data.amount_total / 100
+                    : data.total_amount || 0,
+                ),
+                currency: (data.currency || "SEK").toUpperCase(),
+                items: Array.isArray(data.line_items)
+                  ? data.line_items.map((li: any) => ({
+                      id: normalizeGaItemId(
+                        li.price?.product || li.id,
+                        li.description,
+                      ),
+                      name: li.description,
+                      quantity: li.quantity,
+                      price: li.price?.unit_amount
+                        ? li.price.unit_amount / 100
+                        : undefined,
+                    }))
+                  : [],
               });
             } catch {}
           } else {
-            setError(data.error || 'Betalningen kunde inte verifieras.');
+            setError(data.error || "Betalningen kunde inte verifieras.");
           }
         } else if (paymentIntentId) {
           // Fallback for PaymentIntent flow
           const response = await fetch(`/api/verify-payment`, {
-            method: 'POST', headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ paymentIntentId, paymentMethod: 'stripe' })
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ paymentIntentId, paymentMethod: "stripe" }),
           });
           const result = await response.json();
-          if (response.ok && result.success && result.status === 'succeeded') {
+          if (response.ok && result.success && result.status === "succeeded") {
             setPaymentVerified(true);
             clearCart();
             // GA4 purchase for PaymentIntent fallback (amount not returned here)
@@ -82,22 +112,22 @@ function CheckoutSuccessContent() {
               trackPurchase({
                 transactionId: result.paymentId || paymentIntentId,
                 value: 0,
-                currency: 'SEK',
+                currency: "SEK",
               });
             } catch {}
           } else {
-            setError(result.error || 'Betalningen kunde inte verifieras.');
+            setError(result.error || "Betalningen kunde inte verifieras.");
           }
         } else {
-          setError('Ingen betalningsinformation hittades.');
+          setError("Ingen betalningsinformation hittades.");
         }
 
-        const userStr = localStorage.getItem('user');
+        const userStr = localStorage.getItem("user");
         if (userStr) setUser(JSON.parse(userStr));
-        const newUserParam = searchParams?.get('new');
-        setIsNewUser(newUserParam === 'true');
+        const newUserParam = searchParams?.get("new");
+        setIsNewUser(newUserParam === "true");
       } catch (err) {
-        setError('Ett fel uppstod vid verifiering av betalningen.');
+        setError("Ett fel uppstod vid verifiering av betalningen.");
       } finally {
         setIsVerifying(false);
       }
@@ -111,8 +141,12 @@ function CheckoutSuccessContent() {
       <div className="min-h-screen bg-background flex items-center justify-center py-12">
         <div className="bg-background-secondary rounded-3xl shadow-xl p-8 max-w-md w-full mx-4 text-center">
           <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-[#014421] mx-auto mb-6"></div>
-          <h1 className="text-xl font-semibold text-text-primary mb-2">Verifierar din betalning...</h1>
-          <p className="text-text-secondary">Vänligen vänta medan vi bekräftar din beställning.</p>
+          <h1 className="text-xl font-semibold text-text-primary mb-2">
+            Verifierar din betalning...
+          </h1>
+          <p className="text-text-secondary">
+            Vänligen vänta medan vi bekräftar din beställning.
+          </p>
         </div>
       </div>
     );
@@ -125,16 +159,34 @@ function CheckoutSuccessContent() {
           <div className="w-16 h-16 bg-red-50 rounded-full flex items-center justify-center mx-auto mb-6">
             <AlertTriangle className="w-8 h-8 text-red-600" />
           </div>
-          <h1 className="text-2xl font-bold text-text-primary mb-4">Betalning ej verifierad</h1>
+          <h1 className="text-2xl font-bold text-text-primary mb-4">
+            Betalning ej verifierad
+          </h1>
           <div className="space-y-3 mb-6">
-            <p className="text-text-secondary">{error || 'Vi kunde inte verifiera din betalning. Ingen beställning har genomförts.'}</p>
+            <p className="text-text-secondary">
+              {error ||
+                "Vi kunde inte verifiera din betalning. Ingen beställning har genomförts."}
+            </p>
             <div className="bg-[#fff5e6] border border-[#ffc586] rounded-xl p-4">
-              <p className="text-sm text-[#8B4513]">Om du tror att du har blivit debiterad men inte fått tillgång, kontakta kundtjänst.</p>
+              <p className="text-sm text-[#8B4513]">
+                Om du tror att du har blivit debiterad men inte fått tillgång,
+                kontakta kundtjänst.
+              </p>
             </div>
           </div>
           <div className="space-y-4">
-            <Link href="/checkout" className="block w-full bg-[#014421] text-white text-center py-3 rounded-xl hover:bg-[#116530] transition-colors font-medium">Försök igen</Link>
-            <Link href="/kontakt" className="block w-full border-2 border-[#014421] text-[#014421] text-center py-3 rounded-xl hover:bg-[#014421] hover:text-white transition-colors font-medium">Kontakta kundtjänst</Link>
+            <Link
+              href="/checkout"
+              className="block w-full bg-[#014421] text-white text-center py-3 rounded-xl hover:bg-[#116530] transition-colors font-medium"
+            >
+              Försök igen
+            </Link>
+            <Link
+              href="/kontakt"
+              className="block w-full border-2 border-[#014421] text-[#014421] text-center py-3 rounded-xl hover:bg-[#014421] hover:text-white transition-colors font-medium"
+            >
+              Kontakta kundtjänst
+            </Link>
           </div>
         </div>
       </div>
@@ -142,18 +194,76 @@ function CheckoutSuccessContent() {
   }
 
   const getDirectCourseLink = () => {
-    if (!user) return '/login';
-    if (user.email === 'basics@test.se' || user.email === 'basiconly@test.se') return '/dashboard/courses/functional-basics';
-    if (user.email === 'flow@test.se' || user.email === 'flowonly@test.se') return '/dashboard/courses/functional-flow';
-    return '/dashboard';
+    if (!user) return "/login";
+    if (user.email === "basics@test.se" || user.email === "basiconly@test.se")
+      return "/dashboard/courses/functional-basics";
+    if (user.email === "flow@test.se" || user.email === "flowonly@test.se")
+      return "/dashboard/courses/functional-flow";
+    return "/dashboard";
   };
 
   // Determine product types from order items
-  const hasEbooks = orderItems.some((item: any) => 
-    item.type === 'book' || item.id?.toLowerCase().includes('brodboken') || item.name?.toLowerCase().includes('glutenfritt')
-  );
-  const hasCourses = orderItems.some((item: any) => item.type === 'course');
+  const hasEbooks = orderItems.some((item: any) => {
+    const id = item.id?.toLowerCase?.() || "";
+    const name = item.name?.toLowerCase?.() || "";
+
+    return (
+      item.type === "book" ||
+      id.includes("brodboken") ||
+      id.includes("paskbuffe") ||
+      name.includes("glutenfritt") ||
+      name.includes("brodboken") ||
+      name.includes("påskbuffé") ||
+      name.includes("paskbuffe") ||
+      name.includes("e-bok")
+    );
+  });
+
+  const hasCourses = orderItems.some((item: any) => item.type === "course");
   const onlyEbooks = hasEbooks && !hasCourses;
+
+  const purchasedEbook = orderItems.find((item: any) => {
+    const id = item.id?.toLowerCase?.() || "";
+    const name = item.name?.toLowerCase?.() || "";
+
+    return (
+      item.type === "book" ||
+      id.includes("brodboken") ||
+      id.includes("paskbuffe") ||
+      name.includes("glutenfritt") ||
+      name.includes("brodboken") ||
+      name.includes("påskbuffé") ||
+      name.includes("paskbuffe") ||
+      name.includes("e-bok")
+    );
+  });
+
+  const ebookKey =
+    `${purchasedEbook?.id || ""} ${purchasedEbook?.name || ""}`.toLowerCase();
+
+  const isPaskbuffe =
+    ebookKey.includes("paskbuffe") ||
+    ebookKey.includes("påskbuffé") ||
+    ebookKey.includes("påskbuffe");
+
+  const ebookDisplay = isPaskbuffe
+    ? {
+        title: "Påskbuffé – E-bok",
+        image: "/paskbuffe-samlingssida.png",
+        alt: "Påskbuffé E-bok",
+        subtitle: "PDF-format • 50 recept",
+        description:
+          "Upptäck inspirerande och hälsosamma recept till påskens alla måltider.",
+        enjoyTitle: "Njut av din påskinspiration!",
+      }
+    : {
+        title: "Baka Glutenfritt – E-bok",
+        image: "/baka-glutenfritt.png",
+        alt: "Baka Glutenfritt E-bok",
+        subtitle: "PDF-format • 26 recept",
+        description: "Upptäck Ulrikas väg till mer hälsosam brödbakning.",
+        enjoyTitle: "Njut av glutenfritt!",
+      };
 
   // E-book only purchase - show special confirmation
   if (onlyEbooks) {
@@ -172,15 +282,15 @@ function CheckoutSuccessContent() {
                 <Gift className="w-16 h-16 text-red-600" />
               </div>
             </div>
-            
+
             <h1 className="text-4xl font-bold text-gray-900 mb-4">
               Tack för ditt köp!
             </h1>
-            
+
             <p className="text-xl text-gray-600 mb-4">
               Din e-bok är på väg till din inkorg!
             </p>
-            
+
             <div className="inline-flex items-center gap-2 bg-green-100 text-green-800 px-4 py-2 rounded-full text-sm font-medium">
               <Mail className="w-4 h-4" />
               Kolla din e-post för nerladdningslänken
@@ -193,8 +303,10 @@ function CheckoutSuccessContent() {
             transition={{ delay: 0.2 }}
             className="bg-white rounded-2xl shadow-lg p-8"
           >
-            <h2 className="text-2xl font-semibold text-gray-900 mb-6 text-center">Vad händer nu?</h2>
-            
+            <h2 className="text-2xl font-semibold text-gray-900 mb-6 text-center">
+              Vad händer nu?
+            </h2>
+
             <div className="space-y-6">
               {/* Step 1: Email sent */}
               <div className="flex gap-4">
@@ -202,9 +314,14 @@ function CheckoutSuccessContent() {
                   <Mail className="w-6 h-6 text-red-600" />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-gray-900 mb-1">E-post på väg</h3>
+                  <h3 className="font-semibold text-gray-900 mb-1">
+                    E-post på väg
+                  </h3>
                   <p className="text-gray-600 text-sm">
-                    Ett mejl med din personliga nerladdningslänk skickas till <strong>{customerEmail || user?.email || 'din e-postadress'}</strong>
+                    Ett mejl med din personliga nerladdningslänk skickas till{" "}
+                    <strong>
+                      {customerEmail || user?.email || "din e-postadress"}
+                    </strong>
                   </p>
                 </div>
               </div>
@@ -215,9 +332,12 @@ function CheckoutSuccessContent() {
                   <Download className="w-6 h-6 text-green-600" />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-gray-900 mb-1">Ladda ner din e-bok</h3>
+                  <h3 className="font-semibold text-gray-900 mb-1">
+                    Ladda ner din e-bok
+                  </h3>
                   <p className="text-gray-600 text-sm mb-2">
-                    Klicka på länken i mejlet för att ladda ner din e-bok som PDF. Länken är unik för dig och fungerar i 30 dagar.
+                    Klicka på länken i mejlet för att ladda ner din e-bok som
+                    PDF. Länken är unik för dig och fungerar i 30 dagar.
                   </p>
                 </div>
               </div>
@@ -228,9 +348,11 @@ function CheckoutSuccessContent() {
                   <Gift className="w-6 h-6 text-green-600" />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-gray-900 mb-1">Njut av glutenfritt!</h3>
+                  <h3 className="font-semibold text-gray-900 mb-1">
+                    {ebookDisplay.enjoyTitle}
+                  </h3>
                   <p className="text-gray-600 text-sm mb-3">
-                    Upptäck Ulrikas väg till mer hälsosam brödbakning.
+                    {ebookDisplay.description}
                   </p>
                 </div>
               </div>
@@ -238,8 +360,9 @@ function CheckoutSuccessContent() {
               {/* Tips box */}
               <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mt-4">
                 <p className="text-sm text-yellow-800">
-                  <strong>Tips:</strong> Kolla även din skräppost-mapp om du inte ser mejlet inom 5 minuter. 
-                  Mejlet kommer från <strong>Ulrika Davidsson / Functional Foods</strong>.
+                  <strong>Tips:</strong> Kolla även din skräppost-mapp om du
+                  inte ser mejlet inom 5 minuter. Mejlet kommer från{" "}
+                  <strong>Ulrika Davidsson / Functional Foods</strong>.
                 </p>
               </div>
 
@@ -248,16 +371,20 @@ function CheckoutSuccessContent() {
                 <div className="flex items-center gap-4">
                   <div className="relative w-20 h-28 rounded-lg overflow-hidden shadow-lg flex-shrink-0">
                     <Image
-                      src="/baka-glutenfritt.png"
-                      alt="Baka Glutenfritt E-bok"
+                      src={ebookDisplay.image}
+                      alt={ebookDisplay.alt}
                       fill
                       className="object-cover"
                     />
                   </div>
                   <div>
                     <h4 className="font-semibold text-gray-900">Din e-bok</h4>
-                    <p className="text-sm text-gray-600">Baka Glutenfritt – E-bok</p>
-                    <p className="text-xs text-gray-500 mt-1">PDF-format • 26 recept</p>
+                    <p className="text-sm text-gray-600">
+                      {ebookDisplay.title}
+                    </p>
+                    <p className="text-xs text-gray-500 mt-1">
+                      {ebookDisplay.subtitle}
+                    </p>
                   </div>
                 </div>
               </div>
@@ -288,7 +415,7 @@ function CheckoutSuccessContent() {
       </div>
     );
   }
-  
+
   // Course purchase - show original content
   return (
     <div className="min-h-screen bg-background">
@@ -298,20 +425,25 @@ function CheckoutSuccessContent() {
           <div className="w-20 h-20 bg-[#e8f5e9] rounded-full flex items-center justify-center mx-auto mb-6">
             <CheckCircle className="w-12 h-12 text-[#014421]" />
           </div>
-          
+
           <h1 className="text-4xl font-bold text-text-primary mb-4">
-            {isNewUser ? 'Välkommen till Functional Foods!' : 'Tack för ditt köp!'}
+            {isNewUser
+              ? "Välkommen till Functional Foods!"
+              : "Tack för ditt köp!"}
           </h1>
-          
+
           <p className="text-xl text-text-secondary mb-8">
-            Din betalning har genomförts och du har nu tillgång till dina kurser.
+            Din betalning har genomförts och du har nu tillgång till dina
+            kurser.
           </p>
         </div>
 
         {/* What happens now section */}
         <div className="bg-background-secondary rounded-3xl shadow-xl p-8 mb-8">
-          <h2 className="text-2xl font-semibold text-text-primary mb-6 text-center">Vad händer nu?</h2>
-          
+          <h2 className="text-2xl font-semibold text-text-primary mb-6 text-center">
+            Vad händer nu?
+          </h2>
+
           <div className="space-y-6">
             {/* Step 1: Order Confirmation */}
             <div className="flex gap-4">
@@ -319,9 +451,12 @@ function CheckoutSuccessContent() {
                 <CheckCircle className="w-6 h-6 text-[#014421]" />
               </div>
               <div>
-                <h3 className="font-semibold text-text-primary mb-1">Beställningen är bekräftad</h3>
+                <h3 className="font-semibold text-text-primary mb-1">
+                  Beställningen är bekräftad
+                </h3>
                 <p className="text-text-secondary text-sm">
-                  Din order är genomförd och bekräftad. Du har nu omedelbar tillgång till kursmaterialet.
+                  Din order är genomförd och bekräftad. Du har nu omedelbar
+                  tillgång till kursmaterialet.
                 </p>
               </div>
             </div>
@@ -332,13 +467,21 @@ function CheckoutSuccessContent() {
                 <Mail className="w-6 h-6 text-[#FF7e70]" />
               </div>
               <div>
-                <h3 className="font-semibold text-text-primary mb-1">Orderbekräftelse via email</h3>
+                <h3 className="font-semibold text-text-primary mb-1">
+                  Orderbekräftelse via email
+                </h3>
                 <p className="text-text-secondary text-sm mb-2">
-                  Ett orderkvitto{isNewUser ? ' med dina inloggningsuppgifter' : ''} skickas till <strong>{customerEmail || user?.email || 'din e-postadress'}</strong>
+                  Ett orderkvitto
+                  {isNewUser ? " med dina inloggningsuppgifter" : ""} skickas
+                  till{" "}
+                  <strong>
+                    {customerEmail || user?.email || "din e-postadress"}
+                  </strong>
                 </p>
                 <div className="bg-[#fff5e6] border border-[#ffc586] rounded-xl p-3 mt-2">
                   <p className="text-sm text-[#8B4513]">
-                    <strong>Tips:</strong> Kolla även din skräppost-mapp om du inte ser emailet inom 5 minuter.
+                    <strong>Tips:</strong> Kolla även din skräppost-mapp om du
+                    inte ser emailet inom 5 minuter.
                   </p>
                 </div>
               </div>
@@ -350,9 +493,12 @@ function CheckoutSuccessContent() {
                 <Key className="w-6 h-6 text-[#7e70ff]" />
               </div>
               <div>
-                <h3 className="font-semibold text-text-primary mb-1">Har du inte fått email?</h3>
+                <h3 className="font-semibold text-text-primary mb-1">
+                  Har du inte fått email?
+                </h3>
                 <p className="text-text-secondary text-sm mb-3">
-                  Inga problem! Du kan alltid återställa ditt lösenord via "Glömt lösenord" på inloggningssidan.
+                  Inga problem! Du kan alltid återställa ditt lösenord via
+                  "Glömt lösenord" på inloggningssidan.
                 </p>
                 <Link
                   href="/forgot-password"
@@ -370,7 +516,9 @@ function CheckoutSuccessContent() {
                 <Book className="w-6 h-6 text-white" />
               </div>
               <div className="flex-1">
-                <h3 className="font-semibold text-text-primary mb-1">Kom åt din kurs</h3>
+                <h3 className="font-semibold text-text-primary mb-1">
+                  Kom åt din kurs
+                </h3>
                 <p className="text-text-secondary text-sm mb-3">
                   Logga in på ditt konto för att börja din hälsoresa idag!
                 </p>
@@ -393,16 +541,19 @@ function CheckoutSuccessContent() {
                 )}
               </div>
             </div>
-            
+
             {/* If order also has e-books, show download info */}
             {hasEbooks && (
               <div className="mt-6 p-4 bg-red-50 rounded-lg border border-red-100">
                 <div className="flex items-start gap-3">
                   <Download className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
                   <div>
-                    <h4 className="font-medium text-gray-900 text-sm">E-bok ingår i din beställning</h4>
+                    <h4 className="font-medium text-gray-900 text-sm">
+                      E-bok ingår i din beställning
+                    </h4>
                     <p className="text-sm text-gray-600 mt-1">
-                      Du får ett separat mejl med nerladdningslänk för din e-bok till {customerEmail || user?.email || 'din e-postadress'}.
+                      Du får ett separat mejl med nerladdningslänk för din e-bok
+                      till {customerEmail || user?.email || "din e-postadress"}.
                     </p>
                   </div>
                 </div>
@@ -417,8 +568,11 @@ function CheckoutSuccessContent() {
             Din resa mot bättre hälsa börjar nu!
           </p>
           <p className="text-text-secondary">
-            Har du frågor?{' '}
-            <Link href="/kontakt" className="text-[#014421] hover:text-[#116530] font-medium">
+            Har du frågor?{" "}
+            <Link
+              href="/kontakt"
+              className="text-[#014421] hover:text-[#116530] font-medium"
+            >
               Kontakta oss
             </Link>
           </p>
@@ -434,4 +588,4 @@ export default function CheckoutSuccess() {
       <CheckoutSuccessContent />
     </Suspense>
   );
-} 
+}
