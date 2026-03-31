@@ -113,7 +113,7 @@ export default function BookShowcaseSection({
                 onClick={handleAddToCart}
                 className="group relative bg-primary hover:bg-green-700  text-white px-8 py-4 rounded-full font-semibold text-lg transition-all flex items-center gap-3 shadow-lg hover:shadow-xl inline-flex"
               >
-                <span>Lägg i varukorgen</span>
+                <span>{productPrice}kr – Lägg i varukorgen</span>
                 <ShoppingCart className="w-5 h-5" />
               </button>
             </motion.div>
