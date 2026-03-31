@@ -153,21 +153,6 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Send notification email to info@functionalfoods.se about new subscriber
-    try {
-      await emailService.sendNewsletterNotification({
-        email,
-        firstName: firstName || '',
-        lastName: lastName || '',
-        lang,
-        source: source || 'website'
-      });
-      console.log('✅ Newsletter notification sent to info@functionalfoods.se');
-    } catch (emailError) {
-      console.error('⚠️ Failed to send newsletter notification email:', emailError);
-      // Don't fail the whole request if notification fails
-    }
-
   // Server-side GA4 generate_lead for newsletter/quiz
   try {
     await trackLeadServer({ source: source || 'newsletter', clientSeed: email });
