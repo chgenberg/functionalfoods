@@ -402,7 +402,7 @@ export default function Home() {
             text: "Näringsrika rätter för hela familjen.",
           },
           {
-            title: "Perfekt till högtiden",
+            title: "Recept till påsken",
             text: "En bok fylld med idéer och inspiration.",
           },
         ]}
@@ -411,24 +411,24 @@ export default function Home() {
       <RecipeCarousel />
 
       {/* Health Test Section with Interactive Frame */}
-      <section className="py-20 px-4 bg-gradient-to-b from-white to-[#F3EFE3]">
-        <div className="max-w-7xl mx-auto">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
+      <section className="py-14 md:py-20 px-4 bg-gradient-to-b from-white to-[#F3EFE3]">
+        <div className="max-w-6xl mx-auto">
+          <div className="grid md:grid-cols-2 gap-8 lg:gap-10 items-center justify-items-center">
             {/* Left content */}
             <motion.div
               initial={{ opacity: 0, x: -30 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
-              className="space-y-6"
+              className="space-y-6 max-w-[480px] w-full"
             >
               <div>
-                <h2 className="text-4xl md:text-5xl lg:text-6xl font-light text-gray-800 mb-2">
+                <h2 className="text-4xl md:text-4xl lg:text-6xl font-light text-gray-800 mb-2">
                   Ditt personliga
                 </h2>
-                <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold text-primary">
+                <h2 className="text-4xl md:text-4xl lg:text-6xl font-bold text-primary">
                   HÄLSOQUIZ
                 </h2>
-                <p className="text-lg md:text-xl text-gray-600 mt-4">
+                <p className="text-lg md:text-base lg:text-lg text-gray-600 mt-4">
                   Ta 2 minuter för att upptäcka din väg till bättre hälsa
                 </p>
               </div>
@@ -442,7 +442,7 @@ export default function Home() {
                   className="flex items-center gap-3"
                 >
                   <div className="w-12 h-12 rounded-full bg-red-50 flex items-center justify-center">
-                    <Target className="w-8 h-8 inline text-accent" />
+                    <Target className="w-6 h-6 inline text-accent" />
                   </div>
                   <div>
                     <h3 className="font-semibold text-gray-800">
@@ -462,7 +462,7 @@ export default function Home() {
                   className="flex items-center gap-3"
                 >
                   <div className="w-12 h-12 rounded-full bg-blue-50 flex items-center justify-center">
-                    <Microscope className="w-8 h-8 inline text-accent" />
+                    <Microscope className="w-6 h-6 inline text-accent" />
                   </div>
                   <div>
                     <h3 className="font-semibold text-gray-800">
@@ -482,7 +482,7 @@ export default function Home() {
                   className="flex items-center gap-3"
                 >
                   <div className="w-12 h-12 rounded-full bg-yellow-50 flex items-center justify-center">
-                    <Zap className="w-8 h-8 inline text-accent" />
+                    <Zap className="w-6 h-6 inline text-accent" />
                   </div>
                   <div>
                     <h3 className="font-semibold text-gray-800">
@@ -521,22 +521,22 @@ export default function Home() {
               initial={{ opacity: 0, scale: 0.9 }}
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
-              className="relative"
+              className="flex justify-center"
             >
-              <div className="relative group cursor-pointer">
+              <div className="relative group cursor-pointer w-[280px] h-[280px] sm:w-[320px] sm:h-[320px] md:w-[380px] md:h-[380px] lg:w-[420px] lg:h-[420px] xl:w-[520px] xl:h-[520px]">
                 {/* Animated background gradient */}
                 <div className="absolute -inset-4 bg-gradient-to-r from-primary/20 via-blue-500/20 to-primary/20 rounded-3xl blur-2xl opacity-70 group-hover:opacity-100 transition-opacity animate-pulse" />
 
                 {/* Main container with minimalist frame */}
-                <div className="relative">
+                <div className="relative w-full h-full">
                   {/* Subtle shadow frame */}
                   <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-primary/5 rounded-3xl transform translate-x-2 translate-y-2" />
 
                   {/* Main image container */}
-                  <div className="relative overflow-hidden rounded-3xl bg-white p-1">
+                  <div className="relative w-full h-full overflow-hidden rounded-3xl bg-white p-1">
                     {/* Inner frame with gradient border */}
-                    <div className="relative overflow-hidden rounded-[22px] bg-gradient-to-br from-primary via-green-600 to-primary p-[2px]">
-                      <div className="relative overflow-hidden rounded-[20px] bg-white">
+                    <div className="relative w-full h-full overflow-hidden rounded-[22px] bg-gradient-to-br from-primary via-green-600 to-primary p-[2px]">
+                      <div className="relative w-full h-full overflow-hidden rounded-[20px] bg-white">
                         <Image
                           src="/Ulrika_portratt/Ulrika3.jpg"
                           alt="Ulrika Davidsson"
