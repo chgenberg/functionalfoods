@@ -213,12 +213,12 @@ export function ProvaPaFloatingButton({ onClick }: { onClick: () => void }) {
       {/* Desktop version */}
       <span className="hidden sm:flex items-center gap-2 px-5 py-3 font-semibold">
         <Sparkles className="w-4 h-4" />
-        Påskbuffé
+        Baka Glutenfritt
       </span>
       {/* Mobile version */}
       <span className="sm:hidden flex items-center gap-2 px-4 py-3 font-semibold text-sm">
         <Sparkles className="w-4 h-4" />
-        Påskbuffé
+        Baka Glutenfritt
       </span>
     </motion.button>
   );
