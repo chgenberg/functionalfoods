@@ -124,7 +124,7 @@ export default function ProvaPaPopup({
               <div className="p-6">
                 <p className="text-gray-700 mb-6 leading-relaxed">
                   Näringsrika, mättande och riktigt goda recept. 
-                  Enkla att baka och passar lika bra till frukost som till middag och fest.
+                  Enkla att baka och passar lika bra till frukost, middag och fest.
                 </p>
 
                 {/* Features */}
