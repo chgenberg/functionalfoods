@@ -384,26 +384,26 @@ export default function Home() {
 
       <BookShowcaseSection
         reverse
-        title="Påskbuffé"
-        subtitle="Inspireras av vår"
-        description="Fira påsken med smakrika, näringsrika och hälsosamma alternativ."
-        image="/paskbuffe-square.jpg"
-        href="/e-bocker/paskbuffe"
-        productId="paskbuffe"
-        productPrice="99"
+        title="Baka Glutenfritt"
+        subtitle="Inspireras av att"
+        description="Näringsrika, mättande och riktigt goda recept som är enkla att baka."
+        image="/baka-glutenfritt-square.png"
+        href="/brodboken"
+        productId="brodboken-2026"
+        productPrice="69"
         buttonText="Läs mer om boken"
         highlights={[
           {
-            title: "50 inspirerande recept",
-            text: "För hela påskbordet.",
+            title: "26 glutenfria brödrecept",
+            text: "För vardag, middag och fest.",
           },
           {
             title: "Hälsosamma alternativ",
-            text: "Näringsrika rätter för hela familjen.",
+            text: "Fungerar för hela familjen.",
           },
           {
-            title: "Recept till påsken",
-            text: "En bok fylld med idéer och inspiration.",
+            title: "Bättre näringsvärden",
+            text: "Mer protein och fibrer.",
           },
         ]}
       />
