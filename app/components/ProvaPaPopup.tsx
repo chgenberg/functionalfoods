@@ -93,8 +93,8 @@ export default function ProvaPaPopup({
               {/* Image section */}
               <div className="relative h-48 sm:h-56">
                 <Image
-                  src="/paskbuffe-popup.png"
-                  alt="Påskbuffé med Ulrika"
+                  src="/baka-glutenfritt-popup.png"
+                  alt="Baka Glutenfritt"
                   fill
                   className="object-cover"
                   priority
@@ -105,14 +105,14 @@ export default function ProvaPaPopup({
                 <div className="absolute top-4 left-4">
                   <div className="bg-[#014421] text-white px-4 py-2 rounded-full font-bold text-sm flex items-center gap-2 shadow-lg">
                     <Sparkles className="w-4 h-4" />
-                    99 kr
+                    69 kr
                   </div>
                 </div>
 
                 {/* Title overlay */}
                 <div className="absolute bottom-4 left-4 right-4 text-white">
                   <h2 className="text-2xl sm:text-3xl font-bold leading-tight">
-                    Påskbuffé
+                    Baka Glutenfritt
                   </h2>
                   <p className="text-white/90 text-sm sm:text-base mt-1">
                     med Functional Foods
@@ -123,8 +123,8 @@ export default function ProvaPaPopup({
               {/* Content */}
               <div className="p-6">
                 <p className="text-gray-700 mb-6 leading-relaxed">
-                  Ulrika har samlat 50 enkla och inspirerande recept som passar
-                  perfekt till påskbordet – frukost, lunch, middag och sötsaker.
+                  Näringsrika, mättande och riktigt goda recept. 
+                  Enkla att baka och passar lika bra till frukost som till middag och fest.
                 </p>
 
                 {/* Features */}
@@ -132,25 +132,25 @@ export default function ProvaPaPopup({
                   <div className="text-center p-3 bg-[#014421]/5 rounded-xl">
                     <Calendar className="w-5 h-5 mx-auto text-[#014421] mb-1" />
                     <span className="text-xs text-gray-700 font-medium">
-                      Påsk
+                      Glutenfritt
                     </span>
                   </div>
                   <div className="text-center p-3 bg-[#014421]/5 rounded-xl">
                     <Utensils className="w-5 h-5 mx-auto text-[#014421] mb-1" />
                     <span className="text-xs text-gray-700 font-medium">
-                      50 recept
+                      26 recept
                     </span>
                   </div>
                   <div className="text-center p-3 bg-[#014421]/5 rounded-xl">
                     <ShoppingCart className="w-5 h-5 mx-auto text-[#014421] mb-1" />
                     <span className="text-xs text-gray-700 font-medium">
-                      99 kr
+                      69 kr
                     </span>
                   </div>
                 </div>
 
                 {/* CTA */}
-                <Link href="/e-bocker/paskbuffe" onClick={handleClose}>
+                <Link href="/brodboken" onClick={handleClose}>
                   <motion.button
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
