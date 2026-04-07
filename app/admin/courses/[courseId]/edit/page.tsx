@@ -49,7 +49,7 @@ export default function EditCoursePage({ params }: { params: { courseId: string 
         headers: {
           'Content-Type': 'application/json',
         },
-        credentials: 'include'
+        credentials: 'include',
         cache: 'no-store'
       });
 
