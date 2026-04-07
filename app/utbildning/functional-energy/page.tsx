@@ -387,7 +387,6 @@ export default function FunctionalEnergyPage() {
                   disabled={!hasLivePrice}
                   className="bg-primary text-white px-6 py-2 rounded-full text-sm hover:bg-primary/90 transition-colors w-full"
                 >
-                  Lägg i varukorg
                   {hasLivePrice ? 'Lägg i varukorg' : 'Laddar...'}
                 </button>
                 <div className="w-full border-t border-gray-200 my-2"></div>
