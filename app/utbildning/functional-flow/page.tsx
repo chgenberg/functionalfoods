@@ -70,7 +70,7 @@ export default function FunctionalFlowPage() {
         console.error("Failed to fetch course price:", error);
         // Fallback to hardcoded prices
         setCoursePrice(995);
-        setOriginalPrice(2295);
+        setOriginalPrice(1295);
       } finally {
         setPriceLoading(false);
       }
@@ -91,7 +91,7 @@ export default function FunctionalFlowPage() {
   // Display price (use fetched or fallback)
   const VAT_RATE = 0.25;
   const displayPriceIncl = coursePrice ?? 995; // Campaign price
-  const displayOriginalPriceIncl = originalPrice ?? 2295; // Original price
+  const displayOriginalPriceIncl = originalPrice ?? 1295; // Original price
   const displayPriceExcl =
     Math.round((displayPriceIncl / (1 + VAT_RATE)) * 100) / 100;
   const hasDiscount =
