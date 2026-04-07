@@ -448,11 +448,11 @@ export default function CartPage() {
                     </div>
 
                     <h3 className="text-sm sm:text-lg font-semibold text-[#014421] leading-snug mb-1">
-                      Lägg till Påskbuffé
+                      Lägg till Baka Glutenfritt
                     </h3>
 
                     <p className="text-xs sm:text-sm text-gray-600 leading-snug mb-2 line-clamp-2 sm:line-clamp-none">
-                      50 festliga recept för hela påskbordet.
+                      26 glutenfria brödrecept för vardag och fest.
                     </p>
 
                     <div className="flex items-center gap-2 text-[11px] sm:text-sm text-gray-500 mb-2 sm:mb-3">
