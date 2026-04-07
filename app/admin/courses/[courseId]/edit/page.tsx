@@ -45,11 +45,12 @@ export default function EditCoursePage({ params }: { params: { courseId: string 
       setLoading(true);
       
       // Hämta verklig kursdata från API
-      const response = await fetch('/api/admin/functional-courses', {
+      const response = await fetch(`/api/admin/functional-courses?ts=${Date.now()}`, {
         headers: {
           'Content-Type': 'application/json',
         },
         credentials: 'include'
+        cache: 'no-store'
       });
 
       if (!response.ok) {
@@ -136,6 +137,7 @@ export default function EditCoursePage({ params }: { params: { courseId: string 
         throw new Error('Failed to save course');
       }
 
+      await fetchCourse();
       setSuccessMessage('Kursen har sparats!');
       setTimeout(() => setSuccessMessage(''), 3000);
     } catch (error) {
