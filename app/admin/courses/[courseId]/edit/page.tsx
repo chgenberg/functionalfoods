@@ -124,10 +124,11 @@ export default function EditCoursePage({ params }: { params: { courseId: string 
         body: JSON.stringify({
           courseId: params.courseId,
           price: activeExPrice,
-          basePrice: course?.basePrice ?? undefined,
-          salePrice: course?.salePrice ?? undefined,
-          saleStartsAt: course?.saleStartsAt ?? undefined,
-          saleEndsAt: course?.saleEndsAt ?? undefined
+          // Preserve explicit nulls so admin can clear campaign fields.
+          basePrice: course?.basePrice === null ? null : course?.basePrice,
+          salePrice: course?.salePrice === null ? null : course?.salePrice,
+          saleStartsAt: course?.saleStartsAt === null || course?.saleStartsAt === '' ? null : course?.saleStartsAt,
+          saleEndsAt: course?.saleEndsAt === null || course?.saleEndsAt === '' ? null : course?.saleEndsAt
         })
       });
 
