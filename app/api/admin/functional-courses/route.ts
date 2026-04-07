@@ -82,7 +82,13 @@ export async function GET(req: NextRequest) {
         weeks: weeksByCourse[courseNameToCourse[cp.name]] || []
       }));
 
-    return NextResponse.json(courses);
+    return NextResponse.json(courses, {
+      headers: {
+        'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+        Pragma: 'no-cache',
+        Expires: '0'
+      }
+    });
   } catch (error) {
     console.error('Error fetching courses:', error);
     return NextResponse.json({ error: 'Failed to fetch courses' }, { status: 500 });
