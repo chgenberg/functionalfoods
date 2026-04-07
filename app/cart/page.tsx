@@ -46,12 +46,12 @@ const getItemImage = (item: {
 };
 
 const UPSELL_BOOK = {
-  id: "paskbuffe",
-  name: "Påskbuffé – E-bok",
-  price: 93.40, // 99 kr inkl 6% moms = 93.40 kr exkl moms (99 / 1.06)
+  id: "brodboken-2026",
+  name: "Baka Glutenfritt – E-bok",
+  price: 65.09, // 69 kr inkl 6% moms = 65.09 kr exkl moms (69 / 1.06)
   type: "book" as const,
-  image: "/paskbuffe-square.jpg",
-  description: "50 festliga recept för hela påskbordet.",
+  image: "/baka-glutenfritt-square.png",
+  description: "26 glutenfria brödrecept för vardag och fest.",
 };
 
 export default function CartPage() {
