@@ -21,7 +21,7 @@ export async function POST() {
     const updated = await prisma.blogPost.update({
       where: { slug: 'grot' },
       data: {
-        coverImage: 'https://res.cloudinary.com/dg1hfu0tk/image/upload/v1776064603/uploads/ekksqq7vcy1foxmxvbij.jpg',
+        coverImage: '/Ariklar_bilder_optimized/grot.webp',
         author: {
           update: {
             name: 'Ulrika Davidsson',
