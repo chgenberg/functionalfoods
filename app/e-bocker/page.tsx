@@ -64,7 +64,7 @@ export default function EBockerPage() {
 
   return (
     <main className="min-h-screen bg-[#0C281A]">
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-16">
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 md:pt-16 pb-0">
         <div className="mb-8 md:mb-12 text-center">
           <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight text-white">
             Alla E-böcker
@@ -147,6 +147,38 @@ export default function EBockerPage() {
               </div>
             </div>
           ))}
+        </div>
+        <div className="mt-12 md:mt-16 mb-8 text-center max-w-7xl mx-auto px-4 sm:px-6 lg:px-10">
+          <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight text-white">
+            Functional Foods boken
+          </h1>
+          <p className="mt-3 md:mt-4 text-white max-w-2xl mx-auto">
+            I Ulrika Davidssons bok får du lära dig om den smarta maten som ökar
+            din energi, boostar ditt immunförsvar, ger en lugnare mage och gör
+            att du tappar i vikt.
+          </p>
+          <div className="mt-6">
+            <Link
+              href="https://www.functionalfoods.se/boken"
+              className="inline-flex w-auto flex-none items-center justify-center gap-2 px-4 py-2 rounded-lg bg-[#FF7E70] hover:bg-[#660D22] text-white transition-colors"
+            >
+              Läs mer
+              <ArrowRight className="w-4 h-4" />
+            </Link>
+          </div>
+        </div>
+      </section>
+      <section className="relative w-screen left-1/2 right-1/2 -ml-[50vw] -mr-[50vw]">
+        <div className="relative h-[160px] sm:h-[220px] md:h-[320px] lg:h-[480px] w-full overflow-hidden">
+          <Image
+            src="/boken-banner.png"
+            alt="Functional Foods boken"
+            fill
+            priority
+            className="object-cover object-[50%_center]"
+            sizes="100vw"
+          />
+          <div className="absolute inset-0 bg-black/20" />
         </div>
       </section>
     </main>
