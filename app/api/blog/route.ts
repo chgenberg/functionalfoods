@@ -18,6 +18,19 @@ function pick(obj: any, base: string, lang: Lang) {
   return obj[k] || obj[base];
 }
 
+function normalizeImageUrl(imageUrl?: string | null): string {
+  if (!imageUrl) return '/images/blog-placeholder.jpg';
+
+  if (
+    imageUrl.startsWith('http://') ||
+    imageUrl.startsWith('https://')
+  ) {
+    return imageUrl;
+  }
+
+  return imageUrl.startsWith('/') ? imageUrl : `/${imageUrl}`;
+}
+
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
@@ -57,6 +70,7 @@ export async function GET(request: NextRequest) {
       title: pick(p, 'title', lang),
       excerpt: pick(p, 'excerpt', lang),
       content: pick(p, 'content', lang),
+      coverImage: normalizeImageUrl(p.coverImage),
     }));
 
     const headers = new Headers();
