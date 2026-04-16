@@ -1,8 +1,22 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
-    domains: ['localhost', 'ulrika-functional-foods-production.up.railway.app'],
-    unoptimized: false, // Enable optimization in production
+    remotePatterns: [
+      {
+        protocol: 'http',
+        hostname: 'localhost',
+      },
+      {
+        protocol: 'https',
+        hostname: 'ulrika-functional-foods-production.up.railway.app',
+      },
+      {
+        protocol: 'https',
+        hostname: 'res.cloudinary.com',
+        pathname: '/dg1hfu0tk/**',
+      },
+    ],
+    unoptimized: false,
     formats: ['image/webp', 'image/avif'],
   },
   
