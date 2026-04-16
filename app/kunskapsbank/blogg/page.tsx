@@ -19,6 +19,12 @@ interface BlogPost {
   };
 }
 
+function normalizeImageUrl(imageUrl?: string | null): string {
+  if (!imageUrl) return '/images/blog-placeholder.jpg';
+  if (imageUrl.startsWith('http://') || imageUrl.startsWith('https://')) return imageUrl;
+  return imageUrl.startsWith('/') ? imageUrl : `/${imageUrl}`;
+}
+
 export default function BlogPage() {
   const t = useT();
   const [posts, setPosts] = useState<BlogPost[]>([]);
@@ -140,14 +146,10 @@ export default function BlogPage() {
                   {/* Image */}
                   <div className="relative h-64 overflow-hidden">
                     <Image
-                      src={post.coverImage || '/images/blog-placeholder.jpg'}
+                      src={normalizeImageUrl(post.coverImage)}
                       alt={post.title}
                       fill
                       className="object-cover group-hover:scale-105 transition-transform duration-500"
-                      onError={(e) => {
-                        const target = e.target as HTMLImageElement;
-                        target.src = '/images/blog-placeholder.jpg';
-                      }}
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
                     <div className="absolute bottom-4 left-4">
