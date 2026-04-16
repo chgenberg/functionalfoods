@@ -28,6 +28,16 @@ interface Props {
   };
 }
 
+function normalizeImageUrl(imageUrl?: string | null): string {
+  if (!imageUrl) return '/images/blog-placeholder.jpg';
+
+  if (imageUrl.startsWith('http://') || imageUrl.startsWith('https://')) {
+    return imageUrl;
+  }
+
+  return imageUrl.startsWith('/') ? imageUrl : `/${imageUrl}`;
+}
+
 export default function BlogPostPage({ params }: Props) {
   const t = useT();
   const [post, setPost] = useState<BlogPost | null>(null);
@@ -501,7 +511,7 @@ export default function BlogPostPage({ params }: Props) {
           {post.coverImage && (
             <div className="relative h-64 md:h-96 rounded-2xl overflow-hidden mb-8 shadow-xl">
               <Image
-                src={post.coverImage}
+                src={normalizeImageUrl(post.coverImage)}
                 alt={post.title}
                 fill
                 className="object-cover"
