@@ -279,19 +279,24 @@ export async function POST(request: Request) {
     const slugToImage: Record<string, string | null> = {};
     const slugsWithExplicitNoImage = new Set<string>();
     for (const r of dbRecipes) {
-      if (r.imageUrl) {
-        // Normalize local asset path
-        const url = r.imageUrl.startsWith('/') ? r.imageUrl : `/${r.imageUrl}`;
-        slugToImage[r.slug] = url;
-        console.log(`🎯 DB imageUrl for ${r.slug}: ${url}`);
-      } else {
-        // Mark that this slug exists in DB but intentionally has no image yet
-        slugsWithExplicitNoImage.add(r.slug);
-        // Still attempt slug-based filesystem image (may return null)
-        slugToImage[r.slug] = slugToOptimizedUrl(r.slug, size, usage);
-        console.log(`⚠️  No DB imageUrl for ${r.slug}, using filesystem fallback`);
-      }
-    }
+     if (r.imageUrl) {
+      const url =
+        r.imageUrl.startsWith('http://') || r.imageUrl.startsWith('https://')
+          ? r.imageUrl
+          : r.imageUrl.startsWith('/')
+            ? r.imageUrl
+            : `/${r.imageUrl}`;
+
+      slugToImage[r.slug] = url;
+      console.log(`🎯 DB imageUrl for ${r.slug}: ${url}`);
+     } else {
+      // Mark that this slug exists in DB but intentionally has no image yet
+      slugsWithExplicitNoImage.add(r.slug);
+      // Still attempt slug-based filesystem image (may return null)
+      slugToImage[r.slug] = slugToOptimizedUrl(r.slug, size, usage);
+      console.log(`⚠️  No DB imageUrl for ${r.slug}, using filesystem fallback`);
+     }
+   }
 
     // Note: We rely on DB imageUrl or filesystem by slug; no hardcoded overrides
 
