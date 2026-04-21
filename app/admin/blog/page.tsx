@@ -151,15 +151,15 @@ export default function AdminBlogPage() {
       </div>
 
       {/* Posts table */}
-      <div className="bg-white border border-[var(--border-light)] rounded-lg overflow-hidden">
-        <table className="w-full">
+      <div className="bg-white border border-[var(--border-light)] rounded-lg overflow-x-auto">
+        <table className="w-full min-w-[920px]">
           <thead className="bg-gray-50 border-b border-[var(--border-light)]">
             <tr>
               <th className="text-left px-4 py-3 text-xs font-medium text-[var(--text-secondary)] uppercase">Artikel</th>
               <th className="text-left px-4 py-3 text-xs font-medium text-[var(--text-secondary)] uppercase hidden md:table-cell">Författare</th>
               <th className="text-left px-4 py-3 text-xs font-medium text-[var(--text-secondary)] uppercase hidden lg:table-cell">Datum</th>
               <th className="text-left px-4 py-3 text-xs font-medium text-[var(--text-secondary)] uppercase">Status</th>
-              <th className="text-right px-4 py-3 text-xs font-medium text-[var(--text-secondary)] uppercase">Åtgärder</th>
+              <th className="sticky right-0 z-10 bg-gray-50 text-right px-4 py-3 text-xs font-medium text-[var(--text-secondary)] uppercase">Åtgärder</th>
             </tr>
           </thead>
           <tbody>
@@ -200,20 +200,20 @@ export default function AdminBlogPage() {
                       {post.published ? 'Publicerad' : 'Utkast'}
                     </span>
                   </td>
-                  <td className="px-4 py-3 text-right">
-                    <div className="flex gap-2 justify-end">
+                  <td className="sticky right-0 z-10 bg-white px-4 py-3 text-right">
+                    <div className="flex gap-2 justify-end whitespace-nowrap">
                       {post.published && (
                         <Link
                           href={`/kunskapsbank/blogg/${post.slug}`}
                           target="_blank"
-                          className="px-3 py-1.5 text-xs bg-gray-100 text-[var(--text-secondary)] rounded hover:bg-gray-200 transition-colors"
+                          className="px-3 py-1.5 text-xs bg-gray-100 text-gray-700 rounded hover:bg-gray-200 transition-colors"
                         >
                           Visa
                         </Link>
                       )}
                       <Link
                         href={`/admin/blog/${post.slug}/edit`}
-                        className="px-3 py-1.5 text-xs bg-gray-100 text-[var(--text-secondary)] rounded hover:bg-gray-200 transition-colors"
+                        className="px-3 py-1.5 text-xs border border-gray-300 text-gray-800 rounded hover:bg-gray-100 transition-colors"
                       >
                         Redigera
                       </Link>
