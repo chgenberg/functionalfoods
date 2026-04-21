@@ -1,10 +1,9 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useParams, useRouter } from 'next/navigation';
+import { useParams } from 'next/navigation';
 import Link from 'next/link';
-import Image from 'next/image';
-import { ChevronLeft, Save, Loader, AlertTriangle, Upload } from 'lucide-react';
+import { ChevronLeft, Save, Loader, AlertTriangle } from 'lucide-react';
 import WysiwygEditor from '@/app/components/WysiwygEditor';
 import ImageUpload from '@/app/components/admin/ImageUpload';
 
@@ -26,7 +25,6 @@ export default function EditBlogPostPage() {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const params = useParams();
-  const router = useRouter();
   const { slug } = params;
 
   useEffect(() => {
@@ -36,19 +34,9 @@ export default function EditBlogPostPage() {
         setLoading(true);
         setError('');
 
-        // Try admin route by ID first
-        let res = await fetch(`/api/admin/blog/${slug}`);
-        let data: any;
-
-        if (res.ok) {
-          data = await res.json();
-        } else {
-          // Fallback to public slug route
-          res = await fetch(`/api/blog/slug/${slug}`);
-          if (!res.ok) throw new Error('Kunde inte hämta inlägget.');
-          const payload = await res.json();
-          data = payload.post || payload;
-        }
+        const res = await fetch(`/api/admin/blog/slug/${slug}`);
+        if (!res.ok) throw new Error('Kunde inte hämta inlägget.');
+        const data = await res.json();
 
         // Normalize for UI
         const normalized: any = {
@@ -75,8 +63,7 @@ export default function EditBlogPostPage() {
     setSuccess('');
 
     try {
-      // Prefer admin update by ID when available, else fallback to slug update
-      const updateAdmin = await fetch(`/api/admin/blog/${(post as any).id || slug}`, {
+      const response = await fetch(`/api/admin/blog/slug/${slug}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -85,17 +72,6 @@ export default function EditBlogPostPage() {
           slug: (post as any).slug,
           coverImage: (post as any).coverImage || (post as any).imageUrl || '',
           published: post.status === 'published'
-        }),
-      });
-
-      const response = updateAdmin.ok ? updateAdmin : await fetch(`/api/blog/slug/${slug}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          title: post.title,
-          content: post.content,
-          coverImage: (post as any).coverImage || (post as any).imageUrl || '',
-          published: post.status === 'published',
         }),
       });
 
