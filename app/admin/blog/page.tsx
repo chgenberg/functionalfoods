@@ -50,13 +50,13 @@ export default function AdminBlogPage() {
     }
   };
 
-  const handleDeletePost = async (id: string, title: string) => {
+  const handleDeletePost = async (slug: string, title: string) => {
     if (!confirm(`Är du säker på att du vill ta bort artikeln "${title}"?`)) return;
 
     try {
-      const response = await fetch(`/api/admin/blog/${id}`, { method: 'DELETE' });
+      const response = await fetch(`/api/admin/blog/slug/${slug}`, { method: 'DELETE' });
       if (response.ok) {
-        setPosts(posts.filter(post => post.id !== id));
+        setPosts(posts.filter(post => post.slug !== slug));
         alert('Artikeln har tagits bort');
       } else {
         alert('Fel vid borttagning av artikel');
@@ -218,7 +218,7 @@ export default function AdminBlogPage() {
                         Redigera
                       </Link>
                       <button
-                        onClick={() => handleDeletePost(post.id, post.title)}
+                        onClick={() => handleDeletePost(post.slug, post.title)}
                         className="px-3 py-1.5 text-xs text-red-600 hover:bg-red-50 rounded transition-colors"
                       >
                         Ta bort
