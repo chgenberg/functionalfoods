@@ -1,10 +1,10 @@
 "use client";
-import { useState, useEffect, useRef } from 'react';
-import Link from 'next/link';
-import Image from 'next/image';
-import { motion, AnimatePresence } from 'framer-motion';
-import { X, ChevronDown, ArrowRight, User, LogOut, Search } from 'lucide-react';
-import { useT } from '../lib/i18n/LanguageProvider';
+import { useState, useEffect, useRef } from "react";
+import Link from "next/link";
+import Image from "next/image";
+import { motion, AnimatePresence } from "framer-motion";
+import { X, ChevronDown, ArrowRight, User, LogOut, Search } from "lucide-react";
+import { useT } from "../lib/i18n/LanguageProvider";
 
 interface MenuItem {
   label: string;
@@ -22,14 +22,14 @@ interface MobileMenuProps {
   onSearch: () => void;
 }
 
-export default function MobileMenu({ 
-  isOpen, 
-  onClose, 
-  menuItems, 
-  user, 
-  onLogin, 
+export default function MobileMenu({
+  isOpen,
+  onClose,
+  menuItems,
+  user,
+  onLogin,
   onLogout,
-  onSearch
+  onSearch,
 }: MobileMenuProps) {
   const t = useT();
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
@@ -38,24 +38,24 @@ export default function MobileMenu({
   // Handle escape key
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
+      if (e.key === "Escape") {
         onClose();
       }
     };
 
     if (isOpen) {
-      document.addEventListener('keydown', handleEscape);
-      document.body.style.overflow = 'hidden';
+      document.addEventListener("keydown", handleEscape);
+      document.body.style.overflow = "hidden";
       // Add a higher z-index to body to ensure menu appears on top
-      document.body.style.position = 'relative';
-      document.body.style.zIndex = '9997';
+      document.body.style.position = "relative";
+      document.body.style.zIndex = "9997";
     }
 
     return () => {
-      document.removeEventListener('keydown', handleEscape);
-      document.body.style.overflow = 'unset';
-      document.body.style.position = '';
-      document.body.style.zIndex = '';
+      document.removeEventListener("keydown", handleEscape);
+      document.body.style.overflow = "unset";
+      document.body.style.position = "";
+      document.body.style.zIndex = "";
     };
   }, [isOpen, onClose]);
 
@@ -64,7 +64,9 @@ export default function MobileMenu({
     if (isOpen && menuRef.current) {
       // Small delay to ensure the menu is rendered
       setTimeout(() => {
-        const firstFocusable = menuRef.current?.querySelector('button, a') as HTMLElement;
+        const firstFocusable = menuRef.current?.querySelector(
+          "button, a",
+        ) as HTMLElement;
         firstFocusable?.focus();
       }, 100);
     }
@@ -86,14 +88,14 @@ export default function MobileMenu({
   return (
     <AnimatePresence mode="wait">
       {/* Portal-like rendering with high z-index */}
-      <div className="fixed inset-0 z-[99999]" style={{ isolation: 'isolate' }}>
+      <div className="fixed inset-0 z-[99999]" style={{ isolation: "isolate" }}>
         {/* Backdrop */}
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.2 }}
-          className="absolute inset-0 bg-black/50 backdrop-blur-sm" 
+          className="absolute inset-0 bg-black/50 backdrop-blur-sm"
           onClick={onClose}
           aria-hidden="true"
         />
@@ -101,10 +103,10 @@ export default function MobileMenu({
         {/* Menu Panel */}
         <motion.div
           ref={menuRef}
-          initial={{ x: '-100%' }}
+          initial={{ x: "-100%" }}
           animate={{ x: 0 }}
-          exit={{ x: '-100%' }}
-          transition={{ type: 'spring', damping: 30, stiffness: 300 }}
+          exit={{ x: "-100%" }}
+          transition={{ type: "spring", damping: 30, stiffness: 300 }}
           className="absolute top-0 left-0 bottom-0 w-[85vw] max-w-sm bg-white shadow-2xl flex flex-col"
           role="dialog"
           aria-modal="true"
@@ -113,12 +115,12 @@ export default function MobileMenu({
           {/* Header */}
           <div className="sticky top-0 bg-white border-b border-gray-100 px-4 py-4 flex items-center justify-between z-10">
             <Link href="/" onClick={handleLinkClick}>
-              <Image 
-                src="/FF_logo.svg" 
-                alt="Functional Foods" 
-                width={140} 
-                height={56} 
-                className="h-10 w-auto" 
+              <Image
+                src="/FF_logo.svg"
+                alt="Functional Foods"
+                width={140}
+                height={56}
+                className="h-10 w-auto"
               />
             </Link>
             <button
@@ -135,68 +137,91 @@ export default function MobileMenu({
             <nav className="py-4 px-4" role="navigation">
               {/* Main menu items */}
               <div className="space-y-1">
-                {menuItems && menuItems.map((item, index) => (
-                  <motion.div 
-                    key={`${item.label}-${index}`}
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: index * 0.05 }}
-                  >
-                    {item.submenu ? (
-                      <div className="mb-1">
-                        <button
-                          onClick={() => setActiveDropdown(activeDropdown === item.label ? null : item.label)}
-                          className="w-full flex items-center justify-between px-4 py-3 text-base font-medium text-gray-900 hover:bg-gray-50 rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#014421] focus:ring-offset-2"
-                          aria-expanded={activeDropdown === item.label}
+                {menuItems &&
+                  menuItems.map((item, index) => (
+                    <motion.div
+                      key={`${item.label}-${index}`}
+                      initial={{ opacity: 0, x: -20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: index * 0.05 }}
+                    >
+                      {item.submenu ? (
+                        <div className="mb-1">
+                          <button
+                            onClick={() =>
+                              setActiveDropdown(
+                                activeDropdown === item.label
+                                  ? null
+                                  : item.label,
+                              )
+                            }
+                            className="w-full flex items-center justify-between px-4 py-3 text-base font-medium text-gray-900 hover:bg-gray-50 rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#014421] focus:ring-offset-2"
+                            aria-expanded={activeDropdown === item.label}
+                          >
+                            <span>{item.label}</span>
+                            <motion.div
+                              animate={{
+                                rotate: activeDropdown === item.label ? 180 : 0,
+                              }}
+                              transition={{ duration: 0.2 }}
+                            >
+                              <ChevronDown className="w-5 h-5 text-gray-400" />
+                            </motion.div>
+                          </button>
+                          <AnimatePresence>
+                            {activeDropdown === item.label && item.submenu && (
+                              <motion.div
+                                initial={{ height: 0, opacity: 0 }}
+                                animate={{ height: "auto", opacity: 1 }}
+                                exit={{ height: 0, opacity: 0 }}
+                                transition={{ duration: 0.2 }}
+                                className="mt-1 space-y-1 overflow-hidden"
+                              >
+                                {item.submenu.map((subItem, subIndex) => {
+                                  const isExternal =
+                                    subItem.href.startsWith("http://") ||
+                                    subItem.href.startsWith("https://");
+
+                                  return (
+                                    <motion.div
+                                      key={`${subItem.label}-${subIndex}`}
+                                      initial={{ opacity: 0, x: -10 }}
+                                      animate={{ opacity: 1, x: 0 }}
+                                      transition={{ delay: subIndex * 0.03 }}
+                                    >
+                                      <Link
+                                        href={subItem.href}
+                                        target={
+                                          isExternal ? "_blank" : undefined
+                                        }
+                                        rel={
+                                          isExternal
+                                            ? "noopener noreferrer"
+                                            : undefined
+                                        }
+                                        className="block px-4 py-2.5 pl-8 text-sm text-gray-600 hover:text-[#014421] hover:bg-gray-50 rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#014421] focus:ring-offset-2"
+                                        onClick={handleLinkClick}
+                                      >
+                                        {subItem.label}
+                                      </Link>
+                                    </motion.div>
+                                  );
+                                })}
+                              </motion.div>
+                            )}
+                          </AnimatePresence>
+                        </div>
+                      ) : (
+                        <Link
+                          href={item.href}
+                          className="block px-4 py-3 text-base font-medium text-gray-900 hover:bg-gray-50 rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#014421] focus:ring-offset-2"
+                          onClick={handleLinkClick}
                         >
                           <span>{item.label}</span>
-                          <motion.div
-                            animate={{ rotate: activeDropdown === item.label ? 180 : 0 }}
-                            transition={{ duration: 0.2 }}
-                          >
-                            <ChevronDown className="w-5 h-5 text-gray-400" />
-                          </motion.div>
-                        </button>
-                        <AnimatePresence>
-                          {activeDropdown === item.label && item.submenu && (
-                            <motion.div
-                              initial={{ height: 0, opacity: 0 }}
-                              animate={{ height: 'auto', opacity: 1 }}
-                              exit={{ height: 0, opacity: 0 }}
-                              transition={{ duration: 0.2 }}
-                              className="mt-1 space-y-1 overflow-hidden"
-                            >
-                              {item.submenu.map((subItem, subIndex) => (
-                                <motion.div
-                                  key={`${subItem.label}-${subIndex}`}
-                                  initial={{ opacity: 0, x: -10 }}
-                                  animate={{ opacity: 1, x: 0 }}
-                                  transition={{ delay: subIndex * 0.03 }}
-                                >
-                                  <Link
-                                    href={subItem.href}
-                                    className="block px-4 py-2.5 pl-8 text-sm text-gray-600 hover:text-[#014421] hover:bg-gray-50 rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#014421] focus:ring-offset-2"
-                                    onClick={handleLinkClick}
-                                  >
-                                    {subItem.label}
-                                  </Link>
-                                </motion.div>
-                              ))}
-                            </motion.div>
-                          )}
-                        </AnimatePresence>
-                      </div>
-                    ) : (
-                      <Link
-                        href={item.href}
-                        className="block px-4 py-3 text-base font-medium text-gray-900 hover:bg-gray-50 rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#014421] focus:ring-offset-2"
-                        onClick={handleLinkClick}
-                      >
-                        <span>{item.label}</span>
-                      </Link>
-                    )}
-                  </motion.div>
-                ))}
+                        </Link>
+                      )}
+                    </motion.div>
+                  ))}
               </div>
             </nav>
           </div>
@@ -206,18 +231,21 @@ export default function MobileMenu({
             {/* Search section */}
             <div className="border-t border-gray-200 p-4">
               <button
-                onClick={() => { onSearch(); onClose(); }}
+                onClick={() => {
+                  onSearch();
+                  onClose();
+                }}
                 className="w-full flex items-center justify-center gap-2 px-4 py-3 text-base font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2"
               >
                 <Search className="w-5 h-5" />
-                <span>{t('nav.search','Sök')}</span>
+                <span>{t("nav.search", "Sök")}</span>
               </button>
             </div>
 
             {/* User section */}
             <div className="border-t border-gray-200 p-4 pb-safe">
               {user ? (
-                <motion.div 
+                <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   className="space-y-3"
@@ -227,7 +255,7 @@ export default function MobileMenu({
                     className="flex items-center justify-between px-4 py-3 text-base font-medium text-white bg-[#014421] hover:bg-[#116530] rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#014421] focus:ring-offset-2"
                     onClick={handleLinkClick}
                   >
-                    <span>{t('nav.myCourses','Mitt konto')}</span>
+                    <span>{t("nav.myCourses", "Mitt konto")}</span>
                     <ArrowRight className="w-5 h-5" />
                   </Link>
                   <Link
@@ -242,7 +270,7 @@ export default function MobileMenu({
                     onClick={handleLogout}
                     className="w-full flex items-center justify-between px-4 py-3 text-base font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2"
                   >
-                    <span>{t('nav.logout','Logga ut')}</span>
+                    <span>{t("nav.logout", "Logga ut")}</span>
                     <LogOut className="w-5 h-5" />
                   </button>
                 </motion.div>
@@ -250,10 +278,13 @@ export default function MobileMenu({
                 <motion.button
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
-                  onClick={() => { onLogin(); onClose(); }}
+                  onClick={() => {
+                    onLogin();
+                    onClose();
+                  }}
                   className="w-full flex items-center justify-between px-4 py-3 text-base font-medium text-white bg-[#014421] hover:bg-[#116530] rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#014421] focus:ring-offset-2"
                 >
-                  <span>{t('nav.login','Logga in')}</span>
+                  <span>{t("nav.login", "Logga in")}</span>
                   <User className="w-5 h-5" />
                 </motion.button>
               )}
@@ -263,4 +294,4 @@ export default function MobileMenu({
       </div>
     </AnimatePresence>
   );
-} 
+}
