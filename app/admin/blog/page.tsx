@@ -60,13 +60,12 @@ export default function AdminBlogPage() {
   };
 
   const handleDeletePost = async (id: string, title: string) => {
-    const normalizedSlug = normalizeSlug(slug);
     if (!confirm(`Är du säker på att du vill ta bort artikeln "${title}"?`)) return;
 
     try {
-      const response = await fetch(`/api/admin/blog/slug/${encodeURIComponent(normalizedSlug)}`, { method: 'DELETE' });
+      const response = await fetch(`/api/admin/blog/${encodeURIComponent(id)}`, { method: 'DELETE' });
       if (response.ok) {
-        setPosts(posts.filter(post => normalizeSlug(post.slug) !== normalizedSlug));
+        setPosts(posts.filter(post => post.id !== id));
         alert('Artikeln har tagits bort');
       } else {
         alert('Fel vid borttagning av artikel');
