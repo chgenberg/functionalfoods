@@ -65,7 +65,7 @@ export default function AdminBlogPage() {
     try {
       const response = await fetch(`/api/admin/blog/${encodeURIComponent(id)}`, { method: 'DELETE' });
       if (response.ok) {
-        setPosts(posts.filter(post => post.slug !== slug));
+        setPosts(posts.filter(post => post.id !== id));
         alert('Artikeln har tagits bort');
       } else {
         alert('Fel vid borttagning av artikel');
@@ -227,7 +227,7 @@ export default function AdminBlogPage() {
                         Redigera
                       </Link>
                       <button
-                        onClick={() => handleDeletePost(post.slug, post.title)}
+                        onClick={() => handleDeletePost(post.id, post.title)}
                         className="px-3 py-1.5 text-xs text-red-600 hover:bg-red-50 rounded transition-colors"
                       >
                         Ta bort
