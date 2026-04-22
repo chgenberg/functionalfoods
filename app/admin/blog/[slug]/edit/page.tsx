@@ -30,15 +30,6 @@ export default function EditBlogPostPage() {
   const slug = Array.isArray(rawSlug) ? rawSlug[0] : rawSlug;
   const postId = searchParams.get('id');
 
-  const normalizeSlug = (value: string) => {
-    const decoded = decodeURIComponent(value || '').trim();
-    const withoutDomain = decoded.replace(/^https?:\/\/[^/]+/i, '');
-    const withoutKnownPrefix = withoutDomain
-      .replace(/^\/?kunskapsbank\/blogg\//i, '')
-      .replace(/^\/?blogg\//i, '');
-    return withoutKnownPrefix.replace(/^\/+|\/+$/g, '');
-  };
-
   useEffect(() => {
     const load = async () => {
       if (!slug) return;
@@ -46,11 +37,11 @@ export default function EditBlogPostPage() {
         setLoading(true);
         setError('');
 
-        const normalizedSlug = normalizeSlug(String(slug));
-        const endpoint = postId
-          ? `/api/admin/blog/${encodeURIComponent(postId)}`
-          : `/api/admin/blog/slug/${encodeURIComponent(normalizedSlug)}`;
-        const res = await fetch(endpoint);
+        if (!postId) {
+          throw new Error('Saknar artikel-id i URL. Gå tillbaka till blogglistan och öppna artikeln igen.');
+        }
+
+        const res = await fetch(`/api/admin/blog/${encodeURIComponent(postId)}`);
         if (!res.ok) throw new Error('Kunde inte hämta inlägget.');
         const data = await res.json();
 
@@ -79,11 +70,11 @@ export default function EditBlogPostPage() {
     setSuccess('');
 
     try {
-      const normalizedSlug = normalizeSlug(String(slug));
-      const endpoint = postId
-        ? `/api/admin/blog/${encodeURIComponent(postId)}`
-        : `/api/admin/blog/slug/${encodeURIComponent(normalizedSlug)}`;
-      const response = await fetch(endpoint, {
+      if (!postId) {
+        throw new Error('Saknar artikel-id i URL.');
+      }
+
+      const response = await fetch(`/api/admin/blog/${encodeURIComponent(postId)}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
