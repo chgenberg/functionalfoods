@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useParams } from 'next/navigation';
+import { useParams, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { ChevronLeft, Save, Loader, AlertTriangle } from 'lucide-react';
 import WysiwygEditor from '@/app/components/WysiwygEditor';
@@ -25,8 +25,10 @@ export default function EditBlogPostPage() {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const params = useParams();
+  const searchParams = useSearchParams();
   const rawSlug = params?.slug;
   const slug = Array.isArray(rawSlug) ? rawSlug[0] : rawSlug;
+  const postId = searchParams.get('id');
 
   const normalizeSlug = (value: string) => {
     const decoded = decodeURIComponent(value || '').trim();
@@ -45,7 +47,10 @@ export default function EditBlogPostPage() {
         setError('');
 
         const normalizedSlug = normalizeSlug(String(slug));
-        const res = await fetch(`/api/admin/blog/slug/${encodeURIComponent(normalizedSlug)}`);
+        const endpoint = postId
+          ? `/api/admin/blog/${encodeURIComponent(postId)}`
+          : `/api/admin/blog/slug/${encodeURIComponent(normalizedSlug)}`;
+        const res = await fetch(endpoint);
         if (!res.ok) throw new Error('Kunde inte hämta inlägget.');
         const data = await res.json();
 
@@ -65,7 +70,7 @@ export default function EditBlogPostPage() {
     };
 
     load();
-  }, [slug]);
+  }, [slug, postId]);
 
   const handleSave = async () => {
     if (!post) return;
@@ -75,7 +80,10 @@ export default function EditBlogPostPage() {
 
     try {
       const normalizedSlug = normalizeSlug(String(slug));
-      const response = await fetch(`/api/admin/blog/slug/${encodeURIComponent(normalizedSlug)}`, {
+      const endpoint = postId
+        ? `/api/admin/blog/${encodeURIComponent(postId)}`
+        : `/api/admin/blog/slug/${encodeURIComponent(normalizedSlug)}`;
+      const response = await fetch(endpoint, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
