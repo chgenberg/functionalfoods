@@ -24,6 +24,15 @@ export default function AdminBlogPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [filter, setFilter] = useState<'all' | 'published' | 'draft'>('all');
 
+  const normalizeSlug = (value: string) => {
+    const decoded = decodeURIComponent(value || '').trim();
+    const withoutDomain = decoded.replace(/^https?:\/\/[^/]+/i, '');
+    const withoutKnownPrefix = withoutDomain
+      .replace(/^\/?kunskapsbank\/blogg\//i, '')
+      .replace(/^\/?blogg\//i, '');
+    return withoutKnownPrefix.replace(/^\/+|\/+$/g, '');
+  };
+  
   useEffect(() => {
     fetchPosts();
   }, [filter]);
@@ -51,12 +60,13 @@ export default function AdminBlogPage() {
   };
 
   const handleDeletePost = async (id: string, title: string) => {
+    const normalizedSlug = normalizeSlug(slug);
     if (!confirm(`Är du säker på att du vill ta bort artikeln "${title}"?`)) return;
 
     try {
-      const response = await fetch(`/api/admin/blog/${id}`, { method: 'DELETE' });
+      const response = await fetch(`/api/admin/blog/slug/${encodeURIComponent(normalizedSlug)}`, { method: 'DELETE' });
       if (response.ok) {
-        setPosts(posts.filter(post => post.id !== id));
+        setPosts(posts.filter(post => normalizeSlug(post.slug) !== normalizedSlug));
         alert('Artikeln har tagits bort');
       } else {
         alert('Fel vid borttagning av artikel');
@@ -204,7 +214,7 @@ export default function AdminBlogPage() {
                     <div className="flex gap-2 justify-end whitespace-nowrap">
                       {post.published && (
                         <Link
-                          href={`/kunskapsbank/blogg/${post.slug}`}
+                          href={`/kunskapsbank/blogg/${normalizeSlug(post.slug)}`}
                           target="_blank"
                           className="px-3 py-1.5 text-xs bg-gray-100 text-gray-700 rounded hover:bg-gray-200 transition-colors"
                         >
@@ -212,7 +222,7 @@ export default function AdminBlogPage() {
                         </Link>
                       )}
                       <Link
-                        href={`/admin/blog/${post.slug}/edit`}
+                        href={`/admin/blog/${encodeURIComponent(normalizeSlug(post.slug))}/edit`}
                         className="px-3 py-1.5 text-xs border border-gray-300 text-gray-800 rounded hover:bg-gray-100 transition-colors"
                       >
                         Redigera
