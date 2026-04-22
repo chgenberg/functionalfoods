@@ -25,7 +25,17 @@ export default function EditBlogPostPage() {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const params = useParams();
-  const { slug } = params;
+  const rawSlug = params?.slug;
+  const slug = Array.isArray(rawSlug) ? rawSlug[0] : rawSlug;
+
+  const normalizeSlug = (value: string) => {
+    const decoded = decodeURIComponent(value || '').trim();
+    const withoutDomain = decoded.replace(/^https?:\/\/[^/]+/i, '');
+    const withoutKnownPrefix = withoutDomain
+      .replace(/^\/?kunskapsbank\/blogg\//i, '')
+      .replace(/^\/?blogg\//i, '');
+    return withoutKnownPrefix.replace(/^\/+|\/+$/g, '');
+  };
 
   useEffect(() => {
     const load = async () => {
@@ -34,7 +44,8 @@ export default function EditBlogPostPage() {
         setLoading(true);
         setError('');
 
-        const res = await fetch(`/api/admin/blog/slug/${slug}`);
+        const normalizedSlug = normalizeSlug(String(slug));
+        const res = await fetch(`/api/admin/blog/slug/${encodeURIComponent(normalizedSlug)}`);
         if (!res.ok) throw new Error('Kunde inte hämta inlägget.');
         const data = await res.json();
 
@@ -63,7 +74,8 @@ export default function EditBlogPostPage() {
     setSuccess('');
 
     try {
-      const response = await fetch(`/api/admin/blog/slug/${slug}`, {
+      const normalizedSlug = normalizeSlug(String(slug));
+      const response = await fetch(`/api/admin/blog/slug/${encodeURIComponent(normalizedSlug)}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
