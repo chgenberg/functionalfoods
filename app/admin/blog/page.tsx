@@ -222,7 +222,7 @@ export default function AdminBlogPage() {
                         </Link>
                       )}
                       <Link
-                        href={`/admin/blog/${encodeURIComponent(normalizeSlug(post.slug))}/edit`}
+                        href={`/admin/blog/${encodeURIComponent(normalizeSlug(post.slug))}/edit?id=${encodeURIComponent(post.id)}`}
                         className="px-3 py-1.5 text-xs border border-gray-300 text-gray-800 rounded hover:bg-gray-100 transition-colors"
                       >
                         Redigera
