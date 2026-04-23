@@ -18,7 +18,7 @@ export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const site = process.env.NEXT_PUBLIC_SITE_URL || 'https://functionalfoods.se';
+  const site = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.functionalfoods.se';
   const now = new Date();
 
   // Static paths
