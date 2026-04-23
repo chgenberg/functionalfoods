@@ -17,13 +17,40 @@ export interface SEOConfig {
 
 const DEFAULT_CONFIG = {
   siteName: 'Ulrika Functional Foods',
-  siteUrl: 'https://functionalfoods.se',
-  defaultImage: '/images/og-default.jpg',
+  siteUrl: process.env.NEXT_PUBLIC_SITE_URL || 'https://www.functionalfoods.se',
+  defaultImage: '/boken-banner.png',
   defaultDescription: 'Upptäck kraften i functional foods med Ulrika Davidsson. Personliga hälsoplaner, evidensbaserade kurser och recept för optimal hälsa.',
   author: 'Ulrika Davidsson',
   locale: 'sv_SE',
   alternateLocales: ['en_US', 'es_ES', 'de_DE', 'fr_FR']
 };
+
+function normalizeSiteUrl(rawSiteUrl: string): string {
+  const trimmed = rawSiteUrl.trim();
+  const withProtocol = /^https?:\/\//i.test(trimmed) ? trimmed : `https://${trimmed}`;
+
+  try {
+    const url = new URL(withProtocol);
+    url.pathname = '';
+    url.search = '';
+    url.hash = '';
+    return url.toString().replace(/\/$/, '');
+  } catch {
+    return 'https://www.functionalfoods.se';
+  }
+}
+
+function normalizePath(pathValue: string): string {
+  if (!pathValue) return '/';
+  if (pathValue.startsWith('/')) return pathValue;
+  return `/${pathValue}`;
+}
+
+function toAbsoluteUrl(baseUrl: string, pathOrUrl: string): string {
+  if (!pathOrUrl) return baseUrl;
+  if (/^https?:\/\//i.test(pathOrUrl)) return pathOrUrl;
+  return `${baseUrl}${normalizePath(pathOrUrl)}`;
+}
 
 export function generateMetadata(config: SEOConfig = {}): Metadata {
   const {
@@ -41,20 +68,18 @@ export function generateMetadata(config: SEOConfig = {}): Metadata {
     alternateLocales = DEFAULT_CONFIG.alternateLocales
   } = config;
 
+  const siteUrl = normalizeSiteUrl(DEFAULT_CONFIG.siteUrl);
+  
   const fullTitle = title 
     ? `${title} | ${DEFAULT_CONFIG.siteName}`
     : DEFAULT_CONFIG.siteName;
 
-  const fullUrl = url 
-    ? `${DEFAULT_CONFIG.siteUrl}${url}`
-    : DEFAULT_CONFIG.siteUrl;
+  const canonicalUrl = url ? toAbsoluteUrl(siteUrl, url) : './';
 
-  const fullImageUrl = image.startsWith('http') 
-    ? image 
-    : `${DEFAULT_CONFIG.siteUrl}${image}`;
+  const fullImageUrl = toAbsoluteUrl(siteUrl, image);
 
   const metadata: Metadata = {
-    metadataBase: new URL(DEFAULT_CONFIG.siteUrl),
+    metadataBase: new URL(siteUrl),
     title: fullTitle,
     description,
     keywords: keywords.length > 0 ? keywords.join(', ') : undefined,
@@ -77,7 +102,7 @@ export function generateMetadata(config: SEOConfig = {}): Metadata {
       siteName: DEFAULT_CONFIG.siteName,
       title: fullTitle,
       description,
-      url: fullUrl,
+      ...(url && { url: canonicalUrl }),
       images: [
         {
           url: fullImageUrl,
@@ -101,14 +126,16 @@ export function generateMetadata(config: SEOConfig = {}): Metadata {
       site: '@functionalfoods_se',
     },
     alternates: {
-      canonical: fullUrl,
-      languages: {
-        'sv-SE': fullUrl,
-        'en-US': fullUrl.replace('functionalfoods.se', 'functionalfoods.se/en'),
-        'es-ES': fullUrl.replace('functionalfoods.se', 'functionalfoods.se/es'),
-        'de-DE': fullUrl.replace('functionalfoods.se', 'functionalfoods.se/de'),
-        'fr-FR': fullUrl.replace('functionalfoods.se', 'functionalfoods.se/fr'),
-      },
+      canonical: canonicalUrl,
+      ...(url && {
+        languages: {
+          'sv-SE': canonicalUrl,
+          'en-US': `${siteUrl}/en${normalizePath(url)}`,
+          'es-ES': `${siteUrl}/es${normalizePath(url)}`,
+          'de-DE': `${siteUrl}/de${normalizePath(url)}`,
+          'fr-FR': `${siteUrl}/fr${normalizePath(url)}`,
+        },
+      }),
     },
     verification: {
       google: process.env.GOOGLE_SITE_VERIFICATION,
@@ -170,8 +197,8 @@ export function generateStructuredData(config: SEOConfig & {
     '@context': 'https://schema.org',
     '@type': 'Organization',
     name: DEFAULT_CONFIG.siteName,
-    url: DEFAULT_CONFIG.siteUrl,
-    logo: `${DEFAULT_CONFIG.siteUrl}/FF_logo.svg`,
+    url: normalizeSiteUrl(DEFAULT_CONFIG.siteUrl),
+    logo: `${normalizeSiteUrl(DEFAULT_CONFIG.siteUrl)}/FF_logo.svg`,
     contactPoint: {
       '@type': 'ContactPoint',
       contactType: 'customer service',
@@ -195,10 +222,10 @@ export function generateStructuredData(config: SEOConfig & {
     '@context': 'https://schema.org',
     '@type': 'WebSite',
     name: DEFAULT_CONFIG.siteName,
-    url: DEFAULT_CONFIG.siteUrl,
+    url: normalizeSiteUrl(DEFAULT_CONFIG.siteUrl),
     potentialAction: {
       '@type': 'SearchAction',
-      target: `${DEFAULT_CONFIG.siteUrl}/kunskapsbank/sok?q={search_term_string}`,
+      target: `${normalizeSiteUrl(DEFAULT_CONFIG.siteUrl)}/kunskapsbank/sok?q={search_term_string}`,
       'query-input': 'required name=search_term_string'
     },
     // LLM-friendly: explicit about site purpose
@@ -215,7 +242,7 @@ export function generateStructuredData(config: SEOConfig & {
         '@type': 'ListItem',
         position: index + 1,
         name: crumb.name,
-        item: `${DEFAULT_CONFIG.siteUrl}${crumb.url}`
+        item: toAbsoluteUrl(normalizeSiteUrl(DEFAULT_CONFIG.siteUrl), crumb.url)
       }))
     });
   }
