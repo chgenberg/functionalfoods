@@ -12,6 +12,7 @@ export const metadata = generateSEOMetadata({
     'kom igång',
   ],
   url: '/utbildning/prova-pa-vecka',
+  image: '/prova-pa/prova-pa.png',
   type: 'website',
 });
 
