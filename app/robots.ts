@@ -1,7 +1,7 @@
 import { MetadataRoute } from 'next';
 
 export default function robots(): MetadataRoute.Robots {
-  const site = process.env.NEXT_PUBLIC_SITE_URL || 'https://functionalfoods.se';
+  const site = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.functionalfoods.se';
   return {
     rules: [
       {
