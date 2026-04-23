@@ -12,6 +12,7 @@ export const metadata = generateSEOMetadata({
     'måltidsplanering',
   ],
   url: '/utbildning/functional-basics',
+  image: '/Kurser_bilder/Functional_Basics - Grunden i functional foods.jpg',
   type: 'website',
 });
 
