@@ -12,6 +12,7 @@ export const metadata = generateSEOMetadata({
     'kost',
   ],
   url: '/utbildning/functional-energy',
+  image: '/Kurser_bilder/Functional_insulin balance.jpg',
   type: 'website',
 });
 
