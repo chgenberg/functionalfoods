@@ -19,6 +19,7 @@ export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
 const inter = Inter({ subsets: ['latin'] });
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.functionalfoods.se';
 
 export const metadata = generateSEOMetadata({
   title: 'Functional Foods - Hälsa genom mat med Ulrika Davidsson',
@@ -35,7 +36,6 @@ export const metadata = generateSEOMetadata({
     'personlig hälsa',
     'evidensbaserad näring'
   ],
-  url: '/',
   type: 'website'
 });
 
@@ -82,8 +82,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               '@context': 'https://schema.org',
               '@type': 'Organization',
               name: 'Ulrika Functional Foods',
-              url: 'https://functionalfoods.se',
-              logo: 'https://functionalfoods.se/FF_logo.svg',
+              url: siteUrl,
+              logo: `${siteUrl}/FF_logo.svg`,
               contactPoint: {
                 '@type': 'ContactPoint',
                 contactType: 'customer service',
@@ -103,10 +103,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               '@context': 'https://schema.org',
               '@type': 'WebSite',
               name: 'Ulrika Functional Foods',
-              url: 'https://functionalfoods.se',
+              url: siteUrl,
               potentialAction: {
                 '@type': 'SearchAction',
-                target: 'https://functionalfoods.se/kunskapsbank/sok?q={search_term_string}',
+                target: `${siteUrl}/kunskapsbank/sok?q={search_term_string}`,
                 'query-input': 'required name=search_term_string'
               }
             })
