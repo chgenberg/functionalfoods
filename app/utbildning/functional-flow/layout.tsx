@@ -12,6 +12,7 @@ export const metadata = generateSEOMetadata({
     'hälsa',
   ],
   url: '/utbildning/functional-flow',
+  image: '/Kurser_bilder/Functional_Gut Health.jpg',
   type: 'website',
 });
 
