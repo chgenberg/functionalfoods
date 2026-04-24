@@ -4,6 +4,19 @@ import { verifyAdminAuth } from '@/app/lib/admin-auth';
 
 const prisma = new PrismaClient();
 
+function safeParseJson(value: unknown): any | null {
+  if (value == null) return null;
+  if (typeof value === 'string') {
+    try {
+      return JSON.parse(value);
+    } catch {
+      return null;
+    }
+  }
+  if (typeof value === 'object') return value;
+  return null;
+}
+
 // GET - Get page content by ID
 export async function GET(
   req: NextRequest,
@@ -24,9 +37,19 @@ export async function GET(
       });
     }
 
+    const parsed = safeParseJson(setting.value);
+    if (parsed === null) {
+      console.warn(`⚠️ Invalid JSON for page_${pageId} in siteSettings`);
+      return NextResponse.json({
+        pageId,
+        content: null,
+        message: 'Invalid saved content - using defaults'
+      });
+    }
+
     return NextResponse.json({
       pageId,
-      content: JSON.parse(setting.value),
+      content: parsed,
       updatedAt: setting.updatedAt
     });
   } catch (error) {
@@ -72,7 +95,7 @@ export async function PUT(
     return NextResponse.json({
       success: true,
       pageId,
-      content: JSON.parse(setting.value),
+      content: safeParseJson(setting.value),
       updatedAt: setting.updatedAt
     });
   } catch (error) {
