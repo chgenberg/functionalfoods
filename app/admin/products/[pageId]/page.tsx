@@ -35,6 +35,33 @@ interface PageContent {
   quote?: string;
 }
 
+function normalizePageContent(input: unknown): PageContent {
+  if (!input || typeof input !== "object") return {};
+  const raw = input as Record<string, unknown>;
+
+  const benefits = Array.isArray(raw.benefits)
+    ? raw.benefits
+        .filter((b) => b && typeof b === "object")
+        .map((b) => {
+          const item = b as Record<string, unknown>;
+          return {
+            title: String(item.title ?? ""),
+            description: String(item.description ?? ""),
+          };
+        })
+    : undefined;
+
+  const features = Array.isArray(raw.features)
+    ? raw.features.map((f) => String(f ?? ""))
+    : undefined;
+
+  return {
+    ...raw,
+    ...(features ? { features } : {}),
+    ...(benefits ? { benefits } : {}),
+  } as PageContent;
+}
+
 interface PageConfig {
   pageId: string;
   name: string;
@@ -477,7 +504,7 @@ export default function EditProductPage() {
       if (!response.ok) throw new Error("Failed to fetch page");
       const data = await response.json();
       const incoming = data?.content ?? null;
-      setContent(incoming || {});
+      setContent(normalizePageContent(incoming));
       setHasCustomContent(!!incoming);
       setLastUpdatedAt(
         data?.updatedAt ? new Date(data.updatedAt).toISOString() : null,
@@ -696,6 +723,25 @@ export default function EditProductPage() {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
         <RefreshCw className="w-8 h-8 animate-spin text-[var(--primary-green)]" />
+      </div>
+    );
+  }
+
+  if (!normalizedPageId || !config) {
+    return (
+      <div className="space-y-4">
+        <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+          <p className="text-sm text-red-700">
+            Ogiltig produktsida. Kontrollera URL och försök igen.
+          </p>
+        </div>
+        <Link
+          href="/admin/products"
+          className="inline-flex items-center gap-2 px-4 py-2 text-sm bg-white border border-[var(--border-light)] rounded-lg hover:border-[var(--primary-green)] transition-colors"
+        >
+          <ArrowLeft className="w-4 h-4" />
+          Tillbaka till produktsidor
+        </Link>
       </div>
     );
   }
