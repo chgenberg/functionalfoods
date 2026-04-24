@@ -1,6 +1,6 @@
 import { notFound } from 'next/navigation';
 import type { Metadata } from 'next';
-import { generateEbookMetadata, getEbookPageContent } from '@/app/lib/ebook-seo';
+import { generateEbookMetadata, getEbookPageContent } from '@/app/lib/ebook';
 import EbookSlugPageClient from './page.client';
 
 type Props = {

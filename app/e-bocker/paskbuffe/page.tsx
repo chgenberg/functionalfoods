@@ -1,4 +1,4 @@
-import { generateEbookMetadata } from '@/app/lib/ebook-seo';
+import { generateEbookMetadata } from '@/app/lib/ebook';
 import PaskbokenPageClient from './page.client';
 
 export async function generateMetadata() {

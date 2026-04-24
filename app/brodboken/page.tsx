@@ -1,4 +1,4 @@
-import { generateEbookMetadata } from '@/app/lib/ebook-seo';
+import { generateEbookMetadata } from '@/app/lib/ebook';
 import BrodbokenPageClient from './page.client';
 
 export async function generateMetadata() {
