@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { Edit, ExternalLink, RefreshCw, Check, AlertCircle } from 'lucide-react';
+import { Edit, ExternalLink, RefreshCw, Check, AlertCircle, Trash2 } from 'lucide-react';
 
 interface PageInfo {
   pageId: string;
@@ -21,6 +21,7 @@ export default function ProductsAdminPage() {
   const [error, setError] = useState<string | null>(null);
   const [newPageSlug, setNewPageSlug] = useState('');
   const [createError, setCreateError] = useState<string | null>(null);
+  const [deletingPageId, setDeletingPageId] = useState<string | null>(null);
 
   useEffect(() => {
     fetchPages();
@@ -61,6 +62,31 @@ export default function ProductsAdminPage() {
     }
     setCreateError(null);
     router.push(`/admin/products/${slug}`);
+  };
+
+  const handleDeletePage = async (page: PageInfo) => {
+    const confirmed = confirm(
+      `Ta bort anpassat innehåll för "${page.name}"?\n\nDetta återställer sidan till standardinnehåll.`,
+    );
+    if (!confirmed) return;
+
+    try {
+      setDeletingPageId(page.pageId);
+      const response = await fetch(`/api/admin/pages/${encodeURIComponent(page.pageId)}`, {
+        method: 'DELETE',
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to delete page content');
+      }
+
+      await fetchPages();
+    } catch (err) {
+      console.error(err);
+      setError('Kunde inte ta bort sidinnehåll');
+    } finally {
+      setDeletingPageId(null);
+    }
   };
 
   if (loading) {
@@ -176,6 +202,19 @@ export default function ProductsAdminPage() {
                     <Edit className="w-4 h-4" />
                     Redigera
                   </Link>
+                  <button
+                    onClick={() => handleDeletePage(page)}
+                    disabled={deletingPageId === page.pageId}
+                    className={`flex items-center gap-2 px-3 py-2 text-sm rounded-lg border transition-colors ${
+                      deletingPageId === page.pageId
+                        ? 'bg-gray-100 text-gray-400 border-gray-200 cursor-not-allowed'
+                        : 'bg-white text-red-600 border-red-200 hover:bg-red-50'
+                    }`}
+                    title="Ta bort anpassat innehåll"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                    {deletingPageId === page.pageId ? 'Tar bort...' : 'Ta bort'}
+                  </button>
                 </div>
               </div>
             </div>
