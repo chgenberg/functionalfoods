@@ -383,6 +383,65 @@ const PAGE_CONFIGS: Record<string, PageConfig> = {
   },
 };
 
+function getDynamicEbookConfig(pageId: string): PageConfig {
+  const humanized = pageId
+    .split("-")
+    .filter(Boolean)
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+    .join(" ");
+
+  return {
+    pageId,
+    name: `${humanized} E-bok`,
+    path: `/e-bocker/${pageId}`,
+    fields: [
+      { key: "title", label: "Rubrik", type: "text", placeholder: humanized || "Ny E-bok" },
+      {
+        key: "subtitle",
+        label: "Underrubrik",
+        type: "text",
+        placeholder: "E-bok av Ulrika Davidsson",
+      },
+      {
+        key: "description",
+        label: "Beskrivning",
+        type: "textarea",
+        placeholder: "Huvudbeskrivning av e-boken...",
+      },
+      {
+        key: "shortDescription",
+        label: "Kort beskrivning",
+        type: "textarea",
+        placeholder: "Kortare beskrivning...",
+      },
+      {
+        key: "image",
+        label: "Produktbild",
+        type: "image",
+        help: "Huvudbild för e-boken (visas på produktsidan)",
+      },
+      {
+        key: "price",
+        label: "Pris (visningstext)",
+        type: "text",
+        placeholder: "99 kr",
+      },
+      {
+        key: "features",
+        label: "Funktioner/Features",
+        type: "array",
+        placeholder: 'T.ex. "50 recept"',
+      },
+      {
+        key: "authorSection",
+        label: "Om författaren",
+        type: "textarea",
+        placeholder: "Text om Ulrika...",
+      },
+    ],
+  };
+}
+
 export default function EditProductPage() {
   const router = useRouter();
   const params = useParams();
@@ -632,27 +691,6 @@ export default function EditProductPage() {
       current.filter((_, i) => i !== index),
     );
   };
-
-  if (!config) {
-    return (
-      <div className="text-center py-12">
-        <AlertCircle className="w-12 h-12 text-red-500 mx-auto mb-4" />
-        <h2 className="text-lg font-medium text-[var(--text-primary)]">
-          Sidan hittades inte
-        </h2>
-        <p className="text-sm text-[var(--text-secondary)] mt-2">
-          Ingen konfiguration finns för sidan "{pageId}"
-        </p>
-        <Link
-          href="/admin/products"
-          className="inline-flex items-center gap-2 mt-4 text-[var(--primary-green)]"
-        >
-          <ArrowLeft className="w-4 h-4" />
-          Tillbaka till produktsidor
-        </Link>
-      </div>
-    );
-  }
 
   if (loading) {
     return (
