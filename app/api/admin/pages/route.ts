@@ -21,12 +21,28 @@ export async function GET(req: NextRequest) {
       },
     });
 
-    // Parse JSON values
-    const pages = pageSettings.map((setting) => ({
-      pageId: setting.key.replace("page_", ""),
-      content: JSON.parse(setting.value),
-      updatedAt: setting.updatedAt,
-    }));
+    // Parse JSON values safely so one bad row does not break the whole admin view
+    const pages = pageSettings
+      .map((setting) => {
+        try {
+          return {
+            pageId: setting.key.replace("page_", ""),
+            content: JSON.parse(setting.value),
+            updatedAt: setting.updatedAt,
+          };
+        } catch (parseError) {
+          console.warn(
+            `⚠️ Skipping invalid page JSON for key "${setting.key}"`,
+            parseError,
+          );
+          return null;
+        }
+      })
+      .filter(Boolean) as Array<{
+      pageId: string;
+      content: any | null;
+      updatedAt: Date | null;
+    }>;
 
     // Define known pages with defaults
     const knownPages = [
