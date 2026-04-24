@@ -28,8 +28,8 @@ export async function GET(req: NextRequest) {
       updatedAt: setting.updatedAt,
     }));
 
-    // Define available pages with defaults
-    const availablePages = [
+    // Define known pages with defaults
+    const knownPages = [
       {
         pageId: "brodboken",
         name: "Brödboken E-bok",
