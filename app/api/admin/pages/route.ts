@@ -3,6 +3,7 @@ import { PrismaClient } from "@prisma/client";
 import { verifyAdminAuth } from "@/app/lib/admin-auth";
 
 const prisma = new PrismaClient();
+
 const KNOWN_PAGES = [
   {
     pageId: "brodboken",
@@ -78,7 +79,6 @@ function emptyKnownPages() {
   }));
 }
 
-// GET - List all editable pages
 export async function GET(req: NextRequest) {
   try {
     const adminUser = await verifyAdminAuth(req);
@@ -86,8 +86,6 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    // Get all page settings (keys starting with 'page_')
-    // Fallback to known pages only if DB query fails.
     let pageSettings: Array<{
       key: string;
       value: unknown;
@@ -101,7 +99,6 @@ export async function GET(req: NextRequest) {
             startsWith: "page_",
           },
         },
-
         select: {
           key: true,
           value: true,
@@ -113,14 +110,11 @@ export async function GET(req: NextRequest) {
       return NextResponse.json(emptyKnownPages());
     }
 
-    // Parse JSON values safely so one bad row does not break the whole admin view
     const pages = pageSettings
       .map((setting) => {
         const parsed = safeParseJson(setting.value);
         if (parsed === null) {
-          console.warn(
-            `⚠️ Skipping invalid page JSON for key "${setting.key}"`,
-          );
+          console.warn(`⚠️ Skipping invalid page JSON for key "${setting.key}"`);
           return null;
         }
         return {
@@ -137,12 +131,15 @@ export async function GET(req: NextRequest) {
 
     const knownPageIds = new Set(KNOWN_PAGES.map((p) => p.pageId));
 
-    // Unknown pages (created via page_<id> but not yet in known list)
     const unknownPages = pages
-
+      .filter((p) => !knownPageIds.has(p.pageId))
+      .map((p) => ({
+        pageId: p.pageId,
+        name: `${humanize(p.pageId)} E-bok`,
+        description: `Dynamisk produktsida för /e-bocker/${p.pageId}`,
+        path: `/e-bocker/${p.pageId}`,
       }));
 
-    // Merge saved content with known + dynamic pages
     const result = [...KNOWN_PAGES, ...unknownPages].map((page) => {
       const saved = pages.find((p) => p.pageId === page.pageId);
       return {
@@ -156,9 +153,6 @@ export async function GET(req: NextRequest) {
     return NextResponse.json(result);
   } catch (error) {
     console.error("Failed to fetch pages:", error);
-    return NextResponse.json(
-      { error: "Failed to fetch pages" },
-      { status: 500 },
-    );
+    return NextResponse.json({ error: "Failed to fetch pages" }, { status: 500 });
   }
 }
