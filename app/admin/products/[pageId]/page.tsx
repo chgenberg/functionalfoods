@@ -489,7 +489,7 @@ export default function EditProductPage() {
     keyof PageContent | null
   >(null);
 
-  const config = PAGE_CONFIGS[pageId];
+  const config = PAGE_CONFIGS[pageId] || getDynamicEbookConfig(pageId);
 
   useEffect(() => {
     if (pageId) {
@@ -727,7 +727,7 @@ export default function EditProductPage() {
     );
   }
 
-  if (!normalizedPageId || !config) {
+  if (!pageIdSafe || !config) {
     return (
       <div className="space-y-4">
         <div className="bg-red-50 border border-red-200 rounded-lg p-4">
