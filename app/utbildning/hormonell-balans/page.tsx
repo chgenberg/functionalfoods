@@ -141,7 +141,7 @@ export default function HormonellBalansPage() {
     name: "Hormonell Balans",
     price: displayPriceExcl, // Pris exkl. moms
     type: "course" as const,
-    image: "/LAX_MED_SAFFRANSSAS_OCH_QUINOASALLAD.avif",
+    image: "/Hormonell_balans/hormonell_balans_kurssida.png",
     quantity: 1,
   };
 
@@ -282,7 +282,7 @@ export default function HormonellBalansPage() {
                 className={`block lg:hidden transition-opacity duration-500 ${imageLoaded ? "opacity-100" : "opacity-0"} group-hover:scale-105 transition-transform duration-300`}
               >
                 <Image
-                  src="/LAX_MED_SAFFRANSSAS_OCH_QUINOASALLAD.avif"
+                  src="/Hormonell_balans/hormonell_balans_kurssida.png"
                   alt="Hormonell Balans"
                   width={350}
                   height={350}
@@ -296,7 +296,7 @@ export default function HormonellBalansPage() {
                 className={`hidden lg:block transition-opacity duration-500 ${imageLoaded ? "opacity-100" : "opacity-0"} group-hover:scale-105 transition-transform duration-300`}
               >
                 <Image
-                  src="/LAX_MED_SAFFRANSSAS_OCH_QUINOASALLAD.avif"
+                  src="/Hormonell_balans/hormonell_balans_kurssida.png"
                   alt="Hormonell Balans"
                   width={450}
                   height={450}
