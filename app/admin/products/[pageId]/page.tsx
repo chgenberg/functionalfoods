@@ -727,7 +727,7 @@ export default function EditProductPage() {
     );
   }
 
-  if (!pageIdSafe || !config) {
+  if (!pageId || !config) {
     return (
       <div className="space-y-4">
         <div className="bg-red-50 border border-red-200 rounded-lg p-4">
