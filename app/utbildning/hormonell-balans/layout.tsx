@@ -12,7 +12,7 @@ export const metadata = generateSEOMetadata({
     'kurs',
   ],
   url: '/utbildning/hormonell-balans',
-  image: '/Hormonell_balans/hormonell_balans_kurssida.JPG',
+  image: '/Hormonell_balans/Bilder_v2/LAX_MED_SAFFRANSSAS_OCH_QUINOASALLAD.JPG',
   type: 'website',
 });
 
