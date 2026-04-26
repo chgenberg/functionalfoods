@@ -629,9 +629,9 @@ export default function EditProductPage() {
 
       const formData = new FormData();
       formData.append("file", file);
-      formData.append("type", "course");
+      formData.append("folder", "courses");
 
-      const response = await fetch("/api/admin/upload", {
+      const response = await fetch("/api/upload/image", {
         method: "POST",
         body: formData,
       });
