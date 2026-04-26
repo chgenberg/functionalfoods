@@ -12,7 +12,7 @@ export const metadata = generateSEOMetadata({
     'kurs',
   ],
   url: '/utbildning/hormonell-balans',
-  image: '/Hormonell_balans/hormonell_balans_kurssida.png',
+  image: '/public/Hormonell_balans/hormonell_balans_kurssida.png',
   type: 'website',
 });
 
