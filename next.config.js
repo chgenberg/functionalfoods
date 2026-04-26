@@ -58,7 +58,7 @@ const nextConfig = {
     ignoreDuringBuilds: true,
   },
   
-  // Ensure PDFKit is handled correctly in production
+  // Ensure PDF Kit is handled correctly in production
   serverComponentsExternalPackages: ['pdfkit'],
   
   // Stable build ID for production

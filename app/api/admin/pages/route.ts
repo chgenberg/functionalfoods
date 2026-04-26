@@ -4,7 +4,81 @@ import { verifyAdminAuth } from "@/app/lib/admin-auth";
 
 const prisma = new PrismaClient();
 
-// GET - List all editable pages
+const KNOWN_PAGES = [
+  {
+    pageId: "brodboken",
+    name: "Brödboken E-bok",
+    description: "E-boken som säljs på /brodboken",
+    path: "/brodboken",
+  },
+  {
+    pageId: "paskbuffe",
+    name: "Påskbuffé E-bok",
+    description: "E-boken som säljs på /e-bocker/paskbuffe",
+    path: "/e-bocker/paskbuffe",
+  },
+  {
+    pageId: "boken",
+    name: "Functional Foods Boken",
+    description: "Den fysiska boken på /boken",
+    path: "/boken",
+  },
+  {
+    pageId: "functional-basics",
+    name: "Functional Basics Kurs",
+    description: "Grundkursen på /utbildning/functional-basics",
+    path: "/utbildning/functional-basics",
+  },
+  {
+    pageId: "functional-flow",
+    name: "Functional Flow Kurs",
+    description: "Flow-kursen på /utbildning/functional-flow",
+    path: "/utbildning/functional-flow",
+  },
+  {
+    pageId: "functional-energy",
+    name: "Functional Energy Kurs",
+    description: "Energi-kursen på /utbildning/functional-energy",
+    path: "/utbildning/functional-energy",
+  },
+  {
+    pageId: "hormonell-balans",
+    name: "Hormonell Balans Kurs",
+    description: "Hormonkursen på /utbildning/hormonell-balans",
+    path: "/utbildning/hormonell-balans",
+  },
+];
+
+function safeParseJson(value: unknown): any | null {
+  if (value == null) return null;
+  if (typeof value === "string") {
+    try {
+      return JSON.parse(value);
+    } catch {
+      return null;
+    }
+  }
+  if (typeof value === "object") return value;
+  return null;
+}
+
+function humanize(pageId: string): string {
+  return pageId
+    .split("-")
+    .filter(Boolean)
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+    .join(" ");
+}
+
+function emptyKnownPages() {
+  return KNOWN_PAGES.map((page) => ({
+    ...page,
+    content: null,
+    updatedAt: null,
+    hasCustomContent: false,
+  }));
+}
+
 export async function GET(req: NextRequest) {
   try {
     const adminUser = await verifyAdminAuth(req);
@@ -12,70 +86,61 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    // Get all page settings (keys starting with 'page_')
-    const pageSettings = await prisma.siteSettings.findMany({
-      where: {
-        key: {
-          startsWith: "page_",
+    let pageSettings: Array<{
+      key: string;
+      value: unknown;
+      updatedAt: Date | null;
+    }> = [];
+
+    try {
+      pageSettings = await prisma.siteSettings.findMany({
+        where: {
+          key: {
+            startsWith: "page_",
+          },
         },
-      },
-    });
+        select: {
+          key: true,
+          value: true,
+          updatedAt: true,
+        },
+      });
+    } catch (dbError) {
+      console.error("Failed to query page settings:", dbError);
+      return NextResponse.json(emptyKnownPages());
+    }
 
-    // Parse JSON values
-    const pages = pageSettings.map((setting) => ({
-      pageId: setting.key.replace("page_", ""),
-      content: JSON.parse(setting.value),
-      updatedAt: setting.updatedAt,
-    }));
+    const pages = pageSettings
+      .map((setting) => {
+        const parsed = safeParseJson(setting.value);
+        if (parsed === null) {
+          console.warn(`⚠️ Skipping invalid page JSON for key "${setting.key}"`);
+          return null;
+        }
+        return {
+          pageId: setting.key.replace("page_", ""),
+          content: parsed,
+          updatedAt: setting.updatedAt,
+        };
+      })
+      .filter(Boolean) as Array<{
+      pageId: string;
+      content: any | null;
+      updatedAt: Date | null;
+    }>;
 
-    // Define available pages with defaults
-    const availablePages = [
-      {
-        pageId: "brodboken",
-        name: "Brödboken E-bok",
-        description: "E-boken som säljs på /brodboken",
-        path: "/brodboken",
-      },
-      {
-        pageId: "paskbuffe",
-        name: "Påskbuffé E-bok",
-        description: "E-boken som säljs på /e-bocker/paskbuffe",
-        path: "/e-bocker/paskbuffe",
-      },
-      {
-        pageId: "boken",
-        name: "Functional Foods Boken",
-        description: "Den fysiska boken på /boken",
-        path: "/boken",
-      },
-      {
-        pageId: "functional-basics",
-        name: "Functional Basics Kurs",
-        description: "Grundkursen på /utbildning/functional-basics",
-        path: "/utbildning/functional-basics",
-      },
-      {
-        pageId: "functional-flow",
-        name: "Functional Flow Kurs",
-        description: "Flow-kursen på /utbildning/functional-flow",
-        path: "/utbildning/functional-flow",
-      },
-      {
-        pageId: "functional-energy",
-        name: "Functional Energy Kurs",
-        description: "Energi-kursen på /utbildning/functional-energy",
-        path: "/utbildning/functional-energy",
-      },
-      {
-        pageId: "hormonell-balans",
-        name: "Hormonell Balans Kurs",
-        description: "Hormonkursen på /utbildning/hormonell-balans",
-        path: "/utbildning/hormonell-balans",
-      },
-    ];
+    const knownPageIds = new Set(KNOWN_PAGES.map((p) => p.pageId));
 
-    // Merge saved content with available pages
-    const result = availablePages.map((page) => {
+    const unknownPages = pages
+      .filter((p) => !knownPageIds.has(p.pageId))
+      .map((p) => ({
+        pageId: p.pageId,
+        name: `${humanize(p.pageId)} E-bok`,
+        description: `Dynamisk produktsida för /e-bocker/${p.pageId}`,
+        path: `/e-bocker/${p.pageId}`,
+      }));
+
+    const result = [...KNOWN_PAGES, ...unknownPages].map((page) => {
       const saved = pages.find((p) => p.pageId === page.pageId);
       return {
         ...page,
@@ -88,9 +153,6 @@ export async function GET(req: NextRequest) {
     return NextResponse.json(result);
   } catch (error) {
     console.error("Failed to fetch pages:", error);
-    return NextResponse.json(
-      { error: "Failed to fetch pages" },
-      { status: 500 },
-    );
+    return NextResponse.json({ error: "Failed to fetch pages" }, { status: 500 });
   }
 }

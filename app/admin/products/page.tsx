@@ -1,7 +1,8 @@
 "use client";
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { Edit, ExternalLink, RefreshCw, Check, AlertCircle } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { Edit, ExternalLink, RefreshCw, Check, AlertCircle, Trash2 } from 'lucide-react';
 
 interface PageInfo {
   pageId: string;
@@ -14,9 +15,13 @@ interface PageInfo {
 }
 
 export default function ProductsAdminPage() {
+  const router = useRouter();
   const [pages, setPages] = useState<PageInfo[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [newPageSlug, setNewPageSlug] = useState('');
+  const [createError, setCreateError] = useState<string | null>(null);
+  const [deletingPageId, setDeletingPageId] = useState<string | null>(null);
 
   useEffect(() => {
     fetchPages();
@@ -34,6 +39,53 @@ export default function ProductsAdminPage() {
       console.error(err);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const normalizeSlug = (value: string): string => {
+    return value
+      .toLowerCase()
+      .trim()
+      .replace(/[åä]/g, 'a')
+      .replace(/ö/g, 'o')
+      .replace(/[^a-z0-9- ]/g, '')
+      .replace(/\s+/g, '-')
+      .replace(/-+/g, '-')
+      .replace(/^-|-$/g, '');
+  };
+
+  const handleCreatePage = () => {
+    const slug = normalizeSlug(newPageSlug);
+    if (!slug) {
+      setCreateError('Ange en giltig slug, t.ex. min-nya-ebok');
+      return;
+    }
+    setCreateError(null);
+    router.push(`/admin/products/${slug}`);
+  };
+
+  const handleDeletePage = async (page: PageInfo) => {
+    const confirmed = confirm(
+      `Ta bort anpassat innehåll för "${page.name}"?\n\nDetta återställer sidan till standardinnehåll.`,
+    );
+    if (!confirmed) return;
+
+    try {
+      setDeletingPageId(page.pageId);
+      const response = await fetch(`/api/admin/pages/${encodeURIComponent(page.pageId)}`, {
+        method: 'DELETE',
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to delete page content');
+      }
+
+      await fetchPages();
+    } catch (err) {
+      console.error(err);
+      setError('Kunde inte ta bort sidinnehåll');
+    } finally {
+      setDeletingPageId(null);
     }
   };
 
@@ -67,14 +119,34 @@ export default function ProductsAdminPage() {
             Redigera text och bilder på produktsidor
           </p>
         </div>
-        <button
-          onClick={fetchPages}
-          className="flex items-center gap-2 px-4 py-2 text-sm bg-white border border-[var(--border-light)] rounded-lg hover:border-[var(--primary-green)] transition-colors"
-        >
-          <RefreshCw className="w-4 h-4" />
-          Uppdatera
-        </button>
+        <div className="flex items-center gap-2">
+          <input
+            type="text"
+            value={newPageSlug}
+            onChange={(e) => setNewPageSlug(e.target.value)}
+            placeholder="ny-produkt-slug"
+            className="px-3 py-2 text-sm border border-[var(--border-light)] rounded-lg focus:outline-none focus:border-[var(--primary-green)]"
+          />
+          <button
+            onClick={handleCreatePage}
+            className="px-4 py-2 text-sm bg-[var(--primary-green)] text-white rounded-lg hover:bg-[var(--primary-green-dark)] transition-colors"
+          >
+            Skapa
+          </button>
+          <button
+            onClick={fetchPages}
+            className="flex items-center gap-2 px-4 py-2 text-sm bg-white border border-[var(--border-light)] rounded-lg hover:border-[var(--primary-green)] transition-colors"
+          >
+            <RefreshCw className="w-4 h-4" />
+            Uppdatera
+          </button>
+        </div>
       </div>
+      {createError && (
+        <div className="bg-red-50 border border-red-200 rounded-lg p-3 text-sm text-red-700">
+          {createError}
+        </div>
+      )}
 
       {/* Info box */}
       <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
@@ -130,6 +202,19 @@ export default function ProductsAdminPage() {
                     <Edit className="w-4 h-4" />
                     Redigera
                   </Link>
+                  <button
+                    onClick={() => handleDeletePage(page)}
+                    disabled={deletingPageId === page.pageId}
+                    className={`flex items-center gap-2 px-3 py-2 text-sm rounded-lg border transition-colors ${
+                      deletingPageId === page.pageId
+                        ? 'bg-gray-100 text-gray-400 border-gray-200 cursor-not-allowed'
+                        : 'bg-white text-red-600 border-red-200 hover:bg-red-50'
+                    }`}
+                    title="Ta bort anpassat innehåll"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                    {deletingPageId === page.pageId ? 'Tar bort...' : 'Ta bort'}
+                  </button>
                 </div>
               </div>
             </div>
@@ -150,4 +235,3 @@ export default function ProductsAdminPage() {
     </div>
   );
 }
-

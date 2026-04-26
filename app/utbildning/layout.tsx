@@ -13,7 +13,6 @@ export const metadata = generateSEOMetadata({
     'onlinekurs',
     'hälsa'
   ],
-  url: '/utbildning',
   type: 'website'
 });
 

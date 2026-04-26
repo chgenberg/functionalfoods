@@ -35,6 +35,33 @@ interface PageContent {
   quote?: string;
 }
 
+function normalizePageContent(input: unknown): PageContent {
+  if (!input || typeof input !== "object") return {};
+  const raw = input as Record<string, unknown>;
+
+  const benefits = Array.isArray(raw.benefits)
+    ? raw.benefits
+        .filter((b) => b && typeof b === "object")
+        .map((b) => {
+          const item = b as Record<string, unknown>;
+          return {
+            title: String(item.title ?? ""),
+            description: String(item.description ?? ""),
+          };
+        })
+    : undefined;
+
+  const features = Array.isArray(raw.features)
+    ? raw.features.map((f) => String(f ?? ""))
+    : undefined;
+
+  return {
+    ...raw,
+    ...(features ? { features } : {}),
+    ...(benefits ? { benefits } : {}),
+  } as PageContent;
+}
+
 interface PageConfig {
   pageId: string;
   name: string;
@@ -383,6 +410,65 @@ const PAGE_CONFIGS: Record<string, PageConfig> = {
   },
 };
 
+function getDynamicEbookConfig(pageId: string): PageConfig {
+  const humanized = pageId
+    .split("-")
+    .filter(Boolean)
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+    .join(" ");
+
+  return {
+    pageId,
+    name: `${humanized} E-bok`,
+    path: `/e-bocker/${pageId}`,
+    fields: [
+      { key: "title", label: "Rubrik", type: "text", placeholder: humanized || "Ny E-bok" },
+      {
+        key: "subtitle",
+        label: "Underrubrik",
+        type: "text",
+        placeholder: "E-bok av Ulrika Davidsson",
+      },
+      {
+        key: "description",
+        label: "Beskrivning",
+        type: "textarea",
+        placeholder: "Huvudbeskrivning av e-boken...",
+      },
+      {
+        key: "shortDescription",
+        label: "Kort beskrivning",
+        type: "textarea",
+        placeholder: "Kortare beskrivning...",
+      },
+      {
+        key: "image",
+        label: "Produktbild",
+        type: "image",
+        help: "Huvudbild för e-boken (visas på produktsidan)",
+      },
+      {
+        key: "price",
+        label: "Pris (visningstext)",
+        type: "text",
+        placeholder: "99 kr",
+      },
+      {
+        key: "features",
+        label: "Funktioner/Features",
+        type: "array",
+        placeholder: 'T.ex. "50 recept"',
+      },
+      {
+        key: "authorSection",
+        label: "Om författaren",
+        type: "textarea",
+        placeholder: "Text om Ulrika...",
+      },
+    ],
+  };
+}
+
 export default function EditProductPage() {
   const router = useRouter();
   const params = useParams();
@@ -403,7 +489,7 @@ export default function EditProductPage() {
     keyof PageContent | null
   >(null);
 
-  const config = PAGE_CONFIGS[pageId];
+  const config = PAGE_CONFIGS[pageId] || getDynamicEbookConfig(pageId);
 
   useEffect(() => {
     if (pageId) {
@@ -418,7 +504,7 @@ export default function EditProductPage() {
       if (!response.ok) throw new Error("Failed to fetch page");
       const data = await response.json();
       const incoming = data?.content ?? null;
-      setContent(incoming || {});
+      setContent(normalizePageContent(incoming));
       setHasCustomContent(!!incoming);
       setLastUpdatedAt(
         data?.updatedAt ? new Date(data.updatedAt).toISOString() : null,
@@ -543,9 +629,9 @@ export default function EditProductPage() {
 
       const formData = new FormData();
       formData.append("file", file);
-      formData.append("type", "course");
+      formData.append("folder", "courses");
 
-      const response = await fetch("/api/admin/upload", {
+      const response = await fetch("/api/upload/image", {
         method: "POST",
         body: formData,
       });
@@ -633,31 +719,29 @@ export default function EditProductPage() {
     );
   };
 
-  if (!config) {
-    return (
-      <div className="text-center py-12">
-        <AlertCircle className="w-12 h-12 text-red-500 mx-auto mb-4" />
-        <h2 className="text-lg font-medium text-[var(--text-primary)]">
-          Sidan hittades inte
-        </h2>
-        <p className="text-sm text-[var(--text-secondary)] mt-2">
-          Ingen konfiguration finns för sidan "{pageId}"
-        </p>
-        <Link
-          href="/admin/products"
-          className="inline-flex items-center gap-2 mt-4 text-[var(--primary-green)]"
-        >
-          <ArrowLeft className="w-4 h-4" />
-          Tillbaka till produktsidor
-        </Link>
-      </div>
-    );
-  }
-
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
         <RefreshCw className="w-8 h-8 animate-spin text-[var(--primary-green)]" />
+      </div>
+    );
+  }
+
+  if (!pageId || !config) {
+    return (
+      <div className="space-y-4">
+        <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+          <p className="text-sm text-red-700">
+            Ogiltig produktsida. Kontrollera URL och försök igen.
+          </p>
+        </div>
+        <Link
+          href="/admin/products"
+          className="inline-flex items-center gap-2 px-4 py-2 text-sm bg-white border border-[var(--border-light)] rounded-lg hover:border-[var(--primary-green)] transition-colors"
+        >
+          <ArrowLeft className="w-4 h-4" />
+          Tillbaka till produktsidor
+        </Link>
       </div>
     );
   }
