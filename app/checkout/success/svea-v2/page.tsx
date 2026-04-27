@@ -220,11 +220,14 @@ function SveaSuccessContent() {
       item.productType === "book" ||
       id.includes("brodboken") ||
       id.includes("paskbuffe") ||
+      id.includes("sota-godsaker") ||
       name.includes("e-bok") ||
       name.includes("brodboken") ||
       name.includes("glutenfritt") ||
       name.includes("påskbuffé") ||
-      name.includes("paskbuffe")
+      name.includes("paskbuffe") ||
+      name.includes("söta godsaker") ||
+      name.includes("sota godsaker")
     );
   });
 
@@ -241,10 +244,13 @@ function SveaSuccessContent() {
       item.productType === "book" ||
       id.includes("brodboken") ||
       id.includes("paskbuffe") ||
+      id.includes("sota-godsaker") ||
       name.includes("glutenfritt") ||
       name.includes("brodboken") ||
       name.includes("påskbuffé") ||
       name.includes("paskbuffe") ||
+      name.includes("söta godsaker") ||
+      name.includes("sota godsaker") ||
       name.includes("e-bok")
     );
   });
@@ -257,6 +263,11 @@ function SveaSuccessContent() {
     ebookKey.includes("påskbuffé") ||
     ebookKey.includes("påskbuffe");
 
+  const isSotaGodsaker =
+    ebookKey.includes("sota-godsaker") ||
+    ebookKey.includes("söta godsaker") ||
+    ebookKey.includes("sota godsaker");
+
   const ebookDisplay = isPaskbuffe
     ? {
         title: "Påskbuffé – E-bok av Ulrika Davidsson",
@@ -267,19 +278,30 @@ function SveaSuccessContent() {
           "Upptäck inspirerande och hälsosamma recept till påskens alla måltider.",
         enjoyTitle: "Njut av din påskinspiration!",
       }
-    : {
-        title: "Baka Glutenfritt – E-bok av Ulrika Davidsson",
-        image: "/baka-glutenfritt.png",
-        alt: "Baka Glutenfritt E-bok",
-        subtitle: "PDF-format • 26 recept",
-        description: "Upptäck Ulrikas väg till mer hälsosam brödbakning.",
-        enjoyTitle: "Njut av att baka glutenfritt!",
-      };
+    : isSotaGodsaker
+      ? {
+          title: "Söta godsaker – E-bok av Ulrika Davidsson",
+          image: "/sota-godsaker-samlingssida.png",
+          alt: "Söta godsaker E-bok",
+          subtitle: "PDF-format • 50+ recept",
+          description:
+            "Upptäck sockerfria och glutenfria bakverk för både vardag, fika och fest.",
+          enjoyTitle: "Njut av dina söta godsaker!",
+        }
+      : {
+          title: "Baka Glutenfritt – E-bok av Ulrika Davidsson",
+          image: "/baka-glutenfritt.png",
+          alt: "Baka Glutenfritt E-bok",
+          subtitle: "PDF-format • 26 recept",
+          description: "Upptäck Ulrikas väg till mer hälsosam brödbakning.",
+          enjoyTitle: "Njut av att baka glutenfritt!",
+        };
 
   console.log("SVEA SUCCESS orderDetails:", orderDetails);
   console.log("SVEA SUCCESS purchasedEbook:", purchasedEbook);
   console.log("SVEA SUCCESS ebookKey:", ebookKey);
   console.log("SVEA SUCCESS isPaskbuffe:", isPaskbuffe);
+  console.log("SVEA SUCCESS isSotaGodsaker:", isSotaGodsaker);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-50">
