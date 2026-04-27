@@ -211,10 +211,13 @@ function CheckoutSuccessContent() {
       item.type === "book" ||
       id.includes("brodboken") ||
       id.includes("paskbuffe") ||
+      id.includes("sota-godsaker") ||
       name.includes("glutenfritt") ||
       name.includes("brodboken") ||
       name.includes("påskbuffé") ||
       name.includes("paskbuffe") ||
+      name.includes("söta godsaker") ||
+      name.includes("sota godsaker") ||
       name.includes("e-bok")
     );
   });
@@ -230,10 +233,13 @@ function CheckoutSuccessContent() {
       item.type === "book" ||
       id.includes("brodboken") ||
       id.includes("paskbuffe") ||
+      id.includes("sota-godsaker") ||
       name.includes("glutenfritt") ||
       name.includes("brodboken") ||
       name.includes("påskbuffé") ||
       name.includes("paskbuffe") ||
+      name.includes("söta godsaker") ||
+      name.includes("sota godsaker") ||
       name.includes("e-bok")
     );
   });
@@ -246,6 +252,11 @@ function CheckoutSuccessContent() {
     ebookKey.includes("påskbuffé") ||
     ebookKey.includes("påskbuffe");
 
+  const isSotaGodsaker =
+    ebookKey.includes("sota-godsaker") ||
+    ebookKey.includes("söta godsaker") ||
+    ebookKey.includes("sota godsaker");
+
   const ebookDisplay = isPaskbuffe
     ? {
         title: "Påskbuffé – E-bok",
@@ -256,14 +267,24 @@ function CheckoutSuccessContent() {
           "Upptäck inspirerande och hälsosamma recept till påskens alla måltider.",
         enjoyTitle: "Njut av din påskinspiration!",
       }
-    : {
-        title: "Baka Glutenfritt – E-bok",
-        image: "/baka-glutenfritt.png",
-        alt: "Baka Glutenfritt E-bok",
-        subtitle: "PDF-format • 26 recept",
-        description: "Upptäck Ulrikas väg till mer hälsosam brödbakning.",
-        enjoyTitle: "Njut av glutenfritt!",
-      };
+    : isSotaGodsaker
+      ? {
+          title: "Söta godsaker – E-bok",
+          image: "/sota-godsaker-samlingssida.png",
+          alt: "Söta godsaker E-bok",
+          subtitle: "PDF-format • 50+ recept",
+          description:
+            "Upptäck sockerfria och glutenfria bakverk för både vardag, fika och fest.",
+          enjoyTitle: "Njut av dina söta godsaker!",
+        }
+      : {
+          title: "Baka Glutenfritt – E-bok",
+          image: "/baka-glutenfritt.png",
+          alt: "Baka Glutenfritt E-bok",
+          subtitle: "PDF-format • 26 recept",
+          description: "Upptäck Ulrikas väg till mer hälsosam brödbakning.",
+          enjoyTitle: "Njut av glutenfritt!",
+        };
 
   // E-book only purchase - show special confirmation
   if (onlyEbooks) {
