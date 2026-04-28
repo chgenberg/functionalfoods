@@ -10,6 +10,21 @@ export default function EBockerPage() {
 
   const ebooks = [
     {
+      id: "sota-godsaker",
+      title: "Söta Godsaker",
+      description:
+        "Ulrika har samlat sina mest älskade bakverk i en inspirerande e-bok fylld av sockerfria och glutenfria favoriter. Här får du över 50 recept på allt från kakor och muffins till bullar, pajer och desserter. Alla skapade för att ge maximal smak utan onödigt socker eller gluten.",
+      href: "/e-bocker/sota-godsaker",
+      image: "/sota-godsaker-samlingssida.png",
+      price: "109 kr",
+      format: "PDF",
+      highlights: [
+        "Fria från gluten och vitt socker",
+        "Ett bättre näringsmässigt innehåll",
+        "Enkla att lyckas med i hemmaköket",
+      ],
+    },
+    {
       id: "brodboken-2026",
       title: "Baka Glutenfritt",
       description:
