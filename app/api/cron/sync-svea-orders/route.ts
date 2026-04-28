@@ -326,6 +326,14 @@ async function completeOrder(order: any, sveaOrder: any) {
         ebookId = "paskbuffe";
       }
 
+      if (
+        n.includes("söta godsaker") ||
+        n.includes("sota godsaker") ||
+        n.includes("sota-godsaker")
+      ) {
+        ebookId = "sota-godsaker";
+      }
+
       await prisma.ebookDownload.create({
         data: {
           token: downloadToken,
@@ -342,6 +350,10 @@ async function completeOrder(order: any, sveaOrder: any) {
 
       if (ebookId === "paskbuffe") {
         downloadUrl = `${baseUrl}/e-bocker/paskbuffe/ladda-ner?token=${downloadToken}`;
+      }
+
+      if (ebookId === "sota-godsaker") {
+        downloadUrl = `${baseUrl}/e-bocker/sota-godsaker/ladda-ner?token=${downloadToken}`;
       }
 
       await emailService.sendEbookDownloadEmail({
@@ -365,7 +377,11 @@ async function completeOrder(order: any, sveaOrder: any) {
           const lastName = rest.length ? rest.join(" ") : undefined;
 
           const purchaseTag =
-            ebookId === "paskbuffe" ? "Köp - Påskbuffé" : "Köp - Brödboken";
+            ebookId === "paskbuffe"
+              ? "Köp - Påskbuffé"
+              : ebookId === "sota-godsaker"
+                ? "Köp - Sötsaker"
+                : "Köp - Brödboken";
 
           await Promise.race([
             mailchimpMarketing.addSubscriber({

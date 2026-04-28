@@ -176,6 +176,61 @@ const PAGE_CONFIGS: Record<string, PageConfig> = {
       },
     ],
   },
+  "sota-godsaker": {
+    pageId: "sota-godsaker",
+    name: "Söta godsaker E-bok",
+    path: "/e-bocker/sota-godsaker",
+    fields: [
+      {
+        key: "title",
+        label: "Rubrik",
+        type: "text",
+        placeholder: "Söta godsaker",
+      },
+      {
+        key: "subtitle",
+        label: "Underrubrik",
+        type: "text",
+        placeholder: "Sockerfria & glutenfria bakverk",
+      },
+      {
+        key: "description",
+        label: "Beskrivning",
+        type: "textarea",
+        placeholder: "Huvudbeskrivning av e-boken...",
+      },
+      {
+        key: "shortDescription",
+        label: "Kort beskrivning",
+        type: "textarea",
+        placeholder: "Kortare beskrivning...",
+      },
+      {
+        key: "image",
+        label: "Produktbild",
+        type: "image",
+        help: "Huvudbild för e-boken (visas på produktsidan)",
+      },
+      {
+        key: "price",
+        label: "Pris (visningstext)",
+        type: "text",
+        placeholder: "109 kr",
+      },
+      {
+        key: "features",
+        label: "Funktioner/Features",
+        type: "array",
+        placeholder: 'T.ex. "Över 50 recept"',
+      },
+      {
+        key: "authorSection",
+        label: "Om författaren",
+        type: "textarea",
+        placeholder: "Text om Ulrika...",
+      },
+    ],
+  },
   boken: {
     pageId: "boken",
     name: "Functional Foods Boken",
@@ -422,7 +477,12 @@ function getDynamicEbookConfig(pageId: string): PageConfig {
     name: `${humanized} E-bok`,
     path: `/e-bocker/${pageId}`,
     fields: [
-      { key: "title", label: "Rubrik", type: "text", placeholder: humanized || "Ny E-bok" },
+      {
+        key: "title",
+        label: "Rubrik",
+        type: "text",
+        placeholder: humanized || "Ny E-bok",
+      },
       {
         key: "subtitle",
         label: "Underrubrik",

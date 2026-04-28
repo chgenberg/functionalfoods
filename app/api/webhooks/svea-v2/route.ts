@@ -730,7 +730,13 @@ async function handleOrderCompleted(
 
                 let ebookId = "brodboken-2026";
 
-                if (n.includes("påskbuffé") || n.includes("paskbuffe")) {
+                if (
+                  n.includes("söta godsaker") ||
+                  n.includes("sota godsaker") ||
+                  n.includes("sota-godsaker")
+                ) {
+                  ebookId = "sota-godsaker";
+                } else if (n.includes("påskbuffé") || n.includes("paskbuffe")) {
                   ebookId = "paskbuffe";
                 } else if (
                   n.includes("brodboken") ||
@@ -776,6 +782,10 @@ async function handleOrderCompleted(
 
                 if (ebookId === "paskbuffe") {
                   downloadUrl = `${baseUrl}/e-bocker/paskbuffe/ladda-ner?token=${downloadToken}`;
+                }
+
+                if (ebookId === "sota-godsaker") {
+                  downloadUrl = `${baseUrl}/e-bocker/sota-godsaker/ladda-ner?token=${downloadToken}`;
                 }
 
                 await emailService.sendEbookDownloadEmail({
@@ -828,7 +838,9 @@ async function handleOrderCompleted(
                     const purchaseTag =
                       ebookId === "paskbuffe"
                         ? "Köp - Påskbuffé"
-                        : "Köp - Brödboken";
+                        : ebookId === "sota-godsaker"
+                          ? "Köp - Sötsaker"
+                          : "Köp - Brödboken";
 
                     await Promise.race([
                       mailchimpMarketing.addSubscriber({

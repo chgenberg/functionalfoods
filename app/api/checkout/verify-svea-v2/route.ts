@@ -673,6 +673,13 @@ export async function POST(req: NextRequest) {
                   if (n.includes("påskbuffé") || n.includes("paskbuffe")) {
                     ebookId = "paskbuffe";
                   }
+                  if (
+                    n.includes("söta godsaker") ||
+                    n.includes("sota godsaker") ||
+                    n.includes("sota-godsaker")
+                  ) {
+                    ebookId = "sota-godsaker";
+                  }
 
                   await prisma.ebookDownload.create({
                     data: {
@@ -692,6 +699,9 @@ export async function POST(req: NextRequest) {
 
                   if (ebookId === "paskbuffe") {
                     downloadUrl = `${baseUrl}/e-bocker/paskbuffe/ladda-ner?token=${downloadToken}`;
+                  }
+                  if (ebookId === "sota-godsaker") {
+                    downloadUrl = `${baseUrl}/e-bocker/sota-godsaker/ladda-ner?token=${downloadToken}`;
                   }
 
                   await emailService.sendEbookDownloadEmail({

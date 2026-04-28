@@ -64,6 +64,10 @@ export async function POST(request: NextRequest) {
       downloadPath = "/paskbuffe-ulrika-davidsson.pdf";
     }
 
+    if (downloadToken.ebookId === "sota-godsaker") {
+      downloadPath = "/sota-godsaker-ulrika-davidsson.pdf";
+    }
+
     if (!downloadPath) {
       return NextResponse.json(
         { valid: false, error: "E-bok kunde inte hittas" },

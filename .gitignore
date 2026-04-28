@@ -91,6 +91,11 @@ public/**/**.pdf
 *.docx
 *.pdf
 
+
+
+# Tillåt specifika e-boks-pdf:er i public
+!public/sota-godsaker-ulrika-davidsson.pdf
+
 # Stora mediafiler över 50MB
 *.mp4
 *.mov

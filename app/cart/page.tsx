@@ -39,6 +39,7 @@ const getItemImage = (item: {
 }): string => {
   if (item.id === "brodboken-2026") return "/baka-glutenfritt-square.png";
   if (item.id === "paskbuffe") return "/paskbuffe-square.jpg";
+  if (item.id === "sota-godsaker") return "/sota-godsaker-square.png";
 
   if (item.image) return item.image;
   if (courseImages[item.id]) return courseImages[item.id];

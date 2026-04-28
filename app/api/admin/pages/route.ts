@@ -18,6 +18,12 @@ const KNOWN_PAGES = [
     path: "/e-bocker/paskbuffe",
   },
   {
+    pageId: "sota-godsaker",
+    name: "Söta godsaker E-bok",
+    description: "E-boken som säljs på /e-bocker/sota-godsaker",
+    path: "/e-bocker/sota-godsaker",
+  },
+  {
     pageId: "boken",
     name: "Functional Foods Boken",
     description: "Den fysiska boken på /boken",
@@ -114,7 +120,9 @@ export async function GET(req: NextRequest) {
       .map((setting) => {
         const parsed = safeParseJson(setting.value);
         if (parsed === null) {
-          console.warn(`⚠️ Skipping invalid page JSON for key "${setting.key}"`);
+          console.warn(
+            `⚠️ Skipping invalid page JSON for key "${setting.key}"`,
+          );
           return null;
         }
         return {
@@ -153,6 +161,9 @@ export async function GET(req: NextRequest) {
     return NextResponse.json(result);
   } catch (error) {
     console.error("Failed to fetch pages:", error);
-    return NextResponse.json({ error: "Failed to fetch pages" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Failed to fetch pages" },
+      { status: 500 },
+    );
   }
 }

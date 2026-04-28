@@ -1,12 +1,14 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { resolveModel, chatWithFallback } from '@/app/lib/ai';
-import OpenAI from 'openai';
-import { prisma } from '@/app/lib/database';
-import jwt from 'jsonwebtoken';
+import { NextRequest, NextResponse } from "next/server";
+import { resolveModel, chatWithFallback } from "@/app/lib/ai";
+import OpenAI from "openai";
+import { prisma } from "@/app/lib/database";
+import jwt from "jsonwebtoken";
 // Create OpenAI client only if API key is available
-const openai = process.env.OPENAI_API_KEY ? new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-}) : null;
+const openai = process.env.OPENAI_API_KEY
+  ? new OpenAI({
+      apiKey: process.env.OPENAI_API_KEY,
+    })
+  : null;
 
 // Simple per-IP rate limiter (best effort). Consider Upstash for production.
 const RL_WINDOW_MS = 60_000;
@@ -17,7 +19,10 @@ function rateLimited(ip: string): boolean {
   const start = now - RL_WINDOW_MS;
   const arr = rlMap.get(ip) || [];
   const recent = arr.filter((t) => t > start);
-  if (recent.length >= RL_MAX) { rlMap.set(ip, recent); return true; }
+  if (recent.length >= RL_MAX) {
+    rlMap.set(ip, recent);
+    return true;
+  }
   recent.push(now);
   rlMap.set(ip, recent);
   return false;
@@ -26,12 +31,16 @@ function rateLimited(ip: string): boolean {
 function getUserIdFromToken(token: string) {
   const JWT_SECRET = process.env.JWT_SECRET;
   if (!JWT_SECRET) {
-    throw new Error('JWT_SECRET is not configured');
+    throw new Error("JWT_SECRET is not configured");
   }
-  
+
   try {
     const decoded = jwt.verify(token, JWT_SECRET);
-    if (typeof decoded === 'object' && decoded !== null && 'userId' in decoded) {
+    if (
+      typeof decoded === "object" &&
+      decoded !== null &&
+      "userId" in decoded
+    ) {
       return decoded.userId as string;
     }
     return null;
@@ -43,39 +52,82 @@ function getUserIdFromToken(token: string) {
 // Läs in kursinformation
 async function getCourseInfo() {
   try {
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
-    const [basicsResponse, flowResponse, energyResponse, balansResponse, breadbookResponse, paskbuffeResponse] = await Promise.all([
-      fetch(`${baseUrl}/functionalbasics.txt`, { cache: 'no-store' }),
-      fetch(`${baseUrl}/functionalflow.txt`, { cache: 'no-store' }),
-      fetch(`${baseUrl}/functionalenergy.txt`, { cache: 'no-store' }),
-      fetch(`${baseUrl}/hormonellbalans.txt`, { cache: 'no-store' }),
-      fetch(`${baseUrl}/baka-glutenfritt.txt`, { cache: 'no-store' }),
-      fetch(`${baseUrl}/paskbuffe.txt`, { cache: 'no-store' })
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
+    const [
+      basicsResponse,
+      flowResponse,
+      energyResponse,
+      balansResponse,
+      breadbookResponse,
+      paskbuffeResponse,
+      sotaGodsakerResponse,
+    ] = await Promise.all([
+      fetch(`${baseUrl}/functionalbasics.txt`, { cache: "no-store" }),
+      fetch(`${baseUrl}/functionalflow.txt`, { cache: "no-store" }),
+      fetch(`${baseUrl}/functionalenergy.txt`, { cache: "no-store" }),
+      fetch(`${baseUrl}/hormonellbalans.txt`, { cache: "no-store" }),
+      fetch(`${baseUrl}/baka-glutenfritt.txt`, { cache: "no-store" }),
+      fetch(`${baseUrl}/paskbuffe.txt`, { cache: "no-store" }),
+      fetch(`${baseUrl}/sota-godsaker.txt`, { cache: "no-store" }),
     ]);
-    
-    if (!basicsResponse.ok || !flowResponse.ok || !energyResponse.ok || !balansResponse.ok || !breadbookResponse.ok || !paskbuffeResponse.ok) {
-      console.error('Failed to load course info:', {
+
+    if (
+      !basicsResponse.ok ||
+      !flowResponse.ok ||
+      !energyResponse.ok ||
+      !balansResponse.ok ||
+      !breadbookResponse.ok ||
+      !paskbuffeResponse.ok ||
+      !sotaGodsakerResponse.ok
+    ) {
+      console.error("Failed to load course info:", {
         basics: basicsResponse.status,
         flow: flowResponse.status,
         energy: energyResponse.status,
         balans: balansResponse.status,
         breadbook: breadbookResponse.status,
-        paskbuffe: paskbuffeResponse.status
+        paskbuffe: paskbuffeResponse.status,
+        sotaGodsaker: sotaGodsakerResponse.status,
       });
-      return { basicsText: '', flowText: '', energyText: '', balansText: '', breadbookText: '', paskbuffeText: '' };
+      return {
+        basicsText: "",
+        flowText: "",
+        energyText: "",
+        balansText: "",
+        breadbookText: "",
+        paskbuffeText: "",
+        sotaGodsakerText: "",
+      };
     }
-    
+
     const basicsText = await basicsResponse.text();
     const flowText = await flowResponse.text();
     const energyText = await energyResponse.text();
     const balansText = await balansResponse.text();
     const breadbookText = await breadbookResponse.text();
     const paskbuffeText = await paskbuffeResponse.text();
-    
-    return { basicsText, flowText, energyText, balansText, breadbookText, paskbuffeText };
+    const sotaGodsakerText = await sotaGodsakerResponse.text();
+
+    return {
+      basicsText,
+      flowText,
+      energyText,
+      balansText,
+      breadbookText,
+      paskbuffeText,
+      sotaGodsakerText,
+    };
   } catch (error) {
-    console.error('Error loading course info:', error);
-    return { basicsText: '', flowText: '', energyText: '', balansText: '', breakbookText: '', paskbuffeText: '' };
+    console.error("Error loading course info:", error);
+    return {
+      basicsText: "",
+      flowText: "",
+      energyText: "",
+      balansText: "",
+      breakbookText: "",
+      paskbuffeText: "",
+      sotaGodsakerText: "",
+    };
   }
 }
 
@@ -84,33 +136,33 @@ async function getRecipesAndRawMaterials() {
   try {
     const [recipes, rawMaterials] = await prisma.$transaction([
       prisma.recipe.findMany({
-        where: { 
-          status: 'PUBLISHED',
-          isPremium: false // Endast gratis recept för allmän chattbot
+        where: {
+          status: "PUBLISHED",
+          isPremium: false, // Endast gratis recept för allmän chattbot
         },
-                  select: {
-            id: true,
-            title: true,
-            excerpt: true,
-            ingredients: true,
-            difficulty: true,
-            slug: true
-          },
-        take: 20 // Top 20 populära recept
+        select: {
+          id: true,
+          title: true,
+          excerpt: true,
+          ingredients: true,
+          difficulty: true,
+          slug: true,
+        },
+        take: 20, // Top 20 populära recept
       }),
       prisma.rawMaterial.findMany({
         select: {
           id: true,
           name: true,
-          description: true
+          description: true,
         },
-        take: 50 // Top 50 råvaror
-      })
+        take: 50, // Top 50 råvaror
+      }),
     ]);
 
     return { recipes, rawMaterials };
   } catch (error) {
-    console.error('Error loading recipes and raw materials:', error);
+    console.error("Error loading recipes and raw materials:", error);
     return { recipes: [], rawMaterials: [] };
   }
 }
@@ -118,104 +170,135 @@ async function getRecipesAndRawMaterials() {
 // Konvertera text till HTML med korrekt formatering och styckeindelning
 function formatToHtml(text: string): string {
   // Normalisera radbrytningar och dela upp i stycken
-  let normalizedText = text.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
-  
+  let normalizedText = text.replace(/\r\n/g, "\n").replace(/\r/g, "\n");
+
   // Ta bort markdown-rubriker (###, ##, #) och ersätt med fetstil
-  normalizedText = normalizedText.replace(/^#{1,6}\s*(.+)/gm, '**$1**');
-  
+  normalizedText = normalizedText.replace(/^#{1,6}\s*(.+)/gm, "**$1**");
+
   // Fixa felaktiga länkar från AI:n - ta bort markdown-länkar som pekar på fel domän
-  normalizedText = normalizedText.replace(/\[([^\]]+)\]\(https?:\/\/[^)]+\)/g, '$1');
-  
+  normalizedText = normalizedText.replace(
+    /\[([^\]]+)\]\(https?:\/\/[^)]+\)/g,
+    "$1",
+  );
+
   // Ersätt rätt länkformat för våra recept
-  normalizedText = normalizedText.replace(/\/kunskapsbank\/recept\/([a-zA-Z0-9-]+)/g, 
-    '<a href="/kunskapsbank/recept/$1" class="text-accent hover:text-accent-hover underline">$1-receptet</a>');
-  
+  normalizedText = normalizedText.replace(
+    /\/kunskapsbank\/recept\/([a-zA-Z0-9-]+)/g,
+    '<a href="/kunskapsbank/recept/$1" class="text-accent hover:text-accent-hover underline">$1-receptet</a>',
+  );
+
   // Ersätt länkformat för råvaror
-  normalizedText = normalizedText.replace(/\/kunskapsbank\/ingredienser/g, 
-    '<a href="/kunskapsbank/ingredienser" class="text-accent hover:text-accent-hover underline">vår råvarudatabas</a>');
-  
+  normalizedText = normalizedText.replace(
+    /\/kunskapsbank\/ingredienser/g,
+    '<a href="/kunskapsbank/ingredienser" class="text-accent hover:text-accent-hover underline">vår råvarudatabas</a>',
+  );
+
   // Dela upp i stycken baserat på dubbla radbrytningar ELLER enkla radbrytningar följt av stor bokstav
   const paragraphs = normalizedText.split(/\n\s*\n|\n(?=[A-ZÅÄÖ])/);
-  
-  const htmlParagraphs = paragraphs.map(paragraph => {
-    if (!paragraph.trim()) return '';
-    
-    let formattedParagraph = paragraph.trim();
-    
-    // Konvertera **text** till <strong>text</strong>
-    formattedParagraph = formattedParagraph.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
-    
-    // Konvertera *text* till <em>text</em>
-    formattedParagraph = formattedParagraph.replace(/\*(.*?)\*/g, '<em>$1</em>');
-    
-    // Hantera listor som börjar med - eller •
-    if (formattedParagraph.includes('\n-') || formattedParagraph.includes('\n•')) {
-      const lines = formattedParagraph.split('\n');
-      let listItems = [] as string[];
-      let regularText = [] as string[];
-      
-      for (const line of lines) {
-        if (line.trim().startsWith('-') || line.trim().startsWith('•')) {
-          listItems.push(`<li>${line.trim().substring(1).trim()}</li>`);
-        } else if (listItems.length > 0) {
-          // Avsluta listan och börja ny text
-          regularText.push(`<ul class="list-disc ml-4 mb-2">${listItems.join('')}</ul>`);
-          listItems = [];
-          if (line.trim()) regularText.push(`<p class="mb-3">${line.trim()}</p>`);
-        } else {
-          if (line.trim()) regularText.push(line.trim());
+
+  const htmlParagraphs = paragraphs
+    .map((paragraph) => {
+      if (!paragraph.trim()) return "";
+
+      let formattedParagraph = paragraph.trim();
+
+      // Konvertera **text** till <strong>text</strong>
+      formattedParagraph = formattedParagraph.replace(
+        /\*\*(.*?)\*\*/g,
+        "<strong>$1</strong>",
+      );
+
+      // Konvertera *text* till <em>text</em>
+      formattedParagraph = formattedParagraph.replace(
+        /\*(.*?)\*/g,
+        "<em>$1</em>",
+      );
+
+      // Hantera listor som börjar med - eller •
+      if (
+        formattedParagraph.includes("\n-") ||
+        formattedParagraph.includes("\n•")
+      ) {
+        const lines = formattedParagraph.split("\n");
+        let listItems = [] as string[];
+        let regularText = [] as string[];
+
+        for (const line of lines) {
+          if (line.trim().startsWith("-") || line.trim().startsWith("•")) {
+            listItems.push(`<li>${line.trim().substring(1).trim()}</li>`);
+          } else if (listItems.length > 0) {
+            // Avsluta listan och börja ny text
+            regularText.push(
+              `<ul class="list-disc ml-4 mb-2">${listItems.join("")}</ul>`,
+            );
+            listItems = [];
+            if (line.trim())
+              regularText.push(`<p class="mb-3">${line.trim()}</p>`);
+          } else {
+            if (line.trim()) regularText.push(line.trim());
+          }
         }
+
+        // Lägg till eventuell kvarvarande lista
+        if (listItems.length > 0) {
+          regularText.push(
+            `<ul class="list-disc ml-4 mb-2">${listItems.join("")}</ul>`,
+          );
+        }
+
+        return regularText.join("");
       }
-      
-      // Lägg till eventuell kvarvarande lista
-      if (listItems.length > 0) {
-        regularText.push(`<ul class="list-disc ml-4 mb-2">${listItems.join('')}</ul>`);
-      }
-      
-      return regularText.join('');
-    }
-    
-    // Lägg till CSS-klasser för bättre spacing
-    return `<p class="mb-3">${formattedParagraph}</p>`;
-  }).filter(p => p);
-  
-  return htmlParagraphs.join('');
+
+      // Lägg till CSS-klasser för bättre spacing
+      return `<p class="mb-3">${formattedParagraph}</p>`;
+    })
+    .filter((p) => p);
+
+  return htmlParagraphs.join("");
 }
 
 export async function POST(request: NextRequest) {
   if (!openai || !process.env.OPENAI_API_KEY) {
-    console.error('Missing OPENAI_API_KEY');
+    console.error("Missing OPENAI_API_KEY");
     return NextResponse.json(
       { message: "<p>Konfigurationsfel. Vänligen kontakta support.</p>" },
-      { status: 500, headers: { 'Cache-Control': 'no-store' } }
+      { status: 500, headers: { "Cache-Control": "no-store" } },
     );
   }
 
   try {
-    const ip = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || 'unknown';
+    const ip =
+      request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
+      "unknown";
     if (rateLimited(ip)) {
-      return NextResponse.json({ message: '<p>För många förfrågningar, försök igen senare.</p>' }, { status: 429, headers: { 'Retry-After': '60', 'Cache-Control': 'no-store' } });
+      return NextResponse.json(
+        { message: "<p>För många förfrågningar, försök igen senare.</p>" },
+        {
+          status: 429,
+          headers: { "Retry-After": "60", "Cache-Control": "no-store" },
+        },
+      );
     }
 
     const { message, locale } = await request.json();
-    
-    if (!message || typeof message !== 'string') {
+
+    if (!message || typeof message !== "string") {
       return NextResponse.json(
         { message: "<p>Ogiltig förfrågan. Vänligen försök igen.</p>" },
-        { status: 400, headers: { 'Cache-Control': 'no-store' } }
+        { status: 400, headers: { "Cache-Control": "no-store" } },
       );
     }
 
     // Hämta användare från token
-    const authorization = request.headers.get('authorization');
+    const authorization = request.headers.get("authorization");
     let userId = null as string | null;
     let user: any = null;
-    let userContext = '';
+    let userContext = "";
 
-    if (authorization?.startsWith('Bearer ')) {
+    if (authorization?.startsWith("Bearer ")) {
       const token = authorization.substring(7);
       userId = getUserIdFromToken(token);
-      
+
       if (userId) {
         try {
           // Hämta användarens fullständiga profil
@@ -223,20 +306,20 @@ export async function POST(request: NextRequest) {
             where: { id: userId },
             include: {
               quizResults: {
-                orderBy: { completedAt: 'desc' },
-                take: 1 // Senaste quiz-resultatet
+                orderBy: { completedAt: "desc" },
+                take: 1, // Senaste quiz-resultatet
               },
               healthProfile: true,
               symptomAnalyses: {
-                orderBy: { id: 'desc' },
-                take: 3 // Senaste 3 symptomanalyserna
+                orderBy: { id: "desc" },
+                take: 3, // Senaste 3 symptomanalyserna
               },
               chatMessages: {
-                orderBy: { id: 'desc' },
-                take: 5 // Senaste 5 chat-meddelandena för kontext
+                orderBy: { id: "desc" },
+                take: 5, // Senaste 5 chat-meddelandena för kontext
               },
-              courses: true
-            }
+              courses: true,
+            },
           });
 
           if (user) {
@@ -245,16 +328,16 @@ export async function POST(request: NextRequest) {
 PERSONLIG PROFIL FÖR ${user.name || user.email}:
 
 GRUNDINFO:
-- Namn: ${user.name || 'Ej angivet'}
+- Namn: ${user.name || "Ej angivet"}
 - E-post: ${user.email}
-- Registrerad: ${user.createdAt.toLocaleDateString('sv-SE')}
+- Registrerad: ${user.createdAt.toLocaleDateString("sv-SE")}
 
 `;
 
             // Lägg till quiz-resultat
             if (user.quizResults.length > 0) {
               const latestQuiz = user.quizResults[0];
-              userContext += `SENASTE HÄLSOQUIZ (${latestQuiz.createdAt.toLocaleDateString('sv-SE')}):
+              userContext += `SENASTE HÄLSOQUIZ (${latestQuiz.createdAt.toLocaleDateString("sv-SE")}):
 - Total hälsopoäng: ${latestQuiz.healthScore}/100
 - Energi: ${latestQuiz.energyScore}/10
 - Sömn: ${latestQuiz.sleepScore}/10  
@@ -263,8 +346,11 @@ GRUNDINFO:
 - Motion: ${latestQuiz.exerciseScore}/10
 
 QUIZ-RESULTAT SAMMANFATTNING:
-${typeof latestQuiz.results === 'object' && latestQuiz.results ? 
-  `Profil: ${(latestQuiz.results as any).profile || 'Ej tillgänglig'}` : 'Ej tillgänglig'}
+${
+  typeof latestQuiz.results === "object" && latestQuiz.results
+    ? `Profil: ${(latestQuiz.results as any).profile || "Ej tillgänglig"}`
+    : "Ej tillgänglig"
+}
 
 `;
             }
@@ -273,15 +359,15 @@ ${typeof latestQuiz.results === 'object' && latestQuiz.results ?
             if (user.healthProfile) {
               const profile = user.healthProfile;
               userContext += `HÄLSOPROFIL:
-- Ålder: ${profile.age || 'Ej angiven'}
-- Kön: ${profile.gender || 'Ej angivet'}
-- Aktivitetsnivå: ${profile.activityLevel || 'Ej angiven'}
-- Kostbegränsningar: ${profile.dietaryRestrictions || 'Inga'}
-- Hälsomål: ${profile.healthGoals ? JSON.stringify(profile.healthGoals) : 'Ej angivna'}
-- Nuvarande symptom: ${profile.currentSymptoms ? JSON.stringify(profile.currentSymptoms) : 'Inga'}
-- Mediciner: ${profile.medications ? JSON.stringify(profile.medications) : 'Inga'}
-- Kosttillskott: ${profile.supplements ? JSON.stringify(profile.supplements) : 'Inga'}
-- Allergier: ${profile.allergies ? JSON.stringify(profile.allergies) : 'Inga'}
+- Ålder: ${profile.age || "Ej angiven"}
+- Kön: ${profile.gender || "Ej angivet"}
+- Aktivitetsnivå: ${profile.activityLevel || "Ej angiven"}
+- Kostbegränsningar: ${profile.dietaryRestrictions || "Inga"}
+- Hälsomål: ${profile.healthGoals ? JSON.stringify(profile.healthGoals) : "Ej angivna"}
+- Nuvarande symptom: ${profile.currentSymptoms ? JSON.stringify(profile.currentSymptoms) : "Inga"}
+- Mediciner: ${profile.medications ? JSON.stringify(profile.medications) : "Inga"}
+- Kosttillskott: ${profile.supplements ? JSON.stringify(profile.supplements) : "Inga"}
+- Allergier: ${profile.allergies ? JSON.stringify(profile.allergies) : "Inga"}
 
 `;
             }
@@ -289,9 +375,12 @@ ${typeof latestQuiz.results === 'object' && latestQuiz.results ?
             // Lägg till symptomanalyser
             if (user.symptomAnalyses.length > 0) {
               userContext += `TIDIGARE SYMPTOMANALYSER:
-${user.symptomAnalyses.map((analysis: any, index: number) => 
-  `${index + 1}. ${analysis.bodyPart} (${analysis.createdAt.toLocaleDateString('sv-SE')}): ${analysis.description}`
-).join('\n')}
+${user.symptomAnalyses
+  .map(
+    (analysis: any, index: number) =>
+      `${index + 1}. ${analysis.bodyPart} (${analysis.createdAt.toLocaleDateString("sv-SE")}): ${analysis.description}`,
+  )
+  .join("\n")}
 
 `;
             }
@@ -299,9 +388,9 @@ ${user.symptomAnalyses.map((analysis: any, index: number) =>
             // Lägg till kurser
             if (user.courses.length > 0) {
               userContext += `KURSER:
-${user.courses.map((course: any) => 
-  `- ${course.title} (Progress: ${course.progress}%)`
-).join('\n')}
+${user.courses
+  .map((course: any) => `- ${course.title} (Progress: ${course.progress}%)`)
+  .join("\n")}
 
 `;
             }
@@ -309,27 +398,47 @@ ${user.courses.map((course: any) =>
             // Lägg till tidigare chat-kontext
             if (user.chatMessages.length > 0) {
               userContext += `TIDIGARE CHAT-KONVERSATIONER:
-${user.chatMessages.map((chat: any) => 
-  `Fråga: ${chat.message}\nSvar: ${chat.response.substring(0, 200)}...`
-).join('\n\n')}
+${user.chatMessages
+  .map(
+    (chat: any) =>
+      `Fråga: ${chat.message}\nSvar: ${chat.response.substring(0, 200)}...`,
+  )
+  .join("\n\n")}
 
 `;
             }
           }
         } catch (dbError) {
-          console.error('Failed to fetch user data:', dbError);
+          console.error("Failed to fetch user data:", dbError);
         }
       }
     }
-    
-    // Hämta kursinformation och databas-data
-    const { basicsText, flowText, energyText, balansText, breadbookText, paskbuffeText } = await getCourseInfo();
-    const { recipes, rawMaterials } = await getRecipesAndRawMaterials();
-    
-    const targetLang = locale === 'en' ? 'engelska' : locale === 'es' ? 'spanska' : locale === 'de' ? 'tyska' : locale === 'fr' ? 'franska' : 'svenska';
-    const systemPrompt = `Du är Ulrika AI:sson, en vänlig och kunnig AI-assistent för Functional Foods.${userContext ? ` Du chattar nu med en registrerad användare.` : ' Du chattar med en gäst.'}
 
-${userContext || ''}
+    // Hämta kursinformation och databas-data
+    const {
+      basicsText,
+      flowText,
+      energyText,
+      balansText,
+      breadbookText,
+      paskbuffeText,
+      sotaGodsakerText,
+    } = await getCourseInfo();
+    const { recipes, rawMaterials } = await getRecipesAndRawMaterials();
+
+    const targetLang =
+      locale === "en"
+        ? "engelska"
+        : locale === "es"
+          ? "spanska"
+          : locale === "de"
+            ? "tyska"
+            : locale === "fr"
+              ? "franska"
+              : "svenska";
+    const systemPrompt = `Du är Ulrika AI:sson, en vänlig och kunnig AI-assistent för Functional Foods.${userContext ? ` Du chattar nu med en registrerad användare.` : " Du chattar med en gäst."}
+
+${userContext || ""}
 
 Du har djup kunskap om:
 - Functional foods och hur mat kan användas som medicin
@@ -337,7 +446,7 @@ Du har djup kunskap om:
 - Recept och matlagning för optimal hälsa
 - Longevity och livsstilsfaktorer
 - Våra kurser: Functional Basics, Functional Gut Health/Flow, Functional Insulin Balance / Energy och Hormonell Balans
-- Våra e-böcker: Baka Glutenfritt och Påskbuffé
+- Våra e-böcker: Baka Glutenfritt, Påskbuffé och Söta godsaker
 - Funktionella råvaror och deras hälsofördelar
 
 Kursinformation:
@@ -347,22 +456,31 @@ Functional Insulin Balance/Energy: ${energyText.substring(0, 500)}...
 Hormonell Balans: ${balansText.substring(0, 500)}...
 Baka Glutenfritt: ${breadbookText.substring(0, 500)}...
 Påskbuffé: ${paskbuffeText.substring(0, 500)}...
+Söta godsaker: ${sotaGodsakerText.substring(0, 500)}...
 
 VÅRA RECEPT (${recipes.length} tillgängliga):
-${recipes.slice(0, 10).map((recipe: any) => 
-  `- ${recipe.title}: ${recipe.excerpt || 'Hälsosam och näringsrik'} (Svårighet: ${recipe.difficulty || 'Medium'})`
-).join('\n')}
+${recipes
+  .slice(0, 10)
+  .map(
+    (recipe: any) =>
+      `- ${recipe.title}: ${recipe.excerpt || "Hälsosam och näringsrik"} (Svårighet: ${recipe.difficulty || "Medium"})`,
+  )
+  .join("\n")}
 
 FUNKTIONELLA RÅVAROR (${rawMaterials.length} tillgängliga):
-${rawMaterials.slice(0, 20).map((material: any) => 
-  `- ${material.name}: ${material.description ? material.description.substring(0, 100) + '...' : 'Näringsrik råvara'}`
-).join('\n')}
+${rawMaterials
+  .slice(0, 20)
+  .map(
+    (material: any) =>
+      `- ${material.name}: ${material.description ? material.description.substring(0, 100) + "..." : "Näringsrik råvara"}`,
+  )
+  .join("\n")}
 
 VIKTIGA REGLER:
 1. Svara ALLTID på ${targetLang}
 2. Var vänlig, professionell och hjälpsam
-3. ${userContext ? 'Använd användarens personliga information för att ge skräddarsydda råd' : 'Ge allmänna råd eftersom användaren inte är inloggad'}
-4. ${userContext ? 'Referera till användarens quiz-resultat, hälsoprofil och tidigare analyser när det är relevant' : ''}
+3. ${userContext ? "Använd användarens personliga information för att ge skräddarsydda råd" : "Ge allmänna råd eftersom användaren inte är inloggad"}
+4. ${userContext ? "Referera till användarens quiz-resultat, hälsoprofil och tidigare analyser när det är relevant" : ""}
 5. Om någon frågar om något som INTE handlar om hälsa, functional foods, nutrition, recept eller longevity, svara vänligt att du är specialiserad på dessa områden
 6. VIKTIGT: AVSLUTA ALDRIG MITT I EN MENING - se till att alla meningar är kompletta och avslutas korrekt
 7. Använd TYDLIG styckeindelning - dela upp svaret i korta stycken (2-3 meningar per stycke)
@@ -379,26 +497,28 @@ VIKTIGA REGLER:
 18. Matcha användarens behov med passande recept och råvaror från våra databaser
 19. Ge konkreta förslag på functional foods från vår råvarudatabas
 20. VIKTIGT: Använd ALDRIG markdown-länkar som [text](http://...) - skriv bara texten
-${userContext ? '19. Kom ihåg att du känner till användarens hälsostatus och kan ge personliga råd baserat på det' : ''}`;
+${userContext ? "19. Kom ihåg att du känner till användarens hälsostatus och kan ge personliga råd baserat på det" : ""}`;
 
     const completion = await chatWithFallback(openai, {
       messages: [
         { role: "system", content: systemPrompt },
-        { role: "user", content: message }
+        { role: "user", content: message },
       ],
       max_tokens: 1000,
       temperature: 0.7,
       stop: null,
     });
 
-    let response = completion.choices[0].message.content || "Ursäkta, jag kunde inte generera ett svar just nu.";
-    
+    let response =
+      completion.choices[0].message.content ||
+      "Ursäkta, jag kunde inte generera ett svar just nu.";
+
     // Säkerställ att svaret slutar med en komplett mening
     const lastChar = response.trim().slice(-1);
-    if (!['.', '!', '?', ':', '😊', '🌱', '💚'].includes(lastChar)) {
-      response = response.trim() + '.';
+    if (![".", "!", "?", ":", "😊", "🌱", "💚"].includes(lastChar)) {
+      response = response.trim() + ".";
     }
-    
+
     // Konvertera text till HTML
     const htmlResponse = formatToHtml(response);
 
@@ -406,21 +526,27 @@ ${userContext ? '19. Kom ihåg att du känner till användarens hälsostatus och
     if (userId && user) {
       try {
         await prisma.chatMessage.create({
-          data: { userId, message, response: htmlResponse }
+          data: { userId, message, response: htmlResponse },
         });
       } catch (dbError) {
-        console.error('Failed to save chat message:', dbError);
+        console.error("Failed to save chat message:", dbError);
       }
     }
 
-    return NextResponse.json({ message: htmlResponse }, { headers: { 'Cache-Control': 'no-store' } });
-  } catch (error) {
-    console.error('Chat error:', error);
     return NextResponse.json(
-      { message: "<p>Ursäkta, något gick fel. Försök igen senare eller kontakta oss på hej@functionalfoods.se</p>" },
-      { status: 500, headers: { 'Cache-Control': 'no-store' } }
+      { message: htmlResponse },
+      { headers: { "Cache-Control": "no-store" } },
+    );
+  } catch (error) {
+    console.error("Chat error:", error);
+    return NextResponse.json(
+      {
+        message:
+          "<p>Ursäkta, något gick fel. Försök igen senare eller kontakta oss på hej@functionalfoods.se</p>",
+      },
+      { status: 500, headers: { "Cache-Control": "no-store" } },
     );
   } finally {
     await prisma.$disconnect();
   }
-} 
+}
