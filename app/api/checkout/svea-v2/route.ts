@@ -195,6 +195,9 @@ export async function POST(req: NextRequest) {
     // Add book products to productMap
     for (const [bookId, bookProduct] of Object.entries(bookProducts)) {
       productMap.set(bookId, bookProduct);
+      productMap.set(bookProduct.name.toLowerCase(), bookProduct);
+      productMap.set(bookProduct.name, bookProduct);
+      productMap.set(slugify(bookProduct.name), bookProduct);
     }
 
     // Helper function to resolve courseId from cart item (used for both simulated and real orders)
@@ -539,26 +542,47 @@ export async function POST(req: NextRequest) {
     // Helper: map our course ids/names to Svea article numbers
     const getArticleNumber = (item: CheckoutItem): string => {
       const key = `${item.id} ${item.name}`.toLowerCase();
+
       if (
         key.includes("functional basics") ||
         key.includes("functional-basics") ||
         key.includes("basics")
-      )
+      ) {
         return "21122";
+      }
+
       if (
         key.includes("functional flow") ||
         key.includes("functional-flow") ||
         key.includes("gut")
-      )
+      ) {
         return "21127";
+      }
+
       if (
         key.includes("functional energy") ||
         key.includes("insulin") ||
         key.includes("functional-energy")
-      )
+      ) {
         return "21128";
-      if (key.includes("glutenfritt") || key.includes("brodboken"))
+      }
+
+      if (key.includes("glutenfritt") || key.includes("brodboken")) {
         return "EBOOK-BRODBOKEN-2026";
+      }
+
+      if (key.includes("påskbuffé") || key.includes("paskbuffe")) {
+        return "EBOOK-PASKBUFFE";
+      }
+
+      if (
+        key.includes("sota-godsaker") ||
+        key.includes("söta godsaker") ||
+        key.includes("sota godsaker")
+      ) {
+        return "EBOOK-SOTA-GODSAKER";
+      }
+
       return item.id; // fallback
     };
 
