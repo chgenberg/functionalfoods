@@ -60,7 +60,7 @@ export default function SotaGodsakerPage() {
   const ebook = {
     id: "sota-godsaker",
     name: "Söta Godsaker – E-bok av Ulrika Davidsson",
-    price: 102.8, // 109 kr inkl 6% moms = 102.83 kr exkl moms (109 / 1.06)
+    price: 102.83, // 109 kr inkl 6% moms = 102.83 kr exkl moms (109 / 1.06)
     quantity: 1,
     type: "book" as const,
     image: content.image || "/sota-godsaker-omslag.png",

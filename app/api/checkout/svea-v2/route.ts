@@ -580,7 +580,7 @@ export async function POST(req: NextRequest) {
         key.includes("söta godsaker") ||
         key.includes("sota godsaker")
       ) {
-        return "sota-godsaker";
+        return "EBOOK-SOTA-GODSAKER";
       }
 
       return item.id; // fallback
