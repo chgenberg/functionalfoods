@@ -183,6 +183,13 @@ export async function POST(req: NextRequest) {
         type: "book",
         vatRate: 0.06,
       },
+      "sota-godsaker": {
+        id: "sota-godsaker",
+        name: "Söta Godsaker – E-bok av Ulrika Davidsson",
+        price: 102.83,
+        type: "book",
+        vatRate: 0.06,
+      },
     };
 
     // Add book products to productMap
@@ -837,6 +844,14 @@ export async function POST(req: NextRequest) {
               ebookId = "paskbuffe";
             }
 
+            if (
+              book.name.toLowerCase().includes("söta godsaker") ||
+              book.name.toLowerCase().includes("sota godsaker") ||
+              book.name.toLowerCase().includes("sota-godsaker")
+            ) {
+              ebookId = "sota-godsaker";
+            }
+
             // Optional: avoid duplicates if route is retried
             const existing = await prisma.ebookDownload.findFirst({
               where: { orderNumber: orderId, ebookId },
@@ -871,6 +886,9 @@ export async function POST(req: NextRequest) {
 
             if (ebookId === "paskbuffe") {
               downloadUrl = `${baseUrl}/e-bocker/paskbuffe/ladda-ner?token=${downloadToken}`;
+            }
+            if (ebookId === "sota-godsaker") {
+              downloadUrl = `${baseUrl}/e-bocker/sota-godsaker/ladda-ner?token=${downloadToken}`;
             }
 
             await emailService.sendEbookDownloadEmail({

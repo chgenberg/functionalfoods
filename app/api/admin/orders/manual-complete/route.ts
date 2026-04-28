@@ -224,6 +224,13 @@ export async function POST(request: NextRequest) {
           ) {
             ebookId = "paskbuffe";
           }
+          if (
+            book.name.toLowerCase().includes("söta godsaker") ||
+            book.name.toLowerCase().includes("sota godsaker") ||
+            book.name.toLowerCase().includes("sota-godsaker")
+          ) {
+            ebookId = "sota-godsaker";
+          }
           await tx.ebookDownload.create({
             data: {
               token: downloadToken,
@@ -312,6 +319,10 @@ export async function POST(request: NextRequest) {
             downloadUrl = `${baseUrl}/e-bocker/paskbuffe/ladda-ner?token=${downloadRecord.token}`;
           }
 
+          if (downloadRecord.ebookId === "sota-godsaker") {
+            downloadUrl = `${baseUrl}/e-bocker/sota-godsaker/ladda-ner?token=${downloadRecord.token}`;
+          }
+
           const sent = await emailService.sendEbookDownloadEmail({
             email: customerEmail,
             name: customerName,
@@ -335,7 +346,9 @@ export async function POST(request: NextRequest) {
                 const purchaseTag =
                   downloadRecord.ebookId === "paskbuffe"
                     ? "Köp - Påskbuffé"
-                    : "Köp - Brödboken";
+                    : downloadRecord.ebookId === "sota-godsaker"
+                      ? "Köp - Sötsaker"
+                      : "Köp - Brödboken";
 
                 await Promise.race([
                   mailchimpMarketing.addSubscriber({

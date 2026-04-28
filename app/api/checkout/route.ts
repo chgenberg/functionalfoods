@@ -105,6 +105,14 @@ export async function POST(req: NextRequest) {
           type: "book" as const,
           vatRate: 0.06,
         },
+        {
+          id: "sota-godsaker",
+          name: "Söta Godsaker – E-bok av Ulrika Davidsson",
+          price: 102.83, // 109 kr inkl 6% moms => 102.83 kr exkl moms
+          basePrice: 102.83,
+          type: "book" as const,
+          vatRate: 0.06,
+        },
       ];
 
       // Add book products to map

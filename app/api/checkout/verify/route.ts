@@ -518,11 +518,22 @@ export async function GET(req: NextRequest) {
           for (const book of bookItems) {
             let ebookId = "brodboken-2026";
 
+            if (book.id && typeof book.id === "string") {
+              ebookId = book.id;
+            }
+
             if (
               book.name.toLowerCase().includes("påskbuffé") ||
               book.name.toLowerCase().includes("paskbuffe")
             ) {
               ebookId = "paskbuffe";
+            }
+            if (
+              book.name.toLowerCase().includes("söta godsaker") ||
+              book.name.toLowerCase().includes("sota godsaker") ||
+              book.name.toLowerCase().includes("sota-godsaker")
+            ) {
+              ebookId = "sota-godsaker";
             }
 
             const existing = await prisma.ebookDownload.findFirst({
@@ -548,6 +559,9 @@ export async function GET(req: NextRequest) {
 
             if (ebookId === "paskbuffe") {
               downloadUrl = `${baseUrl}/e-bocker/paskbuffe/ladda-ner?token=${token}`;
+            }
+            if (ebookId === "sota-godsaker") {
+              downloadUrl = `${baseUrl}/e-bocker/sota-godsaker/ladda-ner?token=${token}`;
             }
 
             await emailService.sendEbookDownloadEmail({
