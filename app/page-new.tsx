@@ -384,26 +384,26 @@ export default function Home() {
 
       <BookShowcaseSection
         reverse
-        title="Baka Glutenfritt"
-        subtitle="Inspireras av att"
-        description="Näringsrika, mättande och riktigt goda recept som är enkla att baka."
-        image="/baka-glutenfritt-square.png"
-        href="/brodboken"
-        productId="brodboken-2026"
-        productPrice="69"
+        title="Söta Godsaker"
+        subtitle="Inspireras av"
+        description="Hälsosammare tårtor, kakor, pajer och desserter"
+        image="/sota-godsaker-square.png"
+        href="/e-bocker/sota-godsaker"
+        productId="sota-godsaker"
+        productPrice="109"
         buttonText="Läs mer om boken"
         highlights={[
           {
-            title: "26 glutenfria brödrecept",
-            text: "För vardag, middag och fest.",
+            title: "Över 50 favoritrecept",
+            text: "Glutenfria och sockerreducerade.",
           },
           {
-            title: "Hälsosamma alternativ",
+            title: "Enkla och goda bakverk",
             text: "Fungerar för hela familjen.",
           },
           {
-            title: "Bättre näringsvärden",
-            text: "Mer protein och fibrer.",
+            title: "Naturliga ingredienser",
+            text: "Smartare alternativ för sötning.",
           },
         ]}
       />

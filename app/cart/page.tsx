@@ -47,12 +47,12 @@ const getItemImage = (item: {
 };
 
 const UPSELL_BOOK = {
-  id: "brodboken-2026",
-  name: "Baka Glutenfritt – E-bok",
-  price: 65.09, // 69 kr inkl 6% moms = 65.09 kr exkl moms (69 / 1.06)
+  id: "sota-godsaker",
+  name: "Söta Godsaker – E-bok",
+  price: 102.83, // 109 kr inkl 6% moms = 102.83 kr exkl moms (109 / 1.06)
   type: "book" as const,
-  image: "/baka-glutenfritt-square.png",
-  description: "26 glutenfria brödrecept för vardag och fest.",
+  image: "/sota-godsaker-square.png",
+  description: "Över 50 favoritrecept – utan gluten och vitt socker.",
 };
 
 export default function CartPage() {
@@ -449,11 +449,11 @@ export default function CartPage() {
                     </div>
 
                     <h3 className="text-sm sm:text-lg font-semibold text-[#014421] leading-snug mb-1">
-                      Lägg till Baka Glutenfritt
+                      Lägg till Söta Godsaker
                     </h3>
 
                     <p className="text-xs sm:text-sm text-gray-600 leading-snug mb-2 line-clamp-2 sm:line-clamp-none">
-                      26 glutenfria brödrecept för vardag och fest.
+                      Över 50 favoritrecept – utan gluten och vitt socker.
                     </p>
 
                     <div className="flex items-center gap-2 text-[11px] sm:text-sm text-gray-500 mb-2 sm:mb-3">
