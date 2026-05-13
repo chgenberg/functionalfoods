@@ -78,334 +78,25 @@ export default function BlogPostPage({ params }: Props) {
     return `${minutes} min`;
   };
 
-  // Format content for display (convert markdown to proper HTML)
-  const formatContent = (content: string) => {
-    // Check if content contains HTML tags
+  const escapeHtml = (unsafe: string) =>
+    unsafe
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
+
+  const renderContentHtml = (content: string) => {
+    if (!content) return '';
     const hasHtmlTags = /<[^>]+>/.test(content);
-    
-    if (hasHtmlTags) {
-      // Content is HTML - strip tags and convert to plain text with basic formatting
-      let cleanContent = content
-        // Convert HTML headings to markdown style
-        .replace(/<h1[^>]*>(.*?)<\/h1>/gi, '\n\n# $1\n\n')
-        .replace(/<h2[^>]*>(.*?)<\/h2>/gi, '\n\n## $1\n\n')
-        .replace(/<h3[^>]*>(.*?)<\/h3>/gi, '\n\n### $1\n\n')
-        .replace(/<h4[^>]*>(.*?)<\/h4>/gi, '\n\n#### $1\n\n')
-        // Convert strong/bold to markdown
-        .replace(/<strong[^>]*>(.*?)<\/strong>/gi, '**$1**')
-        .replace(/<b[^>]*>(.*?)<\/b>/gi, '**$1**')
-        // Convert emphasis to markdown
-        .replace(/<em[^>]*>(.*?)<\/em>/gi, '*$1*')
-        .replace(/<i[^>]*>(.*?)<\/i>/gi, '*$1*')
-        // Convert paragraphs to double newlines
-        .replace(/<p[^>]*>/gi, '\n\n')
-        .replace(/<\/p>/gi, '')
-        // Convert line breaks
-        .replace(/<br\s*\/?>/gi, '\n')
-        // Convert lists
-        .replace(/<ul[^>]*>/gi, '\n')
-        .replace(/<\/ul>/gi, '\n')
-        .replace(/<ol[^>]*>/gi, '\n')
-        .replace(/<\/ol>/gi, '\n')
-        .replace(/<li[^>]*>(.*?)<\/li>/gi, '\n- $1')
-        // Remove all remaining HTML tags
-        .replace(/<[^>]+>/g, '')
-        // Decode HTML entities
-        .replace(/&nbsp;/g, ' ')
-        .replace(/&amp;/g, '&')
-        .replace(/&lt;/g, '<')
-        .replace(/&gt;/g, '>')
-        .replace(/&quot;/g, '"')
-        .replace(/&#39;/g, "'")
-        // Clean up multiple newlines
-        .replace(/\n{3,}/g, '\n\n')
-        .trim();
-      
-      content = cleanContent;
-    }
-    
-    // Clean up content gently - avoid aggressive text manipulation
-    let cleanContent = content
-      .replace(/\r\n/g, '\n')
-      .replace(/\n{3,}/g, '\n\n')
-      .replace(/\s+$/gm, '') // Remove trailing spaces only
-      // Fix broken dashes that appear at start of lines (not real list items)
-      .replace(/\n-\s+([a-zåäöé])/g, ' – $1') // Convert line-starting dashes to em-dashes in text
-      .trim();
+    if (hasHtmlTags) return content;
 
-    // Check if content has very few line breaks (likely one big text block)
-    const lineBreakCount = (cleanContent.match(/\n/g) || []).length;
-    const hasMinimalBreaks = lineBreakCount < 3 && cleanContent.length > 1000;
-
-    if (hasMinimalBreaks) {
-      // Auto-split long text blocks at sentence boundaries
-      cleanContent = cleanContent
-        .replace(/([.!?])\s+([A-ZÅÄÖ])/g, '$1\n\n$2') // Add line breaks after sentences
-        .replace(/([a-zåäöé]:\s*)([A-ZÅÄÖ])/g, '$1\n\n$2') // Break after category labels
-        .replace(/(Livsmedelsverket noterar att)/g, '\n\n$1') // Break before specific phrases
-        .replace(/(Det är dock viktigt att)/g, '\n\n$1')
-        .replace(/(En spännande aspekt är)/g, '\n\n$1')
-        .replace(/(Forskning tyder på att)/g, '\n\n$1');
-    }
-
-    // Split into lines and process them intelligently
-    const lines = cleanContent.split('\n');
-    const elements: JSX.Element[] = [];
-    let currentParagraph: string[] = [];
-    let currentList: string[] = [];
-    let listType: 'ul' | 'ol' | null = null;
-
-    const smartParagraphBreak = (text: string) => {
-      // Check if text should start a new paragraph
-      const indicators = [
-        /^[A-ZÅÄÖ][a-zåäöé]+:/,           // Category labels like "Flavonoider:"
-        /^Det finns/,                     // Common paragraph starters
-        /^Till exempel/,
-        /^Dessa/,
-        /^Studier/,
-        /^Forskning/,
-        /^I tillägg/,
-        /^Däremot/,
-        /^Samtidigt/,
-        /^Därför/,
-        /^En annan/,
-        /^Enligt/,
-        /^Livsmedelsverket/,
-        /^Nordiska näringsrekommendationerna/,
-        /^Att få sig/,
-        /^En spännande aspekt/,
-        /^Effekten kan/,
-        /^Polyfenolerna/,
-        /^Summan av kardemumman/,
-        /^De flesta polyfenroller/,
-        /^Grönta polyfenroller/
-      ];
-      return indicators.some(pattern => pattern.test(text));
-    };
-
-    const cleanParagraphText = (text: string) => {
-      // Clean up paragraph text to fix common issues
-      return text
-        .replace(/([a-zåäöé])\s*-\s*([a-zåäöé])/g, '$1 $2') // Fix broken words with hyphens
-        .replace(/\s+/g, ' ') // Normalize spaces
-        .replace(/\s*([.!?])\s*([A-ZÅÄÖ])/g, '$1 $2') // Fix spacing around punctuation
-        .trim();
-    };
-
-    const splitLongParagraph = (text: string): string[] => {
-      // If paragraph is shorter than 600 characters, keep as is
-      if (text.length <= 600) {
-        return [text];
-      }
-
-      // Split into sentences
-      const sentences = text.split(/([.!?]+\s+)/);
-      const paragraphs: string[] = [];
-      let currentChunk = '';
-
-      for (let i = 0; i < sentences.length; i++) {
-        const sentence = sentences[i];
-        
-        // If adding this sentence would make the chunk too long, start a new paragraph
-        if (currentChunk.length > 0 && (currentChunk + sentence).length > 500) {
-          paragraphs.push(currentChunk.trim());
-          currentChunk = sentence;
-        } else {
-          currentChunk += sentence;
-        }
-      }
-
-      // Add the last chunk if it exists
-      if (currentChunk.trim()) {
-        paragraphs.push(currentChunk.trim());
-      }
-
-      return paragraphs.filter(p => p.length > 10);
-    };
-
-    const pushCurrentParagraph = () => {
-      if (currentParagraph.length > 0) {
-        const rawText = currentParagraph.join(' ');
-        const paragraphText = cleanParagraphText(rawText);
-        if (paragraphText && paragraphText.length > 10) {
-          // Split long paragraphs into smaller ones
-          const paragraphs = splitLongParagraph(paragraphText);
-          
-          paragraphs.forEach(para => {
-            elements.push(
-              <p key={elements.length} className="mb-4 leading-loose text-gray-700 text-lg max-w-none">
-                {formatInlineElements(para)}
-              </p>
-            );
-          });
-        }
-        currentParagraph = [];
-      }
-    };
-
-    const pushCurrentList = () => {
-      if (currentList.length > 0 && listType) {
-        const ListTag = listType === 'ul' ? 'ul' : 'ol';
-        const listClass = listType === 'ul' ? 'list-disc' : 'list-decimal';
-        elements.push(
-          <ListTag key={elements.length} className={`${listClass} pl-8 mb-4 space-y-2`}>
-            {currentList.map((item, i) => (
-              <li key={i} className="leading-loose text-gray-700 text-lg pl-2">
-                {formatInlineElements(item)}
-              </li>
-            ))}
-          </ListTag>
-        );
-        currentList = [];
-        listType = null;
-      }
-    };
-
-    // Process each line
-    for (let i = 0; i < lines.length; i++) {
-      const line = lines[i].trim();
-      
-      // Skip empty lines
-      if (!line) {
-        continue;
-      }
-
-      // Handle main title (# )
-      if (line.startsWith('# ')) {
-        pushCurrentParagraph();
-        pushCurrentList();
-        elements.push(
-          <h1 key={elements.length} className="text-3xl md:text-4xl font-bold text-primary mt-8 mb-4 leading-tight">
-            {formatInlineElements(line.replace('# ', ''))}
-          </h1>
-        );
-        continue;
-      }
-
-      // Handle h2 headers (## )
-      if (line.startsWith('## ')) {
-        pushCurrentParagraph();
-        pushCurrentList();
-        elements.push(
-          <h2 key={elements.length} className="text-2xl md:text-3xl font-bold text-primary mt-8 mb-4 leading-tight border-b-2 border-orange-100 pb-3">
-            {formatInlineElements(line.replace('## ', ''))}
-          </h2>
-        );
-        continue;
-      }
-      
-      // Handle h3 headers (### )
-      if (line.startsWith('### ')) {
-        pushCurrentParagraph();
-        pushCurrentList();
-        elements.push(
-          <h3 key={elements.length} className="text-xl md:text-2xl font-bold text-primary mt-6 mb-3 leading-tight">
-            {formatInlineElements(line.replace('### ', ''))}
-          </h3>
-        );
-        continue;
-      }
-
-      // Handle h4 headers (#### )
-      if (line.startsWith('#### ')) {
-        pushCurrentParagraph();
-        pushCurrentList();
-        elements.push(
-          <h4 key={elements.length} className="text-lg md:text-xl font-semibold text-primary mt-6 mb-3 leading-tight">
-            {formatInlineElements(line.replace('#### ', ''))}
-          </h4>
-        );
-        continue;
-      }
-      
-      // Handle unordered list items (- or * ) - but be more selective
-      if (line.startsWith('* ') || 
-          (line.startsWith('- ') && 
-           // Only treat as list if it looks like an actual list item
-           (line.match(/^-\s+[A-ZÅÄÖ]/) || // Starts with capital letter
-            line.match(/^-\s+\d/) || // Starts with number
-            line.match(/^-\s+[a-zåäö]{1,15}\s/) || // Short word followed by space (real list items)
-            line.length < 100))) { // Or it's short (likely a list item)
-        pushCurrentParagraph();
-        if (listType !== 'ul') {
-          pushCurrentList();
-          listType = 'ul';
-        }
-        currentList.push(line.replace(/^[-*]\s+/, ''));
-        continue;
-      }
-      
-      // Handle ordered list items (1. , 2. , etc.)
-      if (/^\d+\.\s/.test(line)) {
-        pushCurrentParagraph();
-        if (listType !== 'ol') {
-          pushCurrentList();
-          listType = 'ol';
-        }
-        currentList.push(line.replace(/^\d+\.\s+/, ''));
-        continue;
-      }
-
-      // Handle blockquotes (> )
-      if (line.startsWith('> ')) {
-        pushCurrentParagraph();
-        pushCurrentList();
-        elements.push(
-          <blockquote key={elements.length} className="border-l-4 border-orange-300 pl-6 py-4 mb-4 bg-orange-50 italic text-gray-700 text-lg leading-loose">
-            {formatInlineElements(line.replace('> ', ''))}
-          </blockquote>
-        );
-        continue;
-      }
-
-      // Regular text - add to current paragraph with smart breaking
-      if (line.length > 0) {
-        pushCurrentList(); // Close any open list
-        
-        // Check if this line should start a new paragraph
-        if (currentParagraph.length > 0 && smartParagraphBreak(line)) {
-          pushCurrentParagraph();
-        }
-        
-        currentParagraph.push(line);
-      }
-    }
-
-    // Push any remaining content
-    pushCurrentParagraph();
-    pushCurrentList();
+    // Fallback for plain text/markdown-like content.
+    const escaped = escapeHtml(content).replace(/\r\n/g, '\n');
+    const withBreaks = escaped.replace(/\n/g, '<br />');
+    return `<p>${withBreaks}</p>`;
 
     return elements;
-  };
-
-  // Format inline elements like bold, italic, links
-  const formatInlineElements = (text: string): (string | JSX.Element)[] => {
-    // First, handle category labels and make them bold
-    let processedText = text
-      .replace(/([A-ZÅÄÖ][a-zåäöé]+):/g, '**$1:**') // Make category labels bold
-      .replace(/\s{2,}/g, ' ') // Remove extra spaces
-      .replace(/([a-zåäöé])\s*\.\s*([A-ZÅÄÖ])/g, '$1. $2'); // Fix spacing after periods
-
-    // Handle bold text (**text** or __text__)
-    let parts = processedText.split(/(\*\*.*?\*\*|__.*?__)/);
-    
-    return parts.map((part, i) => {
-      // Bold text
-      if ((part.startsWith('**') && part.endsWith('**')) || 
-          (part.startsWith('__') && part.endsWith('__'))) {
-        const boldText = part.startsWith('**') ? part.slice(2, -2) : part.slice(2, -2);
-        return <strong key={i} className="font-bold text-gray-900">{boldText}</strong>;
-      }
-      
-      // Handle italic text (*text* or _text_)
-      if ((part.startsWith('*') && part.endsWith('*') && !part.startsWith('**')) ||
-          (part.startsWith('_') && part.endsWith('_') && !part.startsWith('__'))) {
-        const italicText = part.slice(1, -1);
-        return <em key={i} className="italic">{italicText}</em>;
-      }
-      
-      return part;
-    });
   };
 
   if (loading) {
@@ -522,11 +213,10 @@ export default function BlogPostPage({ params }: Props) {
 
           {/* Article Body */}
           <div className="bg-white rounded-2xl shadow-sm p-8 md:p-12">
-            <div className="prose prose-lg max-w-none">
-              <div className="text-gray-800 leading-loose space-y-6">
-                {formatContent(post.content)}
-              </div>
-            </div>
+            <div
+              className="blog-rich-content text-gray-800"
+              dangerouslySetInnerHTML={{ __html: renderContentHtml(post.content) }}
+            />
 
             {/* Article Footer */}
             <div className="border-t border-gray-200 mt-12 pt-8">
@@ -546,6 +236,60 @@ export default function BlogPostPage({ params }: Props) {
             </div>
           </div>
         </motion.article>
+
+        <style jsx global>{`
+          .blog-rich-content {
+            font-size: 1.125rem;
+            line-height: 1.9;
+          }
+
+          .blog-rich-content p {
+            margin: 0 0 1.25rem 0;
+            color: #374151;
+          }
+
+          .blog-rich-content h1,
+          .blog-rich-content h2,
+          .blog-rich-content h3,
+          .blog-rich-content h4 {
+            color: #111827;
+            font-weight: 700;
+            line-height: 1.3;
+            margin: 2rem 0 1rem;
+          }
+
+          .blog-rich-content h2 {
+            font-size: 1.75rem;
+          }
+
+          .blog-rich-content h3 {
+            font-size: 1.4rem;
+          }
+
+          .blog-rich-content a {
+            color: #0b6bcb;
+            text-decoration: underline;
+            text-underline-offset: 2px;
+            word-break: break-word;
+          }
+
+          .blog-rich-content ul,
+          .blog-rich-content ol {
+            margin: 0 0 1.25rem 0;
+            padding-left: 1.5rem;
+          }
+
+          .blog-rich-content li {
+            margin-bottom: 0.5rem;
+          }
+
+          .blog-rich-content blockquote {
+            border-left: 4px solid #d1d5db;
+            padding-left: 1rem;
+            margin: 1rem 0;
+            color: #4b5563;
+          }
+        `}</style>
 
         {/* Navigation to other articles */}
         <motion.div

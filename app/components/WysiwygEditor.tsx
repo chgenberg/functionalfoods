@@ -138,6 +138,9 @@ export default function WysiwygEditor({
           border-top-right-radius: 1rem;
           background: #fafafa;
           padding: 12px 16px;
+          position: sticky;
+          top: 0;
+          z-index: 30;
         }
         
         .wysiwyg-editor .ql-container {
@@ -145,11 +148,14 @@ export default function WysiwygEditor({
           border-bottom-right-radius: 1rem;
           font-size: 16px;
           line-height: 1.6;
+          height: ${Math.max(height - 56, 220)}px;
         }
         
         .wysiwyg-editor .ql-editor {
           padding: 20px;
-          min-height: ${height - 42}px;
+          min-height: ${Math.max(height - 56, 220)}px;
+          height: ${Math.max(height - 56, 220)}px;
+          overflow-y: auto;
           font-family: 'Work Sans', sans-serif;
           color: #1f2937;
         }
