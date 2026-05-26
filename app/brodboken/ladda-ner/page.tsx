@@ -1,28 +1,28 @@
 "use client";
 
-import { useState, useEffect, Suspense } from 'react';
-import { useSearchParams } from 'next/navigation';
-import { motion } from 'framer-motion';
-import { 
-  Download, 
-  Lock, 
-  Check, 
+import { useState, useEffect, Suspense } from "react";
+import { useSearchParams } from "next/navigation";
+import { motion } from "framer-motion";
+import {
+  Download,
+  Lock,
+  Check,
   AlertCircle,
   Gift,
-  Loader2
-} from 'lucide-react';
-import Image from 'next/image';
+  Loader2,
+} from "lucide-react";
+import Image from "next/image";
 
 function DownloadContent() {
   const searchParams = useSearchParams();
-  const tokenFromUrl = searchParams.get('token');
-  
-  const [token, setToken] = useState(tokenFromUrl || '');
+  const tokenFromUrl = searchParams.get("token");
+
+  const [token, setToken] = useState(tokenFromUrl || "");
   const [isUnlocked, setIsUnlocked] = useState(false);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
   const [isChecking, setIsChecking] = useState(false);
-  const [ebookName, setEbookName] = useState('');
-  const [downloadPath, setDownloadPath] = useState('');
+  const [ebookName, setEbookName] = useState("");
+  const [downloadPath, setDownloadPath] = useState("");
   const [downloadsRemaining, setDownloadsRemaining] = useState(0);
 
   // Auto-verify if token is in URL
@@ -35,13 +35,13 @@ function DownloadContent() {
 
   const verifyToken = async (tokenToVerify: string) => {
     setIsChecking(true);
-    setError('');
+    setError("");
 
     try {
-      const response = await fetch('/api/ebook/verify-token', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ token: tokenToVerify })
+      const response = await fetch("/api/ebook/verify-token", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ token: tokenToVerify }),
       });
 
       const data = await response.json();
@@ -52,12 +52,12 @@ function DownloadContent() {
         setDownloadPath(data.downloadPath);
         setDownloadsRemaining(data.downloadsRemaining);
       } else {
-        setError(data.error || 'Ogiltig nedladdningskod');
+        setError(data.error || "Ogiltig nedladdningskod");
       }
     } catch (err) {
-      setError('Ett fel uppstod. Försök igen.');
+      setError("Ett fel uppstod. Försök igen.");
     }
-    
+
     setIsChecking(false);
   };
 
@@ -69,11 +69,11 @@ function DownloadContent() {
 
   const handleDownload = () => {
     if (!downloadPath) return;
-    
+
     // Trigger download
-    const link = document.createElement('a');
+    const link = document.createElement("a");
     link.href = downloadPath;
-    link.download = 'baka-glutenfritt-ulrika-davidsson.pdf';
+    link.download = "baka-glutenfritt-ulrika-davidsson.pdf";
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -96,15 +96,15 @@ function DownloadContent() {
         >
           <div className="inline-flex items-center gap-2 px-4 py-2 bg-[#FF7E70] rounded-full border border-white/30 mb-6">
             <Gift className="w-4 h-4 text-white" />
-            <span className="text-white text-sm font-medium">E-bok nedladdning</span>
+            <span className="text-white text-sm font-medium">
+              E-bok nedladdning
+            </span>
           </div>
 
           <h1 className="text-3xl md:text-4xl font-bold text-[#93C560] mb-4">
             Baka Glutenfritt – E-bok
           </h1>
-          <p className="text-gray-500">
-            av Ulrika Davidsson
-          </p>
+          <p className="text-gray-500">av Ulrika Davidsson</p>
         </motion.div>
 
         <motion.div
@@ -117,14 +117,16 @@ function DownloadContent() {
           <div className="p-6 border-b border-white/10 flex items-center gap-4">
             <div className="relative w-16 h-20 rounded-lg overflow-hidden shadow-lg flex-shrink-0">
               <Image
-                src="/baka-glutenfritt.png"
+                src="/baka-glutenfritt-omslag.png"
                 alt="Baka Glutenfritt E-bok"
                 fill
                 className="object-cover"
               />
             </div>
             <div>
-              <h2 className="text-white font-semibold">{ebookName || 'Baka Glutenfritt – E-bok'}</h2>
+              <h2 className="text-white font-semibold">
+                {ebookName || "Baka Glutenfritt – E-bok"}
+              </h2>
               <p className="text-gray-500 text-sm">PDF • 26 recept</p>
             </div>
           </div>
@@ -133,7 +135,9 @@ function DownloadContent() {
             {isChecking && !isUnlocked ? (
               <div className="text-center py-8">
                 <Loader2 className="w-12 h-12 text-[#93C560] animate-spin mx-auto mb-4" />
-                <p className="text-gray-400">Verifierar din nedladdningskod...</p>
+                <p className="text-gray-400">
+                  Verifierar din nedladdningskod...
+                </p>
               </div>
             ) : !isUnlocked ? (
               <>
@@ -218,10 +222,9 @@ function DownloadContent() {
                 </button>
 
                 <p className="text-gray-400 text-xs mt-4">
-                  {downloadsRemaining > 0 
-                    ? `Du har ${downloadsRemaining} nedladdning${downloadsRemaining !== 1 ? 'ar' : ''} kvar`
-                    : 'Detta var din sista nedladdning'
-                  }
+                  {downloadsRemaining > 0
+                    ? `Du har ${downloadsRemaining} nedladdning${downloadsRemaining !== 1 ? "ar" : ""} kvar`
+                    : "Detta var din sista nedladdning"}
                 </p>
               </motion.div>
             )}
@@ -236,8 +239,11 @@ function DownloadContent() {
           className="mt-8 text-center"
         >
           <p className="text-gray-500 text-sm">
-            Problem med nedladdningen?{' '}
-            <a href="mailto:info@functionalfoods.se" className="text-[#93C560] hover:underline">
+            Problem med nedladdningen?{" "}
+            <a
+              href="mailto:info@functionalfoods.se"
+              className="text-[#93C560] hover:underline"
+            >
               Kontakta oss
             </a>
           </p>
@@ -249,11 +255,13 @@ function DownloadContent() {
 
 export default function DownloadEbookPage() {
   return (
-    <Suspense fallback={
-      <div className="min-h-screen bg-gradient-to-b from-[#0a1f14] via-[#102a1c] to-[#0a1f14] flex items-center justify-center">
-        <Loader2 className="w-12 h-12 text-[#93C560] animate-spin" />
-      </div>
-    }>
+    <Suspense
+      fallback={
+        <div className="min-h-screen bg-gradient-to-b from-[#0a1f14] via-[#102a1c] to-[#0a1f14] flex items-center justify-center">
+          <Loader2 className="w-12 h-12 text-[#93C560] animate-spin" />
+        </div>
+      }
+    >
       <DownloadContent />
     </Suspense>
   );

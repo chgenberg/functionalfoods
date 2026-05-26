@@ -23,7 +23,7 @@ const DEFAULT_CONTENT = {
     "Vill du baka bröd som smakar fantastiskt och samtidigt känns lätt i magen? Brödboken samlar Ulrikas bästa brödrecept med fokus på functional foods – för ett jämnare blodsocker, stabil energi och mer näring i varje tugga.",
   shortDescription:
     "I e-boken får du en komplett samling brödrecept och smarta tips som gör det enkelt att lyckas – oavsett om du vill baka glutenfritt, fiberrikt eller proteinrikare alternativ.",
-  image: "/baka-glutenfritt.png",
+  image: "/baka-glutenfritt-omslag.png",
   price: "69 kr",
   features: [
     "En komplett brödguide med functional foods",

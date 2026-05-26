@@ -33,7 +33,7 @@ const DEFAULT_BY_SLUG: Record<string, EbookDefaults> = {
       "Vill du baka bröd som smakar fantastiskt och samtidigt känns lätt i magen? Brödboken samlar Ulrikas bästa brödrecept med fokus på functional foods.",
     shortDescription:
       "I e-boken får du en komplett samling brödrecept och smarta tips som gör det enkelt att lyckas.",
-    image: "/baka-glutenfritt.png",
+    image: "/baka-glutenfritt-omslag.png",
     price: "69 kr",
     features: [
       "En komplett brödguide med functional foods",
