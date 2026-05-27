@@ -1,5 +1,6 @@
 "use client";
 import { useState, useEffect } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../hooks/useAuth';
 import Link from 'next/link';
@@ -13,7 +14,12 @@ import { readAttribution } from '../lib/attribution';
 import {
   applyMothersDayBundlePricing,
   getMissingMothersDayBookId,
+  hasStoredMothersDayCampaign,
+  isMothersDayCampaignId,
   isMothersDayCampaignActive,
+  isMothersDayCampaignPreviewAllowed,
+  MOTHERS_DAY_CAMPAIGN_ID,
+  MOTHERS_DAY_CAMPAIGN_STORAGE_KEY,
 } from '../lib/campaigns/mothers-day';
 
 // Course images mapping
@@ -25,6 +31,7 @@ const courseImages: Record<string, string> = {
 
 export default function Checkout() {
   const t = useT();
+  const searchParams = useSearchParams();
   const { items, addItem, discount, appliedCoupon, applyCoupon, removeCoupon } = useCart();
   const { user } = useAuth();
   const splitFullName = (fullName?: string | null) => {
@@ -44,12 +51,21 @@ export default function Checkout() {
   const [couponInput, setCouponInput] = useState('');
   const [couponError, setCouponError] = useState<string | null>(null);
   const [applying, setApplying] = useState(false);
-  const campaignItems = applyMothersDayBundlePricing(items);
+  const campaignFromUrl = isMothersDayCampaignId(searchParams.get('campaign'));
+  const [storedCampaignActive, setStoredCampaignActive] = useState(false);
+  const [previewCampaignActive, setPreviewCampaignActive] = useState(false);
+  const calendarCampaignActive = isMothersDayCampaignActive();
+  const mothersDayCampaignActive =
+    calendarCampaignActive ||
+    storedCampaignActive ||
+    (campaignFromUrl && previewCampaignActive);
+  const campaignId = mothersDayCampaignActive ? MOTHERS_DAY_CAMPAIGN_ID : undefined;
+  const campaignItems = applyMothersDayBundlePricing(items, mothersDayCampaignActive);
   const getPricedItem = (item: (typeof items)[number]) =>
     campaignItems.find((pricedItem) => pricedItem.id === item.id) || item;
   const missingCampaignBookId = getMissingMothersDayBookId(items);
   const showMothersDayCheckoutUpsell =
-    isMothersDayCampaignActive() && !!missingCampaignBookId;
+    mothersDayCampaignActive && !!missingCampaignBookId;
 
   const mothersDayUpsellBook =
     missingCampaignBookId === 'brodboken-2026'
@@ -90,6 +106,32 @@ export default function Checkout() {
       ? (firstNameIsValid && lastNameIsValid && emailIsValid)
       : (!!user && firstNameIsValid && lastNameIsValid)
   );
+
+  useEffect(() => {
+    const previewAllowed =
+      typeof window !== 'undefined' &&
+      isMothersDayCampaignPreviewAllowed(window.location.origin);
+
+    setPreviewCampaignActive(previewAllowed);
+
+    if (campaignFromUrl && (calendarCampaignActive || previewAllowed)) {
+      try {
+        sessionStorage.setItem(
+          MOTHERS_DAY_CAMPAIGN_STORAGE_KEY,
+          JSON.stringify({
+            id: MOTHERS_DAY_CAMPAIGN_ID,
+            source: 'checkout-url',
+            createdAt: new Date().toISOString()
+          })
+        );
+      } catch {}
+    } else if (!calendarCampaignActive && !previewAllowed) {
+      try {
+        sessionStorage.removeItem(MOTHERS_DAY_CAMPAIGN_STORAGE_KEY);
+      } catch {}
+    }
+    setStoredCampaignActive(hasStoredMothersDayCampaign());
+  }, [campaignFromUrl, calendarCampaignActive]);
 
   useEffect(() => {
     if (user) {
@@ -154,6 +196,7 @@ export default function Checkout() {
           id: user.id
         } : undefined),
         couponCode: appliedCoupon?.code || undefined,
+        campaignId,
         attribution
       };
 
