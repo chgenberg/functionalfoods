@@ -2,11 +2,22 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { ArrowRight, BookOpen, Tag, ShoppingCart } from "lucide-react";
+import { ArrowRight, BookOpen, Tag, ShoppingCart, X } from "lucide-react";
+import { useState } from "react";
 import { useCart } from "@/app/context/CartContext";
+import {
+  getMissingMothersDayBookId,
+  isMothersDayCampaignActive,
+} from "@/app/lib/campaigns/mothers-day";
 
 export default function EBockerPage() {
   const { addItem } = useCart();
+  const [upsellBook, setUpsellBook] = useState<null | {
+    id: string;
+    title: string;
+    image: string;
+    price: string;
+  }>(null);
 
   const ebooks = [
     {
@@ -75,6 +86,20 @@ export default function EBockerPage() {
       type: "book",
       image: ebook.image,
     });
+
+    if (isMothersDayCampaignActive()) {
+      const missingBookId = getMissingMothersDayBookId([
+        {
+          id: ebook.id,
+          name: ebook.title,
+          price: priceExVat,
+          quantity: 1,
+          type: "book",
+        },
+      ]);
+      const matchingUpsell = ebooks.find((item) => item.id === missingBookId);
+      if (matchingUpsell) setUpsellBook(matchingUpsell);
+    }
   };
 
   return (
@@ -196,6 +221,41 @@ export default function EBockerPage() {
           <div className="absolute inset-0 bg-black/20" />
         </div>
       </section>
+
+      {upsellBook && (
+        <div className="fixed bottom-4 left-4 right-4 z-50 mx-auto max-w-xl rounded-xl bg-white p-4 shadow-2xl border border-[#93C560]">
+          <button
+            type="button"
+            onClick={() => setUpsellBook(null)}
+            className="absolute right-3 top-3 rounded-full p-1 text-gray-500 hover:bg-gray-100"
+            aria-label="Stäng"
+          >
+            <X className="h-4 w-4" />
+          </button>
+          <div className="pr-8">
+            <p className="text-xs font-semibold uppercase tracking-wide text-[#014421]">
+              Mors dag-erbjudande
+            </p>
+            <h2 className="mt-1 text-lg font-bold text-gray-900">
+              Lägg till {upsellBook.title}
+            </h2>
+            <p className="mt-1 text-sm text-gray-600">
+              Köp Baka Glutenfritt och Söta Godsaker tillsammans för 125 kr.
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={() => {
+              handleBuyNow(upsellBook);
+              setUpsellBook(null);
+            }}
+            className="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-lg bg-[#014421] px-4 py-3 font-semibold text-white hover:bg-[#116530]"
+          >
+            <ShoppingCart className="h-4 w-4" />
+            Lägg till paketet
+          </button>
+        </div>
+      )}
     </main>
   );
 }

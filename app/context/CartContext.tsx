@@ -1,5 +1,6 @@
 "use client";
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { applyMothersDayBundlePricing } from '@/app/lib/campaigns/mothers-day';
 
 export interface CartItem {
   id: string;
@@ -83,14 +84,16 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     }
 
     const newTotal = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
+    const pricedItems = applyMothersDayBundlePricing(items);
+    const newTotal = pricedItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
     setTotal(newTotal);
 
     // Compute discount locally from appliedCoupon
     let newDiscount = 0;
     if (appliedCoupon && items.length > 0) {
       const applicableItems = appliedCoupon.appliesTo === 'all'
-        ? items
-        : items.filter(i => (appliedCoupon.appliesTo as string[]).includes(i.id));
+        ? pricedItems
+        : pricedItems.filter(i => (appliedCoupon.appliesTo as string[]).includes(i.id));
       const applicableSubtotal = applicableItems.reduce((s, i) => s + i.price * i.quantity, 0);
       if (applicableSubtotal > 0) {
         // Normalize type for comparison (handle PERCENTAGE, percent, PERCENT, etc.)
