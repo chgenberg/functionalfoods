@@ -6,10 +6,31 @@ import { ArrowRight, BookOpen, Tag, ShoppingCart, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useCart } from "@/app/context/CartContext";
 import {
+  getMothersDayBundleSavingsLabel,
   getMissingMothersDayBookId,
   isMothersDayCampaignActive,
   isMothersDayCampaignPreviewAllowed,
 } from "@/app/lib/campaigns/mothers-day";
+
+const MOTHERS_DAY_SAVINGS_LABEL = getMothersDayBundleSavingsLabel(
+  [
+    {
+      id: "brodboken-2026",
+      price: 65.09,
+      quantity: 1,
+      type: "book",
+      vatRate: 0.06,
+    },
+    {
+      id: "sota-godsaker",
+      price: 102.83,
+      quantity: 1,
+      type: "book",
+      vatRate: 0.06,
+    },
+  ],
+  true,
+);
 
 export default function EBockerPage() {
   const { addItem } = useCart();
@@ -232,24 +253,28 @@ export default function EBockerPage() {
       </section>
 
       {upsellBook && (
-        <div className="fixed bottom-4 left-4 right-4 z-50 mx-auto max-w-xl rounded-xl bg-white p-4 shadow-2xl border border-[#93C560]">
+        <div className="fixed bottom-4 left-4 right-4 z-50 mx-auto max-w-xl rounded-xl bg-[#FFF2EF] p-4 shadow-2xl border-2 border-[#FF7E70]">
           <button
             type="button"
             onClick={() => setUpsellBook(null)}
-            className="absolute right-3 top-3 rounded-full p-1 text-gray-500 hover:bg-gray-100"
+            className="absolute right-3 top-3 rounded-full p-1 text-gray-600 hover:bg-white/70"
             aria-label="Stäng"
           >
             <X className="h-4 w-4" />
           </button>
           <div className="pr-8">
-            <p className="text-xs font-semibold uppercase tracking-wide text-[#014421]">
+            <p className="text-xs font-semibold uppercase tracking-wide text-[#660D22]">
               Mors dag-erbjudande
             </p>
             <h2 className="mt-1 text-lg font-bold text-gray-900">
               Lägg till {upsellBook.title}
             </h2>
             <p className="mt-1 text-sm text-gray-600">
-              Köp Baka Glutenfritt och Söta Godsaker tillsammans för 125 kr.
+              Köp Baka Glutenfritt och Söta Godsaker tillsammans för{" "}
+              <strong className="text-gray-900">139 kr</strong>{" "}
+              <span className="font-semibold text-[#FF7E70]">
+                ({MOTHERS_DAY_SAVINGS_LABEL})
+              </span>
             </p>
           </div>
           <button
@@ -258,10 +283,10 @@ export default function EBockerPage() {
               handleBuyNow(upsellBook);
               setUpsellBook(null);
             }}
-            className="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-lg bg-[#014421] px-4 py-3 font-semibold text-white hover:bg-[#116530]"
+            className="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-lg bg-[#FF7E70] px-4 py-3 font-semibold text-white hover:bg-[#660D22] transition-colors"
           >
             <ShoppingCart className="h-4 w-4" />
-            Lägg till paketet
+            Lägg till i varukorgen
           </button>
         </div>
       )}
