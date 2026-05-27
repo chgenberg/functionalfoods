@@ -25,6 +25,7 @@ import {
   applyMothersDayBundlePricing,
   getMissingMothersDayBookId,
   isMothersDayCampaignActive,
+  isMothersDayCampaignPreviewAllowed,
 } from "@/app/lib/campaigns/mothers-day";
 
 // Course images mapping
@@ -91,8 +92,14 @@ export default function CartPage() {
 
   const [addingUpsell, setAddingUpsell] = useState(false);
   const [upsellAdded, setUpsellAdded] = useState(false);
+  const [campaignPreviewActive, setCampaignPreviewActive] = useState(false);
 
-  const campaignItems = applyMothersDayBundlePricing(items);
+  const mothersDayCampaignActive =
+    isMothersDayCampaignActive() || campaignPreviewActive;
+  const campaignItems = applyMothersDayBundlePricing(
+    items,
+    mothersDayCampaignActive,
+  );
   const getPricedItem = (item: (typeof items)[number]) =>
     campaignItems.find((pricedItem) => pricedItem.id === item.id) || item;
   const missingCampaignBookId = getMissingMothersDayBookId(items);
@@ -101,10 +108,17 @@ export default function CartPage() {
       ? CAMPAIGN_UPSELL_BOOKS[missingCampaignBookId]
       : UPSELL_BOOK;
   const campaignBookUpsell =
-    isMothersDayCampaignActive() && !!missingCampaignBookId;
+    mothersDayCampaignActive && !!missingCampaignBookId;
   const hasUpsellBook = items.some((item) => item.id === activeUpsellBook.id);
   const hasCourseInCart = items.some((item) => item.type === "course");
   const showUpsell = !hasUpsellBook && (hasCourseInCart || campaignBookUpsell);
+
+  useEffect(() => {
+    setCampaignPreviewActive(
+      typeof window !== "undefined" &&
+        isMothersDayCampaignPreviewAllowed(window.location.origin),
+    );
+  }, []);
 
   // Fire view/add events for items already in cart (covers direct-to-cart flows)
   useEffect(() => {

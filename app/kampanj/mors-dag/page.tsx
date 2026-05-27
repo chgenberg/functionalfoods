@@ -42,8 +42,9 @@ export default function MothersDayCampaignPage() {
       console.error("Failed to prepare Mother's Day campaign cart:", error);
     }
 
-    const query = window.location.search.replace(/^\?/, "");
-    window.location.href = `/checkout${query ? `?${query}` : ""}`;
+    const params = new URLSearchParams(window.location.search);
+    params.set("campaign", MOTHERS_DAY_CAMPAIGN_ID);
+    window.location.href = `/checkout?${params.toString()}`;
   }, []);
 
   return (

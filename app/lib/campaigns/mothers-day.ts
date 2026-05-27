@@ -17,6 +17,10 @@ export type CampaignCartItem = {
   vatRate?: number;
 };
 
+export function isMothersDayCampaignId(campaignId?: string | null) {
+  return campaignId === MOTHERS_DAY_CAMPAIGN_ID;
+}
+
 function campaignForceEnabled() {
   const env =
     typeof process !== "undefined" && process.env ? process.env : {};
@@ -54,6 +58,52 @@ export function isMothersDayCampaignActive(date = new Date()) {
 
   const today = dateKey(stockholmDateParts(date));
   return today >= dateKey(CAMPAIGN_START) && today <= dateKey(CAMPAIGN_END);
+}
+
+export function isMothersDayCampaignPreviewAllowed(origin?: string | null) {
+  if (campaignForceEnabled()) return true;
+  if (!origin) return false;
+
+  try {
+    const hostname = new URL(origin).hostname;
+    if (hostname === "localhost" || hostname === "127.0.0.1") return true;
+    if (hostname.includes("staging")) return true;
+    if (hostname.endsWith(".vercel.app")) return true;
+    if (hostname.endsWith(".railway.app")) return true;
+    return ![
+      "functionalfoods.se",
+      "www.functionalfoods.se",
+      "ulrikafunctionalfoods.com",
+      "www.ulrikafunctionalfoods.com",
+    ].includes(hostname);
+  } catch {
+    return false;
+  }
+}
+
+export function shouldApplyMothersDayCampaign(options?: {
+  campaignId?: string | null;
+  origin?: string | null;
+  date?: Date;
+}) {
+  if (isMothersDayCampaignActive(options?.date)) return true;
+  return (
+    isMothersDayCampaignId(options?.campaignId) &&
+    isMothersDayCampaignPreviewAllowed(options?.origin)
+  );
+}
+
+export function hasStoredMothersDayCampaign() {
+  if (typeof window === "undefined") return false;
+
+  try {
+    const stored = sessionStorage.getItem(MOTHERS_DAY_CAMPAIGN_STORAGE_KEY);
+    if (!stored) return false;
+    const parsed = JSON.parse(stored);
+    return isMothersDayCampaignId(parsed?.id);
+  } catch {
+    return false;
+  }
 }
 
 export function isMothersDayBook(id: string) {

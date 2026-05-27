@@ -1,7 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { withRateLimit, checkoutRateLimit } from "@/app/lib/rate-limit";
 import { prisma } from "@/app/lib/database";
-import { applyMothersDayBundlePricing } from "@/app/lib/campaigns/mothers-day";
+import {
+  applyMothersDayBundlePricing,
+  shouldApplyMothersDayCampaign,
+} from "@/app/lib/campaigns/mothers-day";
 
 export const dynamic = "force-dynamic";
 
@@ -9,7 +12,7 @@ export async function POST(req: NextRequest) {
   return withRateLimit(req, checkoutRateLimit, async () => {
     try {
       const body = await req.json();
-      const { items, customer, couponCode, attribution } = body as {
+      const { items, customer, couponCode, campaignId, attribution } = body as {
         items: Array<{
           id: string;
           name: string;
@@ -19,6 +22,7 @@ export async function POST(req: NextRequest) {
         }>;
         customer?: { email?: string; name?: string; id?: string };
         couponCode?: string;
+        campaignId?: string;
         attribution?: {
           gclid?: string;
           gbraid?: string;
@@ -165,6 +169,10 @@ export async function POST(req: NextRequest) {
             type: product.type || "course",
             vatRate: product.vatRate || 0.25,
           };
+        }),
+        shouldApplyMothersDayCampaign({
+          campaignId,
+          origin: req.headers.get("origin"),
         }),
       );
       // --- END SECURITY FIX ---
