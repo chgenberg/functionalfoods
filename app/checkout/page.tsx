@@ -652,11 +652,13 @@ export default function Checkout() {
                     <span className="text-gray-900 whitespace-nowrap">{subtotalExVat.toLocaleString()} kr</span>
                   </div>
                   {hasDiscount && (
-	                    <div className="flex justify-between text-xs sm:text-sm">
-	                      <span className="text-gray-600">Rabatt</span>
-	                      <span className="text-green-600 whitespace-nowrap">-{discountExVat.toLocaleString()} kr</span>
-	                    </div>
-	                  )}
+                    <div className="flex justify-between text-xs sm:text-sm">
+                      <span className="text-gray-600">Rabatt</span>
+                      <span className="text-green-600 whitespace-nowrap">
+                        -{discountExVat.toLocaleString()} kr
+                      </span>
+                    </div>
+                  )}
                   {mothersDaySavingsGross > 0 && (
 	                  <div className="flex justify-between text-xs sm:text-sm">
 	                    <span className="font-semibold text-[#FF7E70]">
