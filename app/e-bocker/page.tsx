@@ -3,21 +3,30 @@
 import Link from "next/link";
 import Image from "next/image";
 import { ArrowRight, BookOpen, Tag, ShoppingCart, X } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useCart } from "@/app/context/CartContext";
 import {
   getMissingMothersDayBookId,
   isMothersDayCampaignActive,
+  isMothersDayCampaignPreviewAllowed,
 } from "@/app/lib/campaigns/mothers-day";
 
 export default function EBockerPage() {
   const { addItem } = useCart();
+  const [campaignPreviewActive, setCampaignPreviewActive] = useState(false);
   const [upsellBook, setUpsellBook] = useState<null | {
     id: string;
     title: string;
     image: string;
     price: string;
   }>(null);
+
+  useEffect(() => {
+    setCampaignPreviewActive(
+      typeof window !== "undefined" &&
+        isMothersDayCampaignPreviewAllowed(window.location.origin),
+    );
+  }, []);
 
   const ebooks = [
     {
@@ -87,7 +96,7 @@ export default function EBockerPage() {
       image: ebook.image,
     });
 
-    if (isMothersDayCampaignActive()) {
+    if (isMothersDayCampaignActive() || campaignPreviewActive) {
       const missingBookId = getMissingMothersDayBookId([
         {
           id: ebook.id,
