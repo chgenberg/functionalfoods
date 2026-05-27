@@ -83,7 +83,6 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       }
     }
 
-    const newTotal = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
     const pricedItems = applyMothersDayBundlePricing(items);
     const newTotal = pricedItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
     setTotal(newTotal);
