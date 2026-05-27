@@ -279,6 +279,9 @@ export default function Checkout() {
   const courseSubtotalExVat = courseItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
   const subtotalExVat = campaignItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
   const mothersDaySavingsGross = getMothersDayBundleSavingsGross(
+  	items,
+  	mothersDayCampaignActive,
+  );
   
   // Distribute discount proportionally
   const discountExVat = discount;
