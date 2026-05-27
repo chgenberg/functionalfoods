@@ -493,7 +493,7 @@ export default function CartPage() {
 
                     <p className="text-xs sm:text-sm text-gray-600 leading-snug mb-2 line-clamp-2 sm:line-clamp-none">
                       {campaignBookUpsell
-                        ? "Köp båda e-böckerna för 125 kr under kampanjen."
+                        ? "Bara under Mors dag-helgen - köp båda e-böckerna för 139 kr."
                         : activeUpsellBook.description}
                     </p>
 
@@ -506,7 +506,7 @@ export default function CartPage() {
                       <div className="min-w-0">
                         <div className="text-lg sm:text-2xl font-bold text-[#014421] leading-none">
                           {(campaignBookUpsell
-                            ? 125
+                            ? 139
                             : Math.round(activeUpsellBook.price * 1.06)
                           ).toLocaleString(
                             "sv-SE",
