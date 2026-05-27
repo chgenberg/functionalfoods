@@ -21,6 +21,11 @@ import {
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { trackAddToCart, trackViewContent } from "@/app/lib/analytics";
+import {
+  applyMothersDayBundlePricing,
+  getMissingMothersDayBookId,
+  isMothersDayCampaignActive,
+} from "@/app/lib/campaigns/mothers-day";
 
 // Course images mapping
 const courseImages: Record<string, string> = {
@@ -55,16 +60,26 @@ const UPSELL_BOOK = {
   description: "Över 50 favoritrecept – utan gluten och vitt socker.",
 };
 
+const CAMPAIGN_UPSELL_BOOKS: Record<string, typeof UPSELL_BOOK> = {
+  "brodboken-2026": {
+    id: "brodboken-2026",
+    name: "Baka Glutenfritt – E-bok",
+    price: 65.09,
+    type: "book" as const,
+    image: "/baka-glutenfritt-square.png",
+    description: "Glutenfria brödrecept för vardag och fest.",
+  },
+  "sota-godsaker": UPSELL_BOOK,
+};
+
 export default function CartPage() {
   const {
     items,
     addItem,
     removeItem,
     updateQuantity,
-    total,
     isLoaded,
     discount,
-    finalTotal,
     appliedCoupon,
     applyCoupon,
     removeCoupon,
@@ -77,9 +92,19 @@ export default function CartPage() {
   const [addingUpsell, setAddingUpsell] = useState(false);
   const [upsellAdded, setUpsellAdded] = useState(false);
 
-  const hasUpsellBook = items.some((item) => item.id === UPSELL_BOOK.id);
+  const campaignItems = applyMothersDayBundlePricing(items);
+  const getPricedItem = (item: (typeof items)[number]) =>
+    campaignItems.find((pricedItem) => pricedItem.id === item.id) || item;
+  const missingCampaignBookId = getMissingMothersDayBookId(items);
+  const activeUpsellBook =
+    missingCampaignBookId && CAMPAIGN_UPSELL_BOOKS[missingCampaignBookId]
+      ? CAMPAIGN_UPSELL_BOOKS[missingCampaignBookId]
+      : UPSELL_BOOK;
+  const campaignBookUpsell =
+    isMothersDayCampaignActive() && !!missingCampaignBookId;
+  const hasUpsellBook = items.some((item) => item.id === activeUpsellBook.id);
   const hasCourseInCart = items.some((item) => item.type === "course");
-  const showUpsell = !hasUpsellBook && hasCourseInCart;
+  const showUpsell = !hasUpsellBook && (hasCourseInCart || campaignBookUpsell);
 
   // Fire view/add events for items already in cart (covers direct-to-cart flows)
   useEffect(() => {
@@ -152,20 +177,20 @@ export default function CartPage() {
 
     try {
       addItem({
-        id: UPSELL_BOOK.id,
-        name: UPSELL_BOOK.name,
-        price: UPSELL_BOOK.price,
-        type: UPSELL_BOOK.type,
-        image: UPSELL_BOOK.image,
+        id: activeUpsellBook.id,
+        name: activeUpsellBook.name,
+        price: activeUpsellBook.price,
+        type: activeUpsellBook.type,
+        image: activeUpsellBook.image,
         quantity: 1,
       });
 
       try {
         trackAddToCart(
           {
-            id: UPSELL_BOOK.id,
-            name: UPSELL_BOOK.name,
-            price: UPSELL_BOOK.price,
+            id: activeUpsellBook.id,
+            name: activeUpsellBook.name,
+            price: activeUpsellBook.price,
             quantity: 1,
           },
           "SEK",
@@ -329,7 +354,7 @@ export default function CartPage() {
                   <div className="text-right">
                     <div className="text-xl font-bold text-[#014421]">
                       {Math.round(
-                        item.price *
+                        getPricedItem(item).price *
                           item.quantity *
                           (item.type === "book" ? 1.06 : 1.25),
                       ).toLocaleString("sv-SE")}{" "}
@@ -408,7 +433,7 @@ export default function CartPage() {
                       <div className="text-right">
                         <div className="text-2xl font-bold text-[#014421]">
                           {Math.round(
-                            item.price *
+                            getPricedItem(item).price *
                               item.quantity *
                               (item.type === "book" ? 1.06 : 1.25),
                           ).toLocaleString("sv-SE")}{" "}
@@ -417,7 +442,7 @@ export default function CartPage() {
                         {item.quantity > 1 && (
                           <div className="text-sm text-gray-500">
                             {Math.round(
-                              item.price * (item.type === "book" ? 1.06 : 1.25),
+                              getPricedItem(item).price * (item.type === "book" ? 1.06 : 1.25),
                             ).toLocaleString("sv-SE")}{" "}
                             kr/st (inkl. moms)
                           </div>
@@ -434,8 +459,8 @@ export default function CartPage() {
                 <div className="flex gap-3 sm:gap-5">
                   <div className="flex-shrink-0 w-20 h-20 sm:w-28 sm:h-28 rounded-xl overflow-hidden bg-gray-100">
                     <Image
-                      src={UPSELL_BOOK.image}
-                      alt={UPSELL_BOOK.name}
+                      src={activeUpsellBook.image}
+                      alt={activeUpsellBook.name}
                       width={112}
                       height={112}
                       className="w-full h-full object-cover"
@@ -449,11 +474,13 @@ export default function CartPage() {
                     </div>
 
                     <h3 className="text-sm sm:text-lg font-semibold text-[#014421] leading-snug mb-1">
-                      Lägg till Söta Godsaker
+                      Lägg till {activeUpsellBook.name.replace(" – E-bok", "")}
                     </h3>
 
                     <p className="text-xs sm:text-sm text-gray-600 leading-snug mb-2 line-clamp-2 sm:line-clamp-none">
-                      Över 50 favoritrecept – utan gluten och vitt socker.
+                      {campaignBookUpsell
+                        ? "Köp båda e-böckerna för 125 kr under kampanjen."
+                        : activeUpsellBook.description}
                     </p>
 
                     <div className="flex items-center gap-2 text-[11px] sm:text-sm text-gray-500 mb-2 sm:mb-3">
@@ -464,7 +491,10 @@ export default function CartPage() {
                     <div className="flex items-end justify-between gap-3">
                       <div className="min-w-0">
                         <div className="text-lg sm:text-2xl font-bold text-[#014421] leading-none">
-                          {Math.round(UPSELL_BOOK.price * 1.06).toLocaleString(
+                          {(campaignBookUpsell
+                            ? 125
+                            : Math.round(activeUpsellBook.price * 1.06)
+                          ).toLocaleString(
                             "sv-SE",
                           )}{" "}
                           kr
@@ -617,7 +647,7 @@ export default function CartPage() {
                     </span>
                     <span className="font-medium text-gray-900 whitespace-nowrap">
                       {Math.round(
-                        item.price *
+                        getPricedItem(item).price *
                           item.quantity *
                           (item.type === "book" ? 1.06 : 1.25),
                       ).toLocaleString("sv-SE")}{" "}
@@ -635,11 +665,11 @@ export default function CartPage() {
                     (item) => item.type === "course",
                   );
 
-                  const subtotalInclVat = items.reduce((sum, item) => {
+                  const subtotalInclVat = campaignItems.reduce((sum, item) => {
                     const vatRate = item.type === "book" ? 1.06 : 1.25;
                     return sum + item.price * item.quantity * vatRate;
                   }, 0);
-                  const totalVat = items.reduce((sum, item) => {
+                  const totalVat = campaignItems.reduce((sum, item) => {
                     const vatRate = item.type === "book" ? 0.06 : 0.25;
                     return sum + item.price * item.quantity * vatRate;
                   }, 0);
@@ -778,7 +808,7 @@ export default function CartPage() {
             const hasBooks = items.some((item) => item.type === "book");
             const hasCourses = items.some((item) => item.type === "course");
 
-            const subtotalInclVat = items.reduce((sum, item) => {
+            const subtotalInclVat = campaignItems.reduce((sum, item) => {
               const vatRate = item.type === "book" ? 1.06 : 1.25;
               return sum + item.price * item.quantity * vatRate;
             }, 0);
