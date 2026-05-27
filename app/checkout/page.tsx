@@ -13,6 +13,7 @@ import { trackInitiateCheckout } from '../lib/analytics';
 import { readAttribution } from '../lib/attribution';
 import {
   applyMothersDayBundlePricing,
+  getMothersDayBundleSavingsGross,
   getMissingMothersDayBookId,
   hasStoredMothersDayCampaign,
   isMothersDayCampaignId,
@@ -277,6 +278,7 @@ export default function Checkout() {
   const bookSubtotalExVat = bookItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
   const courseSubtotalExVat = courseItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
   const subtotalExVat = campaignItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+  const mothersDaySavingsGross = getMothersDayBundleSavingsGross(
   
   // Distribute discount proportionally
   const discountExVat = discount;
@@ -595,7 +597,7 @@ export default function Checkout() {
                           Lägg till {mothersDayUpsellBook.name.replace(' – E-bok av Ulrika Davidsson', '')}
                         </h3>
                         <p className="text-xs text-gray-600 mt-1">
-                          Köp båda e-böckerna för 125 kr.
+                          Bara under Mors dag-helgen - köp båda e-böckerna för 139 kr.
                         </p>
                       </div>
                     </div>
@@ -650,11 +652,21 @@ export default function Checkout() {
                     <span className="text-gray-900 whitespace-nowrap">{subtotalExVat.toLocaleString()} kr</span>
                   </div>
                   {hasDiscount && (
-                    <div className="flex justify-between text-xs sm:text-sm">
-                      <span className="text-gray-600">Rabatt</span>
-                      <span className="text-green-600 whitespace-nowrap">-{discountExVat.toLocaleString()} kr</span>
-                    </div>
-                  )}
+	                    <div className="flex justify-between text-xs sm:text-sm">
+	                      <span className="text-gray-600">Rabatt</span>
+	                      <span className="text-green-600 whitespace-nowrap">-{discountExVat.toLocaleString()} kr</span>
+	                    </div>
+	                  )}
+                  {mothersDaySavingsGross > 0 && (
+	                  <div className="flex justify-between text-xs sm:text-sm">
+	                    <span className="font-semibold text-[#FF7E70]">
+                        Mors dag-rabatt
+                      </span>
+                      <span className="font-semibold text-[#FF7E70] whitespace-nowrap">
+                        Spara {mothersDaySavingsGross.toLocaleString("sv-SE")} kr
+                      </span>
+	                  </div>
+	                )}
                   <div className="flex justify-between text-xs sm:text-sm pb-2 border-b">
                     <span className="text-gray-600">{vatLabel}</span>
                     <span className="text-gray-900 whitespace-nowrap">{vatAmount.toLocaleString('sv-SE', { minimumFractionDigits: 0, maximumFractionDigits: 2 })} kr</span>
