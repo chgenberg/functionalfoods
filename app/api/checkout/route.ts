@@ -137,9 +137,16 @@ export async function POST(req: NextRequest) {
               courseProducts.find(
                 (p) => p.name.toLowerCase() === item.name.toLowerCase(),
               );
+            if (product && !product.vatRate) {
+              product = { ...product, type: "course", vatRate: 0.25 };
             }
           }
-          // Determine effective price (excl. VAT) using campaign if active
+          if (!product) {
+            throw new Error(
+              `Produkten med id "${item.id}" och namn "${item.name}" hittades inte.`,
+            );
+          }          
+              // Determine effective price (excl. VAT) using campaign if active
           const basePrice =
             typeof product.basePrice === "number"
               ? product.basePrice
