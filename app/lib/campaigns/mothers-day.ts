@@ -1,6 +1,6 @@
 export const MOTHERS_DAY_CAMPAIGN_ID = "mors-dag-2026";
 export const MOTHERS_DAY_CAMPAIGN_STORAGE_KEY = "ff_campaign_mors_dag_2026";
-export const MOTHERS_DAY_BUNDLE_GROSS_PRICE = 125;
+export const MOTHERS_DAY_BUNDLE_GROSS_PRICE = 139;
 export const MOTHERS_DAY_BOOK_IDS = ["brodboken-2026", "sota-godsaker"] as const;
 
 const STOCKHOLM_TIME_ZONE = "Europe/Stockholm";
@@ -180,4 +180,24 @@ export function getMothersDayBundleSavingsGross(
   const campaignGross = MOTHERS_DAY_BUNDLE_GROSS_PRICE * bundleCount;
 
   return Math.max(0, Math.round(normalBundleGross - campaignGross));
+}
+
+export function getMothersDayBundleDiscountPercent(
+  items: CampaignCartItem[],
+  active = isMothersDayCampaignActive(),
+) {
+  const savings = getMothersDayBundleSavingsGross(items, active);
+  if (savings <= 0) return 0;
+
+  return Math.round(
+    (savings / (savings + MOTHERS_DAY_BUNDLE_GROSS_PRICE)) * 100,
+  );
+}
+
+export function getMothersDayBundleSavingsLabel(
+  items: CampaignCartItem[],
+  active = isMothersDayCampaignActive(),
+) {
+  const savings = getMothersDayBundleSavingsGross(items, active);
+  return savings > 0 ? `Spara ${savings} kr` : "";
 }
