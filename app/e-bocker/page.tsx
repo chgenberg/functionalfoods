@@ -253,7 +253,7 @@ export default function EBockerPage() {
       </section>
 
       {upsellBook && (
-        <div className="fixed bottom-4 left-4 right-4 z-50 mx-auto max-w-xl rounded-xl bg-[#FFF2EF] p-4 shadow-2xl border-2 border-[#FF7E70]">
+        <div className="fixed bottom-4 left-4 right-4 z-50 mx-auto max-w-2xl rounded-xl bg-[#FFF2EF] p-4 shadow-2xl border-2 border-[#FF7E70]">
           <button
             type="button"
             onClick={() => setUpsellBook(null)}
@@ -270,10 +270,12 @@ export default function EBockerPage() {
               Lägg till {upsellBook.title}
             </h2>
             <p className="mt-1 text-sm text-gray-600">
-              Köp Baka Glutenfritt och Söta Godsaker tillsammans för{" "}
-              <strong className="text-gray-900">139 kr</strong>{" "}
-              <span className="font-semibold text-[#FF7E70]">
-                ({MOTHERS_DAY_SAVINGS_LABEL})
+              Köp Baka Glutenfritt & Söta Godsaker tillsammans för{" "}
+              <span className="whitespace-nowrap">
+                <strong className="text-gray-900">139 kr</strong>{" "}
+                <span className="font-semibold text-[#FF7E70]">
+                  ({MOTHERS_DAY_SAVINGS_LABEL})
+                </span>
               </span>
             </p>
           </div>
