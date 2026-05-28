@@ -23,6 +23,7 @@ import { useEffect, useState } from "react";
 import { trackAddToCart, trackViewContent } from "@/app/lib/analytics";
 import {
   applyMothersDayBundlePricing,
+  getMothersDayBundleSavingsGross,
   getMissingMothersDayBookId,
   isMothersDayCampaignActive,
   isMothersDayCampaignPreviewAllowed,
@@ -92,11 +93,18 @@ export default function CartPage() {
 
   const [addingUpsell, setAddingUpsell] = useState(false);
   const [upsellAdded, setUpsellAdded] = useState(false);
-  const [campaignPreviewActive, setCampaignPreviewActive] = useState(false);
+  const [campaignPreviewActive, setCampaignPreviewActive] = useState(
+    typeof window !== "undefined" &&
+      isMothersDayCampaignPreviewAllowed(window.location.origin),
+  );
 
   const mothersDayCampaignActive =
     isMothersDayCampaignActive() || campaignPreviewActive;
   const campaignItems = applyMothersDayBundlePricing(
+    items,
+    mothersDayCampaignActive,
+  );
+  const mothersDaySavingsGross = getMothersDayBundleSavingsGross(
     items,
     mothersDayCampaignActive,
   );
@@ -505,10 +513,7 @@ export default function CartPage() {
                     <div className="flex items-end justify-between gap-3">
                       <div className="min-w-0">
                         <div className="text-lg sm:text-2xl font-bold text-[#014421] leading-none">
-                          {(campaignBookUpsell
-                            ? 139
-                            : Math.round(activeUpsellBook.price * 1.06)
-                          ).toLocaleString(
+                          {Math.round(activeUpsellBook.price * 1.06).toLocaleString(
                             "sv-SE",
                           )}{" "}
                           kr
@@ -683,6 +688,10 @@ export default function CartPage() {
                     const vatRate = item.type === "book" ? 1.06 : 1.25;
                     return sum + item.price * item.quantity * vatRate;
                   }, 0);
+                  const originalSubtotalInclVat = items.reduce((sum, item) => {
+                    const vatRate = item.type === "book" ? 1.06 : 1.25;
+                    return sum + item.price * item.quantity * vatRate;
+                  }, 0);
                   const totalVat = campaignItems.reduce((sum, item) => {
                     const vatRate = item.type === "book" ? 0.06 : 0.25;
                     return sum + item.price * item.quantity * vatRate;
@@ -731,15 +740,39 @@ export default function CartPage() {
 
                   return (
                     <>
-                      <div className="flex justify-between text-xs sm:text-sm">
-                        <span className="text-gray-600">
-                          Delsumma (inkl. moms)
-                        </span>
-                        <span className="text-gray-900 whitespace-nowrap">
-                          {Math.round(subtotalInclVat).toLocaleString("sv-SE")}{" "}
-                          kr
-                        </span>
-                      </div>
+                      {mothersDaySavingsGross > 0 ? (
+                        <>
+                          <div className="flex justify-between text-xs sm:text-sm">
+                            <span className="text-gray-600">
+                              Ordinarie pris (inkl. moms)
+                            </span>
+                            <span className="text-gray-900 whitespace-nowrap">
+                              {Math.round(originalSubtotalInclVat).toLocaleString(
+                                "sv-SE",
+                              )}{" "}
+                              kr
+                            </span>
+                          </div>
+                          <div className="flex justify-between text-xs sm:text-sm">
+                            <span className="font-semibold text-[#FF7E70]">
+                              Mors dag-rabatt
+                            </span>
+                            <span className="font-semibold text-[#FF7E70] whitespace-nowrap">
+                              Spara {mothersDaySavingsGross.toLocaleString("sv-SE")} kr
+                            </span>
+                          </div>
+                        </>
+                      ) : (
+                        <div className="flex justify-between text-xs sm:text-sm">
+                          <span className="text-gray-600">
+                            Delsumma (inkl. moms)
+                          </span>
+                          <span className="text-gray-900 whitespace-nowrap">
+                            {Math.round(subtotalInclVat).toLocaleString("sv-SE")}{" "}
+                            kr
+                          </span>
+                        </div>
+                      )}
                       {discountInclVat > 0 && (
                         <div className="flex justify-between text-xs sm:text-sm">
                           <span className="text-[#93C560]">Rabatt</span>
