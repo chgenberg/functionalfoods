@@ -6,6 +6,10 @@ import {
 } from "@/app/lib/svea-checkout-service";
 import { emailService } from "@/app/lib/email";
 import { getMailchimpMarketing } from "@/app/lib/mailchimp-marketing";
+import {
+  applyMothersDayBundlePricing,
+  shouldApplyMothersDayCampaign,
+} from "@/app/lib/campaigns/mothers-day";
 import bcrypt from "bcryptjs";
 import type {
   SveaCartItem,
@@ -47,6 +51,7 @@ interface CheckoutRequest {
     id?: string;
   };
   couponCode?: string;
+  campaignId?: string;
   attribution?: Attribution;
 }
 
@@ -67,7 +72,11 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const { items, customer, couponCode, attribution } = body;
+    const { items, customer, couponCode, campaignId, attribution } = body;
+    const mothersDayCampaignActive = shouldApplyMothersDayCampaign({
+      campaignId,
+      origin: req.headers.get("origin"),
+    });
 
     // Validate request
     if (!items || !Array.isArray(items) || items.length === 0) {
@@ -281,6 +290,11 @@ export async function POST(req: NextRequest) {
         );
       }
     }
+    const campaignPricedItems = applyMothersDayBundlePricing(
+      validatedItems,
+      mothersDayCampaignActive,
+    );
+    validatedItems.splice(0, validatedItems.length, ...campaignPricedItems);
     console.log(`✅ Validated ${validatedItems.length} items`);
     console.log(
       "🔍 VALIDATED ITEMS DEBUG:",
@@ -341,10 +355,11 @@ export async function POST(req: NextRequest) {
 
       // Calculate order totals (öre) from validated items
       // VIKTIGT: Svea förväntar sig pris INKLUSIVE moms (samma som riktiga betalningar)
-      const VAT_RATE = 0.25;
       let subtotal = 0;
       for (const item of validatedItems) {
-        const priceInclVAT = item.price * (1 + VAT_RATE);
+        const itemVatRate =
+          item.vatRate || (item.type === "book" ? 0.06 : 0.25);
+        const priceInclVAT = item.price * (1 + itemVatRate);
         subtotal +=
           SveaCheckoutService.formatPriceToMinorUnits(priceInclVAT) *
           item.quantity;

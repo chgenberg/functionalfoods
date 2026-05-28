@@ -1,5 +1,6 @@
 "use client";
 import { useState, useEffect } from 'react';
+import { useSearchParams } from 'next/navigation';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../hooks/useAuth';
 import Link from 'next/link';
@@ -10,6 +11,17 @@ import { useT } from '../lib/i18n/LanguageProvider';
 import { ArrowLeft, Lock, CreditCard, User, Mail, Tag, X, Smartphone, ShoppingCart, ArrowRight, Book } from 'lucide-react';
 import { trackInitiateCheckout } from '../lib/analytics';
 import { readAttribution } from '../lib/attribution';
+import {
+  applyMothersDayBundlePricing,
+  getMothersDayBundleSavingsGross,
+  getMissingMothersDayBookId,
+  hasStoredMothersDayCampaign,
+  isMothersDayCampaignId,
+  isMothersDayCampaignActive,
+  isMothersDayCampaignPreviewAllowed,
+  MOTHERS_DAY_CAMPAIGN_ID,
+  MOTHERS_DAY_CAMPAIGN_STORAGE_KEY,
+} from '../lib/campaigns/mothers-day';
 
 // Course images mapping
 const courseImages: Record<string, string> = {
@@ -20,7 +32,8 @@ const courseImages: Record<string, string> = {
 
 export default function Checkout() {
   const t = useT();
-  const { items, total, discount, finalTotal, appliedCoupon, applyCoupon, removeCoupon } = useCart();
+  const searchParams = useSearchParams();
+  const { items, addItem, discount, appliedCoupon, applyCoupon, removeCoupon } = useCart();
   const { user } = useAuth();
   const splitFullName = (fullName?: string | null) => {
     const trimmed = (fullName || '').trim();
@@ -39,6 +52,45 @@ export default function Checkout() {
   const [couponInput, setCouponInput] = useState('');
   const [couponError, setCouponError] = useState<string | null>(null);
   const [applying, setApplying] = useState(false);
+  const campaignFromUrl = isMothersDayCampaignId(searchParams.get('campaign'));
+  const [storedCampaignActive, setStoredCampaignActive] = useState(false);
+  const [previewCampaignActive, setPreviewCampaignActive] = useState(
+    typeof window !== 'undefined' &&
+      isMothersDayCampaignPreviewAllowed(window.location.origin)
+  );
+  const calendarCampaignActive = isMothersDayCampaignActive();
+  const mothersDayCampaignActive =
+    calendarCampaignActive ||
+    storedCampaignActive ||
+    previewCampaignActive;
+  const campaignId = mothersDayCampaignActive ? MOTHERS_DAY_CAMPAIGN_ID : undefined;
+  const campaignItems = applyMothersDayBundlePricing(items, mothersDayCampaignActive);
+  const getPricedItem = (item: (typeof items)[number]) =>
+    campaignItems.find((pricedItem) => pricedItem.id === item.id) || item;
+  const missingCampaignBookId = getMissingMothersDayBookId(items);
+  const showMothersDayCheckoutUpsell =
+    mothersDayCampaignActive && !!missingCampaignBookId;
+
+  const mothersDayUpsellBook =
+    missingCampaignBookId === 'brodboken-2026'
+      ? {
+          id: 'brodboken-2026',
+          name: 'Baka Glutenfritt – E-bok av Ulrika Davidsson',
+          price: 65.09,
+          quantity: 1,
+          type: 'book' as const,
+          image: '/baka-glutenfritt-square.png'
+        }
+      : missingCampaignBookId === 'sota-godsaker'
+        ? {
+            id: 'sota-godsaker',
+            name: 'Söta Godsaker – E-bok av Ulrika Davidsson',
+            price: 102.83,
+            quantity: 1,
+            type: 'book' as const,
+            image: '/sota-godsaker-square.png'
+          }
+        : null;
   
   // Guest checkout form data
   const [guestMode, setGuestMode] = useState(!user);
@@ -58,6 +110,32 @@ export default function Checkout() {
       ? (firstNameIsValid && lastNameIsValid && emailIsValid)
       : (!!user && firstNameIsValid && lastNameIsValid)
   );
+
+  useEffect(() => {
+    const previewAllowed =
+      typeof window !== 'undefined' &&
+      isMothersDayCampaignPreviewAllowed(window.location.origin);
+
+    setPreviewCampaignActive(previewAllowed);
+
+    if (campaignFromUrl && (calendarCampaignActive || previewAllowed)) {
+      try {
+        sessionStorage.setItem(
+          MOTHERS_DAY_CAMPAIGN_STORAGE_KEY,
+          JSON.stringify({
+            id: MOTHERS_DAY_CAMPAIGN_ID,
+            source: 'checkout-url',
+            createdAt: new Date().toISOString()
+          })
+        );
+      } catch {}
+    } else if (!calendarCampaignActive && !previewAllowed) {
+      try {
+        sessionStorage.removeItem(MOTHERS_DAY_CAMPAIGN_STORAGE_KEY);
+      } catch {}
+    }
+    setStoredCampaignActive(hasStoredMothersDayCampaign());
+  }, [campaignFromUrl, calendarCampaignActive]);
 
   useEffect(() => {
     if (user) {
@@ -106,7 +184,7 @@ export default function Checkout() {
       // Build checkout payload (compatible with Stripe /api/checkout endpoint)
       const attribution = readAttribution();
       const checkoutData = {
-        items: items.map(item => ({
+        items: campaignItems.map(item => ({
           id: item.id,
           name: item.name,
           price: item.price,
@@ -122,14 +200,15 @@ export default function Checkout() {
           id: user.id
         } : undefined),
         couponCode: appliedCoupon?.code || undefined,
+        campaignId,
         attribution
       };
 
       // Fire analytics: Initiate Checkout / begin_checkout before redirect
       try {
         trackInitiateCheckout({
-          items: items.map(i => ({ id: i.id, name: i.name, price: i.price, quantity: i.quantity })),
-          value: finalTotal
+          items: campaignItems.map(i => ({ id: i.id, name: i.name, price: i.price, quantity: i.quantity })),
+          value: campaignItems.reduce((sum, item) => sum + item.price * item.quantity, 0)
         });
       } catch {}
 
@@ -196,12 +275,16 @@ export default function Checkout() {
   const COURSE_VAT_RATE = 0.25;
   
   // Calculate VAT per item type
-  const bookItems = items.filter(item => item.type === 'book');
-  const courseItems = items.filter(item => item.type === 'course');
+  const bookItems = campaignItems.filter(item => item.type === 'book');
+  const courseItems = campaignItems.filter(item => item.type === 'course');
   
   const bookSubtotalExVat = bookItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
   const courseSubtotalExVat = courseItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-  const subtotalExVat = total;
+  const subtotalExVat = campaignItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+  const mothersDaySavingsGross = getMothersDayBundleSavingsGross(
+  	items,
+  	mothersDayCampaignActive,
+  );
   
   // Distribute discount proportionally
   const discountExVat = discount;
@@ -495,10 +578,44 @@ export default function Checkout() {
                       <p className="text-xs sm:text-sm text-gray-500">
                         {item.type === 'course' ? 'Kurs' : 'Bok'} • {item.quantity} st
                       </p>
-                      <p className="font-medium text-sm sm:text-base text-gray-900 mt-0.5 sm:mt-1">{Math.round(item.price * (1 + (item.type === 'book' ? BOOK_VAT_RATE : COURSE_VAT_RATE))).toLocaleString()} kr</p>
+                      <p className="font-medium text-sm sm:text-base text-gray-900 mt-0.5 sm:mt-1">{Math.round(getPricedItem(item).price * (1 + (item.type === 'book' ? BOOK_VAT_RATE : COURSE_VAT_RATE))).toLocaleString()} kr</p>
                     </div>
                   </div>
                 ))}
+
+                {showMothersDayCheckoutUpsell && mothersDayUpsellBook && (
+                  <div className="rounded-xl border border-[#93C560] bg-[#93C560]/10 p-3 sm:p-4">
+                    <div className="flex gap-3">
+                      <div className="w-14 h-14 rounded-lg overflow-hidden bg-white flex-shrink-0">
+                        <Image
+                          src={mothersDayUpsellBook.image}
+                          alt={mothersDayUpsellBook.name}
+                          width={56}
+                          height={56}
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-xs font-semibold text-[#014421]">
+                          Mors dag-erbjudande
+                        </p>
+                        <h3 className="text-sm font-medium text-gray-900 truncate">
+                          Lägg till {mothersDayUpsellBook.name.replace(' – E-bok av Ulrika Davidsson', '')}
+                        </h3>
+                        <p className="text-xs text-gray-600 mt-1">
+                          Bara under Mors dag-helgen - köp båda e-böckerna för 139 kr.
+                        </p>
+                      </div>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => addItem(mothersDayUpsellBook)}
+                      className="mt-3 w-full rounded-lg bg-[#014421] px-4 py-2.5 text-sm font-medium text-white hover:bg-[#1a5530] transition-colors"
+                    >
+                      Lägg till erbjudandet
+                    </button>
+                  </div>
+                )}
 
                 {/* Coupon */}
                 <div className="pt-3 sm:pt-4 border-t border-gray-100">
@@ -543,9 +660,21 @@ export default function Checkout() {
                   {hasDiscount && (
                     <div className="flex justify-between text-xs sm:text-sm">
                       <span className="text-gray-600">Rabatt</span>
-                      <span className="text-green-600 whitespace-nowrap">-{discountExVat.toLocaleString()} kr</span>
+                      <span className="text-green-600 whitespace-nowrap">
+                        -{discountExVat.toLocaleString()} kr
+                      </span>
                     </div>
                   )}
+                  {mothersDaySavingsGross > 0 && (
+	                  <div className="flex justify-between text-xs sm:text-sm">
+	                    <span className="font-semibold text-[#FF7E70]">
+                        Mors dag-rabatt
+                      </span>
+                      <span className="font-semibold text-[#FF7E70] whitespace-nowrap">
+                        Spara {mothersDaySavingsGross.toLocaleString("sv-SE")} kr
+                      </span>
+	                  </div>
+	                )}
                   <div className="flex justify-between text-xs sm:text-sm pb-2 border-b">
                     <span className="text-gray-600">{vatLabel}</span>
                     <span className="text-gray-900 whitespace-nowrap">{vatAmount.toLocaleString('sv-SE', { minimumFractionDigits: 0, maximumFractionDigits: 2 })} kr</span>

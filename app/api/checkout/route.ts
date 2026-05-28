@@ -1,6 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { withRateLimit, checkoutRateLimit } from "@/app/lib/rate-limit";
 import { prisma } from "@/app/lib/database";
+import {
+  applyMothersDayBundlePricing,
+  shouldApplyMothersDayCampaign,
+} from "@/app/lib/campaigns/mothers-day";
 
 export const dynamic = "force-dynamic";
 
@@ -8,7 +12,7 @@ export async function POST(req: NextRequest) {
   return withRateLimit(req, checkoutRateLimit, async () => {
     try {
       const body = await req.json();
-      const { items, customer, couponCode, attribution } = body as {
+      const { items, customer, couponCode, campaignId, attribution } = body as {
         items: Array<{
           id: string;
           name: string;
@@ -18,6 +22,7 @@ export async function POST(req: NextRequest) {
         }>;
         customer?: { email?: string; name?: string; id?: string };
         couponCode?: string;
+        campaignId?: string;
         attribution?: {
           gclid?: string;
           gbraid?: string;
@@ -125,45 +130,51 @@ export async function POST(req: NextRequest) {
 
       // Validate and enrich items with server-side data
       const now = new Date();
-      const validatedItems = items.map((item) => {
-        let product = productMap.get(item.id);
-        // Fallback: try to match by name if ID didn't match
-        if (!product && item.name) {
-          product =
-            productMap.get(item.name.toLowerCase()) ||
-            productMap.get(item.name) ||
-            courseProducts.find(
-              (p) => p.name.toLowerCase() === item.name.toLowerCase(),
-            );
-          if (product && !product.vatRate) {
-            product = { ...product, type: "course", vatRate: 0.25 };
+      const validatedItems = applyMothersDayBundlePricing(
+        items.map((item) => {
+          let product = productMap.get(item.id);
+          // Fallback: try to match by name if ID didn't match
+          if (!product && item.name) {
+            product =
+              productMap.get(item.name.toLowerCase()) ||
+              productMap.get(item.name) ||
+              courseProducts.find(
+                (p) => p.name.toLowerCase() === item.name.toLowerCase(),
+              );
+            if (product && !product.vatRate) {
+              product = { ...product, type: "course", vatRate: 0.25 };
+            }
           }
-        }
-        if (!product) {
-          throw new Error(
-            `Produkten med id "${item.id}" och namn "${item.name}" hittades inte.`,
-          );
-        }
-        // Determine effective price (excl. VAT) using campaign if active
-        const basePrice =
-          typeof product.basePrice === "number"
-            ? product.basePrice
-            : product.price;
-        const saleActive =
-          product.salePrice &&
-          (!product.saleStartsAt || new Date(product.saleStartsAt) <= now) &&
-          (!product.saleEndsAt || new Date(product.saleEndsAt) >= now);
-        const effectivePrice = saleActive
-          ? (product.salePrice as number)
-          : basePrice;
-        return {
-          ...item,
-          price: effectivePrice, // Use dynamic price (campaign-aware), excl. VAT
-          name: product.name, // Use name from database
-          type: product.type || "course",
-          vatRate: product.vatRate || 0.25,
-        };
-      });
+          if (!product) {
+            throw new Error(
+              `Produkten med id "${item.id}" och namn "${item.name}" hittades inte.`,
+            );
+          }          
+              // Determine effective price (excl. VAT) using campaign if active
+          const basePrice =
+            typeof product.basePrice === "number"
+              ? product.basePrice
+              : product.price;
+          const saleActive =
+            product.salePrice &&
+            (!product.saleStartsAt || new Date(product.saleStartsAt) <= now) &&
+            (!product.saleEndsAt || new Date(product.saleEndsAt) >= now);
+          const effectivePrice = saleActive
+            ? (product.salePrice as number)
+            : basePrice;
+          return {
+            ...item,
+            price: effectivePrice, // Use dynamic price (campaign-aware), excl. VAT
+            name: product.name, // Use name from database
+            type: product.type || "course",
+            vatRate: product.vatRate || 0.25,
+          };
+        }),
+        shouldApplyMothersDayCampaign({
+          campaignId,
+          origin: req.headers.get("origin"),
+        }),
+      );
       // --- END SECURITY FIX ---
 
       const secretKey = process.env.STRIPE_SECRET_KEY;
