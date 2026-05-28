@@ -54,12 +54,15 @@ export default function Checkout() {
   const [applying, setApplying] = useState(false);
   const campaignFromUrl = isMothersDayCampaignId(searchParams.get('campaign'));
   const [storedCampaignActive, setStoredCampaignActive] = useState(false);
-  const [previewCampaignActive, setPreviewCampaignActive] = useState(false);
+  const [previewCampaignActive, setPreviewCampaignActive] = useState(
+    typeof window !== 'undefined' &&
+      isMothersDayCampaignPreviewAllowed(window.location.origin)
+  );
   const calendarCampaignActive = isMothersDayCampaignActive();
   const mothersDayCampaignActive =
     calendarCampaignActive ||
     storedCampaignActive ||
-    (campaignFromUrl && previewCampaignActive);
+    previewCampaignActive;
   const campaignId = mothersDayCampaignActive ? MOTHERS_DAY_CAMPAIGN_ID : undefined;
   const campaignItems = applyMothersDayBundlePricing(items, mothersDayCampaignActive);
   const getPricedItem = (item: (typeof items)[number]) =>
