@@ -2,6 +2,8 @@
 
 import { useEffect } from "react";
 import {
+  isMothersDayCampaignActive,
+  isMothersDayCampaignPreviewAllowed,
   MOTHERS_DAY_CAMPAIGN_ID,
   MOTHERS_DAY_CAMPAIGN_STORAGE_KEY,
 } from "@/app/lib/campaigns/mothers-day";
@@ -27,6 +29,18 @@ const CAMPAIGN_CART = [
 
 export default function MothersDayCampaignPage() {
   useEffect(() => {
+    const campaignAllowed =
+      isMothersDayCampaignActive() ||
+      isMothersDayCampaignPreviewAllowed(window.location.origin);
+
+    if (!campaignAllowed) {
+      try {
+        sessionStorage.removeItem(MOTHERS_DAY_CAMPAIGN_STORAGE_KEY);
+      } catch {}
+      window.location.href = "/e-bocker";
+      return;
+    }
+    
     try {
       localStorage.setItem("cart", JSON.stringify(CAMPAIGN_CART));
       localStorage.removeItem("cart_coupon");
