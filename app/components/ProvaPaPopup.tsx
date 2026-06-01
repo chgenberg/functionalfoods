@@ -93,8 +93,8 @@ export default function ProvaPaPopup({
               {/* Image section */}
               <div className="relative h-48 sm:h-56">
                 <Image
-                  src="/mors-dag-kampanj-popup.png"
-                  alt="Mors dag kampanj"
+                  src="/sota-godsaker-popup.png"
+                  alt="Söta Godsaker"
                   fill
                   className="object-cover"
                   priority
@@ -105,17 +105,17 @@ export default function ProvaPaPopup({
                 <div className="absolute top-4 left-4">
                   <div className="bg-[#014421] text-white px-4 py-2 rounded-full font-bold text-sm flex items-center gap-2 shadow-lg">
                     <Sparkles className="w-4 h-4" />
-                    139 kr
+                    109 kr
                   </div>
                 </div>
 
                 {/* Title overlay */}
                 <div className="absolute bottom-4 left-4 right-4 text-white">
                   <h2 className="text-2xl sm:text-3xl font-bold leading-tight">
-                    Mors dag-kampanj:
+                    Ny e-bok: Sockerfria & glutenfria bakverk
                   </h2>
                   <p className="text-white/90 text-sm sm:text-base mt-1">
-                    2 e-böcker för 139 kr
+                    med Functional Foods
                   </p>
                 </div>
               </div>
@@ -123,7 +123,9 @@ export default function ProvaPaPopup({
               {/* Content */}
               <div className="p-6">
                 <p className="text-gray-700 mb-6 leading-relaxed">
-                  Mors dag-erbjudande 2 böcker för 139:-, gäller 29-31 maj!
+                  Över 50 favoritrecept på kakor, bullar och desserter – utan
+                  gluten och vitt socker. Perfekt för dig som vill baka både
+                  godare och smartare hemma.
                 </p>
 
                 {/* Features */}
@@ -137,28 +139,25 @@ export default function ProvaPaPopup({
                   <div className="text-center p-3 bg-[#014421]/5 rounded-xl">
                     <Utensils className="w-5 h-5 mx-auto text-[#014421] mb-1" />
                     <span className="text-xs text-gray-700 font-medium">
-                      100+ recept
+                      50+ recept
                     </span>
                   </div>
                   <div className="text-center p-3 bg-[#014421]/5 rounded-xl">
                     <ShoppingCart className="w-5 h-5 mx-auto text-[#014421] mb-1" />
                     <span className="text-xs text-gray-700 font-medium">
-                      139 kr
+                      109 kr
                     </span>
                   </div>
                 </div>
 
                 {/* CTA */}
-                <Link
-                  href="http://functionalfoods.se/kampanj/mors-dag"
-                  onClick={handleClose}
-                >
+                <Link href="/e-bocker/sota-godsaker" onClick={handleClose}>
                   <motion.button
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                     className="w-full bg-[#014421] text-white py-4 rounded-xl font-bold text-lg hover:bg-[#116530] transition-colors flex items-center justify-center gap-2 shadow-lg"
                   >
-                    Köp e-böckerna nu
+                    Köp e-boken nu
                     <ArrowRight className="w-5 h-5" />
                   </motion.button>
                 </Link>
@@ -215,12 +214,12 @@ export function ProvaPaFloatingButton({ onClick }: { onClick: () => void }) {
       {/* Desktop version */}
       <span className="hidden sm:flex items-center gap-2 px-5 py-3 font-semibold">
         <Sparkles className="w-4 h-4" />
-        Mors dag kampanj
+        Söta Godsaker
       </span>
       {/* Mobile version */}
       <span className="sm:hidden flex items-center gap-2 px-4 py-3 font-semibold text-sm">
         <Sparkles className="w-4 h-4" />
-        Mors dag kampanj
+        Söta Godsaker
       </span>
     </motion.button>
   );
