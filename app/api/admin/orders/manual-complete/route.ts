@@ -231,6 +231,14 @@ export async function POST(request: NextRequest) {
           ) {
             ebookId = "sota-godsaker";
           }
+          if (
+            book.name.toLowerCase().includes("grill- & sommarmat") ||
+            book.name.toLowerCase().includes("grill sommarmat") ||
+            book.name.toLowerCase().includes("grill och sommarmat") ||
+            book.name.toLowerCase().includes("grill-sommarmat")
+          ) {
+            ebookId = "grill-sommarmat";
+          }
           await tx.ebookDownload.create({
             data: {
               token: downloadToken,
@@ -323,6 +331,10 @@ export async function POST(request: NextRequest) {
             downloadUrl = `${baseUrl}/e-bocker/sota-godsaker/ladda-ner?token=${downloadRecord.token}`;
           }
 
+          if (downloadRecord.ebookId === "grill-sommarmat") {
+            downloadUrl = `${baseUrl}/e-bocker/grill-sommarmat/ladda-ner?token=${downloadRecord.token}`;
+          }
+
           const sent = await emailService.sendEbookDownloadEmail({
             email: customerEmail,
             name: customerName,
@@ -346,6 +358,8 @@ export async function POST(request: NextRequest) {
                 const purchaseTag =
                   downloadRecord.ebookId === "paskbuffe"
                     ? "Köp - Påskbuffé"
+                    : downloadRecord.ebookId === "grill-sommarmat"
+                      ? "Köp - Grill & Sommarmat"
                     : downloadRecord.ebookId === "sota-godsaker"
                       ? "Köp - Sötsaker"
                       : "Köp - Brödboken";
