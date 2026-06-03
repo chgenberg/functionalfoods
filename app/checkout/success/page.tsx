@@ -212,12 +212,16 @@ function CheckoutSuccessContent() {
       id.includes("brodboken") ||
       id.includes("paskbuffe") ||
       id.includes("sota-godsaker") ||
+      id.includes("grill-sommarmat") ||
       name.includes("glutenfritt") ||
       name.includes("brodboken") ||
       name.includes("påskbuffé") ||
       name.includes("paskbuffe") ||
       name.includes("söta godsaker") ||
       name.includes("sota godsaker") ||
+      name.includes("grill sommarmat") ||
+      name.includes("grill och sommarmat") ||
+      name.includes("grill- & sommarmat") ||
       name.includes("e-bok")
     );
   });
@@ -234,12 +238,16 @@ function CheckoutSuccessContent() {
       id.includes("brodboken") ||
       id.includes("paskbuffe") ||
       id.includes("sota-godsaker") ||
+      id.includes("grill-sommarmat") ||
       name.includes("glutenfritt") ||
       name.includes("brodboken") ||
       name.includes("påskbuffé") ||
       name.includes("paskbuffe") ||
       name.includes("söta godsaker") ||
       name.includes("sota godsaker") ||
+      name.includes("grill sommarmat") ||
+      name.includes("grill och sommarmat") ||
+      name.includes("grill- & sommarmat") ||
       name.includes("e-bok")
     );
   });
@@ -256,6 +264,12 @@ function CheckoutSuccessContent() {
     ebookKey.includes("sota-godsaker") ||
     ebookKey.includes("söta godsaker") ||
     ebookKey.includes("sota godsaker");
+
+  const isGrillSommarmat =
+    ebookKey.includes("grill-sommarmat") ||
+    ebookKey.includes("grill sommarmat") ||
+    ebookKey.includes("grill och sommarmat") ||
+    ebookKey.includes("grill- & sommarmat");
 
   const ebookDisplay = isPaskbuffe
     ? {
@@ -277,6 +291,16 @@ function CheckoutSuccessContent() {
             "Upptäck sockerfria och glutenfria bakverk för både vardag, fika och fest.",
           enjoyTitle: "Njut av dina söta godsaker!",
         }
+    : isGrillSommarmat
+        ? {
+            title: "Grill- & Sommarmat – E-bok",
+            image: "/grill-sommarmat-samlingssida.png",
+            alt: "Grill- & Sommarmat E-bok",
+            subtitle: "PDF-format • +90 sommarrecept",
+            description:
+              "Grillfavoriter, fräscha sallader, picknickmat, goda tapasrätter och mocktails.",
+            enjoyTitle: "För vardag, fest och grillkvällar",
+          }
       : {
           title: "Baka Glutenfritt – E-bok",
           image: "/baka-glutenfritt.png",
