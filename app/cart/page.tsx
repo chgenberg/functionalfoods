@@ -24,7 +24,6 @@ import { trackAddToCart, trackViewContent } from "@/app/lib/analytics";
 import {
   applyMothersDayBundlePricing,
   getMothersDayBundleSavingsGross,
-  getMissingMothersDayBookId,
   isMothersDayCampaignActive,
   isMothersDayCampaignPreviewAllowed,
 } from "@/app/lib/campaigns/mothers-day";
@@ -63,18 +62,6 @@ const UPSELL_BOOK = {
   description: "+90 recept för vardag, fest och grillkvällar",
 };
 
-const CAMPAIGN_UPSELL_BOOKS: Record<string, typeof UPSELL_BOOK> = {
-  "brodboken-2026": {
-    id: "brodboken-2026",
-    name: "Baka Glutenfritt – E-bok",
-    price: 65.09,
-    type: "book" as const,
-    image: "/baka-glutenfritt-square.png",
-    description: "Glutenfria brödrecept för vardag och fest.",
-  },
-  "sota-godsaker": UPSELL_BOOK,
-};
-
 export default function CartPage() {
   const {
     items,
@@ -111,13 +98,7 @@ export default function CartPage() {
   );
   const getPricedItem = (item: (typeof items)[number]) =>
     campaignItems.find((pricedItem) => pricedItem.id === item.id) || item;
-  const missingCampaignBookId = getMissingMothersDayBookId(items);
-  const activeUpsellBook =
-    missingCampaignBookId && CAMPAIGN_UPSELL_BOOKS[missingCampaignBookId]
-      ? CAMPAIGN_UPSELL_BOOKS[missingCampaignBookId]
-      : UPSELL_BOOK;
-  const campaignBookUpsell =
-    mothersDayCampaignActive && !!missingCampaignBookId;
+  const activeUpsellBook = UPSELL_BOOK;
   const hasUpsellBook = items.some((item) => item.id === activeUpsellBook.id);
   const hasOtherCourseOrBookInCart = items.some(
     (item) =>
@@ -125,7 +106,7 @@ export default function CartPage() {
       item.id !== activeUpsellBook.id,
   );
   const showUpsell =
-    !hasUpsellBook && (hasOtherCourseOrBookInCart || campaignBookUpsell);
+    !hasUpsellBook && hasOtherCourseOrBookInCart;
 
   useEffect(() => {
     setCampaignPreviewActive(
@@ -507,7 +488,7 @@ export default function CartPage() {
 
                     <p className="text-xs sm:text-sm text-gray-600 leading-snug mb-2 line-clamp-2 sm:line-clamp-none">
                       {campaignBookUpsell
-                        ? "Bara under Mors dag-helgen - köp båda e-böckerna för 139 kr."
+                        ? "Grill- & Sommarmat"
                         : activeUpsellBook.description}
                     </p>
 
