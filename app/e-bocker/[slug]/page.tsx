@@ -80,6 +80,25 @@ const DEFAULT_BY_SLUG: Record<string, EbookDefaults> = {
     authorSection:
       "Ulrika Davidsson är kostrådgivare, receptkreatör och bästsäljande författare till över 40 böcker.",
   },
+  "grill-sommarmat": {
+    id: "grill-sommarmat",
+    title: "Grill- & Sommarmat",
+    subtitle: "E-bok av Ulrika Davidsson",
+    description:
+      "Ulrika har samlat sina bästa recept för sommaren i en e-bok fylld med grillfavoriter, fräscha sallader, picknickmat, goda tapasrätter, mocktails och smakrika tillbehör.",
+    shortDescription:
+      "Sommarrätter där färska råvaror, grönsaker och proteinrika alternativ står i fokus.",
+    image: "/grill-sommarmat-omslag.png",
+    price: "149 kr",
+    features: [
+      "+90 enkla recept",
+      "Ingen grill krävs–alla recept går att anpassa och laga på flera sätt",
+      "Passar både vardag, fest och grillkvällar",
+      "Näringsrika rätter som fungera för hela familjen och alla typer av gäster",
+    ],
+    authorSection:
+      "Ulrika Davidsson är kostrådgivare, receptkreatör och bästsäljande författare till över 40 böcker.",
+  },
 };
 
 function humanizeSlug(slug: string): string {
