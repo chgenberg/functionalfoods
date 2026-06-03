@@ -118,6 +118,14 @@ export async function POST(req: NextRequest) {
           type: "book" as const,
           vatRate: 0.06,
         },
+        {
+          id: "grill-sommarmat",
+          name: "Grill- & Sommarmat – E-bok av Ulrika Davidsson",
+          price: 140.57,
+          basePrice: 140.57,
+          type: "book" as const,
+          vatRate: 0.06,
+        },
       ];
 
       // Add book products to map
