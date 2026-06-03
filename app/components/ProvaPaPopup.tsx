@@ -124,7 +124,7 @@ export default function ProvaPaPopup({
               <div className="p-6">
                 <p className="text-gray-700 mb-6 leading-relaxed">
                   Recept för sommarens alla måltider i en e-bok fylld med grillfavoriter, 
-                  fräscha sallader, picknickmat, goda tapasrätter och mocktails.
+                  fräscha sallader, picknickmat, goda tapasrätter, mocktails och smakrika tillbehör.
                 </p>
 
                 {/* Features */}
