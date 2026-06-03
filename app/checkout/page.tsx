@@ -14,7 +14,6 @@ import { readAttribution } from '../lib/attribution';
 import {
   applyMothersDayBundlePricing,
   getMothersDayBundleSavingsGross,
-  getMissingMothersDayBookId,
   hasStoredMothersDayCampaign,
   isMothersDayCampaignId,
   isMothersDayCampaignActive,
@@ -67,10 +66,7 @@ export default function Checkout() {
   const campaignItems = applyMothersDayBundlePricing(items, mothersDayCampaignActive);
   const getPricedItem = (item: (typeof items)[number]) =>
     campaignItems.find((pricedItem) => pricedItem.id === item.id) || item;
-  const missingCampaignBookId = getMissingMothersDayBookId(items);
-  const showMothersDayCheckoutUpsell =
-    mothersDayCampaignActive && !!missingCampaignBookId;
-
+  
   	const grillCheckoutUpsellBook = {
     id: 'grill-sommarmat',
     name: 'Grill- & Sommarmat – E-bok av Ulrika Davidsson',
@@ -80,27 +76,6 @@ export default function Checkout() {
     image: '/grill-sommarmat-square.png'
   };
 	
-	const mothersDayUpsellBook =
-    missingCampaignBookId === 'brodboken-2026'
-      ? {
-          id: 'brodboken-2026',
-          name: 'Baka Glutenfritt – E-bok av Ulrika Davidsson',
-          price: 65.09,
-          quantity: 1,
-          type: 'book' as const,
-          image: '/baka-glutenfritt-square.png'
-        }
-      : missingCampaignBookId === 'sota-godsaker'
-        ? {
-            id: 'sota-godsaker',
-            name: 'Söta Godsaker – E-bok av Ulrika Davidsson',
-            price: 102.83,
-            quantity: 1,
-            type: 'book' as const,
-            image: '/sota-godsaker-square.png'
-          }
-        : null;
-
 	const hasGrillSommarmatInCart = items.some((item) => item.id === 'grill-sommarmat');
 	const hasOtherCourseOrBookInCart = items.some(
 	    (item) =>
@@ -111,11 +86,10 @@ export default function Checkout() {
 		!showMothersDayCheckoutUpsell &&
 	    !hasGrillSommarmatInCart &&
 	    hasOtherCourseOrBookInCart;
-	const checkoutUpsellBook = showMothersDayCheckoutUpsell
-	    ? mothersDayUpsellBook
-	    : showGrillCheckoutUpsell
-	      ? grillCheckoutUpsellBook
-	      : null;
+
+	const checkoutUpsellBook = showGrillCheckoutUpsell
+    ? grillCheckoutUpsellBook
+    : null;
 	
   // Guest checkout form data
   const [guestMode, setGuestMode] = useState(!user);
