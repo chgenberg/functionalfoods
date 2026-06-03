@@ -1,26 +1,14 @@
 "use client";
 import { useState, useEffect } from 'react';
-import { useSearchParams } from 'next/navigation';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../hooks/useAuth';
 import Link from 'next/link';
 import Image from 'next/image';
 
-import { GiSparkles } from 'react-icons/gi';
 import { useT } from '../lib/i18n/LanguageProvider';
-import { ArrowLeft, Lock, CreditCard, User, Mail, Tag, X, Smartphone, ShoppingCart, ArrowRight, Book } from 'lucide-react';
+import { ArrowLeft, Lock, CreditCard, User, Tag, X, ShoppingCart, ArrowRight, Book } from 'lucide-react';
 import { trackInitiateCheckout } from '../lib/analytics';
 import { readAttribution } from '../lib/attribution';
-import {
-  applyMothersDayBundlePricing,
-  getMothersDayBundleSavingsGross,
-  hasStoredMothersDayCampaign,
-  isMothersDayCampaignId,
-  isMothersDayCampaignActive,
-  isMothersDayCampaignPreviewAllowed,
-  MOTHERS_DAY_CAMPAIGN_ID,
-  MOTHERS_DAY_CAMPAIGN_STORAGE_KEY,
-} from '../lib/campaigns/mothers-day';
 
 // Course images mapping
 const courseImages: Record<string, string> = {
@@ -31,7 +19,6 @@ const courseImages: Record<string, string> = {
 
 export default function Checkout() {
   const t = useT();
-  const searchParams = useSearchParams();
   const { items, addItem, discount, appliedCoupon, applyCoupon, removeCoupon } = useCart();
   const { user } = useAuth();
   const splitFullName = (fullName?: string | null) => {
@@ -51,21 +38,6 @@ export default function Checkout() {
   const [couponInput, setCouponInput] = useState('');
   const [couponError, setCouponError] = useState<string | null>(null);
   const [applying, setApplying] = useState(false);
-  const campaignFromUrl = isMothersDayCampaignId(searchParams.get('campaign'));
-  const [storedCampaignActive, setStoredCampaignActive] = useState(false);
-  const [previewCampaignActive, setPreviewCampaignActive] = useState(
-    typeof window !== 'undefined' &&
-      isMothersDayCampaignPreviewAllowed(window.location.origin)
-  );
-  const calendarCampaignActive = isMothersDayCampaignActive();
-  const mothersDayCampaignActive =
-    calendarCampaignActive ||
-    storedCampaignActive ||
-    previewCampaignActive;
-  const campaignId = mothersDayCampaignActive ? MOTHERS_DAY_CAMPAIGN_ID : undefined;
-  const campaignItems = applyMothersDayBundlePricing(items, mothersDayCampaignActive);
-  const getPricedItem = (item: (typeof items)[number]) =>
-    campaignItems.find((pricedItem) => pricedItem.id === item.id) || item;
   
   	const grillCheckoutUpsellBook = {
     id: 'grill-sommarmat',
@@ -109,32 +81,6 @@ export default function Checkout() {
       ? (firstNameIsValid && lastNameIsValid && emailIsValid)
       : (!!user && firstNameIsValid && lastNameIsValid)
   );
-
-  useEffect(() => {
-    const previewAllowed =
-      typeof window !== 'undefined' &&
-      isMothersDayCampaignPreviewAllowed(window.location.origin);
-
-    setPreviewCampaignActive(previewAllowed);
-
-    if (campaignFromUrl && (calendarCampaignActive || previewAllowed)) {
-      try {
-        sessionStorage.setItem(
-          MOTHERS_DAY_CAMPAIGN_STORAGE_KEY,
-          JSON.stringify({
-            id: MOTHERS_DAY_CAMPAIGN_ID,
-            source: 'checkout-url',
-            createdAt: new Date().toISOString()
-          })
-        );
-      } catch {}
-    } else if (!calendarCampaignActive && !previewAllowed) {
-      try {
-        sessionStorage.removeItem(MOTHERS_DAY_CAMPAIGN_STORAGE_KEY);
-      } catch {}
-    }
-    setStoredCampaignActive(hasStoredMothersDayCampaign());
-  }, [campaignFromUrl, calendarCampaignActive]);
 
   useEffect(() => {
     if (user) {
@@ -280,10 +226,6 @@ export default function Checkout() {
   const bookSubtotalExVat = bookItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
   const courseSubtotalExVat = courseItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
   const subtotalExVat = campaignItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-  const mothersDaySavingsGross = getMothersDayBundleSavingsGross(
-  	items,
-  	mothersDayCampaignActive,
-  );
   
   // Distribute discount proportionally
   const discountExVat = discount;
@@ -661,16 +603,6 @@ export default function Checkout() {
                       <span className="text-gray-600">Rabatt</span>
                       <span className="text-green-600 whitespace-nowrap">
                         -{discountExVat.toLocaleString()} kr
-                      </span>
-                    </div>
-                  )}
-                  {mothersDaySavingsGross > 0 && (
-	                  <div className="flex justify-between text-xs sm:text-sm">
-	                    <span className="font-semibold text-[#FF7E70]">
-                        Mors dag-rabatt
-                      </span>
-                      <span className="font-semibold text-[#FF7E70] whitespace-nowrap">
-                        Spara {mothersDaySavingsGross.toLocaleString("sv-SE")} kr
                       </span>
 	                  </div>
 	                )}
