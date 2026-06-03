@@ -199,6 +199,13 @@ export async function POST(req: NextRequest) {
         type: "book",
         vatRate: 0.06,
       },
+      "grill-sommarmat": {
+        id: "grill-sommarmat",
+        name: "Grill- & Sommarmat – E-bok av Ulrika Davidsson",
+        price: 140.57,
+        type: "book",
+        vatRate: 0.06,
+      },
     };
 
     // Add book products to productMap
@@ -593,9 +600,21 @@ export async function POST(req: NextRequest) {
       if (
         key.includes("sota-godsaker") ||
         key.includes("söta godsaker") ||
+        key.includes("sota godsaker") ||
         key.includes("sota godsaker")
       ) {
         return "EBOOK-SOTA-GODSAKER";
+      }
+
+      if (
+        key.includes("grill-sommarmat") ||
+        key.includes("grill-och-sommarmat") ||
+        key.includes("grill sommarmat") ||
+        key.includes("grill & sommarmat") ||
+        key.includes("grill- & sommarmat") ||
+        key.includes("grill och sommarmat")
+      ) {
+        return "EBOOK-GRILL-SOMMARMAT";
       }
 
       return item.id; // fallback
@@ -891,6 +910,15 @@ export async function POST(req: NextRequest) {
               ebookId = "sota-godsaker";
             }
 
+            if (
+              book.name.toLowerCase().includes("grill- & sommarmat") ||
+              book.name.toLowerCase().includes("grill sommarmat") ||
+              book.name.toLowerCase().includes("grill och sommarmat") ||
+              book.name.toLowerCase().includes("grill-sommarmat")
+            ) {
+              ebookId = "grill-sommarmat";
+            }
+
             // Optional: avoid duplicates if route is retried
             const existing = await prisma.ebookDownload.findFirst({
               where: { orderNumber: orderId, ebookId },
@@ -928,6 +956,9 @@ export async function POST(req: NextRequest) {
             }
             if (ebookId === "sota-godsaker") {
               downloadUrl = `${baseUrl}/e-bocker/sota-godsaker/ladda-ner?token=${downloadToken}`;
+            }
+            if (ebookId === "grill-sommarmat") {
+              downloadUrl = `${baseUrl}/e-bocker/grill-sommarmat/ladda-ner?token=${downloadToken}`;
             }
 
             await emailService.sendEbookDownloadEmail({
