@@ -55,12 +55,12 @@ const getItemImage = (item: {
 };
 
 const UPSELL_BOOK = {
-  id: "sota-godsaker",
-  name: "Söta Godsaker – E-bok",
-  price: 102.83, // 109 kr inkl 6% moms = 102.83 kr exkl moms (109 / 1.06)
+  id: "grill-sommarmat",
+  name: "Grill- & Sommarmat – E-bok",
+  price: 140.57, // 149 kr inkl 6% moms = 140.57 kr exkl moms (149 / 1.06)
   type: "book" as const,
-  image: "/sota-godsaker-square.png",
-  description: "Över 50 favoritrecept – utan gluten och vitt socker.",
+  image: "/grill-sommarmat-square.png",
+  description: "+90 recept för vardag, fest och grillkvällar",
 };
 
 const CAMPAIGN_UPSELL_BOOKS: Record<string, typeof UPSELL_BOOK> = {
@@ -119,8 +119,13 @@ export default function CartPage() {
   const campaignBookUpsell =
     mothersDayCampaignActive && !!missingCampaignBookId;
   const hasUpsellBook = items.some((item) => item.id === activeUpsellBook.id);
-  const hasCourseInCart = items.some((item) => item.type === "course");
-  const showUpsell = !hasUpsellBook && (hasCourseInCart || campaignBookUpsell);
+  const hasOtherCourseOrBookInCart = items.some(
+    (item) =>
+      (item.type === "course" || item.type === "book") &&
+      item.id !== activeUpsellBook.id,
+  );
+  const showUpsell =
+    !hasUpsellBook && (hasOtherCourseOrBookInCart || campaignBookUpsell);
 
   useEffect(() => {
     setCampaignPreviewActive(
