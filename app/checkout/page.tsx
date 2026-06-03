@@ -71,7 +71,16 @@ export default function Checkout() {
   const showMothersDayCheckoutUpsell =
     mothersDayCampaignActive && !!missingCampaignBookId;
 
-  const mothersDayUpsellBook =
+  	const grillCheckoutUpsellBook = {
+    id: 'grill-sommarmat',
+    name: 'Grill- & Sommarmat – E-bok av Ulrika Davidsson',
+    price: 140.57,
+    quantity: 1,
+    type: 'book' as const,
+    image: '/grill-sommarmat-square.png'
+  };
+	
+	const mothersDayUpsellBook =
     missingCampaignBookId === 'brodboken-2026'
       ? {
           id: 'brodboken-2026',
@@ -91,7 +100,23 @@ export default function Checkout() {
             image: '/sota-godsaker-square.png'
           }
         : null;
-  
+
+	const hasGrillSommarmatInCart = items.some((item) => item.id === 'grill-sommarmat');
+	const hasOtherCourseOrBookInCart = items.some(
+	    (item) =>
+	      (item.type === 'course' || item.type === 'book') &&
+	      item.id !== 'grill-sommarmat'
+	);
+	const showGrillCheckoutUpsell =
+		!showMothersDayCheckoutUpsell &&
+	    !hasGrillSommarmatInCart &&
+	    hasOtherCourseOrBookInCart;
+	const checkoutUpsellBook = showMothersDayCheckoutUpsell
+	    ? mothersDayUpsellBook
+	    : showGrillCheckoutUpsell
+	      ? grillCheckoutUpsellBook
+	      : null;
+	
   // Guest checkout form data
   const [guestMode, setGuestMode] = useState(!user);
   const [customerInfo, setCustomerInfo] = useState({
@@ -583,13 +608,13 @@ export default function Checkout() {
                   </div>
                 ))}
 
-                {showMothersDayCheckoutUpsell && mothersDayUpsellBook && (
+                 {checkoutUpsellBook && (
                   <div className="rounded-xl border border-[#93C560] bg-[#93C560]/10 p-3 sm:p-4">
                     <div className="flex gap-3">
                       <div className="w-14 h-14 rounded-lg overflow-hidden bg-white flex-shrink-0">
                         <Image
-                          src={mothersDayUpsellBook.image}
-                          alt={mothersDayUpsellBook.name}
+                          src={checkoutUpsellBook.image}
+                          alt={checkoutUpsellBook.name}
                           width={56}
                           height={56}
                           className="w-full h-full object-cover"
@@ -597,22 +622,22 @@ export default function Checkout() {
                       </div>
                       <div className="flex-1 min-w-0">
                         <p className="text-xs font-semibold text-[#014421]">
-                          Mors dag-erbjudande
+                          Rekommenderat tillägg
                         </p>
                         <h3 className="text-sm font-medium text-gray-900 truncate">
-                          Lägg till {mothersDayUpsellBook.name.replace(' – E-bok av Ulrika Davidsson', '')}
+                        	Lägg till {checkoutUpsellBook.name.replace(' – E-bok av Ulrika Davidsson', '')}
                         </h3>
                         <p className="text-xs text-gray-600 mt-1">
-                          Bara under Mors dag-helgen - köp båda e-böckerna för 139 kr.
+                          För vardag, fest och grillkvällar.
                         </p>
                       </div>
                     </div>
                     <button
                       type="button"
-                      onClick={() => addItem(mothersDayUpsellBook)}
+                      onClick={() => addItem(checkoutUpsellBook)}
                       className="mt-3 w-full rounded-lg bg-[#014421] px-4 py-2.5 text-sm font-medium text-white hover:bg-[#1a5530] transition-colors"
                     >
-                      Lägg till erbjudandet
+                      Lägg i varukorgen
                     </button>
                   </div>
                 )}
