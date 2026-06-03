@@ -51,6 +51,21 @@ export default function EBockerPage() {
 
   const ebooks = [
     {
+      id: "grill-sommarmat",
+      title: "Grill- & Sommarmat",
+      description:
+        "Ulrika har samlat sina bästa recept för sommarens alla måltider i en inspirerande e-bok fylld med grillfavoriter, fräscha sallader, picknickmat, goda tapasrätter, mocktails och smakrika tillbehör.",
+      href: "/e-bocker/grill-sommarmat",
+      image: "/grill-sommarmat-samlingssida.png",
+      price: "149 kr",
+      format: "PDF",
+      highlights: [
+        "Gör sommarens grillkvällar både enkla och njutbara",
+        "En komplett grillguide i e-boksformat",
+        "Recept skapade med fokus på balans, näring och njutning",
+      ],
+    },
+    {
       id: "sota-godsaker",
       title: "Söta Godsaker",
       description:
