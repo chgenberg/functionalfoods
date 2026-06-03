@@ -16,17 +16,10 @@ import {
   Tag,
   Trash2,
   X,
-  Zap,
 } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { trackAddToCart, trackViewContent } from "@/app/lib/analytics";
-import {
-  applyMothersDayBundlePricing,
-  getMothersDayBundleSavingsGross,
-  isMothersDayCampaignActive,
-  isMothersDayCampaignPreviewAllowed,
-} from "@/app/lib/campaigns/mothers-day";
 
 // Course images mapping
 const courseImages: Record<string, string> = {
@@ -81,23 +74,7 @@ export default function CartPage() {
 
   const [addingUpsell, setAddingUpsell] = useState(false);
   const [upsellAdded, setUpsellAdded] = useState(false);
-  const [campaignPreviewActive, setCampaignPreviewActive] = useState(
-    typeof window !== "undefined" &&
-      isMothersDayCampaignPreviewAllowed(window.location.origin),
-  );
-
-  const mothersDayCampaignActive =
-    isMothersDayCampaignActive() || campaignPreviewActive;
-  const campaignItems = applyMothersDayBundlePricing(
-    items,
-    mothersDayCampaignActive,
-  );
-  const mothersDaySavingsGross = getMothersDayBundleSavingsGross(
-    items,
-    mothersDayCampaignActive,
-  );
-  const getPricedItem = (item: (typeof items)[number]) =>
-    campaignItems.find((pricedItem) => pricedItem.id === item.id) || item;
+ 
   const activeUpsellBook = UPSELL_BOOK;
   const hasUpsellBook = items.some((item) => item.id === activeUpsellBook.id);
   const hasOtherCourseOrBookInCart = items.some(
@@ -108,18 +85,10 @@ export default function CartPage() {
   const showUpsell =
     !hasUpsellBook && hasOtherCourseOrBookInCart;
 
-  useEffect(() => {
-    setCampaignPreviewActive(
-      typeof window !== "undefined" &&
-        isMothersDayCampaignPreviewAllowed(window.location.origin),
-    );
-  }, []);
-
   // Fire view/add events for items already in cart (covers direct-to-cart flows)
   useEffect(() => {
     if (!isLoaded || items.length === 0) return;
     try {
-      const seen: Record<string, boolean> = {};
       items.forEach((item) => {
         const viewKey = `ff_ga_view_${item.id}`;
         const addKey = `ff_ga_add_${item.id}`;
@@ -155,7 +124,6 @@ export default function CartPage() {
             sessionStorage.setItem(addKey, "1");
         }
 
-        seen[item.id] = true;
       });
     } catch {
       // no-op if sessionStorage unavailable
@@ -727,29 +695,6 @@ export default function CartPage() {
 
                   return (
                     <>
-                      {mothersDaySavingsGross > 0 ? (
-                        <>
-                          <div className="flex justify-between text-xs sm:text-sm">
-                            <span className="text-gray-600">
-                              Ordinarie pris (inkl. moms)
-                            </span>
-                            <span className="text-gray-900 whitespace-nowrap">
-                              {Math.round(originalSubtotalInclVat).toLocaleString(
-                                "sv-SE",
-                              )}{" "}
-                              kr
-                            </span>
-                          </div>
-                          <div className="flex justify-between text-xs sm:text-sm">
-                            <span className="font-semibold text-[#FF7E70]">
-                              Mors dag-rabatt
-                            </span>
-                            <span className="font-semibold text-[#FF7E70] whitespace-nowrap">
-                              Spara {mothersDaySavingsGross.toLocaleString("sv-SE")} kr
-                            </span>
-                          </div>
-                        </>
-                      ) : (
                         <div className="flex justify-between text-xs sm:text-sm">
                           <span className="text-gray-600">
                             Delsumma (inkl. moms)
