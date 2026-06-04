@@ -638,7 +638,12 @@ export async function POST(req: NextRequest) {
 
         sveaItems.push({
           articleNumber: getArticleNumber(item),
-          name: item.id === "sota-godsaker" ? "Sota Godsaker E-bok" : item.name,
+          name:
+            item.id === "grill-sommarmat"
+              ? "Grill & Sommarmat E-bok"
+              : item.id === "sota-godsaker"
+                ? "Sota Godsaker E-bok"
+                : item.name,
           quantity: item.quantity * 100, // Quantity in minor units: 100 = 1 unit
           unitPrice: priceInOre, // Pris INKLUSIVE moms i ÖRE (vatPercent används bara för momsrapportering)
           vatPercent: sveaVatPercent, // VAT in Svea format (600 = 6%, 2500 = 25%)
