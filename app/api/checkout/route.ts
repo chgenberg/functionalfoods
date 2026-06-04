@@ -146,7 +146,7 @@ export async function POST(req: NextRequest) {
           if (product && !product.vatRate) {
             product = { ...product, type: "course", vatRate: 0.25 };
           }
-          }
+        }
         if (!product) {
           throw new Error(
             `Produkten med id "${item.id}" och namn "${item.name}" hittades inte.`,
