@@ -55,7 +55,6 @@ export default function Checkout() {
 	      item.id !== 'grill-sommarmat'
 	);
 	const showGrillCheckoutUpsell =
-		!showMothersDayCheckoutUpsell &&
 	    !hasGrillSommarmatInCart &&
 	    hasOtherCourseOrBookInCart;
 
