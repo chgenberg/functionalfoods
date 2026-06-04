@@ -6,10 +6,6 @@ import {
 } from "@/app/lib/svea-checkout-service";
 import { emailService } from "@/app/lib/email";
 import { getMailchimpMarketing } from "@/app/lib/mailchimp-marketing";
-import {
-  applyMothersDayBundlePricing,
-  shouldApplyMothersDayCampaign,
-} from "@/app/lib/campaigns/mothers-day";
 import bcrypt from "bcryptjs";
 import type {
   SveaCartItem,
@@ -51,7 +47,6 @@ interface CheckoutRequest {
     id?: string;
   };
   couponCode?: string;
-  campaignId?: string;
   attribution?: Attribution;
 }
 
@@ -72,11 +67,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const { items, customer, couponCode, campaignId, attribution } = body;
-    const mothersDayCampaignActive = shouldApplyMothersDayCampaign({
-      campaignId,
-      origin: req.headers.get("origin"),
-    });
+    const { items, customer, couponCode, attribution } = body;
 
     // Validate request
     if (!items || !Array.isArray(items) || items.length === 0) {
@@ -297,11 +288,6 @@ export async function POST(req: NextRequest) {
         );
       }
     }
-    const campaignPricedItems = applyMothersDayBundlePricing(
-      validatedItems,
-      mothersDayCampaignActive,
-    );
-    validatedItems.splice(0, validatedItems.length, ...campaignPricedItems);
     console.log(`✅ Validated ${validatedItems.length} items`);
     console.log(
       "🔍 VALIDATED ITEMS DEBUG:",
