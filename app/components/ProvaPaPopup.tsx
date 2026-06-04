@@ -132,7 +132,7 @@ export default function ProvaPaPopup({
                   <div className="text-center p-3 bg-[#014421]/5 rounded-xl">
                     <Calendar className="w-5 h-5 mx-auto text-[#014421] mb-1" />
                     <span className="text-xs text-gray-700 font-medium">
-                      För vardag, fest och grillkvällar
+                      Grillguide
                     </span>
                   </div>
                   <div className="text-center p-3 bg-[#014421]/5 rounded-xl">
