@@ -621,105 +621,87 @@ export default function CartPage() {
               <div className="py-4 sm:py-6 space-y-2 sm:space-y-3">
                 {(() => {
                   const hasBooks = items.some((item) => item.type === "book");
-                  const hasCourses = items.some(
-                    (item) => item.type === "course",
-                  );
-
-                  const subtotalInclVat = items.reduce((sum, item) => {
-                    const vatMultiplier = item.type === "book" ? 1.06 : 1.25;
-                    return sum + item.price * item.quantity * vatMultiplier;
-                  }, 0);
-
-                  const subtotalExVat = items.reduce((sum, item) => {
-                    return sum + item.price * item.quantity;
-                  }, 0);
-
-                  const totalVat = items.reduce((sum, item) => {
-                    const vatRate = item.type === "book" ? 0.06 : 0.25;
-                    return sum + item.price * item.quantity * vatRate;
-                  }, 0);
-
-                  let discountInclVat = 0;
-
-                  if (appliedCoupon && subtotalInclVat > 0) {
-                    const normalizedType = String(
-                      appliedCoupon.type || "",
-                    ).toUpperCase();
-                    const isPercentage =
-                      normalizedType === "PERCENTAGE" ||
-                      normalizedType === "PERCENT";
-
-                    if (isPercentage) {
-                      discountInclVat = Math.round(
-                        subtotalInclVat * (appliedCoupon.amount / 100),
-                      );
-                    } else {
-                      const effectiveVatMultiplier =
-                        subtotalExVat > 0 ? subtotalInclVat / subtotalExVat : 1;
-                      discountInclVat = Math.round(
-                        discount * effectiveVatMultiplier,
-                      );
-                    }
-
-                    if (discountInclVat > subtotalInclVat) {
-                      discountInclVat = subtotalInclVat;
-                    }
-                  }
-
-                  const finalTotalInclVat = Math.max(
+                  const hasCourses = items.some((item) => item.type === "course");
+                
+                  const bookItems = items.filter((item) => item.type === "book");
+                  const courseItems = items.filter((item) => item.type === "course");
+                
+                  const bookSubtotalExVat = bookItems.reduce(
+                    (sum, item) => sum + item.price * item.quantity,
                     0,
-                    subtotalInclVat - discountInclVat,
                   );
-                  const discountRatio =
-                    subtotalInclVat > 0 ? discountInclVat / subtotalInclVat : 0;
-                  const finalVat = Math.max(0, totalVat * (1 - discountRatio));
-
+                  const courseSubtotalExVat = courseItems.reduce(
+                    (sum, item) => sum + item.price * item.quantity,
+                    0,
+                  );
+                  const subtotalExVat = items.reduce(
+                    (sum, item) => sum + item.price * item.quantity,
+                    0,
+                  );
+                
+                  const discountExVat = discount;
+                  const bookDiscountRatio =
+                    subtotalExVat > 0 ? bookSubtotalExVat / subtotalExVat : 0;
+                  const courseDiscountRatio =
+                    subtotalExVat > 0 ? courseSubtotalExVat / subtotalExVat : 0;
+                
+                  const bookTaxableBase = Math.max(
+                    0,
+                    bookSubtotalExVat - discountExVat * bookDiscountRatio,
+                  );
+                  const courseTaxableBase = Math.max(
+                    0,
+                    courseSubtotalExVat - discountExVat * courseDiscountRatio,
+                  );
+                
+                  const bookVat = Math.round(bookTaxableBase * 0.06 * 100) / 100;
+                  const courseVat = Math.round(courseTaxableBase * 0.25 * 100) / 100;
+                  const vatAmount = Math.round((bookVat + courseVat) * 100) / 100;
+                
+                  const totalInclVat = Math.round(
+                    (Math.max(0, subtotalExVat - discountExVat) + vatAmount) * 100,
+                  ) / 100;
+                
                   const vatLabel =
                     hasBooks && hasCourses
                       ? "Moms (6% & 25%)"
                       : hasBooks
                         ? "Moms (6%)"
                         : "Moms (25%)";
-
+                
                   return (
                     <>
                       <div className="flex justify-between text-xs sm:text-sm">
-                        <span className="text-gray-600">
-                          Delsumma (inkl. moms)
-                        </span>
+                        <span className="text-gray-600">Delsumma (exkl. moms)</span>
                         <span className="text-gray-900 whitespace-nowrap">
-                          {Math.round(subtotalInclVat).toLocaleString("sv-SE")}{" "}
-                          kr
+                          {subtotalExVat.toLocaleString("sv-SE")} kr
                         </span>
                       </div>
-
-                      {discountInclVat > 0 && (
+                
+                      {discountExVat > 0 && (
                         <div className="flex justify-between text-xs sm:text-sm">
                           <span className="text-[#93C560]">Rabatt</span>
                           <span className="text-[#93C560] whitespace-nowrap">
-                            -{discountInclVat.toLocaleString("sv-SE")} kr
+                            -{discountExVat.toLocaleString("sv-SE")} kr
                           </span>
                         </div>
                       )}
-
+                
                       <div className="flex justify-between text-xs sm:text-sm pb-3 border-b border-gray-200">
                         <span className="text-gray-600">{vatLabel}</span>
                         <span className="text-gray-900 whitespace-nowrap">
-                          {finalVat.toLocaleString("sv-SE", {
+                          {vatAmount.toLocaleString("sv-SE", {
                             minimumFractionDigits: 0,
                             maximumFractionDigits: 2,
                           })}{" "}
                           kr
                         </span>
                       </div>
-
+                
                       <div className="flex justify-between items-center text-base sm:text-xl font-bold pt-2 sm:pt-3 p-3 sm:p-4 bg-gradient-to-r from-[#93C560]/10 to-[#7ab050]/10 rounded-lg">
                         <span className="text-[#014421]">Totalt</span>
                         <span className="text-[#014421] text-lg sm:text-2xl">
-                          {Math.round(finalTotalInclVat).toLocaleString(
-                            "sv-SE",
-                          )}{" "}
-                          kr
+                          {Math.round(totalInclVat).toLocaleString("sv-SE")} kr
                         </span>
                       </div>
                     </>
