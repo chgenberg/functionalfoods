@@ -4,6 +4,7 @@ import { useCart } from '../context/CartContext';
 import { useAuth } from '../hooks/useAuth';
 import Link from 'next/link';
 import Image from 'next/image';
+import { useSearchParams } from 'next/navigation';
 
 import { useT } from '../lib/i18n/LanguageProvider';
 import { ArrowLeft, Lock, CreditCard, User, Tag, X, ShoppingCart, ArrowRight, Book } from 'lucide-react';
@@ -19,6 +20,7 @@ const courseImages: Record<string, string> = {
 
 export default function Checkout() {
   const t = useT();
+  const searchParams = useSearchParams();
   const { items, addItem, discount, appliedCoupon, applyCoupon, removeCoupon } = useCart();
   const { user } = useAuth();
   const splitFullName = (fullName?: string | null) => {
@@ -61,6 +63,11 @@ export default function Checkout() {
 	const checkoutUpsellBook = showGrillCheckoutUpsell
     ? grillCheckoutUpsellBook
     : null;
+
+  	const campaignId = searchParams.get('campaign') || undefined;
+  	const campaignItems = items;
+  	const getPricedItem = (item: (typeof items)[number]) => item;
+
 	
   // Guest checkout form data
   const [guestMode, setGuestMode] = useState(!user);
