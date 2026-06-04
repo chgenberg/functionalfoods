@@ -2,52 +2,11 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { ArrowRight, BookOpen, Tag, ShoppingCart, X } from "lucide-react";
-import { useEffect, useState } from "react";
+import { ArrowRight, BookOpen, Tag, ShoppingCart } from "lucide-react";
 import { useCart } from "@/app/context/CartContext";
-import {
-  getMothersDayBundleSavingsLabel,
-  getMissingMothersDayBookId,
-  isMothersDayCampaignActive,
-  isMothersDayCampaignPreviewAllowed,
-} from "@/app/lib/campaigns/mothers-day";
-
-const MOTHERS_DAY_SAVINGS_LABEL = getMothersDayBundleSavingsLabel(
-  [
-    {
-      id: "brodboken-2026",
-      price: 65.09,
-      quantity: 1,
-      type: "book",
-      vatRate: 0.06,
-    },
-    {
-      id: "sota-godsaker",
-      price: 102.83,
-      quantity: 1,
-      type: "book",
-      vatRate: 0.06,
-    },
-  ],
-  true,
-);
 
 export default function EBockerPage() {
   const { addItem } = useCart();
-  const [campaignPreviewActive, setCampaignPreviewActive] = useState(false);
-  const [upsellBook, setUpsellBook] = useState<null | {
-    id: string;
-    title: string;
-    image: string;
-    price: string;
-  }>(null);
-
-  useEffect(() => {
-    setCampaignPreviewActive(
-      typeof window !== "undefined" &&
-        isMothersDayCampaignPreviewAllowed(window.location.origin),
-    );
-  }, []);
 
   const ebooks = [
     {
@@ -131,20 +90,6 @@ export default function EBockerPage() {
       type: "book",
       image: ebook.image,
     });
-
-    if (isMothersDayCampaignActive() || campaignPreviewActive) {
-      const missingBookId = getMissingMothersDayBookId([
-        {
-          id: ebook.id,
-          name: ebook.title,
-          price: priceExVat,
-          quantity: 1,
-          type: "book",
-        },
-      ]);
-      const matchingUpsell = ebooks.find((item) => item.id === missingBookId);
-      if (matchingUpsell) setUpsellBook(matchingUpsell);
-    }
   };
 
   return (
@@ -266,47 +211,6 @@ export default function EBockerPage() {
           <div className="absolute inset-0 bg-black/20" />
         </div>
       </section>
-
-      {upsellBook && (
-        <div className="fixed bottom-4 left-4 right-4 z-50 mx-auto max-w-2xl rounded-xl bg-[#FFF2EF] p-4 shadow-2xl border-2 border-[#FF7E70]">
-          <button
-            type="button"
-            onClick={() => setUpsellBook(null)}
-            className="absolute right-3 top-3 rounded-full p-1 text-gray-600 hover:bg-white/70"
-            aria-label="Stäng"
-          >
-            <X className="h-4 w-4" />
-          </button>
-          <div className="pr-8">
-            <p className="text-xs font-semibold uppercase tracking-wide text-[#660D22]">
-              Mors dag-erbjudande
-            </p>
-            <h2 className="mt-1 text-lg font-bold text-gray-900">
-              Lägg till {upsellBook.title}
-            </h2>
-            <p className="mt-1 text-sm text-gray-600">
-              Köp Baka Glutenfritt & Söta Godsaker tillsammans för{" "}
-              <span className="whitespace-nowrap">
-                <strong className="text-gray-900">139 kr</strong>{" "}
-                <span className="font-semibold text-[#FF7E70]">
-                  ({MOTHERS_DAY_SAVINGS_LABEL})
-                </span>
-              </span>
-            </p>
-          </div>
-          <button
-            type="button"
-            onClick={() => {
-              handleBuyNow(upsellBook);
-              setUpsellBook(null);
-            }}
-            className="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-lg bg-[#FF7E70] px-4 py-3 font-semibold text-white hover:bg-[#660D22] transition-colors"
-          >
-            <ShoppingCart className="h-4 w-4" />
-            Lägg till i varukorgen
-          </button>
-        </div>
-      )}
     </main>
   );
 }
