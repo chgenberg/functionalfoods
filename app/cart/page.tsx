@@ -1,4 +1,5 @@
 "use client";
+
 import { useCart } from "../context/CartContext";
 import Link from "next/link";
 import {
@@ -21,7 +22,6 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import { trackAddToCart, trackViewContent } from "@/app/lib/analytics";
 
-// Course images mapping
 const courseImages: Record<string, string> = {
   "functional-flow": "/Kurser_bilder/Functional_Gut Health.jpg",
   "functional-basics":
@@ -29,7 +29,6 @@ const courseImages: Record<string, string> = {
   "functional-energy": "/Kurser_bilder/Functional_insulin balance.jpg",
 };
 
-// Prefer the image stored on the cart item; fall back to id-based mapping
 const getItemImage = (item: {
   id: string;
   name: string;
@@ -49,7 +48,7 @@ const getItemImage = (item: {
 const UPSELL_BOOK = {
   id: "grill-sommarmat",
   name: "Grill- & Sommarmat – E-bok",
-  price: 140.57, // 149 kr inkl 6% moms = 140.57 kr exkl moms (149 / 1.06)
+  price: 140.57,
   type: "book" as const,
   image: "/grill-sommarmat-square.png",
   description: "+90 recept för vardag, fest och grillkvällar",
@@ -62,19 +61,18 @@ export default function CartPage() {
     removeItem,
     updateQuantity,
     isLoaded,
-    discount,
     appliedCoupon,
     applyCoupon,
     removeCoupon,
   } = useCart();
+
   const [removingItem, setRemovingItem] = useState<string | null>(null);
   const [couponInput, setCouponInput] = useState("");
   const [couponError, setCouponError] = useState<string | null>(null);
   const [applying, setApplying] = useState(false);
-
   const [addingUpsell, setAddingUpsell] = useState(false);
   const [upsellAdded, setUpsellAdded] = useState(false);
- 
+
   const activeUpsellBook = UPSELL_BOOK;
   const hasUpsellBook = items.some((item) => item.id === activeUpsellBook.id);
   const hasOtherCourseOrBookInCart = items.some(
@@ -82,12 +80,11 @@ export default function CartPage() {
       (item.type === "course" || item.type === "book") &&
       item.id !== activeUpsellBook.id,
   );
-  const showUpsell =
-    !hasUpsellBook && hasOtherCourseOrBookInCart;
+  const showUpsell = !hasUpsellBook && hasOtherCourseOrBookInCart;
 
-  // Fire view/add events for items already in cart (covers direct-to-cart flows)
   useEffect(() => {
     if (!isLoaded || items.length === 0) return;
+
     try {
       items.forEach((item) => {
         const viewKey = `ff_ga_view_${item.id}`;
@@ -97,19 +94,20 @@ export default function CartPage() {
             ? sessionStorage.getItem(viewKey)
             : null;
         const hasAdd =
-          typeof window !== "undefined" ? sessionStorage.getItem(addKey) : null;
+          typeof window !== "undefined"
+            ? sessionStorage.getItem(addKey)
+            : null;
 
-        // Track view_item once per session
         if (!hasView) {
           trackViewContent(
             { id: item.id, name: item.name, price: item.price },
             "SEK",
           );
-          if (typeof window !== "undefined")
+          if (typeof window !== "undefined") {
             sessionStorage.setItem(viewKey, "1");
+          }
         }
 
-        // Track add_to_cart once per session (if it wasn’t already fired on product page)
         if (!hasAdd) {
           trackAddToCart(
             {
@@ -120,10 +118,10 @@ export default function CartPage() {
             },
             "SEK",
           );
-          if (typeof window !== "undefined")
+          if (typeof window !== "undefined") {
             sessionStorage.setItem(addKey, "1");
+          }
         }
-
       });
     } catch {
       // no-op if sessionStorage unavailable
@@ -139,11 +137,18 @@ export default function CartPage() {
 
   const handleApplyCoupon = async () => {
     if (!couponInput.trim()) return;
+
     setApplying(true);
     setCouponError(null);
+
     const res = await applyCoupon(couponInput.trim());
-    if (!res.success) setCouponError(res.message || "Ogiltig rabattkod");
-    else setCouponInput("");
+
+    if (!res.success) {
+      setCouponError(res.message || "Ogiltig rabattkod");
+    } else {
+      setCouponInput("");
+    }
+
     setApplying(false);
   };
 
@@ -191,7 +196,7 @@ export default function CartPage() {
       <main className="min-h-screen bg-[#F7F5F0]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <div className="flex items-center justify-center min-h-[400px]">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#014421]"></div>
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#014421]" />
           </div>
         </div>
       </main>
@@ -237,7 +242,6 @@ export default function CartPage() {
   return (
     <main className="min-h-screen bg-[#F7F5F0] pb-28 lg:pb-0">
       <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-6 sm:py-8">
-        {/* Header */}
         <div className="mb-6 sm:mb-8">
           <Link
             href="/utbildning"
@@ -255,7 +259,6 @@ export default function CartPage() {
         </div>
 
         <div className="grid lg:grid-cols-3 gap-8">
-          {/* Cart Items */}
           <div className="lg:col-span-2 space-y-4">
             {items.map((item) => (
               <div
@@ -264,9 +267,7 @@ export default function CartPage() {
                   removingItem === item.id ? "opacity-50 scale-95" : ""
                 }`}
               >
-                {/* Mobile Layout */}
                 <div className="flex gap-3 sm:hidden">
-                  {/* Product Image - Mobile */}
                   <div className="flex-shrink-0 w-20 h-20 rounded-xl overflow-hidden bg-gray-100">
                     <Image
                       src={getItemImage(item)}
@@ -277,7 +278,6 @@ export default function CartPage() {
                     />
                   </div>
 
-                  {/* Product Info - Mobile */}
                   <div className="flex-1 min-w-0">
                     <div className="flex justify-between items-start gap-2">
                       <h3 className="text-base font-semibold text-[#014421] leading-tight line-clamp-2">
@@ -305,9 +305,7 @@ export default function CartPage() {
                   </div>
                 </div>
 
-                {/* Price and Quantity Row - Mobile */}
                 <div className="flex items-center justify-between mt-3 pt-3 border-t border-gray-100 sm:hidden">
-                  {/* Quantity Controls - Mobile */}
                   <div className="flex items-center rounded-lg border border-gray-200 bg-gray-50">
                     <button
                       onClick={() => updateQuantity(item.id, item.quantity - 1)}
@@ -327,11 +325,10 @@ export default function CartPage() {
                     </button>
                   </div>
 
-                  {/* Price - Mobile */}
                   <div className="text-right">
                     <div className="text-xl font-bold text-[#014421]">
                       {Math.round(
-                        getPricedItem(item).price *
+                        item.price *
                           item.quantity *
                           (item.type === "book" ? 1.06 : 1.25),
                       ).toLocaleString("sv-SE")}{" "}
@@ -340,9 +337,7 @@ export default function CartPage() {
                   </div>
                 </div>
 
-                {/* Desktop Layout */}
                 <div className="hidden sm:flex items-start gap-4">
-                  {/* Product Image - Desktop */}
                   <div className="flex-shrink-0 w-32 h-32 rounded-xl overflow-hidden bg-gray-100">
                     <Image
                       src={getItemImage(item)}
@@ -353,7 +348,6 @@ export default function CartPage() {
                     />
                   </div>
 
-                  {/* Product Details - Desktop */}
                   <div className="flex-1 min-w-0">
                     <div className="flex justify-between items-start">
                       <div>
@@ -382,7 +376,6 @@ export default function CartPage() {
                     </div>
 
                     <div className="flex items-center justify-between mt-4">
-                      {/* Quantity Controls - Desktop */}
                       <div className="flex items-center rounded-lg border border-gray-200 bg-gray-50">
                         <button
                           onClick={() =>
@@ -406,11 +399,10 @@ export default function CartPage() {
                         </button>
                       </div>
 
-                      {/* Price - Desktop */}
                       <div className="text-right">
                         <div className="text-2xl font-bold text-[#014421]">
                           {Math.round(
-                            getPricedItem(item).price *
+                            item.price *
                               item.quantity *
                               (item.type === "book" ? 1.06 : 1.25),
                           ).toLocaleString("sv-SE")}{" "}
@@ -419,7 +411,7 @@ export default function CartPage() {
                         {item.quantity > 1 && (
                           <div className="text-sm text-gray-500">
                             {Math.round(
-                              getPricedItem(item).price * (item.type === "book" ? 1.06 : 1.25),
+                              item.price * (item.type === "book" ? 1.06 : 1.25),
                             ).toLocaleString("sv-SE")}{" "}
                             kr/st (inkl. moms)
                           </div>
@@ -455,9 +447,7 @@ export default function CartPage() {
                     </h3>
 
                     <p className="text-xs sm:text-sm text-gray-600 leading-snug mb-2 line-clamp-2 sm:line-clamp-none">
-                      {campaignBookUpsell
-                        ? "Grill- & Sommarmat"
-                        : activeUpsellBook.description}
+                      {activeUpsellBook.description}
                     </p>
 
                     <div className="flex items-center gap-2 text-[11px] sm:text-sm text-gray-500 mb-2 sm:mb-3">
@@ -468,9 +458,9 @@ export default function CartPage() {
                     <div className="flex items-end justify-between gap-3">
                       <div className="min-w-0">
                         <div className="text-lg sm:text-2xl font-bold text-[#014421] leading-none">
-                          {Math.round(activeUpsellBook.price * 1.06).toLocaleString(
-                            "sv-SE",
-                          )}{" "}
+                          {Math.round(
+                            activeUpsellBook.price * 1.06,
+                          ).toLocaleString("sv-SE")}{" "}
                           kr
                         </div>
                         <div className="text-[11px] sm:text-sm text-gray-500 mt-1">
@@ -513,14 +503,12 @@ export default function CartPage() {
             )}
           </div>
 
-          {/* Order Summary */}
           <div className="lg:col-span-1">
             <div className="bg-white rounded-2xl shadow-sm p-4 sm:p-6 sticky top-8 border-2 border-[#93C560]">
               <h2 className="text-lg sm:text-xl font-semibold text-[#014421] mb-4 sm:mb-6">
                 Ordersammanfattning
               </h2>
 
-              {/* Trust Indicators */}
               <div className="space-y-2 sm:space-y-3 mb-4 sm:mb-6 p-3 sm:p-4 bg-gradient-to-r from-[#93C560]/10 to-[#7ab050]/10 rounded-xl border border-[#93C560]/20">
                 <div className="flex items-center gap-2 sm:gap-3 text-xs sm:text-sm text-gray-700">
                   <div className="p-0.5 sm:p-1 bg-[#93C560] rounded-full flex-shrink-0">
@@ -530,7 +518,7 @@ export default function CartPage() {
                     Omedelbar åtkomst efter köp
                   </span>
                 </div>
-                {/* Only show course-specific benefits if cart has courses */}
+
                 {items.some((item) => item.type === "course") && (
                   <>
                     <div className="flex items-center gap-2 sm:gap-3 text-xs sm:text-sm text-gray-700">
@@ -551,7 +539,7 @@ export default function CartPage() {
                     </div>
                   </>
                 )}
-                {/* E-book specific benefit */}
+
                 {items.some((item) => item.type === "book") &&
                   !items.some((item) => item.type === "course") && (
                     <div className="flex items-center gap-2 sm:gap-3 text-xs sm:text-sm text-gray-700">
@@ -565,7 +553,6 @@ export default function CartPage() {
                   )}
               </div>
 
-              {/* Coupon */}
               <div className="mb-4 sm:mb-6">
                 <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-2">
                   Rabattkod
@@ -609,7 +596,6 @@ export default function CartPage() {
                 )}
               </div>
 
-              {/* Price Breakdown */}
               <div className="space-y-2 sm:space-y-3 pb-4 sm:pb-6 border-b border-gray-200">
                 {items.map((item) => (
                   <div
@@ -621,7 +607,7 @@ export default function CartPage() {
                     </span>
                     <span className="font-medium text-gray-900 whitespace-nowrap">
                       {Math.round(
-                        getPricedItem(item).price *
+                        item.price *
                           item.quantity *
                           (item.type === "book" ? 1.06 : 1.25),
                       ).toLocaleString("sv-SE")}{" "}
@@ -633,27 +619,23 @@ export default function CartPage() {
 
               <div className="py-4 sm:py-6 space-y-2 sm:space-y-3">
                 {(() => {
-                  // Calculate totals with correct VAT rates (6% for books, 25% for courses)
                   const hasBooks = items.some((item) => item.type === "book");
                   const hasCourses = items.some(
                     (item) => item.type === "course",
                   );
 
-                  const subtotalInclVat = campaignItems.reduce((sum, item) => {
-                    const vatRate = item.type === "book" ? 1.06 : 1.25;
-                    return sum + item.price * item.quantity * vatRate;
+                  const subtotalInclVat = items.reduce((sum, item) => {
+                    const vatMultiplier = item.type === "book" ? 1.06 : 1.25;
+                    return sum + item.price * item.quantity * vatMultiplier;
                   }, 0);
-                  const originalSubtotalInclVat = items.reduce((sum, item) => {
-                    const vatRate = item.type === "book" ? 1.06 : 1.25;
-                    return sum + item.price * item.quantity * vatRate;
-                  }, 0);
-                  const totalVat = campaignItems.reduce((sum, item) => {
+
+                  const totalVat = items.reduce((sum, item) => {
                     const vatRate = item.type === "book" ? 0.06 : 0.25;
                     return sum + item.price * item.quantity * vatRate;
                   }, 0);
 
-                  // Calculate discount on INCLUDING VAT prices (what the customer sees)
                   let discountInclVat = 0;
+
                   if (appliedCoupon && subtotalInclVat > 0) {
                     const normalizedType = String(
                       appliedCoupon.type || "",
@@ -661,21 +643,22 @@ export default function CartPage() {
                     const isPercentage =
                       normalizedType === "PERCENTAGE" ||
                       normalizedType === "PERCENT";
+
                     if (isPercentage) {
                       discountInclVat = Math.round(
                         subtotalInclVat * (appliedCoupon.amount / 100),
                       );
                     } else {
-                      // Fixed amount coupons are stored ex VAT in the admin.
-                      // Convert to gross for display (6% for book-only carts, otherwise default to 25%).
                       const fixedVatMultiplier =
                         hasBooks && !hasCourses ? 1.06 : 1.25;
                       discountInclVat = Math.round(
                         appliedCoupon.amount * fixedVatMultiplier,
                       );
                     }
-                    if (discountInclVat > subtotalInclVat)
+
+                    if (discountInclVat > subtotalInclVat) {
                       discountInclVat = subtotalInclVat;
+                    }
                   }
 
                   const finalTotalInclVat = Math.max(
@@ -695,16 +678,16 @@ export default function CartPage() {
 
                   return (
                     <>
-                        <div className="flex justify-between text-xs sm:text-sm">
-                          <span className="text-gray-600">
-                            Delsumma (inkl. moms)
-                          </span>
-                          <span className="text-gray-900 whitespace-nowrap">
-                            {Math.round(subtotalInclVat).toLocaleString("sv-SE")}{" "}
-                            kr
-                          </span>
-                        </div>
-                      )}
+                      <div className="flex justify-between text-xs sm:text-sm">
+                        <span className="text-gray-600">
+                          Delsumma (inkl. moms)
+                        </span>
+                        <span className="text-gray-900 whitespace-nowrap">
+                          {Math.round(subtotalInclVat).toLocaleString("sv-SE")}{" "}
+                          kr
+                        </span>
+                      </div>
+
                       {discountInclVat > 0 && (
                         <div className="flex justify-between text-xs sm:text-sm">
                           <span className="text-[#93C560]">Rabatt</span>
@@ -713,12 +696,14 @@ export default function CartPage() {
                           </span>
                         </div>
                       )}
+
                       <div className="flex justify-between text-xs sm:text-sm pb-3 border-b border-gray-200">
                         <span className="text-gray-600">{vatLabel}</span>
                         <span className="text-gray-900 whitespace-nowrap">
                           {Math.round(finalVat).toLocaleString("sv-SE")} kr
                         </span>
                       </div>
+
                       <div className="flex justify-between items-center text-base sm:text-xl font-bold pt-2 sm:pt-3 p-3 sm:p-4 bg-gradient-to-r from-[#93C560]/10 to-[#7ab050]/10 rounded-lg">
                         <span className="text-[#014421]">Totalt</span>
                         <span className="text-[#014421] text-lg sm:text-2xl">
@@ -733,7 +718,6 @@ export default function CartPage() {
                 })()}
               </div>
 
-              {/* Checkout Button */}
               <Link
                 href="/checkout"
                 className="w-full bg-gradient-to-r from-[#014421] to-[#116530] text-white font-bold py-3 sm:py-4 px-4 sm:px-6 rounded-lg hover:from-[#116530] hover:to-[#014421] transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 flex items-center justify-center gap-2 text-base sm:text-lg"
@@ -743,7 +727,6 @@ export default function CartPage() {
                 <ArrowLeft className="w-4 h-4 sm:w-5 sm:h-5 rotate-180" />
               </Link>
 
-              {/* Urgency Indicator */}
               <div className="mt-3 sm:mt-4 p-2.5 sm:p-3 bg-amber-50 border border-amber-200 rounded-lg">
                 <div className="flex items-center gap-2 text-xs sm:text-sm text-amber-800">
                   <Clock className="w-3.5 h-3.5 sm:w-4 sm:h-4 flex-shrink-0" />
@@ -755,7 +738,6 @@ export default function CartPage() {
                 </div>
               </div>
 
-              {/* Payment Methods */}
               <div className="mt-4 sm:mt-6 text-center">
                 <p className="text-[10px] sm:text-xs text-gray-500 mb-2 sm:mb-3">
                   Säker betalning med
@@ -780,26 +762,26 @@ export default function CartPage() {
         </div>
       </div>
 
-      {/* Fixed bottom checkout bar for mobile */}
       <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-3 lg:hidden shadow-lg z-50">
         <div className="max-w-lg mx-auto">
           {(() => {
             const hasBooks = items.some((item) => item.type === "book");
             const hasCourses = items.some((item) => item.type === "course");
 
-            const subtotalInclVat = campaignItems.reduce((sum, item) => {
-              const vatRate = item.type === "book" ? 1.06 : 1.25;
-              return sum + item.price * item.quantity * vatRate;
+            const subtotalInclVat = items.reduce((sum, item) => {
+              const vatMultiplier = item.type === "book" ? 1.06 : 1.25;
+              return sum + item.price * item.quantity * vatMultiplier;
             }, 0);
 
-            // Calculate discount on INCLUDING VAT prices
             let discountInclVat = 0;
+
             if (appliedCoupon && subtotalInclVat > 0) {
               const normalizedType = String(
                 appliedCoupon.type || "",
               ).toUpperCase();
               const isPercentage =
                 normalizedType === "PERCENTAGE" || normalizedType === "PERCENT";
+
               if (isPercentage) {
                 discountInclVat = Math.round(
                   subtotalInclVat * (appliedCoupon.amount / 100),
@@ -811,14 +793,17 @@ export default function CartPage() {
                   appliedCoupon.amount * fixedVatMultiplier,
                 );
               }
-              if (discountInclVat > subtotalInclVat)
+
+              if (discountInclVat > subtotalInclVat) {
                 discountInclVat = subtotalInclVat;
+              }
             }
 
             const finalTotalInclVat = Math.max(
               0,
               subtotalInclVat - discountInclVat,
             );
+
             return (
               <div className="flex items-center gap-3">
                 <div className="flex-1 min-w-0">
@@ -854,6 +839,7 @@ export default function CartPage() {
             transform: translateY(0);
           }
         }
+
         .animate-fade-in {
           animation: fade-in 0.6s ease-out;
         }
