@@ -1,6 +1,5 @@
 "use client";
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { applyMothersDayBundlePricing } from '@/app/lib/campaigns/mothers-day';
 
 export interface CartItem {
   id: string;
@@ -83,7 +82,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       }
     }
 
-    const pricedItems = applyMothersDayBundlePricing(items);
+    const pricedItems = items;
     const newTotal = pricedItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
     setTotal(newTotal);
 
