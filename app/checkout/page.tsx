@@ -66,7 +66,8 @@ export default function Checkout() {
 
   	const campaignId = searchParams.get('campaign') || undefined;
   	const campaignItems = items;
-  	const getPricedItem = (item: (typeof items)[number]) => item;
+  	const getPricedItem = (item: (typeof items)[number]) =>
+  		campaignItems.find((pricedItem) => pricedItem.id === item.id) || item;
 
 	
   // Guest checkout form data
