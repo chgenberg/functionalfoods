@@ -386,8 +386,8 @@ export default function Home() {
         reverse
         title="Grill- & Sommarmat"
         subtitle="Inspireras av"
-        description="Recept som passar lika bra till en enkel middag på altanen som till sommarens större grillfester och bufféer."
-        image="/grill-sommarmat-omslag.png"
+        description="Passar lika bra till en enkel middag på altanen som till sommarens större grillfester och bufféer."
+        image="/grill-sommarmat-square.png"
         href="/e-bocker/grill-sommarmat"
         productId="grill-sommarmat"
         productPrice="149"
