@@ -61,6 +61,7 @@ export default function CartPage() {
     removeItem,
     updateQuantity,
     isLoaded,
+    discount,
     appliedCoupon,
     applyCoupon,
     removeCoupon,
@@ -629,6 +630,10 @@ export default function CartPage() {
                     return sum + item.price * item.quantity * vatMultiplier;
                   }, 0);
 
+                  const subtotalExVat = items.reduce((sum, item) => {
+                    return sum + item.price * item.quantity;
+                  }, 0);
+
                   const totalVat = items.reduce((sum, item) => {
                     const vatRate = item.type === "book" ? 0.06 : 0.25;
                     return sum + item.price * item.quantity * vatRate;
@@ -649,10 +654,10 @@ export default function CartPage() {
                         subtotalInclVat * (appliedCoupon.amount / 100),
                       );
                     } else {
-                      const fixedVatMultiplier =
-                        hasBooks && !hasCourses ? 1.06 : 1.25;
+                      const effectiveVatMultiplier =
+                        subtotalExVat > 0 ? subtotalInclVat / subtotalExVat : 1;
                       discountInclVat = Math.round(
-                        appliedCoupon.amount * fixedVatMultiplier,
+                        discount * effectiveVatMultiplier,
                       );
                     }
 
@@ -700,7 +705,11 @@ export default function CartPage() {
                       <div className="flex justify-between text-xs sm:text-sm pb-3 border-b border-gray-200">
                         <span className="text-gray-600">{vatLabel}</span>
                         <span className="text-gray-900 whitespace-nowrap">
-                          {Math.round(finalVat).toLocaleString("sv-SE")} kr
+                          {finalVat.toLocaleString("sv-SE", {
+                            minimumFractionDigits: 0,
+                            maximumFractionDigits: 2,
+                          })}{" "}
+                          kr
                         </span>
                       </div>
 
@@ -773,6 +782,10 @@ export default function CartPage() {
               return sum + item.price * item.quantity * vatMultiplier;
             }, 0);
 
+            const subtotalExVat = items.reduce((sum, item) => {
+              return sum + item.price * item.quantity;
+            }, 0);
+
             let discountInclVat = 0;
 
             if (appliedCoupon && subtotalInclVat > 0) {
@@ -787,12 +800,11 @@ export default function CartPage() {
                   subtotalInclVat * (appliedCoupon.amount / 100),
                 );
               } else {
-                const fixedVatMultiplier =
-                  hasBooks && !hasCourses ? 1.06 : 1.25;
-                discountInclVat = Math.round(
-                  appliedCoupon.amount * fixedVatMultiplier,
-                );
+                const effectiveVatMultiplier =
+                  subtotalExVat > 0 ? subtotalInclVat / subtotalExVat : 1;
+                discountInclVat = Math.round(discount * effectiveVatMultiplier);
               }
+
 
               if (discountInclVat > subtotalInclVat) {
                 discountInclVat = subtotalInclVat;
