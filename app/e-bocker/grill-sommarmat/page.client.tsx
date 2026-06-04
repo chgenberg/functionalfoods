@@ -26,7 +26,7 @@ const DEFAULT_CONTENT = {
   image: "/grill-sommarmat-omslag.png",
   price: "149 kr",
   features: [
-    "+90 enkla recept",
+    "Över 90 enkla och njutbara recept",
     "Ingen grill krävs– alla recept går att anpassa",
     "Passar både vardag, fest och grillkvällar",
     "Näringsrika rätter som fungera för hela familjen",
