@@ -68,6 +68,10 @@ export async function POST(request: NextRequest) {
       downloadPath = "/sota-godsaker-ulrika-davidsson.pdf";
     }
 
+    if (downloadToken.ebookId === "grill-sommarmat") {
+      downloadPath = "/grill-sommarmat-ulrika-davidsson.pdf";
+    }
+
     if (!downloadPath) {
       return NextResponse.json(
         { valid: false, error: "E-bok kunde inte hittas" },

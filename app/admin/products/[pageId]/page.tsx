@@ -231,6 +231,61 @@ const PAGE_CONFIGS: Record<string, PageConfig> = {
       },
     ],
   },
+  "grill-sommarmat": {
+    pageId: "grill-sommarmat",
+    name: "Grill- & Sommarmat E-bok",
+    path: "/e-bocker/grill-sommarmat",
+    fields: [
+      {
+        key: "title",
+        label: "Rubrik",
+        type: "text",
+        placeholder: "Grill- & Sommarmat",
+      },
+      {
+        key: "subtitle",
+        label: "Underrubrik",
+        type: "text",
+        placeholder: "Fräsch mat för grillkvällar, buffé och sommarbord",
+      },
+      {
+        key: "description",
+        label: "Beskrivning",
+        type: "textarea",
+        placeholder: "Huvudbeskrivning av e-boken...",
+      },
+      {
+        key: "shortDescription",
+        label: "Kort beskrivning",
+        type: "textarea",
+        placeholder: "Kortare beskrivning...",
+      },
+      {
+        key: "image",
+        label: "Produktbild",
+        type: "image",
+        help: "Huvudbild för e-boken (visas på produktsidan)",
+      },
+      {
+        key: "price",
+        label: "Pris (visningstext)",
+        type: "text",
+        placeholder: "149 kr",
+      },
+      {
+        key: "features",
+        label: "Funktioner/Features",
+        type: "array",
+        placeholder: 'T.ex. "Recept för grillkvällar"',
+      },
+      {
+        key: "authorSection",
+        label: "Om författaren",
+        type: "textarea",
+        placeholder: "Text om Ulrika...",
+      },
+    ],
+  },
   boken: {
     pageId: "boken",
     name: "Functional Foods Boken",

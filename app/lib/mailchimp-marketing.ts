@@ -284,7 +284,21 @@ class MailchimpMarketingService {
       [normalize("E-bok Söta godsaker")]: "Köp - Sötsaker",
       [normalize("Ebok Söta godsaker")]: "Köp - Sötsaker",
       [normalize("Söta godsaker - e-bok")]: "Köp - Sötsaker",
-      [normalize("Söta godsaker – e-bok")]: "Köp - Sötsaker",
+      [normalize("Söta godsaker – e-bok")]: "Köp - Sötsaker",   
+
+    // Grill- & Sommarmat (ebook)
+      [normalize("grill-sommarmat")]: "Köp - Grill & Sommarmat",
+      [normalize("grill sommarmat")]: "Köp - Grill & Sommarmat",
+      [normalize("grill och sommarmat")]: "Köp - Grill & Sommarmat",
+      [normalize("grill- & sommarmat")]: "Köp - Grill & Sommarmat",
+      [normalize("Grill- & Sommarmat")]: "Köp - Grill & Sommarmat",
+      [normalize("Grill- & Sommarmat (E-bok)")]: "Köp - Grill & Sommarmat",
+      [normalize("Grill- & Sommarmat ebook")]: "Köp - Grill & Sommarmat",
+      [normalize("Grill- & Sommarmat e-bok")]: "Köp - Grill & Sommarmat",
+      [normalize("E-bok Grill- & Sommarmat")]: "Köp - Grill & Sommarmat",
+      [normalize("Ebok Grill- & Sommarmat")]: "Köp - Grill & Sommarmat",
+      [normalize("Grill- & Sommarmat - e-bok")]: "Köp - Grill & Sommarmat",
+      [normalize("Grill- & Sommarmat – e-bok")]: "Köp - Grill & Sommarmat",
     };
 
     const tags: string[] = ["kund"];

@@ -384,26 +384,26 @@ export default function Home() {
 
       <BookShowcaseSection
         reverse
-        title="Söta Godsaker"
+        title="Grill- & Sommarmat"
         subtitle="Inspireras av"
-        description="Hälsosammare tårtor, kakor, pajer och desserter"
-        image="/sota-godsaker-square.png"
-        href="/e-bocker/sota-godsaker"
-        productId="sota-godsaker"
-        productPrice="109"
+        description="Passar lika bra till en enkel middag på altanen som till sommarens större grillfester och bufféer."
+        image="/grill-sommarmat-square.png"
+        href="/e-bocker/grill-sommarmat"
+        productId="grill-sommarmat"
+        productPrice="149"
         buttonText="Läs mer om boken"
         highlights={[
           {
-            title: "Över 50 favoritrecept",
-            text: "Glutenfria och sockerreducerade.",
+            title: "Över 90 favoritrecept",
+            text: "För vardag, fest och grillkvällar",
           },
           {
-            title: "Enkla och goda bakverk",
-            text: "Fungerar för hela familjen.",
+            title: "Grillguide i e-boksformat",
+            text: "Inspirerande recept och smarta tips",
           },
           {
-            title: "Naturliga ingredienser",
-            text: "Smartare alternativ för sötning.",
+            title: "Balans, näring och njutning",
+            text: " Sommar och grillat går hand i hand",
           },
         ]}
       />

@@ -333,6 +333,14 @@ async function completeOrder(order: any, sveaOrder: any) {
       ) {
         ebookId = "sota-godsaker";
       }
+      if (
+        n.includes("grill- & sommarmat") ||
+        n.includes("grill sommarmat") ||
+        n.includes("grill och sommarmat") ||
+        n.includes("grill-sommarmat")
+      ) {
+        ebookId = "grill-sommarmat";
+      }
 
       await prisma.ebookDownload.create({
         data: {
@@ -354,6 +362,9 @@ async function completeOrder(order: any, sveaOrder: any) {
 
       if (ebookId === "sota-godsaker") {
         downloadUrl = `${baseUrl}/e-bocker/sota-godsaker/ladda-ner?token=${downloadToken}`;
+      }
+      if (ebookId === "grill-sommarmat") {
+        downloadUrl = `${baseUrl}/e-bocker/grill-sommarmat/ladda-ner?token=${downloadToken}`;
       }
 
       await emailService.sendEbookDownloadEmail({
@@ -379,6 +390,8 @@ async function completeOrder(order: any, sveaOrder: any) {
           const purchaseTag =
             ebookId === "paskbuffe"
               ? "Köp - Påskbuffé"
+              : ebookId === "grill-sommarmat"
+                ? "Köp - Grill & Sommarmat"
               : ebookId === "sota-godsaker"
                 ? "Köp - Sötsaker"
                 : "Köp - Brödboken";

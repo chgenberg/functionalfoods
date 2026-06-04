@@ -61,6 +61,7 @@ async function getCourseInfo() {
       breadbookResponse,
       paskbuffeResponse,
       sotaGodsakerResponse,
+      grillSommarmatResponse,
     ] = await Promise.all([
       fetch(`${baseUrl}/functionalbasics.txt`, { cache: "no-store" }),
       fetch(`${baseUrl}/functionalflow.txt`, { cache: "no-store" }),
@@ -69,6 +70,7 @@ async function getCourseInfo() {
       fetch(`${baseUrl}/baka-glutenfritt.txt`, { cache: "no-store" }),
       fetch(`${baseUrl}/paskbuffe.txt`, { cache: "no-store" }),
       fetch(`${baseUrl}/sota-godsaker.txt`, { cache: "no-store" }),
+      fetch(`${baseUrl}/grill-sommarmat.txt`, { cache: "no-store" }),
     ]);
 
     if (
@@ -78,7 +80,8 @@ async function getCourseInfo() {
       !balansResponse.ok ||
       !breadbookResponse.ok ||
       !paskbuffeResponse.ok ||
-      !sotaGodsakerResponse.ok
+      !sotaGodsakerResponse.ok ||
+      !grillSommarmatResponse.ok
     ) {
       console.error("Failed to load course info:", {
         basics: basicsResponse.status,
@@ -88,6 +91,7 @@ async function getCourseInfo() {
         breadbook: breadbookResponse.status,
         paskbuffe: paskbuffeResponse.status,
         sotaGodsaker: sotaGodsakerResponse.status,
+        grillSommarmat: grillSommarmatResponse.status,
       });
       return {
         basicsText: "",
@@ -97,6 +101,7 @@ async function getCourseInfo() {
         breadbookText: "",
         paskbuffeText: "",
         sotaGodsakerText: "",
+        grillSommarmatText: "",
       };
     }
 
@@ -107,6 +112,7 @@ async function getCourseInfo() {
     const breadbookText = await breadbookResponse.text();
     const paskbuffeText = await paskbuffeResponse.text();
     const sotaGodsakerText = await sotaGodsakerResponse.text();
+    const grillSommarmatText = await grillSommarmatResponse.text();
 
     return {
       basicsText,
@@ -116,6 +122,7 @@ async function getCourseInfo() {
       breadbookText,
       paskbuffeText,
       sotaGodsakerText,
+      grillSommarmatText,
     };
   } catch (error) {
     console.error("Error loading course info:", error);
@@ -127,6 +134,7 @@ async function getCourseInfo() {
       breakbookText: "",
       paskbuffeText: "",
       sotaGodsakerText: "",
+      grillSommarmatText: "",
     };
   }
 }
@@ -423,6 +431,7 @@ ${user.chatMessages
       breadbookText,
       paskbuffeText,
       sotaGodsakerText,
+      grillSommarmatText,
     } = await getCourseInfo();
     const { recipes, rawMaterials } = await getRecipesAndRawMaterials();
 
@@ -446,7 +455,7 @@ Du har djup kunskap om:
 - Recept och matlagning för optimal hälsa
 - Longevity och livsstilsfaktorer
 - Våra kurser: Functional Basics, Functional Gut Health/Flow, Functional Insulin Balance / Energy och Hormonell Balans
-- Våra e-böcker: Baka Glutenfritt, Påskbuffé och Söta godsaker
+- Våra e-böcker: Baka Glutenfritt, Påskbuffé, Söta godsaker och Grill- & Sommarmat
 - Funktionella råvaror och deras hälsofördelar
 
 Kursinformation:
@@ -457,6 +466,7 @@ Hormonell Balans: ${balansText.substring(0, 500)}...
 Baka Glutenfritt: ${breadbookText.substring(0, 500)}...
 Påskbuffé: ${paskbuffeText.substring(0, 500)}...
 Söta godsaker: ${sotaGodsakerText.substring(0, 500)}...
+Grill- & Sommarmat: ${grillSommarmatText.substring(0, 500)}...
 
 VÅRA RECEPT (${recipes.length} tillgängliga):
 ${recipes

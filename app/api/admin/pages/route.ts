@@ -24,6 +24,12 @@ const KNOWN_PAGES = [
     path: "/e-bocker/sota-godsaker",
   },
   {
+  pageId: "grill-sommarmat",
+    name: "Grill- & Sommarmat E-bok",
+    description: "E-boken som säljs på /e-bocker/grill-sommarmat",
+    path: "/e-bocker/grill-sommarmat",
+  },
+  {
     pageId: "boken",
     name: "Functional Foods Boken",
     description: "Den fysiska boken på /boken",

@@ -536,6 +536,15 @@ export async function GET(req: NextRequest) {
               ebookId = "sota-godsaker";
             }
 
+            if (
+              book.name.toLowerCase().includes("grill- & sommarmat") ||
+              book.name.toLowerCase().includes("grill sommarmat") ||
+              book.name.toLowerCase().includes("grill och sommarmat") ||
+              book.name.toLowerCase().includes("grill-sommarmat")
+            ) {
+              ebookId = "grill-sommarmat";
+            }
+            
             const existing = await prisma.ebookDownload.findFirst({
               where: { orderNumber: order.orderNumber, ebookId },
             });
@@ -562,6 +571,9 @@ export async function GET(req: NextRequest) {
             }
             if (ebookId === "sota-godsaker") {
               downloadUrl = `${baseUrl}/e-bocker/sota-godsaker/ladda-ner?token=${token}`;
+            }
+            if (ebookId === "grill-sommarmat") {
+              downloadUrl = `${baseUrl}/e-bocker/grill-sommarmat/ladda-ner?token=${token}`;
             }
 
             await emailService.sendEbookDownloadEmail({
