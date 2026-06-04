@@ -386,8 +386,8 @@ export default function Home() {
         reverse
         title="Grill- & Sommarmat"
         subtitle="Inspireras av"
-        description="Recept för grillkvällar, bufféer och sommarbord"
-        image="/grill-sommarmat-square.png"
+        description="Recept som passar lika bra till en enkel middag på altanen som till sommarens större grillfester och bufféer."
+        image="/grill-sommarmat-omslag.png"
         href="/e-bocker/grill-sommarmat"
         productId="grill-sommarmat"
         productPrice="149"
@@ -398,11 +398,11 @@ export default function Home() {
             text: "För vardag, fest och grillkvällar",
           },
           {
-            title: "Komplett grillguide i e-boksformat",
+            title: "Grillguide i e-boksformat",
             text: "Inspirerande recept och smarta tips",
           },
           {
-            title: "Fokus på balans, näring och njutning",
+            title: "Balans, näring och njutning",
             text: " Sommar och grillat går hand i hand",
           },
         ]}
