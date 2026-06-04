@@ -5,11 +5,6 @@ import { useAuth } from '@/app/hooks/useAuth';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { ArrowLeft, Loader2 } from 'lucide-react';
-import {
-  applyMothersDayBundlePricing,
-  hasStoredMothersDayCampaign,
-  MOTHERS_DAY_CAMPAIGN_ID,
-} from '@/app/lib/campaigns/mothers-day';
 
 export default function SveaCheckoutPage() {
   const router = useRouter();
@@ -53,7 +48,7 @@ export default function SveaCheckoutPage() {
     try {
       // Use provided checkout data or build from cart
       const data = checkoutData || {
-        items: applyMothersDayBundlePricing(items, hasStoredMothersDayCampaign()).map(item => ({
+        items: items.map(item => ({
           id: item.id,
           name: item.name,
           price: item.price,
@@ -66,7 +61,6 @@ export default function SveaCheckoutPage() {
           name: user.name
         } : undefined,
         couponCode: appliedCoupon?.code,
-        campaignId: hasStoredMothersDayCampaign() ? MOTHERS_DAY_CAMPAIGN_ID : undefined
       };
 
       // Call new Svea V2 endpoint
