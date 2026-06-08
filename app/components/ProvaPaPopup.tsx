@@ -93,8 +93,8 @@ export default function ProvaPaPopup({
               {/* Image section */}
               <div className="relative h-48 sm:h-56">
                 <Image
-                  src="/sota-godsaker-popup.png"
-                  alt="Söta Godsaker"
+                  src="/grill-sommarmat-popup.png"
+                  alt="Grill och Sommarmat"
                   fill
                   className="object-cover"
                   priority
@@ -123,8 +123,9 @@ export default function ProvaPaPopup({
               {/* Content */}
               <div className="p-6">
                 <p className="text-gray-700 mb-6 leading-relaxed">
-                  Recept för sommarens alla måltider i en e-bok fylld med grillfavoriter, 
-                  fräscha sallader, picknickmat, goda tapasrätter, mocktails och smakrika tillbehör.
+                  Recept för sommarens alla måltider i en e-bok fylld med
+                  grillfavoriter, fräscha sallader, picknickmat, goda
+                  tapasrätter, mocktails och smakrika tillbehör.
                 </p>
 
                 {/* Features */}
