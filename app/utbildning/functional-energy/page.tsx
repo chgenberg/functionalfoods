@@ -211,8 +211,8 @@ export default function FunctionalEnergyPage() {
     },
     {
       icon: Play,
-      title: "Livesändningar med Ulrika",
-      description: "Lättillgängligt och inspirerande innehåll",
+      title: "Lärorika videomoduler",
+      description: "Expertråd och vägledning från Ulrika",
     },
     {
       icon: Users,

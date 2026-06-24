@@ -45,11 +45,14 @@ export default function FunctionalBasicsPage() {
   useEffect(() => {
     const fetchPrice = async () => {
       try {
-        const response = await fetch(`/api/admin/functional-courses?ts=${Date.now()}`, {
-          credentials: 'include',
-          cache: 'no-store'
-        });
-        if (!response.ok) throw new Error('Failed to fetch course prices');
+        const response = await fetch(
+          `/api/admin/functional-courses?ts=${Date.now()}`,
+          {
+            credentials: "include",
+            cache: "no-store",
+          },
+        );
+        if (!response.ok) throw new Error("Failed to fetch course prices");
         if (response.ok) {
           const courses = await response.json();
           const basics = courses.find((c: any) => c.id === "functional-basics");
@@ -225,8 +228,8 @@ export default function FunctionalBasicsPage() {
     },
     {
       icon: Play,
-      title: "Livesändningar med Ulrika",
-      description: "Lättillgängligt och inspirerande innehåll",
+      title: "Lärorika videomoduler",
+      description: "Expertråd och vägledning från Ulrika",
     },
     {
       icon: Users,
@@ -395,7 +398,9 @@ export default function FunctionalBasicsPage() {
                   className="text-3xl font-bold"
                   style={{ color: "#E7345D" }}
                 >
-                  {hasLivePrice ? `${formatPrice(displayPriceIncl)} kr` : 'Laddar pris...'}
+                  {hasLivePrice
+                    ? `${formatPrice(displayPriceIncl)} kr`
+                    : "Laddar pris..."}
                 </div>
                 {hasDiscount && (
                   <div className="text-sm text-gray-500 line-through">
@@ -411,7 +416,7 @@ export default function FunctionalBasicsPage() {
                   disabled={!hasLivePrice}
                   className="bg-primary text-white px-6 py-2 rounded-full text-sm hover:bg-primary/90 transition-colors w-full"
                 >
-                  {hasLivePrice ? 'Lägg i varukorg' : 'Laddar...'}
+                  {hasLivePrice ? "Lägg i varukorg" : "Laddar..."}
                 </button>
                 <div className="w-full border-t border-gray-200 my-2"></div>
                 <div className="flex flex-col gap-2 w-full">
@@ -737,21 +742,21 @@ export default function FunctionalBasicsPage() {
           </p>
           <div className="flex justify-center">
             {hasLivePrice ? (
-                <AddToCart 
-                  id="functional-basics"
-                  name="Functional Basics"
-                  price={course.price}
-                  type="course"
-                  image={course.image}
-                />
-              ) : (
-                <button
-                  disabled
-                  className="flex items-center justify-center gap-2 px-6 py-3 rounded-lg bg-gray-200 text-gray-500 cursor-not-allowed"
-                >
-                  Laddar pris...
-                </button>
-              )}
+              <AddToCart
+                id="functional-basics"
+                name="Functional Basics"
+                price={course.price}
+                type="course"
+                image={course.image}
+              />
+            ) : (
+              <button
+                disabled
+                className="flex items-center justify-center gap-2 px-6 py-3 rounded-lg bg-gray-200 text-gray-500 cursor-not-allowed"
+              >
+                Laddar pris...
+              </button>
+            )}
           </div>
         </div>
       </div>
