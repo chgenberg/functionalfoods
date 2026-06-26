@@ -905,6 +905,10 @@ export async function POST(req: NextRequest) {
                 trackingCode,
               });
 
+              await mailchimpEcommerce.deleteCart(
+                metadata.mailchimpCartId || updatedOrder.orderNumber || updatedOrder.id,
+              );
+
               console.log(
                 "✅ Mailchimp E-commerce purchase tracked (via verify):",
                 {
@@ -921,6 +925,7 @@ export async function POST(req: NextRequest) {
                   metadata: {
                     ...metadata,
                     mailchimpEcommerceTrackedAt: new Date().toISOString(),
+                    mailchimpCartDeletedAt: new Date().toISOString(),
                   },
                 },
               });
