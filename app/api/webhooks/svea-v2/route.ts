@@ -558,99 +558,100 @@ async function handleOrderCompleted(
             orderId: updatedOrder.orderNumber,
             trackedAt: metadata.mailchimpEcommerceTrackedAt,
           });
-        } else {
         }
-        if (metadata?.discountAmount) {
-            // Discount amount stored in metadata (in SEK)
-            discountTotal = metadata.discountAmount;
-          } else {
-            // Calculate discount by comparing original prices with discounted prices
-            // Sum up original prices (if available) vs actual paid prices
-            const originalTotal = updatedOrder.items.reduce((sum, item) => {
-              // Try to get original price from course product or metadata
-              const originalPrice =
-                (item as any).originalPrice ||
-                metadata?.items?.[0]?.price ||
-                item.price;
-              return sum + originalPrice * item.quantity;
-            }, 0);
-
-            if (originalTotal > totalAmount) {
-                discountTotal = originalTotal - totalAmount;
-            }
-          }
-
-          // Extract attribution data from order metadata for campaign tracking
-          const attribution = metadata?.attribution || {};
-          const campaignId = attribution?.mc_cid || undefined;
-          const trackingCode =
-            attribution?.utm_campaign || campaignId || undefined;
         
-          // Build landing site URL from UTM params or Mailchimp campaign tracking
-          let landingSite: string | undefined;
-          if (
-            attribution?.utm_source ||
-            attribution?.utm_campaign ||
-            attribution?.mc_cid
-          ) {
-            const params = new URLSearchParams();
-            if (attribution.utm_source)
-              params.set("utm_source", attribution.utm_source);
-            if (attribution.utm_medium)
-              params.set("utm_medium", attribution.utm_medium);
-            if (attribution.utm_campaign)
-              params.set("utm_campaign", attribution.utm_campaign);
-            if (attribution.mc_cid) params.set("mc_cid", attribution.mc_cid);
-            landingSite = `https://functionalfoods.se/?${params.toString()}`;
-          }
+        if (!metadata?.mailchimpEcommerceTrackedAt) {
+          if (metadata?.discountAmount) {
+              // Discount amount stored in metadata (in SEK)
+              discountTotal = metadata.discountAmount;
+            } else {
+              // Calculate discount by comparing original prices with discounted prices
+              // Sum up original prices (if available) vs actual paid prices
+              const originalTotal = updatedOrder.items.reduce((sum, item) => {
+                // Try to get original price from course product or metadata
+                const originalPrice =
+                  (item as any).originalPrice ||
+                  metadata?.items?.[0]?.price ||
+                  item.price;
+                return sum + originalPrice * item.quantity;
+              }, 0);
+  
+              if (originalTotal > totalAmount) {
+                  discountTotal = originalTotal - totalAmount;
+              }
+            }
 
-          await mailchimpEcommerce.trackPurchase({
-            orderId: updatedOrder.orderNumber,
-            customerEmail: updatedOrder.user.email,
-            customerName: updatedOrder.user.name || undefined,
-            items: updatedOrder.items.map((item) => ({
-              id: item.courseId || item.id,
-              name: item.name,
-              price: item.price,
-              quantity: item.quantity,
-              type: item.type || "course",
-            })),
-            totalAmount: totalAmount,
-            currency: updatedOrder.currency || "SEK",
-            orderDate: updatedOrder.createdAt,
-            discountTotal: discountTotal,
-            shippingTotal: 0,
-            taxTotal: taxTotal,
-            // Campaign attribution for Mailchimp reports
-            campaignId: campaignId,
-            landingSite: landingSite,
-            trackingCode: trackingCode,
-          });
-
-          await mailchimpEcommerce.deleteCart(
-            metadata?.mailchimpCartId || updatedOrder.orderNumber || updatedOrder.id,
-          );
-
-          await prisma.order.update({
-            where: { id: updatedOrder.id },
-            data: {
-              metadata: {
-                ...(metadata || {}),
-                mailchimpEcommerceTrackedAt: new Date().toISOString(),
-                mailchimpCartDeletedAt: new Date().toISOString(),
+            // Extract attribution data from order metadata for campaign tracking
+            const attribution = metadata?.attribution || {};
+            const campaignId = attribution?.mc_cid || undefined;
+            const trackingCode =
+              attribution?.utm_campaign || campaignId || undefined;
+          
+            // Build landing site URL from UTM params or Mailchimp campaign tracking
+            let landingSite: string | undefined;
+            if (
+              attribution?.utm_source ||
+              attribution?.utm_campaign ||
+              attribution?.mc_cid
+            ) {
+              const params = new URLSearchParams();
+              if (attribution.utm_source)
+                params.set("utm_source", attribution.utm_source);
+              if (attribution.utm_medium)
+                params.set("utm_medium", attribution.utm_medium);
+              if (attribution.utm_campaign)
+                params.set("utm_campaign", attribution.utm_campaign);
+              if (attribution.mc_cid) params.set("mc_cid", attribution.mc_cid);
+              landingSite = `https://functionalfoods.se/?${params.toString()}`;
+            }
+  
+            await mailchimpEcommerce.trackPurchase({
+              orderId: updatedOrder.orderNumber,
+              customerEmail: updatedOrder.user.email,
+              customerName: updatedOrder.user.name || undefined,
+              items: updatedOrder.items.map((item) => ({
+                id: item.courseId || item.id,
+                name: item.name,
+                price: item.price,
+                quantity: item.quantity,
+                type: item.type || "course",
+              })),
+              totalAmount: totalAmount,
+              currency: updatedOrder.currency || "SEK",
+              orderDate: updatedOrder.createdAt,
+              discountTotal: discountTotal,
+              shippingTotal: 0,
+              taxTotal: taxTotal,
+              // Campaign attribution for Mailchimp reports
+              campaignId: campaignId,
+              landingSite: landingSite,
+              trackingCode: trackingCode,
+            });
+  
+            await mailchimpEcommerce.deleteCart(
+              metadata?.mailchimpCartId || updatedOrder.orderNumber || updatedOrder.id,
+            );
+  
+            await prisma.order.update({
+              where: { id: updatedOrder.id },
+              data: {
+                metadata: {
+                  ...(metadata || {}),
+                  mailchimpEcommerceTrackedAt: new Date().toISOString(),
+                  mailchimpCartDeletedAt: new Date().toISOString(),
+                },
               },
-            },
-          });
-
-          completedOrder = await prisma.order.findUnique({
-            where: { id: order.id },
-            include: { user: true, items: true },
-          });     
+            });
+  
+            completedOrder = await prisma.order.findUnique({
+              where: { id: order.id },
+              include: { user: true, items: true },
+            });     
+          }
         }
+      } catch (e) {
+        console.warn("⚠️ Mailchimp E-commerce tracking failed:", e);
       }
-    } catch (e) {
-      console.warn("⚠️ Mailchimp E-commerce tracking failed:", e);
-    }
 
     // GA4 server-side purchase tracking (non-blocking)
     try {
