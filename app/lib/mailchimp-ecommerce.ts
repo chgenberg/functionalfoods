@@ -63,6 +63,32 @@ interface MailchimpOrder {
   tax_total?: number;
 }
 
+interface MailchimpCartLine {
+  id: string;
+  product_id: string;
+  product_title: string;
+  product_variant_id: string;
+  product_variant_title?: string;
+  quantity: number;
+  price: number;
+}
+
+interface MailchimpCart {
+  id: string;
+  customer: {
+    id: string;
+    email_address: string;
+    first_name?: string;
+    last_name?: string;
+    opt_in_status?: boolean;
+  };
+  checkout_url: string;
+  currency_code: string;
+  order_total: number;
+  lines: MailchimpCartLine[];
+  campaign_id?: string;
+}
+
 class MailchimpEcommerceService {
   private config: MailchimpEcommerceConfig | null = null;
   private baseUrl: string | null = null;
@@ -91,6 +117,10 @@ class MailchimpEcommerceService {
    */
   isConfigured(): boolean {
     return this.config !== null && this.baseUrl !== null;
+  }
+
+  isAbandonedCartEnabled(): boolean {
+  return process.env.MAILCHIMP_ABANDONED_CART_ENABLED === 'true';
   }
 
   /**
@@ -310,6 +340,156 @@ class MailchimpEcommerceService {
     }
   }
 
+  getSafeCartId(cartId: string): string {
+    return `mc-cart-${Buffer.from(cartId).toString('base64').replace(/[^a-zA-Z0-9]/g, '').slice(0, 48)}`;
+  }
+
+  /**
+   * Create or update an unfinished cart for Mailchimp abandoned cart automations.
+   */
+  async upsertCart(params: {
+    cartId: string;
+    customerEmail: string;
+    customerName?: string;
+    checkoutUrl: string;
+    items: Array<{
+      id: string;
+      name: string;
+      price: number;
+      quantity: number;
+      type?: string;
+    }>;
+    totalAmount: number;
+    currency?: string;
+    campaignId?: string;
+  }): Promise<string | null> {
+    if (!this.isConfigured() || !this.isAbandonedCartEnabled()) {
+      console.log('ℹ️ Mailchimp abandoned cart not configured/enabled, skipping cart sync');
+      return null;
+    }
+
+    if (!params.customerEmail || params.customerEmail.startsWith('guest-')) {
+      console.log('ℹ️ Mailchimp cart sync skipped: missing/guest email');
+      return null;
+    }
+
+    const safeCartId = params.cartId.startsWith('mc-cart-')
+      ? params.cartId
+      : this.getSafeCartId(params.cartId);
+
+    try {
+      for (const item of params.items) {
+        const variantId = `${item.id}-default`;
+        await this.syncProduct({
+          id: item.id,
+          title: item.name,
+          description: `${item.type || 'course'} - ${item.name}`,
+          type: item.type || 'course',
+          vendor: 'Functional Foods',
+          variants: [{
+            id: variantId,
+            title: item.name,
+            price: item.price,
+            inventory_quantity: 999
+          }]
+        });
+      }
+
+      const nameParts = params.customerName?.trim().split(/\s+/).filter(Boolean) || [];
+      const firstName = nameParts[0] || '';
+      const lastName = nameParts.slice(1).join(' ') || '';
+      const customerId = await this.getOrCreateCustomer(params.customerEmail, firstName, lastName);
+
+      const cart: MailchimpCart = {
+        id: safeCartId,
+        customer: {
+          id: customerId,
+          email_address: params.customerEmail.toLowerCase().trim(),
+          first_name: firstName,
+          last_name: lastName,
+          opt_in_status: false
+        },
+        checkout_url: params.checkoutUrl,
+        currency_code: (params.currency || 'SEK').toUpperCase(),
+        order_total: params.totalAmount,
+        lines: params.items.map((item, index) => ({
+          id: String(index + 1),
+          product_id: item.id,
+          product_title: item.name,
+          product_variant_id: `${item.id}-default`,
+          product_variant_title: item.name,
+          quantity: item.quantity,
+          price: item.price
+        })),
+        campaign_id: params.campaignId || undefined
+      };
+
+      const createResponse = await fetch(`${this.baseUrl}/carts`, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Basic ${Buffer.from(`anystring:${this.config!.apiKey}`).toString('base64')}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(cart)
+      });
+
+      if (createResponse.ok) {
+        console.log('✅ Mailchimp cart synced:', { cartId: safeCartId, customerEmail: params.customerEmail });
+        return safeCartId;
+      }
+
+      const createText = await createResponse.text();
+      if (createResponse.status !== 400 && createResponse.status !== 409) {
+        throw new Error(`Mailchimp cart create failed: ${createResponse.status} ${createText}`);
+      }
+
+      const updateResponse = await fetch(`${this.baseUrl}/carts/${encodeURIComponent(safeCartId)}`, {
+        method: 'PATCH',
+        headers: {
+          'Authorization': `Basic ${Buffer.from(`anystring:${this.config!.apiKey}`).toString('base64')}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(cart)
+      });
+
+      if (!updateResponse.ok) {
+        const updateText = await updateResponse.text();
+        throw new Error(`Mailchimp cart update failed: ${updateResponse.status} ${updateText}`);
+      }
+
+      console.log('✅ Mailchimp cart updated:', { cartId: safeCartId, customerEmail: params.customerEmail });
+      return safeCartId;
+    } catch (error) {
+      console.warn('⚠️ Failed to sync Mailchimp cart:', error);
+      return null;
+    }
+  }
+
+  async deleteCart(cartId?: string | null): Promise<void> {
+    if (!cartId || !this.isConfigured() || !this.isAbandonedCartEnabled()) {
+      return;
+    }
+
+    try {
+      const response = await fetch(`${this.baseUrl}/carts/${encodeURIComponent(cartId)}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Basic ${Buffer.from(`anystring:${this.config!.apiKey}`).toString('base64')}`,
+          'Content-Type': 'application/json'
+        }
+      });
+
+      if (!response.ok && response.status !== 404) {
+        const text = await response.text();
+        throw new Error(`Mailchimp cart delete failed: ${response.status} ${text}`);
+      }
+
+      console.log('✅ Mailchimp cart removed:', cartId);
+    } catch (error) {
+      console.warn('⚠️ Failed to remove Mailchimp cart:', error);
+    }
+  }
+
   /**
    * Sync a product to Mailchimp store
    */
@@ -356,4 +536,4 @@ export function getMailchimpEcommerce(): MailchimpEcommerceService {
   return mailchimpEcommerceInstance;
 }
 
-export type { MailchimpProduct, MailchimpOrder, MailchimpOrderLine };
+export type { MailchimpProduct, MailchimpOrder, MailchimpOrderLine, MailchimpCart, MailchimpCartLine };
