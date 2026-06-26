@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../hooks/useAuth';
 import Link from 'next/link';
@@ -21,7 +21,7 @@ const courseImages: Record<string, string> = {
 export default function Checkout() {
   const t = useT();
   const searchParams = useSearchParams();
-  const { items, addItem, discount, appliedCoupon, applyCoupon, removeCoupon } = useCart();
+  const { items, addItem, clearCart, discount, appliedCoupon, applyCoupon, removeCoupon } = useCart();
   const { user } = useAuth();
   const splitFullName = (fullName?: string | null) => {
     const trimmed = (fullName || '').trim();
@@ -65,6 +65,8 @@ export default function Checkout() {
     : null;
 
   	const campaignId = searchParams.get('campaign') || undefined;
+	const recoverOrderId = searchParams.get('recover') || undefined;
+  	const recoverAttemptedRef = useRef(false);
   	const campaignItems = items;
   	const getPricedItem = (item: (typeof items)[number]) =>
   		campaignItems.find((pricedItem) => pricedItem.id === item.id) || item;
@@ -101,6 +103,49 @@ export default function Checkout() {
       });
     }
   }, [user]);
+
+	useEffect(() => {
+    if (!recoverOrderId || recoverAttemptedRef.current) return;
+    recoverAttemptedRef.current = true;
+
+    const recoverCart = async () => {
+      try {
+        const res = await fetch(`/api/checkout/recover-cart?orderId=${encodeURIComponent(recoverOrderId)}`);
+        const data = await res.json();
+
+        if (!res.ok || !Array.isArray(data.items)) {
+          throw new Error(data.error || 'Kundvagnen kunde inte återställas');
+        }
+
+        clearCart();
+        for (const item of data.items) {
+          const quantity = Math.max(1, Number(item.quantity || 1));
+          for (let i = 0; i < quantity; i += 1) {
+            addItem({
+              id: item.id,
+              name: item.name,
+              price: Number(item.price || 0),
+              quantity: 1,
+              type: item.type === 'book' ? 'book' : 'course',
+            });
+          }
+        }
+
+        const recoveredName = splitFullName(data.customerName);
+        setGuestMode(true);
+        setCustomerInfo((current) => ({
+          ...current,
+          firstName: recoveredName.firstName || current.firstName,
+          lastName: recoveredName.lastName || current.lastName,
+          email: data.customerEmail || current.email,
+        }));
+      } catch (recoverError: any) {
+        setError(recoverError?.message || 'Kundvagnen kunde inte återställas');
+      }
+    };
+
+    recoverCart();
+  }, [recoverOrderId, addItem, clearCart]);
 
   const handleApplyCoupon = async () => {
     if (!couponInput.trim()) return;
