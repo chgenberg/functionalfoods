@@ -351,6 +351,30 @@ export async function POST(req: NextRequest) {
         ...baseSessionParams,
         payment_method_types: paymentMethodTypes,
       });
+
+      try {
+        const { getMailchimpEcommerce } = await import("@/app/lib/mailchimp-ecommerce");
+        const mailchimpEcommerce = getMailchimpEcommerce();
+        await mailchimpEcommerce.upsertCart({
+          cartId: `stripe-${session.id}`,
+          customerEmail,
+          customerName,
+          checkoutUrl: session.url || `${origin}/checkout`,
+          items: validatedItems.map((item) => ({
+            id: item.id,
+            name: item.name,
+            price: item.price,
+            quantity: item.quantity,
+            type: item.type,
+          })),
+          totalAmount: (subtotal - discountAmount) / 100,
+          currency: "SEK",
+          campaignId: attribution?.mc_cid || undefined,
+        });
+      } catch (mailchimpCartError) {
+        console.warn("⚠️ Mailchimp abandoned cart sync failed (stripe, non-critical):", mailchimpCartError);
+      }
+      
       return NextResponse.json({ url: session.url });
     } catch (err: any) {
       console.error("Create Checkout Session error:", err);
