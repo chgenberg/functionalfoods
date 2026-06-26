@@ -239,6 +239,13 @@ export async function POST(request: NextRequest) {
           ) {
             ebookId = "grill-sommarmat";
           }
+          if (
+            book.name.toLowerCase().includes("hälsosamma frukostar") ||
+            book.name.toLowerCase().includes("halsosamma frukostar") ||
+            book.name.toLowerCase().includes("halsosamma-frukostar")
+          ) {
+            ebookId = "halsosamma-frukostar";
+          }
           await tx.ebookDownload.create({
             data: {
               token: downloadToken,
@@ -335,6 +342,10 @@ export async function POST(request: NextRequest) {
             downloadUrl = `${baseUrl}/e-bocker/grill-sommarmat/ladda-ner?token=${downloadRecord.token}`;
           }
 
+          if (downloadRecord.ebookId === "halsosamma-frukostar") {
+            downloadUrl = `${baseUrl}/e-bocker/halsosamma-frukostar/ladda-ner?token=${downloadRecord.token}`;
+          }
+
           const sent = await emailService.sendEbookDownloadEmail({
             email: customerEmail,
             name: customerName,
@@ -360,9 +371,11 @@ export async function POST(request: NextRequest) {
                     ? "Köp - Påskbuffé"
                     : downloadRecord.ebookId === "grill-sommarmat"
                       ? "Köp - Grill & Sommarmat"
-                    : downloadRecord.ebookId === "sota-godsaker"
-                      ? "Köp - Sötsaker"
-                      : "Köp - Brödboken";
+                      : downloadRecord.ebookId === "sota-godsaker"
+                        ? "Köp - Sötsaker"
+                        : downloadRecord.ebookId === "halsosamma-frukostar"
+                          ? "Köp - Hälsosamma Frukostar"
+                          : "Köp - Brödboken";
 
                 await Promise.race([
                   mailchimpMarketing.addSubscriber({

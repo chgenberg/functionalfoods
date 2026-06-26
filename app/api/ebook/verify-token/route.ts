@@ -72,6 +72,10 @@ export async function POST(request: NextRequest) {
       downloadPath = "/grill-sommarmat-ulrika-davidsson.pdf";
     }
 
+    if (downloadToken.ebookId === "halsosamma-frukostar") {
+      downloadPath = "/halsosamma-frukostar-ulrika-davidsson.pdf";
+    }
+
     if (!downloadPath) {
       return NextResponse.json(
         { valid: false, error: "E-bok kunde inte hittas" },

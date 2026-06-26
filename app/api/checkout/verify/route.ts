@@ -544,7 +544,14 @@ export async function GET(req: NextRequest) {
             ) {
               ebookId = "grill-sommarmat";
             }
-            
+            if (
+              n.includes("hälsosamma frukostar") ||
+              n.includes("halsosamma frukostar") ||
+              n.includes("halsosamma-frukostar")
+            ) {
+              ebookId = "halsosamma-frukostar";
+            }
+
             const existing = await prisma.ebookDownload.findFirst({
               where: { orderNumber: order.orderNumber, ebookId },
             });
@@ -574,6 +581,9 @@ export async function GET(req: NextRequest) {
             }
             if (ebookId === "grill-sommarmat") {
               downloadUrl = `${baseUrl}/e-bocker/grill-sommarmat/ladda-ner?token=${token}`;
+            }
+            if (ebookId === "halsosamma-frukostar") {
+              downloadUrl = `${baseUrl}/e-bocker/halsosamma-frukostar/ladda-ner?token=${downloadToken}`;
             }
 
             await emailService.sendEbookDownloadEmail({

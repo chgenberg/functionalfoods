@@ -39,6 +39,8 @@ const getItemImage = (item: {
   if (item.id === "paskbuffe") return "/paskbuffe-square.jpg";
   if (item.id === "sota-godsaker") return "/sota-godsaker-square.png";
   if (item.id === "grill-sommarmat") return "/grill-sommarmat-square.png";
+  if (item.id === "halsosamma-frukostar")
+    return "/halsosamma-frukostar-square.png";
 
   if (item.image) return item.image;
   if (courseImages[item.id]) return courseImages[item.id];
@@ -95,9 +97,7 @@ export default function CartPage() {
             ? sessionStorage.getItem(viewKey)
             : null;
         const hasAdd =
-          typeof window !== "undefined"
-            ? sessionStorage.getItem(addKey)
-            : null;
+          typeof window !== "undefined" ? sessionStorage.getItem(addKey) : null;
 
         if (!hasView) {
           trackViewContent(
@@ -621,11 +621,17 @@ export default function CartPage() {
               <div className="py-4 sm:py-6 space-y-2 sm:space-y-3">
                 {(() => {
                   const hasBooks = items.some((item) => item.type === "book");
-                  const hasCourses = items.some((item) => item.type === "course");
-                
-                  const bookItems = items.filter((item) => item.type === "book");
-                  const courseItems = items.filter((item) => item.type === "course");
-                
+                  const hasCourses = items.some(
+                    (item) => item.type === "course",
+                  );
+
+                  const bookItems = items.filter(
+                    (item) => item.type === "book",
+                  );
+                  const courseItems = items.filter(
+                    (item) => item.type === "course",
+                  );
+
                   const bookSubtotalExVat = bookItems.reduce(
                     (sum, item) => sum + item.price * item.quantity,
                     0,
@@ -638,13 +644,13 @@ export default function CartPage() {
                     (sum, item) => sum + item.price * item.quantity,
                     0,
                   );
-                
+
                   const discountExVat = discount;
                   const bookDiscountRatio =
                     subtotalExVat > 0 ? bookSubtotalExVat / subtotalExVat : 0;
                   const courseDiscountRatio =
                     subtotalExVat > 0 ? courseSubtotalExVat / subtotalExVat : 0;
-                
+
                   const bookTaxableBase = Math.max(
                     0,
                     bookSubtotalExVat - discountExVat * bookDiscountRatio,
@@ -653,31 +659,38 @@ export default function CartPage() {
                     0,
                     courseSubtotalExVat - discountExVat * courseDiscountRatio,
                   );
-                
-                  const bookVat = Math.round(bookTaxableBase * 0.06 * 100) / 100;
-                  const courseVat = Math.round(courseTaxableBase * 0.25 * 100) / 100;
-                  const vatAmount = Math.round((bookVat + courseVat) * 100) / 100;
-                
-                  const totalInclVat = Math.round(
-                    (Math.max(0, subtotalExVat - discountExVat) + vatAmount) * 100,
-                  ) / 100;
-                
+
+                  const bookVat =
+                    Math.round(bookTaxableBase * 0.06 * 100) / 100;
+                  const courseVat =
+                    Math.round(courseTaxableBase * 0.25 * 100) / 100;
+                  const vatAmount =
+                    Math.round((bookVat + courseVat) * 100) / 100;
+
+                  const totalInclVat =
+                    Math.round(
+                      (Math.max(0, subtotalExVat - discountExVat) + vatAmount) *
+                        100,
+                    ) / 100;
+
                   const vatLabel =
                     hasBooks && hasCourses
                       ? "Moms (6% & 25%)"
                       : hasBooks
                         ? "Moms (6%)"
                         : "Moms (25%)";
-                
+
                   return (
                     <>
                       <div className="flex justify-between text-xs sm:text-sm">
-                        <span className="text-gray-600">Delsumma (exkl. moms)</span>
+                        <span className="text-gray-600">
+                          Delsumma (exkl. moms)
+                        </span>
                         <span className="text-gray-900 whitespace-nowrap">
                           {subtotalExVat.toLocaleString("sv-SE")} kr
                         </span>
                       </div>
-                
+
                       {discountExVat > 0 && (
                         <div className="flex justify-between text-xs sm:text-sm">
                           <span className="text-[#93C560]">Rabatt</span>
@@ -686,7 +699,7 @@ export default function CartPage() {
                           </span>
                         </div>
                       )}
-                
+
                       <div className="flex justify-between text-xs sm:text-sm pb-3 border-b border-gray-200">
                         <span className="text-gray-600">{vatLabel}</span>
                         <span className="text-gray-900 whitespace-nowrap">
@@ -697,7 +710,7 @@ export default function CartPage() {
                           kr
                         </span>
                       </div>
-                
+
                       <div className="flex justify-between items-center text-base sm:text-xl font-bold pt-2 sm:pt-3 p-3 sm:p-4 bg-gradient-to-r from-[#93C560]/10 to-[#7ab050]/10 rounded-lg">
                         <span className="text-[#014421]">Totalt</span>
                         <span className="text-[#014421] text-lg sm:text-2xl">
@@ -786,7 +799,6 @@ export default function CartPage() {
                   subtotalExVat > 0 ? subtotalInclVat / subtotalExVat : 1;
                 discountInclVat = Math.round(discount * effectiveVatMultiplier);
               }
-
 
               if (discountInclVat > subtotalInclVat) {
                 discountInclVat = subtotalInclVat;
