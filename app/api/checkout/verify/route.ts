@@ -458,12 +458,15 @@ export async function GET(req: NextRequest) {
                   { usePut: true },
                 );
 
+                await mc.deleteCart(`stripe-${session.id}`);
+
                 await prisma.order.update({
                   where: { id: updatedOrder.id },
                   data: {
                     metadata: {
                       ...metadata2,
                       mailchimpEcommerceTrackedAt: new Date().toISOString(),
+                      mailchimpCartDeletedAt: new Date().toISOString(),
                     },
                   },
                 });
