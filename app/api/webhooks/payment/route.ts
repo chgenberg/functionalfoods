@@ -894,12 +894,15 @@ async function handleCheckoutSessionCompleted(session: any) {
           trackingCode,
         });
 
+        await mailchimpEcommerce.deleteCart(`stripe-${session.id}`);
+
         await prisma.order.update({
           where: { id: finalOrder.id },
           data: {
             metadata: {
               ...metadata,
               mailchimpEcommerceTrackedAt: new Date().toISOString(),
+              mailchimpCartDeletedAt: new Date().toISOString(),
             },
           },
         });
