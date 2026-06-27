@@ -5,7 +5,7 @@ export const dynamic = "force-dynamic";
 
 const productImages: Record<string, string> = {
   "brodboken-2026": "/baka-glutenfritt-square.png",
-  "paskbuffe: "/paskbuffe-square.jpg",
+  paskbuffe: "/paskbuffe-square.jpg",
   "sota-godsaker": "/sota-godsaker-square.png",
   "grill-sommarmat": "/grill-sommarmat-square.png",
   "functional-flow": "/Kurser_bilder/Functional_Gut Health.jpg",
