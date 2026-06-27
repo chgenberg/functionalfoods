@@ -1580,6 +1580,66 @@ export default function UnifiedSalesPage() {
                   </div>
                 </div>
 
+                {(selectedOrder.metadata?.recoveredFromOrderId ||
+                  selectedOrder.metadata?.recoveredByOrderId ||
+                  selectedOrder.metadata?.mailchimpCartSyncedAt ||
+                  selectedOrder.metadata?.mailchimpCartDeletedAt ||
+                  selectedOrder.metadata?.mailchimpEcommerceTrackedAt) && (
+                  <div>
+                    <h3 className="text-sm font-semibold text-gray-700 uppercase tracking-wider mb-3">Tracking & återhämtning</h3>
+                    <div className="bg-gray-50 rounded-lg p-4 space-y-3">
+                      {selectedOrder.metadata?.recoveredFromOrderId && (
+                        <div className="flex justify-between gap-4">
+                          <span className="text-sm text-gray-600">Återhämtad från</span>
+                          <span className="text-sm font-mono text-gray-900 text-right">
+                            {selectedOrder.metadata.recoveredFromOrderId}
+                          </span>
+                        </div>
+                      )}
+                      {selectedOrder.metadata?.recoveredByOrderId && (
+                        <div className="flex justify-between gap-4">
+                          <span className="text-sm text-gray-600">Slutförd som</span>
+                          <span className="text-sm font-mono text-gray-900 text-right">
+                            {selectedOrder.metadata.recoveredByOrderId}
+                          </span>
+                        </div>
+                      )}
+                      {selectedOrder.metadata?.recoveredAt && (
+                        <div className="flex justify-between gap-4">
+                          <span className="text-sm text-gray-600">Återhämtad</span>
+                          <span className="text-sm text-gray-900 text-right">
+                            {new Date(selectedOrder.metadata.recoveredAt).toLocaleString('sv-SE')}
+                          </span>
+                        </div>
+                      )}
+                      {selectedOrder.metadata?.mailchimpCartSyncedAt && (
+                        <div className="flex justify-between gap-4">
+                          <span className="text-sm text-gray-600">Mailchimp cart synkad</span>
+                          <span className="text-sm text-gray-900 text-right">
+                            {new Date(selectedOrder.metadata.mailchimpCartSyncedAt).toLocaleString('sv-SE')}
+                          </span>
+                        </div>
+                      )}
+                      {selectedOrder.metadata?.mailchimpCartDeletedAt && (
+                        <div className="flex justify-between gap-4">
+                          <span className="text-sm text-gray-600">Mailchimp cart borttagen</span>
+                          <span className="text-sm text-gray-900 text-right">
+                            {new Date(selectedOrder.metadata.mailchimpCartDeletedAt).toLocaleString('sv-SE')}
+                          </span>
+                        </div>
+                      )}
+                      {selectedOrder.metadata?.mailchimpEcommerceTrackedAt && (
+                        <div className="flex justify-between gap-4">
+                          <span className="text-sm text-gray-600">Mailchimp köp trackat</span>
+                          <span className="text-sm text-gray-900 text-right">
+                            {new Date(selectedOrder.metadata.mailchimpEcommerceTrackedAt).toLocaleString('sv-SE')}
+                          </span>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                )}
+
                 {selectedOrder.receiptUrl && (
                   <div className="flex gap-3 pt-4 border-t border-gray-200">
                     <a
