@@ -4,10 +4,10 @@ import { prisma } from "@/app/lib/database";
 export const dynamic = "force-dynamic";
 
 const productImages: Record<string, string> = {
-  "brodboken-2026": "/baka-glutenfritt-square.png"
-  "paskbuffe: "/paskbuffe-square.jpg"
-  "sota-godsaker": "/sota-godsaker-square.png"
-  "grill-sommarmat": "/grill-sommarmat-square.png"
+  "brodboken-2026": "/baka-glutenfritt-square.png",
+  "paskbuffe: "/paskbuffe-square.jpg",
+  "sota-godsaker": "/sota-godsaker-square.png",
+  "grill-sommarmat": "/grill-sommarmat-square.png",
   "functional-flow": "/Kurser_bilder/Functional_Gut Health.jpg",
   "functional-basics": "/Kurser_bilder/Functional_Basics - Grunden i functional foods.jpg",
   "functional-energy": "/Kurser_bilder/Functional_insulin balance.jpg",
