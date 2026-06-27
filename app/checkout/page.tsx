@@ -127,6 +127,7 @@ export default function Checkout() {
               price: Number(item.price || 0),
               quantity: 1,
               type: item.type === 'book' ? 'book' : 'course',
+				image: item.image,
             });
           }
         }
