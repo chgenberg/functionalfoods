@@ -40,6 +40,7 @@ export default function Checkout() {
   const [couponInput, setCouponInput] = useState('');
   const [couponError, setCouponError] = useState<string | null>(null);
   const [applying, setApplying] = useState(false);
+  const [pendingRecoveredCoupon, setPendingRecoveredCoupon] = useState<string | null>(null);
   
   	const grillCheckoutUpsellBook = {
     id: 'grill-sommarmat',
@@ -140,6 +141,11 @@ export default function Checkout() {
           lastName: recoveredName.lastName || current.lastName,
           email: data.customerEmail || current.email,
         }));
+
+		if (data.couponCode) {
+          setCouponInput(data.couponCode);
+          setPendingRecoveredCoupon(data.couponCode);
+        }
       } catch (recoverError: any) {
         setError(recoverError?.message || 'Kundvagnen kunde inte återställas');
       }
@@ -147,6 +153,20 @@ export default function Checkout() {
 
     recoverCart();
   }, [recoverOrderId, addItem, clearCart]);
+
+  useEffect(() => {
+    if (!pendingRecoveredCoupon || items.length === 0) return;
+
+    const applyRecoveredCoupon = async () => {
+      const res = await applyCoupon(pendingRecoveredCoupon);
+      if (!res.success) {
+        setCouponError(res.message || 'Rabattkoden kunde inte återställas');
+      }
+      setPendingRecoveredCoupon(null);
+    };
+
+    applyRecoveredCoupon();
+  }, [pendingRecoveredCoupon, items.length, applyCoupon]);
 
   const handleApplyCoupon = async () => {
     if (!couponInput.trim()) return;
