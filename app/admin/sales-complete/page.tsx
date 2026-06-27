@@ -649,6 +649,8 @@ export default function UnifiedSalesPage() {
     switch (status) {
       case 'COMPLETED':
         return <CheckCircle className="w-5 h-5 text-green-600" />;
+      case 'RECOVERED':
+        return <RotateCcw className="w-5 h-5 text-blue-600" />;
       case 'PENDING':
         return <Clock className="w-5 h-5 text-yellow-600" />;
       case 'CANCELLED':
@@ -662,6 +664,7 @@ export default function UnifiedSalesPage() {
   const getStatusText = (status: string) => {
     const statusMap: { [key: string]: string } = {
       'COMPLETED': 'Slutförd',
+      'RECOVERED': 'Återhämtad',
       'PENDING': 'Väntar',
       'CANCELLED': 'Avbruten',
       'FAILED': 'Misslyckad',
@@ -989,6 +992,7 @@ export default function UnifiedSalesPage() {
                                     >
                                       <option value="all">Alla</option>
                                       <option value="COMPLETED">Slutförd</option>
+                                      <option value="RECOVERED">Återhämtad</option>
                                       <option value="PENDING">Väntar</option>
                                       <option value="CANCELLED">Avbruten</option>
                                       <option value="FAILED">Misslyckad</option>
@@ -1292,11 +1296,18 @@ export default function UnifiedSalesPage() {
                       </div>
                     </td>
                     <td className="whitespace-nowrap">
-                      <div className="flex items-center gap-2">
-                        {getStatusIcon(order.status)}
-                        <span className="text-sm text-gray-900">
-                          {getStatusText(order.status)}
-                        </span>
+                      <div>
+                        <div className="flex items-center gap-2">
+                          {getStatusIcon(order.status)}
+                          <span className="text-sm text-gray-900">
+                            {getStatusText(order.status)}
+                          </span>
+                        </div>
+                        {order.status === 'RECOVERED' && order.metadata?.recoveredByOrderId && (
+                          <p className="mt-1 text-xs text-gray-500">
+                            Blev {order.metadata.recoveredByOrderId}
+                          </p>
+                        )}
                       </div>
                     </td>
                     <td className="whitespace-nowrap">
@@ -1474,6 +1485,11 @@ export default function UnifiedSalesPage() {
                         {manualProcessing === selectedOrder.id ? 'Bearbetar...' : 'Godkänn manuellt'}
                       </button>
                     </div>
+                  )}
+                  {selectedOrder.status === 'RECOVERED' && selectedOrder.metadata?.recoveredByOrderId && (
+                    <p className="mt-3 text-sm text-gray-600">
+                      Denna checkout återhämtades och slutfördes som #{selectedOrder.metadata.recoveredByOrderId}.
+                    </p>
                   )}
                 </div>
 
