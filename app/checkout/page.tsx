@@ -198,7 +198,8 @@ export default function Checkout() {
         } : undefined),
         couponCode: appliedCoupon?.code || undefined,
         campaignId,
-        attribution
+        attribution,
+        recoveredFromOrderId: recoverOrderId,
       };
 
       // Fire analytics: Initiate Checkout / begin_checkout before redirect
