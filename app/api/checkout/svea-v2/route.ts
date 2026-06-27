@@ -48,6 +48,7 @@ interface CheckoutRequest {
   };
   couponCode?: string;
   attribution?: Attribution;
+  recoveredFromOrderId?: string;
 }
 
 export async function POST(req: NextRequest) {
@@ -69,7 +70,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const { items, customer, couponCode, attribution } = body;
+    const { items, customer, couponCode, attribution, recoveredFromOrderId } = body;
 
     // Validate request
     if (!items || !Array.isArray(items) || items.length === 0) {
@@ -814,6 +815,7 @@ export async function POST(req: NextRequest) {
                   : null,
               freeOrder: true,
               attribution: attribution || null,
+              recoveredFromOrderId: recoveredFromOrderId || null,
             },
             items: {
               create: validatedItems.map((item: any) => ({
@@ -1408,6 +1410,7 @@ export async function POST(req: NextRequest) {
                 ? SveaCheckoutService.formatPriceFromMinorUnits(discountAmount)
                 : null,
             attribution: attribution || null,
+            recoveredFromOrderId: recoveredFromOrderId || null,
           },
           items: {
             create: itemsWithDiscountedPrice.map((item) => ({
