@@ -514,6 +514,11 @@ class MailchimpEcommerceService {
         // If product already exists, that's okay
         if (response.status === 400 && errorText.includes('already exists')) {
           console.log(`ℹ️ Product ${product.id} already exists in Mailchimp`);
+          if (product.variants?.length) {
+            for (const variant of product.variants) {
+              await this.syncProductVariant(product.id, variant);
+            }
+          }
           return;
         }
         throw new Error(`Mailchimp API error: ${response.status} ${errorText}`);
@@ -522,6 +527,43 @@ class MailchimpEcommerceService {
       console.log(`✅ Product synced to Mailchimp: ${product.id}`);
     } catch (error) {
       console.error(`⚠️ Failed to sync product ${product.id} to Mailchimp:`, error);
+    }
+  }
+  private async syncProductVariant(
+    productId: string,
+    variant: NonNullable<MailchimpProduct['variants']>[number],
+  ): Promise<void> {
+    if (!this.config || !this.baseUrl) {
+      return;
+    }
+
+    try {
+      const response = await fetch(
+        `${this.baseUrl}/products/${encodeURIComponent(productId)}/variants`,
+        {
+          method: 'POST',
+          headers: {
+            'Authorization': `Basic ${Buffer.from(`anystring:${this.config.apiKey}`).toString('base64')}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(variant)
+        },
+      );
+
+      if (response.ok) {
+        console.log(`✅ Product variant synced to Mailchimp: ${productId}/${variant.id}`);
+        return;
+      }
+
+      const errorText = await response.text();
+      if (response.status === 400 && errorText.includes('already exists')) {
+        console.log(`ℹ️ Product variant ${productId}/${variant.id} already exists in Mailchimp`);
+        return;
+      }
+
+      throw new Error(`Mailchimp variant API error: ${response.status} ${errorText}`);
+    } catch (error) {
+      console.error(`⚠️ Failed to sync product variant ${productId}/${variant.id} to Mailchimp:`, error);
     }
   }
 }
