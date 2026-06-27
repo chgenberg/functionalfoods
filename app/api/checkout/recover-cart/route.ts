@@ -3,6 +3,18 @@ import { prisma } from "@/app/lib/database";
 
 export const dynamic = "force-dynamic";
 
+const productImages: Record<string, string> = {
+  "brodboken-2026": "/baka-glutenfritt-square.png"
+  "paskbuffe: "/paskbuffe-square.jpg"
+  "sota-godsaker": "/sota-godsaker-square.png"
+  "grill-sommarmat": "/grill-sommarmat-square.png"
+  "functional-flow": "/Kurser_bilder/Functional_Gut Health.jpg",
+  "functional-basics": "/Kurser_bilder/Functional_Basics - Grunden i functional foods.jpg",
+  "functional-energy": "/Kurser_bilder/Functional_insulin balance.jpg",
+  "functional-hormone": "/Hormonell_balans/hormonell_balans_kurssida.png",
+  "hormonell-balans": "/Hormonell_balans/hormonell_balans_kurssida.png",
+};
+
 export async function GET(req: NextRequest) {
   try {
     const orderId = req.nextUrl.searchParams.get("orderId")?.trim();
@@ -38,13 +50,15 @@ export async function GET(req: NextRequest) {
           return candidate.name === item.name && candidate.type === item.type;
         });
 
+        const itemId = originalItem?.id || item.courseId || item.id;
+
         return {
-          id: originalItem?.id || item.courseId || item.id,
+          id: itemId,
           name: originalItem?.name || item.name,
           price: originalItem?.price ?? item.price,
           quantity: originalItem?.quantity || item.quantity,
           type: originalItem?.type || item.type,
-          image: originalItem?.image,
+          image: originalItem?.image || productImages[itemId],
         };
       }),
     });
