@@ -654,6 +654,43 @@ async function handleOrderCompleted(
             await mailchimpEcommerce.deleteCart(
               metadata?.mailchimpCartId || updatedOrder.orderNumber || updatedOrder.id,
             );
+
+            if (metadata?.recoveredFromOrderId) {
+            try {
+              const recoveredOrder = await prisma.order.findUnique({
+                where: { id: metadata.recoveredFromOrderId },
+                select: { id: true, metadata: true },
+              });
+              const recoveredMetadata = (recoveredOrder?.metadata as any) || {};
+              const sourceCartId =
+                recoveredMetadata.mailchimpCartId ||
+                metadata.recoveredFromOrderId;
+
+              await mailchimpEcommerce.deleteCart(sourceCartId);
+
+              if (recoveredOrder) {
+                await prisma.order.update({
+                  where: { id: recoveredOrder.id },
+                  data: {
+                    metadata: {
+                      ...recoveredMetadata,
+                      recoveredByOrderId: updatedOrder.id,
+                      recoveredAt:
+                        recoveredMetadata.recoveredAt ||
+                        new Date().toISOString(),
+                      recoveryReason: "abandoned_cart_recovered",
+                      mailchimpCartDeletedAt: new Date().toISOString(),
+                    },
+                  },
+                });
+              }
+            } catch (recoveredCartError) {
+              console.warn(
+                "⚠️ Mailchimp E-commerce: failed to delete recovered source cart (webhook):",
+                recoveredCartError,
+              );
+            }
+          }
   
             await prisma.order.update({
               where: { id: updatedOrder.id },
