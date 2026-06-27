@@ -477,8 +477,12 @@ class MailchimpEcommerceService {
       return;
     }
 
+    const safeCartId = cartId.startsWith('mc-cart-')
+      ? cartId
+      : this.getSafeCartId(cartId);
+
     try {
-      const response = await fetch(`${this.baseUrl}/carts/${encodeURIComponent(cartId)}`, {
+      const response = await fetch(`${this.baseUrl}/carts/${encodeURIComponent(safeCartId)}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Basic ${Buffer.from(`anystring:${this.config!.apiKey}`).toString('base64')}`,
@@ -491,7 +495,7 @@ class MailchimpEcommerceService {
         throw new Error(`Mailchimp cart delete failed: ${response.status} ${text}`);
       }
 
-      console.log('✅ Mailchimp cart removed:', cartId);
+      console.log('✅ Mailchimp cart removed:', safeCartId);
     } catch (error) {
       console.warn('⚠️ Failed to remove Mailchimp cart:', error);
     }
