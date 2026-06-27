@@ -6,7 +6,7 @@ const prisma = new PrismaClient();
 
 export const dynamic = 'force-dynamic';
 
-type DisplayStatus = 'COMPLETED' | 'PENDING' | 'FAILED' | 'REFUNDED' | 'CANCELLED' | 'PROCESSING' | 'CONFIRMED' | string;
+type DisplayStatus = 'COMPLETED' | 'PENDING' | 'RECOVERED' | 'FAILED' | 'REFUNDED' | 'CANCELLED' | 'PROCESSING' | 'CONFIRMED' | string;
 
 function toDisplayPaymentStatus(orderStatus: string | null | undefined, paymentStatus: string | null | undefined): DisplayStatus {
   const os = String(orderStatus || '');
