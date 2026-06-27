@@ -932,6 +932,42 @@ export async function POST(req: NextRequest) {
                 metadata.mailchimpCartId || updatedOrder.orderNumber || updatedOrder.id,
               );
 
+              if (metadata.recoveredFromOrderId) {
+                try {
+                  const recoveredOrder = await prisma.order.findUnique({
+                    where: { id: metadata.recoveredFromOrderId },
+                    select: { id: true, metadata: true },
+                  });
+                  const recoveredMetadata = (recoveredOrder?.metadata as any) || {};
+
+                  await mailchimpEcommerce.deleteCart(
+                    recoveredMetadata.mailchimpCartId || metadata.recoveredFromOrderId,
+                  );
+
+                  if (recoveredOrder) {
+                    await prisma.order.update({
+                      where: { id: recoveredOrder.id },
+                      data: {
+                        metadata: {
+                          ...recoveredMetadata,
+                          recoveredByOrderId: updatedOrder.id,
+                          recoveredAt:
+                            recoveredMetadata.recoveredAt ||
+                            new Date().toISOString(),
+                          recoveryReason: "abandoned_cart_recovered",
+                          mailchimpCartDeletedAt: new Date().toISOString(),
+                        },
+                      },
+                    });
+                  }
+                } catch (recoveredCartError) {
+                  console.warn(
+                    "⚠️ Mailchimp E-commerce: failed to delete recovered source cart:",
+                    recoveredCartError,
+                  );
+                }
+              }
+
               console.log(
                 "✅ Mailchimp E-commerce purchase tracked (via verify):",
                 {
