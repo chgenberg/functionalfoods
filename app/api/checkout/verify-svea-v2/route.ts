@@ -393,6 +393,29 @@ export async function POST(req: NextRequest) {
           include: { items: true, user: true },
         });
         if (refreshedAfterCompletion) order = refreshedAfterCompletion;
+
+        const completedMetadata = (order.metadata as any) || {};
+        const recoveredFromOrderId = completedMetadata.recoveredFromOrderId;
+        if (recoveredFromOrderId && recoveredFromOrderId !== order.id) {
+          const recoveredOrder = await prisma.order.findFirst({
+            where: { id: recoveredFromOrderId, status: "PENDING" },
+            select: { id: true, metadata: true },
+          });
+
+          if (recoveredOrder) {
+            await prisma.order.update({
+              where: { id: recoveredOrder.id },
+              data: {
+                metadata: {
+                  ...((recoveredOrder.metadata as any) || {}),
+                  recoveredByOrderId: order.id,
+                  recoveredAt: new Date().toISOString(),
+                  recoveryReason: "abandoned_cart_recovered",
+                },
+              },
+            });
+          }
+        }
       }
 
       // ✅ Mailchimp Marketing tagging (post-completion, idempotent)
