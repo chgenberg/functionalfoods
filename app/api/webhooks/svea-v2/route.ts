@@ -312,6 +312,29 @@ async function handleOrderCompleted(
         },
       });
 
+      const orderMetadata = (order.metadata as any) || {};
+      const recoveredFromOrderId = orderMetadata.recoveredFromOrderId;
+      if (recoveredFromOrderId && recoveredFromOrderId !== order.id) {
+        const recoveredOrder = await tx.order.findFirst({
+          where: { id: recoveredFromOrderId, status: "PENDING" },
+          select: { id: true, metadata: true },
+        });
+
+        if (recoveredOrder) {
+          await tx.order.update({
+            where: { id: recoveredOrder.id },
+            data: {
+              metadata: {
+                ...((recoveredOrder.metadata as any) || {}),
+                recoveredByOrderId: order.id,
+                recoveredAt: new Date().toISOString(),
+                recoveryReason: "abandoned_cart_recovered",
+              },
+            },
+          });
+        }
+      }
+
       // Handle user creation/linking
       let user = order.user;
 
