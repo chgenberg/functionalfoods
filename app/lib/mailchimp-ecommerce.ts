@@ -424,6 +424,13 @@ class MailchimpEcommerceService {
         campaign_id: params.campaignId || undefined
       };
 
+      console.log('🛒 Mailchimp cart checkout URL:', {
+        cartId: safeCartId,
+        sourceCartId: params.cartId,
+        customerEmail: params.customerEmail,
+        checkoutUrl: params.checkoutUrl,
+      });
+
       const createResponse = await fetch(`${this.baseUrl}/carts`, {
         method: 'POST',
         headers: {
