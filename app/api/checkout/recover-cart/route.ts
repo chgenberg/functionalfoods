@@ -42,6 +42,7 @@ export async function GET(req: NextRequest) {
       orderId: order.id,
       customerEmail: order.customerEmail,
       customerName: order.customerName,
+      couponCode: metadata.couponCode || undefined,
       items: order.items.map((item: any) => {
         const originalItem = originalItems.find((candidate: any) => {
           if (!candidate) return false;
