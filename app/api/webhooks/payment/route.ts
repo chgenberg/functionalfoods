@@ -285,7 +285,6 @@ async function findStripeOrder(session: any, includeRelations = false) {
   return prisma.order.findFirst({
     where: {
       OR: [
-        { stripeSessionId: session.id },
         { checkoutOrderId: session.id },
         { orderNumber: legacyOrderNumber },
       ],
@@ -405,6 +404,8 @@ async function handleCheckoutSessionCompleted(session: any) {
 
     let finalOrderId: string | null = null;
 
+    let processedOrderId: string | null = null;
+
     await prisma.$transaction(async (tx) => {
       // Get or create user
       let user = await tx.user.findUnique({ where: { email: customerEmail } });
@@ -454,11 +455,12 @@ async function handleCheckoutSessionCompleted(session: any) {
             currency: String(
               order.currency || session.currency || "SEK",
             ).toUpperCase(),
-            stripeSessionId: session.id,
             checkoutOrderId: session.id,
             metadata: {
               ...currentMetadata,
               attribution: currentMetadata.attribution || attribution,
+              stripeSessionId: session.id,
+              stripePaymentIntentId: String(paymentIntentId),
             },
           },
           include: { items: true },
@@ -472,7 +474,6 @@ async function handleCheckoutSessionCompleted(session: any) {
         order = await tx.order.create({
           data: {
             orderNumber: `STRIPE-${session.id}`,
-            stripeSessionId: session.id,
             checkoutOrderId: session.id,
             userId: user.id,
             customerEmail,
@@ -482,6 +483,8 @@ async function handleCheckoutSessionCompleted(session: any) {
             currency: String(session.currency || "SEK").toUpperCase(),
             metadata: {
               attribution,
+              stripeSessionId: session.id,
+              stripePaymentIntentId: String(paymentIntentId),
             },
             items: {
               create: items.map((it) => ({
@@ -894,7 +897,11 @@ async function handleCheckoutSessionCompleted(session: any) {
           trackingCode,
         });
 
-        await mailchimpEcommerce.deleteCart(`stripe-${session.id}`);
+        await mailchimpEcommerce.deleteCart(
+          metadata.mailchimpCartId ||
+            finalOrder.orderNumber ||
+            finalOrder.id,
+        );
 
         await prisma.order.update({
           where: { id: finalOrder.id },
@@ -916,6 +923,76 @@ async function handleCheckoutSessionCompleted(session: any) {
     } catch (e) {
       console.warn("⚠️ Mailchimp E-commerce tracking failed:", e);
     }
+
+    // Ensure abandoned cart cleanup is persisted even if purchase tracking was
+    // already handled by verify or skipped because of idempotency metadata.
+    try {
+      const refreshedOrder = await prisma.order.findUnique({
+        where: { id: finalOrder.id },
+        include: { user: true, items: true },
+      });
+
+      if (refreshedOrder) {
+        const metadata = (refreshedOrder.metadata as any) || {};
+        const { getMailchimpEcommerce } =
+          await import("@/app/lib/mailchimp-ecommerce");
+        const mailchimpEcommerce = getMailchimpEcommerce();
+
+        if (!metadata.mailchimpCartDeletedAt) {
+          await mailchimpEcommerce.deleteCart(
+            metadata.mailchimpCartId ||
+              refreshedOrder.orderNumber ||
+              refreshedOrder.id,
+          );
+
+          await prisma.order.update({
+            where: { id: refreshedOrder.id },
+            data: {
+              metadata: {
+                ...metadata,
+                mailchimpCartDeletedAt: new Date().toISOString(),
+              },
+            },
+          });
+        }
+
+        if (metadata.recoveredFromOrderId) {
+          const recoveredOrder = await prisma.order.findUnique({
+            where: { id: metadata.recoveredFromOrderId },
+            select: { id: true, metadata: true },
+          });
+          const recoveredMetadata =
+            (recoveredOrder?.metadata as any) || {};
+
+          if (recoveredOrder && !recoveredMetadata.mailchimpCartDeletedAt) {
+            await mailchimpEcommerce.deleteCart(
+              recoveredMetadata.mailchimpCartId ||
+                metadata.recoveredFromOrderId,
+            );
+
+            await prisma.order.update({
+              where: { id: recoveredOrder.id },
+              data: {
+                metadata: {
+                  ...recoveredMetadata,
+                  recoveredByOrderId: refreshedOrder.id,
+                  recoveredAt:
+                    recoveredMetadata.recoveredAt ||
+                    new Date().toISOString(),
+                  recoveryReason: "abandoned_cart_recovered",
+                  mailchimpCartDeletedAt: new Date().toISOString(),
+                },
+              },
+            });
+          }
+        }
+      }
+    } catch (cleanupError) {
+      console.warn(
+        "⚠️ Stripe webhook: Mailchimp cart cleanup failed (non-critical):",
+        cleanupError,
+      );
+    }    
   } catch (error) {
     console.error("Failed to handle checkout.session.completed:", error);
   }
@@ -935,13 +1012,9 @@ async function handleFreeOrder(session: any) {
       return;
     }
 
-    // Idempotency guard: check if we already processed this free session
-    const alreadyProcessed = await prisma.order.findFirst({
-      where: {
-        orderNumber: { contains: session.id },
-      },
-    });
-    if (alreadyProcessed) {
+    // Idempotency guard: prefer the internal pending order created at checkout.
+    const existingOrder = await findStripeOrder(session, false);
+    if (existingOrder?.status === "COMPLETED") {
       console.log(
         "ℹ️ Free order session already processed:",
         session.id,
@@ -999,29 +1072,59 @@ async function handleFreeOrder(session: any) {
         console.log(`✅ Existing user found: ${user.email}`);
       }
 
-      // Create order with session ID in orderNumber for idempotency
-      const orderNumber = `STRIPE-FREE-${session.id}`;
-      const order = await tx.order.create({
-        data: {
-          orderNumber,
-          userId: user.id,
-          status: "COMPLETED",
-          totalAmount: 0,
-          currency: "SEK",
-          items: {
-            create: items.map((item: any) => ({
-              courseId: null, // Will be set when we find the course
-              name: item.name,
-              price: 0,
-              quantity: item.quantity || 1,
-              type: item.type || "course",
-            })),
+      let order: any;
+
+      if (existingOrder) {
+        const currentMetadata = (existingOrder.metadata as any) || {};
+
+        order = await tx.order.update({
+          where: { id: existingOrder.id },
+          data: {
+            userId: existingOrder.userId || user.id,
+            customerEmail: existingOrder.customerEmail || customerEmail,
+            customerName: existingOrder.customerName || customerName,
+            status: "COMPLETED",
+            totalAmount: 0,
+            currency: String(
+              existingOrder.currency || session.currency || "SEK",
+            ).toUpperCase(),
+            checkoutOrderId: session.id,
+            metadata: {
+              ...currentMetadata,
+              stripeSessionId: session.id,
+            },
           },
-        },
         include: { items: true },
-      });
+        });
+      } else {
+        // Legacy fallback: create order with session ID in orderNumber for idempotency
+        const orderNumber = `STRIPE-FREE-${session.id}`;
+        order = await tx.order.create({
+          data: {
+            orderNumber,
+            userId: user.id,
+            status: "COMPLETED",
+            totalAmount: 0,
+            currency: "SEK",
+            metadata: {
+              stripeSessionId: session.id,
+            },
+            items: {
+              create: items.map((item: any) => ({
+                courseId: null, // Will be set when we find the course
+                name: item.name,
+                price: 0,
+                quantity: item.quantity || 1,
+                type: item.type || "course",
+              })),
+            },
+          },
+          include: { items: true },
+        });
+      }
 
       console.log(`✅ Order created: ${order.orderNumber}`);
+      processedOrderId = order.id;
 
       // Increment coupon usage if applicable (only once in webhook, not in verify endpoint)
       if (metadata.couponCode) {
@@ -1157,6 +1260,76 @@ async function handleFreeOrder(session: any) {
       console.warn(
         "⚠️ Mailchimp Marketing subscriber add failed (non-critical):",
         e,
+      );
+    }
+
+    try {
+      if (processedOrderId) {
+        const completedOrder = await prisma.order.findUnique({
+          where: { id: processedOrderId },
+          select: { id: true, orderNumber: true, metadata: true },
+        });
+        const completedMetadata = (completedOrder?.metadata as any) || {};
+
+        if (completedOrder) {
+          const { getMailchimpEcommerce } =
+            await import("@/app/lib/mailchimp-ecommerce");
+          const mailchimpEcommerce = getMailchimpEcommerce();
+
+          if (!completedMetadata.mailchimpCartDeletedAt) {
+            await mailchimpEcommerce.deleteCart(
+              completedMetadata.mailchimpCartId ||
+                completedOrder.orderNumber ||
+                completedOrder.id,
+            );
+
+            await prisma.order.update({
+              where: { id: completedOrder.id },
+              data: {
+                metadata: {
+                  ...completedMetadata,
+                  mailchimpCartDeletedAt: new Date().toISOString(),
+                },
+              },
+            });
+          }
+
+          if (completedMetadata.recoveredFromOrderId) {
+            const recoveredOrder = await prisma.order.findUnique({
+              where: { id: completedMetadata.recoveredFromOrderId },
+              select: { id: true, metadata: true },
+            });
+            const recoveredMetadata =
+              (recoveredOrder?.metadata as any) || {};
+
+            if (recoveredOrder && !recoveredMetadata.mailchimpCartDeletedAt) {
+              await mailchimpEcommerce.deleteCart(
+                recoveredMetadata.mailchimpCartId ||
+                  completedMetadata.recoveredFromOrderId,
+              );
+
+              await prisma.order.update({
+                where: { id: recoveredOrder.id },
+                data: {
+                  metadata: {
+                    ...recoveredMetadata,
+                    recoveredByOrderId: completedOrder.id,
+                    recoveredAt:
+                      recoveredMetadata.recoveredAt ||
+                      new Date().toISOString(),
+                    recoveryReason: "abandoned_cart_recovered",
+                    mailchimpCartDeletedAt: new Date().toISOString(),
+                  },
+                },
+              });
+            }
+          }
+        }
+      }
+    } catch (cleanupError) {
+      console.warn(
+        "⚠️ Stripe free order: Mailchimp cart cleanup failed (non-critical):",
+        cleanupError,
       );
     }
 
