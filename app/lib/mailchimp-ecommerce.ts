@@ -202,7 +202,7 @@ class MailchimpEcommerceService {
       // Campaign attribution
       campaignId?: string;     // mc_cid from Mailchimp email links
       landingSite?: string;    // Original landing URL with UTM params
-      trackingCode?: string;   // Custom tracking code (can be mc_cid or utm_campaign)
+      trackingCode?: string;   // Logged internally only; Mailchimp validates tracking_code strictly
     },
     options?: {
       usePut?: boolean;
@@ -226,7 +226,7 @@ class MailchimpEcommerceService {
       taxTotal = 0,
       campaignId,
       landingSite,
-      trackingCode
+      trackingCode: _trackingCode
     } = params;
 
     const safeOrderId = `mc-${Buffer.from(orderId).toString('base64').replace(/[^a-zA-Z0-9]/g, '').slice(0, 20)}`
@@ -300,8 +300,7 @@ class MailchimpEcommerceService {
         shipping_total: shippingTotal,
         tax_total: taxTotal,
         campaign_id: campaignId || undefined,
-        landing_site: landingSite || undefined,
-        tracking_code: trackingCode || campaignId || undefined
+        landing_site: landingSite || undefined
       };
 
       // Send order to Mailchimp
@@ -331,7 +330,7 @@ class MailchimpEcommerceService {
         totalAmount,
         itemsCount: items.length,
         campaignId: campaignId || 'none',
-        trackingCode: trackingCode || campaignId || 'none'
+        trackingCode: _trackingCode || 'none'
       });
 
     } catch (error) {
