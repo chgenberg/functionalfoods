@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { withRateLimit, checkoutRateLimit } from "@/app/lib/rate-limit";
 import { prisma } from "@/app/lib/database";
+import bcrypt from "bcryptjs";
 
 export const dynamic = "force-dynamic";
 
@@ -8,7 +9,13 @@ export async function POST(req: NextRequest) {
   return withRateLimit(req, checkoutRateLimit, async () => {
     try {
       const body = await req.json();
-      const { items, customer, couponCode, attribution } = body as {
+      const {
+        items,
+        customer,
+        couponCode,
+        attribution,
+        recoveredFromOrderId,
+      } = body as {
         items: Array<{
           id: string;
           name: string;
@@ -18,6 +25,7 @@ export async function POST(req: NextRequest) {
         }>;
         customer?: { email?: string; name?: string; id?: string };
         couponCode?: string;
+        recoveredFromOrderId?: string;
         attribution?: {
           gclid?: string;
           gbraid?: string;
@@ -309,6 +317,62 @@ export async function POST(req: NextRequest) {
         process.env.NEXT_PUBLIC_SITE_URL ||
         "http://localhost:3000";
 
+      const orderId = `FF-${Date.now()}-${Math.random()
+        .toString(36)
+        .slice(2, 9)}`;
+      const normalizedEmail = customerEmail.toLowerCase().trim();
+      let user = await prisma.user.findUnique({
+        where: { email: normalizedEmail },
+      });
+
+      if (!user) {
+        const temporaryPassword =
+          Math.random().toString(36).slice(-8) +
+          Math.random().toString(36).slice(-4).toUpperCase();
+        const hashed = await bcrypt.hash(temporaryPassword, 12);
+
+        user = await prisma.user.create({
+          data: {
+            email: normalizedEmail,
+            name: customerName || normalizedEmail.split("@")[0] || "Kund",
+            password: hashed,
+            role: "customer",
+            isActive: true,
+            mustChangePassword: true,
+          },
+        });
+      }
+
+      await prisma.order.create({
+        data: {
+          id: orderId,
+          orderNumber: orderId,
+          status: "PENDING",
+          totalAmount: (subtotal - discountAmount) / 100,
+          currency: "SEK",
+          userId: user.id,
+          customerEmail: normalizedEmail,
+          customerName,
+          metadata: {
+            items: validatedItems,
+            couponCode: couponCode || null,
+            discountAmount:
+              discountAmount > 0 ? discountAmount / 100 : null,
+            attribution: attribution || null,
+            recoveredFromOrderId: recoveredFromOrderId || null,
+          },
+          items: {
+            create: validatedItems.map((item) => ({
+              courseId: null,
+              name: item.name,
+              quantity: item.quantity,
+              price: item.price,
+              type: item.type,
+            })),
+          },
+        },
+      });
+
       // Configure allowed payment methods explicitly (Stripe Checkout does not support automatic_payment_methods)
       const paymentMethodTypes: string[] = ["card"];
 
@@ -322,6 +386,7 @@ export async function POST(req: NextRequest) {
           items: JSON.stringify(validatedItems), // Use validated items in metadata
           website: "ulrika-functional-foods",
           orderType: "course_purchase",
+          orderId,
           couponCode: couponCode || "",
           courseNames: validatedItems.map((item) => item.name).join(", "),
           totalItems: validatedItems.length.toString(),
@@ -352,14 +417,23 @@ export async function POST(req: NextRequest) {
         payment_method_types: paymentMethodTypes,
       });
 
+      await prisma.order.update({
+        where: { id: orderId },
+        data: { checkoutOrderId: session.id },
+      });
+
       try {
-        const { getMailchimpEcommerce } = await import("@/app/lib/mailchimp-ecommerce");
+        const { getMailchimpEcommerce } = await import(
+          "@/app/lib/mailchimp-ecommerce"
+        );
         const mailchimpEcommerce = getMailchimpEcommerce();
-        await mailchimpEcommerce.upsertCart({
-          cartId: `stripe-${session.id}`,
+        const mailchimpCartId = await mailchimpEcommerce.upsertCart({
+          cartId: orderId,
           customerEmail,
           customerName,
-          checkoutUrl: session.url || `${origin}/checkout`,
+          checkoutUrl: `${origin}/checkout?recover=${encodeURIComponent(
+            orderId,
+          )}`,
           items: validatedItems.map((item) => ({
             id: item.id,
             name: item.name,
@@ -371,8 +445,29 @@ export async function POST(req: NextRequest) {
           currency: "SEK",
           campaignId: attribution?.mc_cid || undefined,
         });
+        
+        if (mailchimpCartId) {
+          const existingOrder = await prisma.order.findUnique({
+            where: { id: orderId },
+            select: { metadata: true },
+          });
+
+          await prisma.order.update({
+            where: { id: orderId },
+            data: {
+              metadata: {
+                ...((existingOrder?.metadata as any) || {}),
+                mailchimpCartId,
+                mailchimpCartSyncedAt: new Date().toISOString(),
+              },
+            },
+          });
+        }
       } catch (mailchimpCartError) {
-        console.warn("⚠️ Mailchimp abandoned cart sync failed (stripe, non-critical):", mailchimpCartError);
+        console.warn(
+          "⚠️ Mailchimp abandoned cart sync failed (stripe, non-critical):",
+          mailchimpCartError,
+        );
       }
       
       return NextResponse.json({ url: session.url });
