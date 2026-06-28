@@ -713,6 +713,72 @@ async function handleOrderCompleted(
         console.warn("⚠️ Mailchimp E-commerce tracking failed:", e);
       }
 
+      // Ensure abandoned cart cleanup is visible in admin even if purchase tracking
+      // was skipped or handled by another completion path.
+      try {
+        const { getMailchimpEcommerce } =
+          await import("@/app/lib/mailchimp-ecommerce");
+        const mailchimpEcommerce = getMailchimpEcommerce();
+        const cleanupOrder = await prisma.order.findUnique({
+          where: { id: order.id },
+          select: { id: true, orderNumber: true, metadata: true },
+        });
+        const cleanupMetadata = (cleanupOrder?.metadata as any) || {};
+  
+        if (cleanupOrder && !cleanupMetadata.mailchimpCartDeletedAt) {
+          await mailchimpEcommerce.deleteCart(
+            cleanupMetadata.mailchimpCartId ||
+              cleanupOrder.orderNumber ||
+              cleanupOrder.id,
+          );
+  
+          await prisma.order.update({
+            where: { id: cleanupOrder.id },
+            data: {
+              metadata: {
+                ...cleanupMetadata,
+                mailchimpCartDeletedAt: new Date().toISOString(),
+              },
+            },
+          });
+        }
+  
+        if (cleanupMetadata.recoveredFromOrderId) {
+          const recoveredOrder = await prisma.order.findUnique({
+            where: { id: cleanupMetadata.recoveredFromOrderId },
+            select: { id: true, metadata: true },
+          });
+          const recoveredMetadata = (recoveredOrder?.metadata as any) || {};
+  
+          if (recoveredOrder && !recoveredMetadata.mailchimpCartDeletedAt) {
+            await mailchimpEcommerce.deleteCart(
+              recoveredMetadata.mailchimpCartId ||
+                cleanupMetadata.recoveredFromOrderId,
+            );
+  
+            await prisma.order.update({
+              where: { id: recoveredOrder.id },
+              data: {
+                metadata: {
+                  ...recoveredMetadata,
+                  recoveredByOrderId: cleanupOrder?.id || order.id,
+                  recoveredAt:
+                    recoveredMetadata.recoveredAt ||
+                    new Date().toISOString(),
+                  recoveryReason: "abandoned_cart_recovered",
+                  mailchimpCartDeletedAt: new Date().toISOString(),
+                },
+              },
+            });
+          }
+        }
+      } catch (cleanupError) {
+        console.warn(
+          "⚠️ Mailchimp E-commerce cart cleanup failed (webhook, non-critical):",
+          cleanupError,
+        );
+      }
+
     // GA4 server-side purchase tracking (non-blocking)
     try {
       const { trackPurchaseServer } =
