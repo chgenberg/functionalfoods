@@ -328,6 +328,30 @@ export async function GET(req: NextRequest) {
             });
           }
         } else if (existingOrder && !existingPayment && paymentIntentId) {
+          const existingMetadata = (existingOrder.metadata as any) || {};
+          await prisma.order.update({
+            where: { id: existingOrder.id },
+            data: {
+              status: "COMPLETED",
+              checkoutOrderId: session.id,
+              customerEmail: existingOrder.customerEmail || customerEmail,
+              customerName:
+                existingOrder.customerName ||
+                session.customer_details?.name ||
+                null,
+              totalAmount:
+                existingOrder.totalAmount || (session.amount_total || 0) / 100,
+              currency: String(
+                existingOrder.currency || session.currency || "SEK",
+              ).toUpperCase(),
+              metadata: {
+                ...existingMetadata,
+                stripeSessionId: session.id,
+                stripePaymentIntentId: String(paymentIntentId),
+              },
+            },
+          });
+          
           // If order already exists but payment is missing, create payment as fallback
           try {
             await prisma.payment.create({
@@ -458,7 +482,11 @@ export async function GET(req: NextRequest) {
                   { usePut: true },
                 );
 
-                await mc.deleteCart(`stripe-${session.id}`);
+                await mc.deleteCart(
+                  metadata2.mailchimpCartId ||
+                    updatedOrder.orderNumber ||
+                    updatedOrder.id,
+                );
 
                 await prisma.order.update({
                   where: { id: updatedOrder.id },
@@ -486,6 +514,70 @@ export async function GET(req: NextRequest) {
           console.warn(
             "⚠️ Stripe verify fallback: Mailchimp tracking failed (non-critical):",
             e,
+          );
+        }
+
+        try {
+          const stripeOrder = await findOrder(true);
+          if (stripeOrder) {
+            const metadata = (stripeOrder.metadata as any) || {};
+            const { getMailchimpEcommerce } =
+              await import("@/app/lib/mailchimp-ecommerce");
+            const mc = getMailchimpEcommerce();
+
+            if (!metadata.mailchimpCartDeletedAt) {
+              await mc.deleteCart(
+                metadata.mailchimpCartId ||
+                  stripeOrder.orderNumber ||
+                  stripeOrder.id,
+              );
+
+              await prisma.order.update({
+                where: { id: stripeOrder.id },
+                data: {
+                  metadata: {
+                    ...metadata,
+                    mailchimpCartDeletedAt: new Date().toISOString(),
+                  },
+                },
+              });
+            }
+
+            if (metadata.recoveredFromOrderId) {
+              const recoveredOrder = await prisma.order.findUnique({
+                where: { id: metadata.recoveredFromOrderId },
+                select: { id: true, metadata: true },
+              });
+              const recoveredMetadata =
+                (recoveredOrder?.metadata as any) || {};
+
+              if (recoveredOrder && !recoveredMetadata.mailchimpCartDeletedAt) {
+                await mc.deleteCart(
+                  recoveredMetadata.mailchimpCartId ||
+                    metadata.recoveredFromOrderId,
+                );
+
+                await prisma.order.update({
+                  where: { id: recoveredOrder.id },
+                  data: {
+                    metadata: {
+                      ...recoveredMetadata,
+                      recoveredByOrderId: stripeOrder.id,
+                      recoveredAt:
+                        recoveredMetadata.recoveredAt ||
+                        new Date().toISOString(),
+                      recoveryReason: "abandoned_cart_recovered",
+                      mailchimpCartDeletedAt: new Date().toISOString(),
+                    },
+                  },
+                });
+              }
+            }
+          }
+        } catch (cleanupError) {
+          console.warn(
+            "⚠️ Stripe verify fallback: Mailchimp cart cleanup failed (non-critical):",
+            cleanupError,
           );
         }
       }
