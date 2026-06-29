@@ -25,6 +25,21 @@ export default function EBockerPage() {
       ],
     },
     {
+      id: "halsosamma-frukostar",
+      title: "Hälsosamma Frukostar",
+      description:
+        "Starta dagen med energi, mättnad och näring. I e-boken Hälsosamma Frukostar har Ulrika samlat sina bästa recept för dig som vill äta goda, balanserade och näringsrika frukostar utan krångel.",
+      href: "/e-bocker/halsosamma-frukostar",
+      image: "/halsosamma-frukostar-samlingssida.png",
+      price: "99 kr",
+      format: "PDF",
+      highlights: [
+        "Ger en mer näringsrik start på dagen",
+        "Bidrar till bättre mättnad och stabil energi",
+        "Innehåller naturliga och proteinrika råvaror",
+      ],
+    },
+    {
       id: "sota-godsaker",
       title: "Söta Godsaker",
       description:
