@@ -474,12 +474,30 @@ export async function POST(req: NextRequest) {
                 lastName,
               );
 
+              const recoveredTaggedAt =
+                metadata.recoveredFromOrderId &&
+                !metadata.mailchimpRecoveredTaggedAt
+                  ? new Date().toISOString()
+                  : metadata.mailchimpRecoveredTaggedAt;
+
+              if (
+                metadata.recoveredFromOrderId &&
+                !metadata.mailchimpRecoveredTaggedAt
+              ) {
+                await mailchimpMarketing.addRecoveredAbandonedCartTag(
+                  emailToTag,
+                );
+              }
+
               await prisma.order.update({
                 where: { id: refreshedOrder.id },
                 data: {
                   metadata: {
                     ...metadata,
                     mailchimpMarketingTaggedAt: new Date().toISOString(),
+                    ...(recoveredTaggedAt
+                      ? { mailchimpRecoveredTaggedAt: recoveredTaggedAt }
+                      : {}),
                   },
                 },
               });
