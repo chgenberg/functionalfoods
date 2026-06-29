@@ -321,13 +321,21 @@ export default function UnifiedSalesPage() {
     };
 
     const monthlyMap: Record<string, number> = {};
-    const orderLookup = new Map<string, UnifiedOrder>();
-    const recoveredCompletedOrderIds = new Set<string>();
+    const getOrderGrossAmount = (order: UnifiedOrder) => {
+      if (order.amount && order.amount > 0) {
+        return order.amount;
+      }
 
-    orders.forEach((order) => {
-      orderLookup.set(order.id, order);
-      orderLookup.set(order.orderNumber, order);
-    });
+      return (order.items || []).reduce((sum, item) => {
+        const isBook =
+          item.type === 'book' ||
+          (item.name || '').toLowerCase().includes('bok');
+        const vatRate = isBook ? 0.06 : 0.25;
+        const unitPriceInclVat =
+          Math.round((item.price || 0) * (1 + vatRate) * 100) / 100;
+        return sum + unitPriceInclVat * (item.quantity || 1);
+      }, 0);
+    };
 
     orders.forEach(order => {
       // Only count actually sold items for completed payments (refunds should NOT count as sold)
@@ -342,16 +350,15 @@ export default function UnifiedSalesPage() {
       if (isCompleted) {
         summary.successfulOrders++;
         summary.totalRevenue += order.amount - (order.refundAmount || 0);
-
-        if (order.metadata?.recoveredFromOrderId && !recoveredCompletedOrderIds.has(order.id)) {
-          summary.abandonedCartOrders++;
-          summary.abandonedCartRevenue += order.amount - (order.refundAmount || 0);
-          recoveredCompletedOrderIds.add(order.id);
-        }
       } else if (isPending) {
         summary.pendingOrders++;
       } else if (isFailed) {
         summary.failedOrders++;
+      }
+
+      if (order.status === 'RECOVERED') {
+        summary.abandonedCartOrders++;
+        summary.abandonedCartRevenue += getOrderGrossAmount(order) - (order.refundAmount || 0);
       }
 
       // Provider breakdown - only count completed orders for revenue
@@ -399,19 +406,6 @@ export default function UnifiedSalesPage() {
       // Refunds
       if (order.refunded && order.refundAmount) {
         summary.refundedAmount += order.refundAmount;
-      }
-
-      if (order.status === 'RECOVERED' && order.metadata?.recoveredByOrderId) {
-        const completedOrder = orderLookup.get(order.metadata.recoveredByOrderId);
-        if (
-          completedOrder &&
-          completedOrder.status === 'COMPLETED' &&
-          !recoveredCompletedOrderIds.has(completedOrder.id)
-        ) {
-          summary.abandonedCartOrders++;
-          summary.abandonedCartRevenue += completedOrder.amount - (completedOrder.refundAmount || 0);
-          recoveredCompletedOrderIds.add(completedOrder.id);
-        }
       }
     });
 
