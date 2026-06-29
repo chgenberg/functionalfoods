@@ -545,9 +545,9 @@ export async function GET(req: NextRequest) {
               ebookId = "grill-sommarmat";
             }
             if (
-              n.includes("hälsosamma frukostar") ||
-              n.includes("halsosamma frukostar") ||
-              n.includes("halsosamma-frukostar")
+              book.name.toLowerCase().includes("hälsosamma frukostar") ||
+              book.name.toLowerCase().includes("halsosamma frukostar") ||
+              book.name.toLowerCase().includes("halsosamma-frukostar")
             ) {
               ebookId = "halsosamma-frukostar";
             }

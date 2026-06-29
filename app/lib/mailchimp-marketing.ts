@@ -284,9 +284,9 @@ class MailchimpMarketingService {
       [normalize("E-bok Söta godsaker")]: "Köp - Sötsaker",
       [normalize("Ebok Söta godsaker")]: "Köp - Sötsaker",
       [normalize("Söta godsaker - e-bok")]: "Köp - Sötsaker",
-      [normalize("Söta godsaker – e-bok")]: "Köp - Sötsaker",   
+      [normalize("Söta godsaker – e-bok")]: "Köp - Sötsaker",
 
-    // Grill- & Sommarmat (ebook)
+      // Grill- & Sommarmat (ebook)
       [normalize("grill-sommarmat")]: "Köp - Grill & Sommarmat",
       [normalize("grill sommarmat")]: "Köp - Grill & Sommarmat",
       [normalize("grill och sommarmat")]: "Köp - Grill & Sommarmat",
@@ -299,6 +299,20 @@ class MailchimpMarketingService {
       [normalize("Ebok Grill- & Sommarmat")]: "Köp - Grill & Sommarmat",
       [normalize("Grill- & Sommarmat - e-bok")]: "Köp - Grill & Sommarmat",
       [normalize("Grill- & Sommarmat – e-bok")]: "Köp - Grill & Sommarmat",
+
+      // Hälsosamma Frukostar (ebook)
+      // Hälsosamma Frukostar (ebook)
+      [normalize("halsosamma-frukostar")]: "Köp - Hälsosamma Frukostar",
+      [normalize("hälsosamma frukostar")]: "Köp - Hälsosamma Frukostar",
+      [normalize("halsosamma frukostar")]: "Köp - Hälsosamma Frukostar",
+      [normalize("Hälsosamma Frukostar")]: "Köp - Hälsosamma Frukostar",
+      [normalize("Hälsosamma Frukostar (E-bok)")]: "Köp - Hälsosamma Frukostar",
+      [normalize("Hälsosamma Frukostar ebook")]: "Köp - Hälsosamma Frukostar",
+      [normalize("Hälsosamma Frukostar e-bok")]: "Köp - Hälsosamma Frukostar",
+      [normalize("E-bok Hälsosamma Frukostar")]: "Köp - Hälsosamma Frukostar",
+      [normalize("Ebok Hälsosamma Frukostar")]: "Köp - Hälsosamma Frukostar",
+      [normalize("Hälsosamma Frukostar - e-bok")]: "Köp - Hälsosamma Frukostar",
+      [normalize("Hälsosamma Frukostar – e-bok")]: "Köp - Hälsosamma Frukostar",
     };
 
     const tags: string[] = ["kund"];
