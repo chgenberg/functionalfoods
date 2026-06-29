@@ -414,12 +414,30 @@ export async function GET(req: NextRequest) {
                   lastName,
                 );
 
+                const recoveredTaggedAt =
+                  metadata.recoveredFromOrderId &&
+                  !metadata.mailchimpRecoveredTaggedAt
+                    ? new Date().toISOString()
+                    : metadata.mailchimpRecoveredTaggedAt;
+
+                if (
+                  metadata.recoveredFromOrderId &&
+                  !metadata.mailchimpRecoveredTaggedAt
+                ) {
+                  await mailchimpMarketing.addRecoveredAbandonedCartTag(
+                    emailForTracking,
+                  );
+                }
+
                 await prisma.order.update({
                   where: { id: updatedOrder.id },
                   data: {
                     metadata: {
                       ...metadata,
                       mailchimpMarketingTaggedAt: new Date().toISOString(),
+                      ...(recoveredTaggedAt
+                        ? { mailchimpRecoveredTaggedAt: recoveredTaggedAt }
+                        : {}),
                     },
                   },
                 });
