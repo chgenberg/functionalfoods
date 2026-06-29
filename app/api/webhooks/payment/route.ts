@@ -768,12 +768,29 @@ async function handleCheckoutSessionCompleted(session: any) {
           lastName,
         );
 
+        const recoveredTaggedAt =
+          metadata.recoveredFromOrderId &&
+          !metadata.mailchimpRecoveredTaggedAt
+            ? new Date().toISOString()
+            : metadata.mailchimpRecoveredTaggedAt;
+
+        if (
+          metadata.recoveredFromOrderId &&
+          !metadata.mailchimpRecoveredTaggedAt
+        ) {
+          await mailchimpMarketing.addRecoveredAbandonedCartTag(
+            emailForTracking,
+          );
+        }
+
         await prisma.order.update({
           where: { id: finalOrder.id },
           data: {
             metadata: {
               ...metadata,
-              mailchimpMarketingTaggedAt: new Date().toISOString(),
+              ...(recoveredTaggedAt
+                ? { mailchimpRecoveredTaggedAt: recoveredTaggedAt }
+                : {}),
             },
           },
         });
