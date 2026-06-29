@@ -197,6 +197,13 @@ export async function POST(req: NextRequest) {
         type: "book",
         vatRate: 0.06,
       },
+      "halsosamma-frukostar": {
+        id: "halsosamma-frukostar",
+        name: "Hälsosamma Frukostar – E-bok",
+        price: 93.4,
+        type: "book",
+        vatRate: 0.06,
+      },
     };
 
     // Add book products to productMap
@@ -602,6 +609,13 @@ export async function POST(req: NextRequest) {
       ) {
         return "EBOOK-GRILL-SOMMARMAT";
       }
+      if (
+        key.includes("halsosamma-frukostar") ||
+        key.includes("hälsosamma frukostar") ||
+        key.includes("halsosamma frukostar")
+      ) {
+        return "EBOOK-HALSOSAMMA-FRUKOSTAR";
+      }
 
       return item.id; // fallback
     };
@@ -643,7 +657,9 @@ export async function POST(req: NextRequest) {
               ? "Grill & Sommarmat E-bok"
               : item.id === "sota-godsaker"
                 ? "Sota Godsaker E-bok"
-                : item.name,
+                : item.id === "halsosamma-frukostar"
+                  ? "Halsosamma Frukostar E-bok"
+                  : item.name,
           quantity: item.quantity * 100, // Quantity in minor units: 100 = 1 unit
           unitPrice: priceInOre, // Pris INKLUSIVE moms i ÖRE (vatPercent används bara för momsrapportering)
           vatPercent: sveaVatPercent, // VAT in Svea format (600 = 6%, 2500 = 25%)
@@ -909,6 +925,13 @@ export async function POST(req: NextRequest) {
             ) {
               ebookId = "grill-sommarmat";
             }
+            if (
+              book.name.toLowerCase().includes("hälsosamma frukostar") ||
+              book.name.toLowerCase().includes("halsosamma frukostar") ||
+              book.name.toLowerCase().includes("halsosamma-frukostar")
+            ) {
+              ebookId = "halsosamma-frukostar";
+            }
 
             // Optional: avoid duplicates if route is retried
             const existing = await prisma.ebookDownload.findFirst({
@@ -950,6 +973,9 @@ export async function POST(req: NextRequest) {
             }
             if (ebookId === "grill-sommarmat") {
               downloadUrl = `${baseUrl}/e-bocker/grill-sommarmat/ladda-ner?token=${downloadToken}`;
+            }
+            if (ebookId === "halsosamma-frukostar") {
+              downloadUrl = `${baseUrl}/e-bocker/halsosamma-frukostar/ladda-ner?token=${downloadToken}`;
             }
 
             await emailService.sendEbookDownloadEmail({

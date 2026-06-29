@@ -341,6 +341,13 @@ async function completeOrder(order: any, sveaOrder: any) {
       ) {
         ebookId = "grill-sommarmat";
       }
+      if (
+        n.includes("hälsosamma frukostar") ||
+        n.includes("halsosamma frukostar") ||
+        n.includes("halsosamma-frukostar")
+      ) {
+        ebookId = "halsosamma-frukostar";
+      }
 
       await prisma.ebookDownload.create({
         data: {
@@ -365,6 +372,10 @@ async function completeOrder(order: any, sveaOrder: any) {
       }
       if (ebookId === "grill-sommarmat") {
         downloadUrl = `${baseUrl}/e-bocker/grill-sommarmat/ladda-ner?token=${downloadToken}`;
+      }
+
+      if (ebookId === "halsosamma-frukostar") {
+        downloadUrl = `${baseUrl}/e-bocker/halsosamma-frukostar/ladda-ner?token=${downloadToken}`;
       }
 
       await emailService.sendEbookDownloadEmail({
@@ -392,9 +403,11 @@ async function completeOrder(order: any, sveaOrder: any) {
               ? "Köp - Påskbuffé"
               : ebookId === "grill-sommarmat"
                 ? "Köp - Grill & Sommarmat"
-              : ebookId === "sota-godsaker"
-                ? "Köp - Sötsaker"
-                : "Köp - Brödboken";
+                : ebookId === "sota-godsaker"
+                  ? "Köp - Sötsaker"
+                  : ebookId === "halsosamma-frukostar"
+                    ? "Köp - Hälsosamma Frukostar"
+                    : "Köp - Brödboken";
 
           await Promise.race([
             mailchimpMarketing.addSubscriber({

@@ -222,6 +222,7 @@ function SveaSuccessContent() {
       id.includes("paskbuffe") ||
       id.includes("sota-godsaker") ||
       id.includes("grill-sommarmat") ||
+      id.includes("halsosamma-frukostar") ||
       name.includes("e-bok") ||
       name.includes("brodboken") ||
       name.includes("glutenfritt") ||
@@ -231,7 +232,8 @@ function SveaSuccessContent() {
       name.includes("sota godsaker") ||
       name.includes("grill sommarmat") ||
       name.includes("grill och sommarmat") ||
-      name.includes("grill- & sommarmat")
+      name.includes("grill- & sommarmat") ||
+      name.includes("halsosamma frukostar")
     );
   });
 
@@ -250,6 +252,8 @@ function SveaSuccessContent() {
       id.includes("paskbuffe") ||
       id.includes("sota-godsaker") ||
       id.includes("grill-sommarmat") ||
+      id.includes("grill-sommarmat") ||
+      id.includes("halsosamma-frukostar") ||
       name.includes("glutenfritt") ||
       name.includes("brodboken") ||
       name.includes("påskbuffé") ||
@@ -259,6 +263,8 @@ function SveaSuccessContent() {
       name.includes("grill sommarmat") ||
       name.includes("grill och sommarmat") ||
       name.includes("grill- & sommarmat") ||
+      name.includes("hälsosamma frukostar") ||
+      name.includes("halsosamma frukostar") ||
       name.includes("e-bok")
     );
   });
@@ -281,6 +287,11 @@ function SveaSuccessContent() {
     ebookKey.includes("grill sommarmat") ||
     ebookKey.includes("grill och sommarmat") ||
     ebookKey.includes("grill- & sommarmat");
+
+  const isHalsosammaFrukostar =
+    ebookKey.includes("halsosamma-frukostar") ||
+    ebookKey.includes("hälsosamma frukostar") ||
+    ebookKey.includes("halsosamma frukostar");
 
   const ebookDisplay = isPaskbuffe
     ? {
@@ -311,21 +322,32 @@ function SveaSuccessContent() {
             description:
               "Grillfavoriter, fräscha sallader, picknickmat, goda tapasrätter och mocktails. ",
             enjoyTitle: "För vardag, fest och grillkvällar",
-          }      
-      : {
-          title: "Baka Glutenfritt – E-bok av Ulrika Davidsson",
-          image: "/baka-glutenfritt.png",
-          alt: "Baka Glutenfritt E-bok",
-          subtitle: "PDF-format • 26 recept",
-          description: "Upptäck Ulrikas väg till mer hälsosam brödbakning.",
-          enjoyTitle: "Njut av att baka glutenfritt!",
-        };
+          }
+        : isHalsosammaFrukostar
+          ? {
+              title: "Hälsosamma Frukostar – E-bok av Ulrika Davidsson",
+              image: "/halsosamma-frukostar-samlingssida.png",
+              alt: "Hälsosamma Frukostar E-bok",
+              subtitle: "PDF-format • 67 frukostrecept",
+              description:
+                "Goda, balanserade och näringsrika frukostar utan krångel.",
+              enjoyTitle: "För vardag och helg",
+            }
+          : {
+              title: "Baka Glutenfritt – E-bok av Ulrika Davidsson",
+              image: "/baka-glutenfritt.png",
+              alt: "Baka Glutenfritt E-bok",
+              subtitle: "PDF-format • 26 recept",
+              description: "Upptäck Ulrikas väg till mer hälsosam brödbakning.",
+              enjoyTitle: "Njut av att baka glutenfritt!",
+            };
 
   console.log("SVEA SUCCESS orderDetails:", orderDetails);
   console.log("SVEA SUCCESS purchasedEbook:", purchasedEbook);
   console.log("SVEA SUCCESS ebookKey:", ebookKey);
   console.log("SVEA SUCCESS isPaskbuffe:", isPaskbuffe);
   console.log("SVEA SUCCESS isSotaGodsaker:", isSotaGodsaker);
+  console.log("SVEA SUCCESS isHalsosammaFrukostar:", isHalsosammaFrukostar);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-green-50 to-blue-50">
