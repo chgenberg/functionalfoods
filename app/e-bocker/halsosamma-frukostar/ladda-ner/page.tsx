@@ -127,7 +127,7 @@ function DownloadContent() {
               <h2 className="text-white font-semibold">
                 {ebookName || "Hälsosamma Frukostar – E-bok"}
               </h2>
-              <p className="text-gray-500 text-sm">PDF • 65 recept</p>
+              <p className="text-gray-500 text-sm">PDF • 67 recept</p>
             </div>
           </div>
 

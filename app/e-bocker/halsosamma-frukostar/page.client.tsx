@@ -22,7 +22,7 @@ const DEFAULT_CONTENT = {
   description:
     "Starta dagen med energi, mättnad och näring. I e-boken Hälsosamma Frukostar har Ulrika samlat sina bästa recept för dig som vill äta goda, balanserade och näringsrika frukostar utan krångel.",
   shortDescription:
-    "Här hittar du 65 inspirerande recept på allt från chiapuddingar, yoghurtskålar och smoothies till proteinrika äggrätter, hembakade frallor, gröter, pannkakor och plättar. Recepten är framtagna för att ge en stabil energi, ökad mättnad och en god start på dagen.",
+    "Här hittar du 67 inspirerande recept på allt från chiapuddingar, yoghurtskålar och smoothies till proteinrika äggrätter, hembakade frallor, gröter, pannkakor och plättar. Recepten är framtagna för att ge en stabil energi, ökad mättnad och en god start på dagen.",
   image: "/halsosamma-frukostar-omslag.png",
   price: "99 kr",
   features: [

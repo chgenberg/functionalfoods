@@ -317,7 +317,7 @@ function CheckoutSuccessContent() {
               title: "Hälsosamma Frukostar – E-bok",
               image: "/halsosamma-frukostar-samlingssida.png",
               alt: "Hälsosamma Frukostar E-bok",
-              subtitle: "PDF-format • 65 recept",
+              subtitle: "PDF-format • 67 recept",
               description:
                 "Goda, balanserade och näringsrika frukostar för en hälsosam start på dagen.",
               enjoyTitle: "Njut av dina hälsosamma frukostar!",

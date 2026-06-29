@@ -328,7 +328,7 @@ function SveaSuccessContent() {
               title: "Hälsosamma Frukostar – E-bok av Ulrika Davidsson",
               image: "/halsosamma-frukostar-samlingssida.png",
               alt: "Hälsosamma Frukostar E-bok",
-              subtitle: "PDF-format • 65 frukostrecept",
+              subtitle: "PDF-format • 67 frukostrecept",
               description:
                 "Goda, balanserade och näringsrika frukostar utan krångel.",
               enjoyTitle: "För vardag och helg",
