@@ -65,6 +65,8 @@ interface OrderSummary {
   pendingOrders: number;
   failedOrders: number;
   refundedAmount: number;
+  abandonedCartRevenue: number;
+  abandonedCartOrders: number;
   providerBreakdown: {
     stripe: { count: number; revenue: number };
     svea: { count: number; revenue: number };
@@ -85,6 +87,7 @@ interface FilterOptions {
   minAmount: string;
   maxAmount: string;
   customer: string;
+  coupon: string;
   sortBy: string;
   sortOrder: 'asc' | 'desc';
 }
@@ -101,6 +104,8 @@ export default function UnifiedSalesPage() {
     pendingOrders: 0,
     failedOrders: 0,
     refundedAmount: 0,
+    abandonedCartRevenue: 0,
+    abandonedCartOrders: 0,
     providerBreakdown: {
       stripe: { count: 0, revenue: 0 },
       svea: { count: 0, revenue: 0 },
@@ -117,6 +122,8 @@ export default function UnifiedSalesPage() {
     pendingOrders: 0,
     failedOrders: 0,
     refundedAmount: 0,
+    abandonedCartRevenue: 0,
+    abandonedCartOrders: 0,
     providerBreakdown: {
       stripe: { count: 0, revenue: 0 },
       svea: { count: 0, revenue: 0 },
@@ -140,6 +147,7 @@ export default function UnifiedSalesPage() {
     minAmount: '',
     maxAmount: '',
     customer: '',
+    coupon: '',
     sortBy: 'created',
     sortOrder: 'desc'
   });
@@ -301,6 +309,8 @@ export default function UnifiedSalesPage() {
       pendingOrders: 0,
       failedOrders: 0,
       refundedAmount: 0,
+      abandonedCartRevenue: 0,
+      abandonedCartOrders: 0,
       providerBreakdown: {
         stripe: { count: 0, revenue: 0 },
         svea: { count: 0, revenue: 0 },
@@ -325,6 +335,11 @@ export default function UnifiedSalesPage() {
       if (isCompleted) {
         summary.successfulOrders++;
         summary.totalRevenue += order.amount - (order.refundAmount || 0);
+
+        if (order.metadata?.recoveredFromOrderId) {
+          summary.abandonedCartOrders++;
+          summary.abandonedCartRevenue += order.amount - (order.refundAmount || 0);
+        }
       } else if (isPending) {
         summary.pendingOrders++;
       } else if (isFailed) {
@@ -495,6 +510,14 @@ export default function UnifiedSalesPage() {
       );
     }
 
+    // Coupon code search
+    if (filters.coupon) {
+      const search = filters.coupon.toLowerCase().trim();
+      filtered = filtered.filter(o =>
+        String(o.metadata?.couponCode || '').toLowerCase().includes(search)
+      );
+    }
+
     // Sorting
     filtered.sort((a, b) => {
       let compareValue = 0;
@@ -528,6 +551,7 @@ export default function UnifiedSalesPage() {
       const net = order.amount - refund;
       const couponCode = order.metadata?.couponCode || '';
       const discountAmount = order.metadata?.discountAmount || '';
+      const sourceInfo = getAttributionLabel(order.metadata?.attribution as Attribution | undefined);
       return {
         'Order ID': order.id,
         'Ordernummer': order.orderNumber,
@@ -542,6 +566,8 @@ export default function UnifiedSalesPage() {
         'Kurser': (order.courses || []).join(' | ') || '',
         'Rabattkod': couponCode,
         'Rabatt (SEK)': discountAmount ? Number(discountAmount) : '',
+        'Källa': sourceInfo.label,
+        'Detalj': sourceInfo.detail || '',
         // Export numeric amounts as numbers (Excel-friendly)
         'Belopp (SEK)': Number(order.amount),
         'Återbetalat (SEK)': Number(refund),
@@ -574,6 +600,8 @@ export default function UnifiedSalesPage() {
           'Datum': createdAtIso,
           'E-post': order.customerEmail,
           'Kund': order.customerName,
+          'Källa': getAttributionLabel(order.metadata?.attribution as Attribution | undefined).label,
+          'Detalj': getAttributionLabel(order.metadata?.attribution as Attribution | undefined).detail || '',
           'Leverantör (kod)': order.paymentProvider,
           'Status (kod)': order.status,
           'Produkt': item.name,
@@ -596,6 +624,8 @@ export default function UnifiedSalesPage() {
       { 'Sammanfattning': 'Väntande transaktioner', 'Värde': filteredSummary.pendingOrders },
       { 'Sammanfattning': 'Misslyckade transaktioner', 'Värde': filteredSummary.failedOrders },
       { 'Sammanfattning': 'Återbetalat totalt', 'Värde': `${formatPrice(filteredSummary.refundedAmount)} kr` },
+      { 'Sammanfattning': 'Abandoned carts försäljning', 'Värde': `${formatPrice(filteredSummary.abandonedCartRevenue)} kr` },
+      { 'Sammanfattning': 'Abandoned carts ordrar', 'Värde': filteredSummary.abandonedCartOrders },
       '',
       { 'Sammanfattning': 'Stripe-transaktioner', 'Värde': filteredSummary.providerBreakdown.stripe.count },
       { 'Sammanfattning': 'Stripe-intäkter', 'Värde': `${formatPrice(filteredSummary.providerBreakdown.stripe.revenue)} kr` },
@@ -721,6 +751,7 @@ export default function UnifiedSalesPage() {
       minAmount: '',
       maxAmount: '',
       customer: '',
+      coupon: '',
       sortBy: 'created',
       sortOrder: 'desc'
     });
@@ -877,14 +908,14 @@ export default function UnifiedSalesPage() {
           className="admin-stat-card"
         >
           <div className="flex items-center justify-between mb-2">
-            <span className="text-gray-600 text-sm">Återbetalningar</span>
-            <RotateCcw className="w-5 h-5 text-gray-400" />
+            <span className="text-gray-600 text-sm">Abandoned carts</span>
+            <ShoppingCart className="w-5 h-5 text-emerald-600" />
           </div>
           <p className="text-xl font-semibold text-[var(--text-primary)]">
-            {formatPrice(filteredSummary.refundedAmount)} kr
+            {formatPrice(filteredSummary.abandonedCartRevenue)} kr
           </p>
           <p className="text-xs text-gray-500 mt-1">
-            Totalt återbetalat
+            {filteredSummary.abandonedCartOrders} återhämtade köp
           </p>
         </motion.div>
       </div>
@@ -1053,15 +1084,27 @@ export default function UnifiedSalesPage() {
 
               {/* Search Bar */}
               <div className="mt-5 pt-5 border-t border-gray-100">
-                <div className="relative max-w-md">
-                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-300" />
-                  <input
-                    type="text"
-                    value={filters.customer}
-                    onChange={(e) => setFilters(prev => ({ ...prev, customer: e.target.value }))}
-                    placeholder="Sök på namn, e-post eller ordernummer..."
-                    className="w-full bg-gray-50/50 border-0 rounded-xl pl-10 pr-4 py-2.5 text-sm text-gray-700 placeholder:text-gray-400 focus:ring-2 focus:ring-emerald-500/20 focus:bg-white transition-all"
-                  />
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 max-w-3xl">
+                  <div className="relative">
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-300" />
+                    <input
+                      type="text"
+                      value={filters.customer}
+                      onChange={(e) => setFilters(prev => ({ ...prev, customer: e.target.value }))}
+                      placeholder="Sök på namn, e-post eller ordernummer..."
+                      className="w-full bg-gray-50/50 border-0 rounded-xl pl-10 pr-4 py-2.5 text-sm text-gray-700 placeholder:text-gray-400 focus:ring-2 focus:ring-emerald-500/20 focus:bg-white transition-all"
+                    />
+                  </div>
+                  <div className="relative">
+                    <Hash className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-300" />
+                    <input
+                      type="text"
+                      value={filters.coupon}
+                      onChange={(e) => setFilters(prev => ({ ...prev, coupon: e.target.value }))}
+                      placeholder="Sök på rabattkod..."
+                      className="w-full bg-gray-50/50 border-0 rounded-xl pl-10 pr-4 py-2.5 text-sm text-gray-700 placeholder:text-gray-400 focus:ring-2 focus:ring-emerald-500/20 focus:bg-white transition-all"
+                    />
+                  </div>
                 </div>
               </div>
 
@@ -1104,6 +1147,14 @@ export default function UnifiedSalesPage() {
                     <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-gray-100 text-gray-600 text-xs rounded-md">
                       "{filters.customer}"
                       <button onClick={() => setFilters(prev => ({ ...prev, customer: '' }))} className="hover:text-gray-800">
+                        <XCircle className="w-3 h-3" />
+                      </button>
+                    </span>
+                  )}
+                  {filters.coupon && (
+                    <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-emerald-50 text-emerald-700 text-xs rounded-md">
+                      Rabattkod: {filters.coupon}
+                      <button onClick={() => setFilters(prev => ({ ...prev, coupon: '' }))} className="hover:text-emerald-900">
                         <XCircle className="w-3 h-3" />
                       </button>
                     </span>
