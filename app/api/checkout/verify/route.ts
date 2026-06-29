@@ -583,7 +583,7 @@ export async function GET(req: NextRequest) {
               downloadUrl = `${baseUrl}/e-bocker/grill-sommarmat/ladda-ner?token=${token}`;
             }
             if (ebookId === "halsosamma-frukostar") {
-              downloadUrl = `${baseUrl}/e-bocker/halsosamma-frukostar/ladda-ner?token=${downloadToken}`;
+              downloadUrl = `${baseUrl}/e-bocker/halsosamma-frukostar/ladda-ner?token=${token}`;
             }
 
             await emailService.sendEbookDownloadEmail({

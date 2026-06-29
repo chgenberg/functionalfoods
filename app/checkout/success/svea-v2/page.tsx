@@ -331,7 +331,7 @@ function SveaSuccessContent() {
               subtitle: "PDF-format • 67 frukostrecept",
               description:
                 "Goda, balanserade och näringsrika frukostar utan krångel.",
-              enjoyTitle: "För vardag och helg",
+              enjoyTitle: "Njut av dina hälsosamma frukostar!",
             }
           : {
               title: "Baka Glutenfritt – E-bok av Ulrika Davidsson",
