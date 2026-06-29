@@ -379,6 +379,14 @@ class MailchimpEcommerceService {
     try {
       for (const item of params.items) {
         const variantId = `${item.id}-default`;
+        const vatRate =
+          typeof item.vatRate === 'number'
+            ? item.vatRate
+            : item.type === 'book'
+              ? 0.06
+              : 0.25;
+        const grossPrice = Math.round(item.price * (1 + vatRate) * 100) / 100;
+        
         await this.syncProduct({
           id: item.id,
           title: item.name,
@@ -388,7 +396,7 @@ class MailchimpEcommerceService {
           variants: [{
             id: variantId,
             title: item.name,
-            price: item.price,
+            price: grossPrice,
             inventory_quantity: 999
           }]
         });
@@ -411,15 +419,26 @@ class MailchimpEcommerceService {
         checkout_url: params.checkoutUrl,
         currency_code: (params.currency || 'SEK').toUpperCase(),
         order_total: params.totalAmount,
-        lines: params.items.map((item, index) => ({
-          id: String(index + 1),
-          product_id: item.id,
-          product_title: item.name,
-          product_variant_id: `${item.id}-default`,
-          product_variant_title: item.name,
-          quantity: item.quantity,
-          price: item.price
-        })),
+        lines: params.items.map((item, index) => {
+          const vatRate =
+            typeof item.vatRate === 'number'
+              ? item.vatRate
+              : item.type === 'book'
+                ? 0.06
+                : 0.25;
+          const grossPrice =
+            Math.round(item.price * (1 + vatRate) * 100) / 100;
+
+          return {
+            id: String(index + 1),
+            product_id: item.id,
+            product_title: item.name,
+            product_variant_id: `${item.id}-default`,
+            product_variant_title: item.name,
+            quantity: item.quantity,
+            price: grossPrice
+          };
+        }),
         campaign_id: params.campaignId || undefined
       };
 
@@ -568,6 +587,24 @@ class MailchimpEcommerceService {
       const errorText = await response.text();
       if (response.status === 400 && errorText.includes('already exists')) {
         console.log(`ℹ️ Product variant ${productId}/${variant.id} already exists in Mailchimp`);
+        const updateResponse = await fetch(
+          `${this.baseUrl}/products/${encodeURIComponent(productId)}/variants/${encodeURIComponent(variant.id)}`,
+          {
+            method: 'PATCH',
+            headers: {
+              'Authorization': `Basic ${Buffer.from(`anystring:${this.config.apiKey}`).toString('base64')}`,
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(variant)
+          },
+        );
+
+        if (!updateResponse.ok) {
+          const updateText = await updateResponse.text();
+          throw new Error(`Mailchimp variant update failed: ${updateResponse.status} ${updateText}`);
+        }
+
+        console.log(`✅ Product variant updated in Mailchimp: ${productId}/${variant.id}`);
         return;
       }
 
