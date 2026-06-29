@@ -1453,6 +1453,7 @@ export async function POST(req: NextRequest) {
           price: item.discountedPrice || item.price,
           quantity: item.quantity,
           type: item.type,
+          vatRate: item.vatRate,
         })),
         totalAmount,
         currency: "SEK",
