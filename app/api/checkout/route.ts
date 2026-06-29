@@ -440,6 +440,7 @@ export async function POST(req: NextRequest) {
             price: item.price,
             quantity: item.quantity,
             type: item.type,
+            vatRate: item.vatRate,
           })),
           totalAmount: (subtotal - discountAmount) / 100,
           currency: "SEK",
