@@ -191,6 +191,14 @@ class MailchimpMarketingService {
     });
   }
 
+  async addRecoveredAbandonedCartTag(email: string): Promise<boolean> {
+    return this.addSubscriber({
+      email,
+      tags: ["Recovered abandoned cart"],
+      status: "subscribed",
+    });
+  }
+
   /**
    * Add customer tag with course-specific tags
    */

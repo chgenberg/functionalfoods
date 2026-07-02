@@ -312,6 +312,29 @@ async function handleOrderCompleted(
         },
       });
 
+      const orderMetadata = (order.metadata as any) || {};
+      const recoveredFromOrderId = orderMetadata.recoveredFromOrderId;
+      if (recoveredFromOrderId && recoveredFromOrderId !== order.id) {
+        const recoveredOrder = await tx.order.findFirst({
+          where: { id: recoveredFromOrderId, status: "PENDING" },
+          select: { id: true, metadata: true },
+        });
+
+        if (recoveredOrder) {
+          await tx.order.update({
+            where: { id: recoveredOrder.id },
+            data: {
+              metadata: {
+                ...((recoveredOrder.metadata as any) || {}),
+                recoveredByOrderId: order.id,
+                recoveredAt: new Date().toISOString(),
+                recoveryReason: "abandoned_cart_recovered",
+              },
+            },
+          });
+        }
+      }
+
       // Handle user creation/linking
       let user = order.user;
 
@@ -531,17 +554,18 @@ async function handleOrderCompleted(
 
     console.log(`✅ Order ${order.id} completed successfully`);
 
+    let completedOrder = await prisma.order.findUnique({
+      where: { id: order.id },
+      include: { user: true, items: true },
+    });
+    
     // --- Mailchimp E-commerce purchase tracking ---
     try {
       const { getMailchimpEcommerce } =
         await import("@/app/lib/mailchimp-ecommerce");
       const mailchimpEcommerce = getMailchimpEcommerce();
 
-      // Get updated order with user
-      const updatedOrder = await prisma.order.findUnique({
-        where: { id: order.id },
-        include: { user: true, items: true },
-      });
+      const updatedOrder = completedOrder;
 
       if (updatedOrder && updatedOrder.user) {
         const totalAmount = updatedOrder.totalAmount;
@@ -552,76 +576,208 @@ async function handleOrderCompleted(
         let discountTotal = 0;
         const metadata = updatedOrder.metadata as any;
 
-        if (metadata?.discountAmount) {
-          // Discount amount stored in metadata (in SEK)
-          discountTotal = metadata.discountAmount;
-        } else {
-          // Calculate discount by comparing original prices with discounted prices
-          // Sum up original prices (if available) vs actual paid prices
-          const originalTotal = updatedOrder.items.reduce((sum, item) => {
-            // Try to get original price from course product or metadata
-            const originalPrice =
-              (item as any).originalPrice ||
-              metadata?.items?.[0]?.price ||
-              item.price;
-            return sum + originalPrice * item.quantity;
-          }, 0);
+        if (metadata?.mailchimpEcommerceTrackedAt) {
+          console.log("ℹ️ Mailchimp E-commerce already tracked (svea webhook, skipping):", {
+            orderId: updatedOrder.orderNumber,
+            trackedAt: metadata.mailchimpEcommerceTrackedAt,
+          });
+        }
+        
+        if (!metadata?.mailchimpEcommerceTrackedAt) {
+          if (metadata?.discountAmount) {
+              // Discount amount stored in metadata (in SEK)
+              discountTotal = metadata.discountAmount;
+            } else {
+              // Calculate discount by comparing original prices with discounted prices
+              // Sum up original prices (if available) vs actual paid prices
+              const originalTotal = updatedOrder.items.reduce((sum, item) => {
+                // Try to get original price from course product or metadata
+                const originalPrice =
+                  (item as any).originalPrice ||
+                  metadata?.items?.[0]?.price ||
+                  item.price;
+                return sum + originalPrice * item.quantity;
+              }, 0);
+  
+              if (originalTotal > totalAmount) {
+                  discountTotal = originalTotal - totalAmount;
+              }
+            }
 
-          if (originalTotal > totalAmount) {
-            discountTotal = originalTotal - totalAmount;
+            // Extract attribution data from order metadata for campaign tracking
+            const attribution = metadata?.attribution || {};
+            const campaignId = attribution?.mc_cid || undefined;
+            const trackingCode =
+              attribution?.utm_campaign || campaignId || undefined;
+          
+            // Build landing site URL from UTM params or Mailchimp campaign tracking
+            let landingSite: string | undefined;
+            if (
+              attribution?.utm_source ||
+              attribution?.utm_campaign ||
+              attribution?.mc_cid
+            ) {
+              const params = new URLSearchParams();
+              if (attribution.utm_source)
+                params.set("utm_source", attribution.utm_source);
+              if (attribution.utm_medium)
+                params.set("utm_medium", attribution.utm_medium);
+              if (attribution.utm_campaign)
+                params.set("utm_campaign", attribution.utm_campaign);
+              if (attribution.mc_cid) params.set("mc_cid", attribution.mc_cid);
+              landingSite = `https://functionalfoods.se/?${params.toString()}`;
+            }
+  
+            await mailchimpEcommerce.trackPurchase({
+              orderId: updatedOrder.orderNumber,
+              customerEmail: updatedOrder.user.email,
+              customerName: updatedOrder.user.name || undefined,
+              items: updatedOrder.items.map((item) => ({
+                id: item.courseId || item.id,
+                name: item.name,
+                price: item.price,
+                quantity: item.quantity,
+                type: item.type || "course",
+              })),
+              totalAmount: totalAmount,
+              currency: updatedOrder.currency || "SEK",
+              orderDate: updatedOrder.createdAt,
+              discountTotal: discountTotal,
+              shippingTotal: 0,
+              taxTotal: taxTotal,
+              // Campaign attribution for Mailchimp reports
+              campaignId: campaignId,
+              landingSite: landingSite,
+              trackingCode: trackingCode,
+            });
+  
+            await mailchimpEcommerce.deleteCart(
+              metadata?.mailchimpCartId || updatedOrder.orderNumber || updatedOrder.id,
+            );
+
+            if (metadata?.recoveredFromOrderId) {
+            try {
+              const recoveredOrder = await prisma.order.findUnique({
+                where: { id: metadata.recoveredFromOrderId },
+                select: { id: true, metadata: true },
+              });
+              const recoveredMetadata = (recoveredOrder?.metadata as any) || {};
+              const sourceCartId =
+                recoveredMetadata.mailchimpCartId ||
+                metadata.recoveredFromOrderId;
+
+              await mailchimpEcommerce.deleteCart(sourceCartId);
+
+              if (recoveredOrder) {
+                await prisma.order.update({
+                  where: { id: recoveredOrder.id },
+                  data: {
+                    metadata: {
+                      ...recoveredMetadata,
+                      recoveredByOrderId: updatedOrder.id,
+                      recoveredAt:
+                        recoveredMetadata.recoveredAt ||
+                        new Date().toISOString(),
+                      recoveryReason: "abandoned_cart_recovered",
+                      mailchimpCartDeletedAt: new Date().toISOString(),
+                    },
+                  },
+                });
+              }
+            } catch (recoveredCartError) {
+              console.warn(
+                "⚠️ Mailchimp E-commerce: failed to delete recovered source cart (webhook):",
+                recoveredCartError,
+              );
+            }
+          }
+  
+            await prisma.order.update({
+              where: { id: updatedOrder.id },
+              data: {
+                metadata: {
+                  ...(metadata || {}),
+                  mailchimpEcommerceTrackedAt: new Date().toISOString(),
+                  mailchimpCartDeletedAt: new Date().toISOString(),
+                },
+              },
+            });
+  
+            completedOrder = await prisma.order.findUnique({
+              where: { id: order.id },
+              include: { user: true, items: true },
+            });     
           }
         }
-
-        // Extract attribution data from order metadata for campaign tracking
-        const attribution = metadata?.attribution || {};
-        const campaignId = attribution?.mc_cid || undefined;
-        const trackingCode =
-          attribution?.utm_campaign || campaignId || undefined;
-
-        // Build landing site URL from UTM params or Mailchimp campaign tracking
-        let landingSite: string | undefined;
-        if (
-          attribution?.utm_source ||
-          attribution?.utm_campaign ||
-          attribution?.mc_cid
-        ) {
-          const params = new URLSearchParams();
-          if (attribution.utm_source)
-            params.set("utm_source", attribution.utm_source);
-          if (attribution.utm_medium)
-            params.set("utm_medium", attribution.utm_medium);
-          if (attribution.utm_campaign)
-            params.set("utm_campaign", attribution.utm_campaign);
-          if (attribution.mc_cid) params.set("mc_cid", attribution.mc_cid);
-          landingSite = `https://functionalfoods.se/?${params.toString()}`;
-        }
-
-        await mailchimpEcommerce.trackPurchase({
-          orderId: updatedOrder.orderNumber,
-          customerEmail: updatedOrder.user.email,
-          customerName: updatedOrder.user.name || undefined,
-          items: updatedOrder.items.map((item) => ({
-            id: item.courseId || item.id,
-            name: item.name,
-            price: item.price,
-            quantity: item.quantity,
-            type: item.type || "course",
-          })),
-          totalAmount: totalAmount,
-          currency: updatedOrder.currency || "SEK",
-          orderDate: updatedOrder.createdAt,
-          discountTotal: discountTotal,
-          shippingTotal: 0,
-          taxTotal: taxTotal,
-          // Campaign attribution for Mailchimp reports
-          campaignId: campaignId,
-          landingSite: landingSite,
-          trackingCode: trackingCode,
-        });
+      } catch (e) {
+        console.warn("⚠️ Mailchimp E-commerce tracking failed:", e);
       }
-    } catch (e) {
-      console.warn("⚠️ Mailchimp E-commerce tracking failed:", e);
-    }
+
+      // Ensure abandoned cart cleanup is visible in admin even if purchase tracking
+      // was skipped or handled by another completion path.
+      try {
+        const { getMailchimpEcommerce } =
+          await import("@/app/lib/mailchimp-ecommerce");
+        const mailchimpEcommerce = getMailchimpEcommerce();
+        const cleanupOrder = await prisma.order.findUnique({
+          where: { id: order.id },
+          select: { id: true, orderNumber: true, metadata: true },
+        });
+        const cleanupMetadata = (cleanupOrder?.metadata as any) || {};
+  
+        if (cleanupOrder && !cleanupMetadata.mailchimpCartDeletedAt) {
+          await mailchimpEcommerce.deleteCart(
+            cleanupMetadata.mailchimpCartId ||
+              cleanupOrder.orderNumber ||
+              cleanupOrder.id,
+          );
+  
+          await prisma.order.update({
+            where: { id: cleanupOrder.id },
+            data: {
+              metadata: {
+                ...cleanupMetadata,
+                mailchimpCartDeletedAt: new Date().toISOString(),
+              },
+            },
+          });
+        }
+  
+        if (cleanupMetadata.recoveredFromOrderId) {
+          const recoveredOrder = await prisma.order.findUnique({
+            where: { id: cleanupMetadata.recoveredFromOrderId },
+            select: { id: true, metadata: true },
+          });
+          const recoveredMetadata = (recoveredOrder?.metadata as any) || {};
+  
+          if (recoveredOrder && !recoveredMetadata.mailchimpCartDeletedAt) {
+            await mailchimpEcommerce.deleteCart(
+              recoveredMetadata.mailchimpCartId ||
+                cleanupMetadata.recoveredFromOrderId,
+            );
+  
+            await prisma.order.update({
+              where: { id: recoveredOrder.id },
+              data: {
+                metadata: {
+                  ...recoveredMetadata,
+                  recoveredByOrderId: cleanupOrder?.id || order.id,
+                  recoveredAt:
+                    recoveredMetadata.recoveredAt ||
+                    new Date().toISOString(),
+                  recoveryReason: "abandoned_cart_recovered",
+                  mailchimpCartDeletedAt: new Date().toISOString(),
+                },
+              },
+            });
+          }
+        }
+      } catch (cleanupError) {
+        console.warn(
+          "⚠️ Mailchimp E-commerce cart cleanup failed (webhook, non-critical):",
+          cleanupError,
+        );
+      }
 
     // GA4 server-side purchase tracking (non-blocking)
     try {
@@ -633,19 +789,20 @@ async function handleOrderCompleted(
       ) => {
         return rawId || undefined;
       };
-      const gaItems = updatedOrder.items.map((item) => ({
+      const gaOrder = completedOrder || order;
+      const gaItems = gaOrder.items.map((item: any) => ({
         item_id: normalizeGaItemId(item.courseId || item.id, item.name),
         item_name: item.name,
         quantity: item.quantity,
         price: item.price,
       }));
       await trackPurchaseServer({
-        transactionId: updatedOrder.orderNumber,
-        value: updatedOrder.totalAmount || 0,
-        currency: updatedOrder.currency || "SEK",
+        transactionId: gaOrder.orderNumber,
+        value: gaOrder.totalAmount || 0,
+        currency: gaOrder.currency || "SEK",
         items: gaItems,
-        userId: updatedOrder.customerEmail || undefined,
-        clientSeed: updatedOrder.customerEmail || updatedOrder.orderNumber,
+        userId: gaOrder.customerEmail || undefined,
+        clientSeed: gaOrder.customerEmail || gaOrder.orderNumber,
       });
     } catch (e) {
       console.warn("⚠️ GA4 server purchase tracking failed (Svea):", e);

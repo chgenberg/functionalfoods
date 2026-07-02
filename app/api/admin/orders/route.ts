@@ -6,7 +6,7 @@ const prisma = new PrismaClient();
 
 export const dynamic = 'force-dynamic';
 
-type DisplayStatus = 'COMPLETED' | 'PENDING' | 'FAILED' | 'REFUNDED' | 'CANCELLED' | 'PROCESSING' | 'CONFIRMED' | string;
+type DisplayStatus = 'COMPLETED' | 'PENDING' | 'RECOVERED' | 'FAILED' | 'REFUNDED' | 'CANCELLED' | 'PROCESSING' | 'CONFIRMED' | string;
 
 function toDisplayPaymentStatus(orderStatus: string | null | undefined, paymentStatus: string | null | undefined): DisplayStatus {
   const os = String(orderStatus || '');
@@ -65,6 +65,8 @@ export async function GET(request: NextRequest) {
 
     const formattedOrders = orders.map((order) => {
       const metadata = (order.metadata as any) || {};
+      const isRecoveredPending =
+        order.status === 'PENDING' && !!metadata.recoveredByOrderId;
       const actualPaidAmount =
         typeof metadata?.actualPaidAmount === 'number'
           ? metadata.actualPaidAmount
@@ -94,7 +96,9 @@ export async function GET(request: NextRequest) {
         // Explicit fields to avoid confusion between order status and payment status
         orderStatus: order.status,
         paymentStatus: order.payment?.status ?? null,
-        displayPaymentStatus: toDisplayPaymentStatus(order.status, order.payment?.status),
+        displayPaymentStatus: isRecoveredPending
+          ? 'RECOVERED'
+          : toDisplayPaymentStatus(order.status, order.payment?.status),
         totalAmount: displayTotalAmount,
         metadata: {
           ...metadata,

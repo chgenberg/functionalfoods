@@ -48,6 +48,7 @@ interface CheckoutRequest {
   };
   couponCode?: string;
   attribution?: Attribution;
+  recoveredFromOrderId?: string;
 }
 
 export async function POST(req: NextRequest) {
@@ -55,6 +56,8 @@ export async function POST(req: NextRequest) {
     console.log("🛒 Svea checkout request received");
 
     let body: CheckoutRequest;
+    let itemsWithDiscountedPrice: Array<any> = [];
+    
     try {
       body = (await req.json()) as CheckoutRequest;
     } catch (parseError) {
@@ -67,7 +70,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const { items, customer, couponCode, attribution } = body;
+    const { items, customer, couponCode, attribution, recoveredFromOrderId } = body;
 
     // Validate request
     if (!items || !Array.isArray(items) || items.length === 0) {
@@ -828,6 +831,7 @@ export async function POST(req: NextRequest) {
                   : null,
               freeOrder: true,
               attribution: attribution || null,
+              recoveredFromOrderId: recoveredFromOrderId || null,
             },
             items: {
               create: validatedItems.map((item: any) => ({
@@ -1384,7 +1388,7 @@ export async function POST(req: NextRequest) {
 
       // Calculate discounted price per item
       // Each item's price should reflect the discount proportionally
-      const itemsWithDiscountedPrice = validatedItems.map((item) => {
+      itemsWithDiscountedPrice = validatedItems.map((item) => {
         // Use item's actual VAT rate (6% for books, 25% for courses)
         const itemVatRate =
           item.vatRate ||
@@ -1432,6 +1436,7 @@ export async function POST(req: NextRequest) {
                 ? SveaCheckoutService.formatPriceFromMinorUnits(discountAmount)
                 : null,
             attribution: attribution || null,
+            recoveredFromOrderId: recoveredFromOrderId || null,
           },
           items: {
             create: itemsWithDiscountedPrice.map((item) => ({
@@ -1458,6 +1463,47 @@ export async function POST(req: NextRequest) {
       throw new Error(
         `Kunde inte spara order i databasen: ${dbError?.message || "Okänt fel"}`,
       );
+    }
+
+    try {
+      const { getMailchimpEcommerce } = await import("@/app/lib/mailchimp-ecommerce");
+      const mailchimpEcommerce = getMailchimpEcommerce();
+      const mailchimpCartId = await mailchimpEcommerce.upsertCart({
+        cartId: orderId,
+        customerEmail,
+        customerName,
+        checkoutUrl: `${origin}/checkout?recover=${encodeURIComponent(orderId)}`,
+        items: (itemsWithDiscountedPrice.length > 0 ? itemsWithDiscountedPrice : validatedItems).map((item: any) => ({
+          id: item.courseId || item.id,
+          name: item.name,
+          price: item.discountedPrice || item.price,
+          quantity: item.quantity,
+          type: item.type,
+          vatRate: item.vatRate,
+        })),
+        totalAmount,
+        currency: "SEK",
+        campaignId: attribution?.mc_cid || undefined,
+      });
+
+      if (mailchimpCartId) {
+        const existingOrder = await prisma.order.findUnique({
+          where: { id: orderId },
+          select: { metadata: true },
+        });
+        await prisma.order.update({
+          where: { id: orderId },
+          data: {
+            metadata: {
+              ...((existingOrder?.metadata as any) || {}),
+              mailchimpCartId,
+              mailchimpCartSyncedAt: new Date().toISOString(),
+            },
+          },
+        });
+      }
+    } catch (mailchimpCartError) {
+      console.warn("⚠️ Mailchimp abandoned cart sync failed (svea, non-critical):", mailchimpCartError);
     }
 
     // Update coupon usage
