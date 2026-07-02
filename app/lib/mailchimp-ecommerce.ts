@@ -123,6 +123,40 @@ class MailchimpEcommerceService {
   return process.env.MAILCHIMP_ABANDONED_CART_ENABLED === 'true';
   }
 
+  private getSafeProductId(item: { id: string; name: string; type?: string }): string {
+    const normalizedName = item.name
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '');
+
+    if (item.type === 'book' || normalizedName.includes('e-bok') || normalizedName.includes('ebook')) {
+      if (normalizedName.includes('grill') && normalizedName.includes('sommarmat')) {
+        return 'grill-sommarmat';
+      }
+      if (normalizedName.includes('baka') || normalizedName.includes('brodboken')) {
+        return 'brodboken-2026';
+      }
+      if (normalizedName.includes('paskbuffe') || normalizedName.includes('pask')) {
+        return 'paskbuffe';
+      }
+      if (normalizedName.includes('sota') || normalizedName.includes('sotsaker')) {
+        return 'sota-godsaker';
+      }
+    }
+
+    const rawId = item.id || item.name;
+    const safeId = rawId
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .replace(/[^a-z0-9_-]+/g, '-')
+      .replace(/-+/g, '-')
+      .replace(/^-|-$/g, '')
+      .slice(0, 80);
+
+    return safeId || 'product';
+  }
+
   /**
    * Get or create a customer in Mailchimp
    */
@@ -237,11 +271,12 @@ class MailchimpEcommerceService {
       // Sync products first
       // IMPORTANT: We create a deterministic "default" variant id.
       for (const item of items) {
-        const variantId = `${item.id}-default`;
+        const productId = this.getSafeProductId(item);
+        const variantId = `${productId}-default`;
 
         try {
           await this.syncProduct({
-            id: item.id,
+            id: productId,
             title: item.name,
             description: `${item.type || 'course'} - ${item.name}`,
             type: item.type || 'course',
@@ -255,7 +290,7 @@ class MailchimpEcommerceService {
           });
         } catch (error) {
           // Product sync failure shouldn't block order tracking
-          console.warn(`⚠️ Failed to sync product ${item.id} before order tracking:`, error);
+          console.warn(`⚠️ Failed to sync product ${productId} before order tracking:`, error);
         }
       }
 
@@ -269,11 +304,13 @@ class MailchimpEcommerceService {
 
       // ✅ Create order lines with REQUIRED product_variant_id
       const orderLines: MailchimpOrderLine[] = items.map((item, index) => {
+        const productId = this.getSafeProductId(item);
+        
         return {
           id: String(index + 1),
-          product_id: item.id,
+          product_id: productId,
           product_title: item.name,
-          product_variant_id: `${item.id}-default`,
+          product_variant_id: `${productId}-default`,
           product_variant_title: item.name,
           quantity: item.quantity,
           price: item.price
