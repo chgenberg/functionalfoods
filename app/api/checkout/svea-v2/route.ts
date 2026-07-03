@@ -103,6 +103,8 @@ export async function POST(req: NextRequest) {
       hasCustomer: !!customer,
       customerEmail: customer?.email,
       hasCoupon: !!couponCode,
+      recoveredFromOrderId: recoveredFromOrderId || null,
+      mailchimpCampaignId: attribution?.mc_cid || null,
     });
 
     // --- SECURITY FIX: Fetch product data from database ---
