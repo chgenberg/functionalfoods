@@ -194,6 +194,25 @@ export default function UnifiedSalesPage() {
     });
   };
 
+  const isRecoveredCartOrder = (order: UnifiedOrder) =>
+    !!order.metadata?.recoveredFromOrderId || order.status === 'RECOVERED';
+
+  const getOrderGrossAmount = (order: UnifiedOrder) => {
+    if (order.amount && order.amount > 0) {
+      return order.amount;
+    }
+
+    return (order.items || []).reduce((sum, item) => {
+      const isBook =
+        item.type === 'book' ||
+        (item.name || '').toLowerCase().includes('bok');
+      const vatRate = isBook ? 0.06 : 0.25;
+      const unitPriceInclVat =
+        Math.round((item.price || 0) * (1 + vatRate) * 100) / 100;
+      return sum + unitPriceInclVat * (item.quantity || 1);
+    }, 0);
+  };
+
   const extractCoursesFromDescription = (description: string): string[] => {
     if (!description) return [];
     const lower = description.toLowerCase();
@@ -321,21 +340,7 @@ export default function UnifiedSalesPage() {
     };
 
     const monthlyMap: Record<string, number> = {};
-    const getOrderGrossAmount = (order: UnifiedOrder) => {
-      if (order.amount && order.amount > 0) {
-        return order.amount;
-      }
-
-      return (order.items || []).reduce((sum, item) => {
-        const isBook =
-          item.type === 'book' ||
-          (item.name || '').toLowerCase().includes('bok');
-        const vatRate = isBook ? 0.06 : 0.25;
-        const unitPriceInclVat =
-          Math.round((item.price || 0) * (1 + vatRate) * 100) / 100;
-        return sum + unitPriceInclVat * (item.quantity || 1);
-      }, 0);
-    };
+    const countedRecoveredOrders = new Set<string>();
 
     orders.forEach(order => {
       // Only count actually sold items for completed payments (refunds should NOT count as sold)
@@ -356,9 +361,10 @@ export default function UnifiedSalesPage() {
         summary.failedOrders++;
       }
 
-      if (order.status === 'RECOVERED') {
+      if (isRecoveredCartOrder(order) && !countedRecoveredOrders.has(order.id)) {
         summary.abandonedCartOrders++;
         summary.abandonedCartRevenue += getOrderGrossAmount(order) - (order.refundAmount || 0);
+        countedRecoveredOrders.add(order.id);
       }
 
       // Provider breakdown - only count completed orders for revenue
@@ -566,7 +572,7 @@ export default function UnifiedSalesPage() {
       const net = order.amount - refund;
       const couponCode = order.metadata?.couponCode || '';
       const discountAmount = order.metadata?.discountAmount || '';
-      const sourceInfo = getAttributionLabel(order.metadata?.attribution as Attribution | undefined);
+      const sourceInfo = getOrderSourceLabel(order);
       return {
         'Order ID': order.id,
         'Ordernummer': order.orderNumber,
@@ -615,8 +621,8 @@ export default function UnifiedSalesPage() {
           'Datum': createdAtIso,
           'E-post': order.customerEmail,
           'Kund': order.customerName,
-          'Källa': getAttributionLabel(order.metadata?.attribution as Attribution | undefined).label,
-          'Detalj': getAttributionLabel(order.metadata?.attribution as Attribution | undefined).detail || '',
+          'Källa': getOrderSourceLabel(order).label,
+          'Källdetaljer': getOrderSourceLabel(order).detail || '',
           'Leverantör (kod)': order.paymentProvider,
           'Status (kod)': order.status,
           'Produkt': item.name,
@@ -752,6 +758,20 @@ export default function UnifiedSalesPage() {
     }
 
     return { label: 'Direkt', color: 'gray' };
+  };
+
+  const getOrderSourceLabel = (order: UnifiedOrder): { label: string; color: string; detail?: string } => {
+    const attribution = order.metadata?.attribution as Attribution | undefined;
+
+    if (isRecoveredCartOrder(order)) {
+      return {
+        label: 'Mailchimp',
+        color: 'yellow',
+        detail: attribution?.mc_cid || 'Abandoned cart',
+      };
+    }
+
+    return getAttributionLabel(attribution);
   };
 
   const resetFilters = () => {
@@ -1393,7 +1413,6 @@ export default function UnifiedSalesPage() {
                     </td>
                     <td className="whitespace-nowrap">
                       {(() => {
-                        const attribution = order.metadata?.attribution as Attribution | undefined;
                         const attrInfo = getAttributionLabel(attribution);
                         const colorMap: Record<string, string> = {
                           blue: 'bg-blue-100 text-blue-800',
