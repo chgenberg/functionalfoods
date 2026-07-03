@@ -1415,7 +1415,7 @@ export default function UnifiedSalesPage() {
                     </td>
                     <td className="whitespace-nowrap">
                       {(() => {
-                        const attrInfo = getAttributionLabel(attribution);
+                        const attrInfo = getOrderSourceLabel(order);
                         const colorMap: Record<string, string> = {
                           blue: 'bg-blue-100 text-blue-800',
                           purple: 'bg-purple-100 text-purple-800',
