@@ -607,6 +607,8 @@ export default function UnifiedSalesPage() {
     // 2) Line-item export (easy to pivot by product, quantity, VAT buckets)
     const lineItemsData = filteredOrders.flatMap(order => {
       const createdAtIso = new Date(order.createdAt).toISOString().replace('T', ' ').slice(0, 19);
+      const sourceInfo = getOrderSourceLabel(order);
+      
       return (order.items || []).map((item) => {
         const isBook = item.type === 'book' || (item.name || '').toLowerCase().includes('bok');
         const vatRate = isBook ? 0.06 : 0.25;
@@ -621,8 +623,8 @@ export default function UnifiedSalesPage() {
           'Datum': createdAtIso,
           'E-post': order.customerEmail,
           'Kund': order.customerName,
-          'Källa': getOrderSourceLabel(order).label,
-          'Källdetaljer': getOrderSourceLabel(order).detail || '',
+          'Källa': sourceInfo.label,
+          'Källdetaljer': sourceInfo.detail || '',
           'Leverantör (kod)': order.paymentProvider,
           'Status (kod)': order.status,
           'Produkt': item.name,
@@ -761,17 +763,17 @@ export default function UnifiedSalesPage() {
   };
 
   const getOrderSourceLabel = (order: UnifiedOrder): { label: string; color: string; detail?: string } => {
-    const attribution = order.metadata?.attribution as Attribution | undefined;
+    const sourceAttribution = order.metadata?.attribution as Attribution | undefined;
 
     if (isRecoveredCartOrder(order)) {
       return {
         label: 'Mailchimp',
         color: 'yellow',
-        detail: attribution?.mc_cid || 'Abandoned cart',
+        detail: sourceAttribution?.mc_cid || 'Abandoned cart',
       };
     }
 
-    return getAttributionLabel(attribution);
+    return getAttributionLabel(sourceAttribution);
   };
 
   const resetFilters = () => {
