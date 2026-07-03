@@ -11,6 +11,8 @@ import { ArrowLeft, Lock, CreditCard, User, Tag, X, ShoppingCart, ArrowRight, Bo
 import { trackInitiateCheckout } from '../lib/analytics';
 import { readAttribution } from '../lib/attribution';
 
+const RECOVERED_ORDER_STORAGE_KEY = 'checkout_recovered_from_order_id';
+
 // Course images mapping
 const courseImages: Record<string, string> = {
   'functional-flow': '/Kurser_bilder/Functional_Gut Health.jpg',
@@ -118,6 +120,8 @@ export default function Checkout() {
           throw new Error(data.error || 'Kundvagnen kunde inte återställas');
         }
 
+		sessionStorage.setItem(RECOVERED_ORDER_STORAGE_KEY, recoverOrderId);
+
         clearCart();
         for (const item of data.items) {
           const quantity = Math.max(1, Number(item.quantity || 1));
@@ -201,6 +205,10 @@ export default function Checkout() {
 
       // Build checkout payload (compatible with Stripe /api/checkout endpoint)
       const attribution = readAttribution();
+	  const persistedRecoveredOrderId =
+        recoverOrderId ||
+        sessionStorage.getItem(RECOVERED_ORDER_STORAGE_KEY) ||
+        undefined;
       const checkoutData = {
         items: campaignItems.map(item => ({
           id: item.id,
@@ -220,7 +228,7 @@ export default function Checkout() {
         couponCode: appliedCoupon?.code || undefined,
         campaignId,
         attribution,
-        recoveredFromOrderId: recoverOrderId,
+        recoveredFromOrderId: persistedRecoveredOrderId,
       };
 
       // Fire analytics: Initiate Checkout / begin_checkout before redirect
@@ -237,6 +245,7 @@ export default function Checkout() {
       // Route to appropriate payment provider
       if (selectedPayment === 'svea') {
         // Redirect to Svea checkout page
+		sessionStorage.removeItem(RECOVERED_ORDER_STORAGE_KEY);
         window.location.href = '/checkout/svea';
       } else {
         // Create Stripe Checkout Session
@@ -249,6 +258,7 @@ export default function Checkout() {
         if (!res.ok || !data?.url) {
           throw new Error(data?.error || 'Kunde inte skapa Stripe‑betalning');
         }
+		sessionStorage.removeItem(RECOVERED_ORDER_STORAGE_KEY);
         window.location.href = data.url;
       }
     } catch (err: any) {
