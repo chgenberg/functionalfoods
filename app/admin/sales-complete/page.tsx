@@ -763,6 +763,7 @@ export default function UnifiedSalesPage() {
         'cart-upsell': 'Cart upsell',
         'checkout-upsell': 'Checkout upsell',
         'product-page': 'Produktsida',
+        'prova-popup': 'Popup',
       };
 
       return {
