@@ -1,3 +1,4 @@
+export { default } from "../../kampanj-sommar-ebocker/page";
 "use client";
 
 import { useEffect } from "react";
