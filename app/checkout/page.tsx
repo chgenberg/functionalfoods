@@ -14,10 +14,7 @@ import {
   SUMMER_EBOOK_CAMPAIGN_ID,
   applySummerEbookBundlePricing,
   getStoredSummerEbookCampaignSource,
-  getMissingSummerEbookProducts,
   hasSummerEbookBundle,
-  isSummerEbookTriggerBook,
-  storeSummerEbookCampaignSource,
 } from '../lib/campaigns/summer-ebooks';
 
 // Course images mapping
@@ -51,26 +48,18 @@ export default function Checkout() {
   const [applying, setApplying] = useState(false);
   const [pendingRecoveredCoupon, setPendingRecoveredCoupon] = useState<string | null>(null);
 	
-	const hasSummerEbookTriggerInCart = items.some(
-	    (item) => item.type === 'book' && isSummerEbookTriggerBook(item.id)
-	);
-	const missingSummerEbookProducts = getMissingSummerEbookProducts(items);
-	const checkoutUpsellBooks =
-	    hasSummerEbookTriggerInCart && missingSummerEbookProducts.length > 0
-	      ? missingSummerEbookProducts
-	      : [];
-	const hasSummerBundleInCart = hasSummerEbookBundle(items);
+  const hasSummerBundleInCart = hasSummerEbookBundle(items);
 
-		const campaignId =
-	      searchParams.get('campaign') ||
-	      (hasSummerBundleInCart
-	        ? SUMMER_EBOOK_CAMPAIGN_ID
-	        : undefined);
-	const recoverOrderId = searchParams.get('recover') || undefined;
-	  	const recoverAttemptedRef = useRef(false);
-	  	const campaignItems = applySummerEbookBundlePricing(items);
-	  	const getPricedItem = (item: (typeof items)[number]) =>
-	  		campaignItems.find((pricedItem) => pricedItem.id === item.id) || item;
+	const campaignId =
+	    searchParams.get('campaign') ||
+	    (hasSummerBundleInCart
+	    ? SUMMER_EBOOK_CAMPAIGN_ID
+	    : undefined);
+  const recoverOrderId = searchParams.get('recover') || undefined;
+  const recoverAttemptedRef = useRef(false);
+  const campaignItems = applySummerEbookBundlePricing(items);
+  const getPricedItem = (item: (typeof items)[number]) =>
+	  campaignItems.find((pricedItem) => pricedItem.id === item.id) || item;
 
 	
   // Guest checkout form data
@@ -104,29 +93,6 @@ export default function Checkout() {
       });
     }
   }, [user]);
-
-	useEffect(() => {
-    if (
-      !isLoaded ||
-      recoverOrderId ||
-      requestedCampaignId !== SUMMER_EBOOK_CAMPAIGN_ID ||
-      campaignCartPreparedRef.current
-    ) {
-      return;
-    }
-
-    const hasFullCampaignCart = SUMMER_EBOOK_PRODUCTS.every((product) =>
-      items.some((item) => item.id === product.id && item.quantity > 0)
-    );
-    if (hasFullCampaignCart) {
-      campaignCartPreparedRef.current = true;
-      return;
-    }
-
-    campaignCartPreparedRef.current = true;
-    clearCart();
-    SUMMER_EBOOK_PRODUCTS.forEach((product) => addItem(product));
-  	}, [isLoaded, recoverOrderId, requestedCampaignId, items, clearCart, addItem]);
 	
 	useEffect(() => {
     if (!recoverOrderId || recoverAttemptedRef.current) return;
@@ -624,43 +590,6 @@ export default function Checkout() {
                     </div>
                   </div>
                 ))}
-
-                 {checkoutUpsellBooks.length > 0 && (
-                  <div className="rounded-xl border border-[#93C560] bg-[#93C560]/10 p-3 sm:p-4">
-                    <div className="flex gap-3">
-                      <div className="w-14 h-14 rounded-lg overflow-hidden bg-white flex-shrink-0">
-                        <Image
-                          src={checkoutUpsellBooks[0].image}
-                          alt={checkoutUpsellBooks[0].name}
-                          width={56}
-                          height={56}
-                          className="w-full h-full object-cover"
-                        />
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <p className="text-xs font-semibold text-[#014421]">
-                          Sommarerbjudande
-                        </p>
-                        <h3 className="text-sm font-medium text-gray-900">
-                        	Köp 3 e-böcker för 250 kr – få en bok gratis!
-                        </h3>
-                        <p className="text-xs text-gray-600 mt-1">
-                          Lägg till {checkoutUpsellBooks.length === 1 ? 'den saknade boken' : 'de saknade böckerna'} och få Grill- & Sommarmat, Söta Godsaker och Baka Glutenfritt till kampanjpris.
-                        </p>
-                      </div>
-                    </div>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        checkoutUpsellBooks.forEach((book) => addItem(book));
-                        storeSummerEbookCampaignSource("checkout-upsell");
-                      }}
-                      className="mt-3 w-full rounded-lg bg-[#014421] px-4 py-2.5 text-sm font-medium text-white hover:bg-[#1a5530] transition-colors"
-                    >
-                      Lägg till sommarerbjudandet
-                    </button>
-                  </div>
-                )}
 
                 {/* Coupon */}
                 <div className="pt-3 sm:pt-4 border-t border-gray-100">
