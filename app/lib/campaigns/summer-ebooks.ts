@@ -23,7 +23,8 @@ export type SummerEbookCampaignSource =
   | "campaign-link"
   | "cart-upsell"
   | "checkout-upsell"
-  | "product-page";
+  | "product-page"
+  | "prova-popup";
 
 export function storeSummerEbookCampaignSource(
   source: SummerEbookCampaignSource,
