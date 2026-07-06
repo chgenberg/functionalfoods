@@ -6,6 +6,10 @@ import {
 } from "@/app/lib/svea-checkout-service";
 import { emailService } from "@/app/lib/email";
 import { getMailchimpMarketing } from "@/app/lib/mailchimp-marketing";
+import {
+  SUMMER_EBOOK_CAMPAIGN_ID,
+  SUMMER_EBOOK_CAMPAIGN_TAG,
+} from "@/app/lib/campaigns/summer-ebooks";
 import bcrypt from "bcryptjs";
 
 export const dynamic = "force-dynamic";
@@ -430,6 +434,10 @@ async function handleOrderCompleted(
                 courseNames,
                 firstName,
                 lastName,
+                (order.metadata as any)?.campaignId ===
+                  SUMMER_EBOOK_CAMPAIGN_ID
+                  ? [SUMMER_EBOOK_CAMPAIGN_TAG]
+                  : [],
               );
               console.log(
                 `✅ New customer added to Mailchimp with course tags: ${normalizedEmail}`,
@@ -1030,7 +1038,14 @@ async function handleOrderCompleted(
                         email: normalizedEmail,
                         firstName: firstName || undefined,
                         lastName,
-                        tags: ["kund", purchaseTag],
+                        tags: [
+                          "kund",
+                          purchaseTag,
+                          ...((metadata as any)?.campaignId ===
+                          SUMMER_EBOOK_CAMPAIGN_ID
+                            ? [SUMMER_EBOOK_CAMPAIGN_TAG]
+                            : []),
+                        ],
                         status: "subscribed",
                       }),
                       new Promise((resolve) => setTimeout(resolve, 1500)),
