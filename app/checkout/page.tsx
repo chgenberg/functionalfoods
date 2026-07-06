@@ -102,6 +102,29 @@ export default function Checkout() {
   }, [user]);
 
 	useEffect(() => {
+    if (
+      !isLoaded ||
+      recoverOrderId ||
+      requestedCampaignId !== SUMMER_EBOOK_CAMPAIGN_ID ||
+      campaignCartPreparedRef.current
+    ) {
+      return;
+    }
+
+    const hasFullCampaignCart = SUMMER_EBOOK_PRODUCTS.every((product) =>
+      items.some((item) => item.id === product.id && item.quantity > 0)
+    );
+    if (hasFullCampaignCart) {
+      campaignCartPreparedRef.current = true;
+      return;
+    }
+
+    campaignCartPreparedRef.current = true;
+    clearCart();
+    SUMMER_EBOOK_PRODUCTS.forEach((product) => addItem(product));
+  	}, [isLoaded, recoverOrderId, requestedCampaignId, items, clearCart, addItem]);
+	
+	useEffect(() => {
     if (!recoverOrderId || recoverAttemptedRef.current) return;
     recoverAttemptedRef.current = true;
 
