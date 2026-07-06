@@ -9,6 +9,8 @@ import { getMailchimpMarketing } from "@/app/lib/mailchimp-marketing";
 import {
   applySummerEbookBundlePricing,
   isSummerEbookCampaignId,
+  SUMMER_EBOOK_CAMPAIGN_ID,
+  SUMMER_EBOOK_CAMPAIGN_TAG,
 } from "@/app/lib/campaigns/summer-ebooks";
 import bcrypt from "bcryptjs";
 import type {
@@ -52,6 +54,7 @@ interface CheckoutRequest {
   };
   couponCode?: string;
   campaignId?: string;
+  campaignSource?: string;
   attribution?: Attribution;
   recoveredFromOrderId?: string;
 }
@@ -75,7 +78,15 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const { items, customer, couponCode, campaignId, attribution, recoveredFromOrderId } = body;
+    const {
+      items,
+      customer,
+      couponCode,
+      campaignId,
+      campaignSource,
+      attribution,
+      recoveredFromOrderId,
+    } = body;
 
     // Validate request
     if (!items || !Array.isArray(items) || items.length === 0) {
@@ -109,6 +120,7 @@ export async function POST(req: NextRequest) {
       customerEmail: customer?.email,
       hasCoupon: !!couponCode,
       campaignId: campaignId || null,
+      campaignSource: campaignSource || null,
     });
 
     // --- SECURITY FIX: Fetch product data from database ---
@@ -845,6 +857,8 @@ export async function POST(req: NextRequest) {
                     )
                   : null,
               freeOrder: true,
+              campaignId: campaignId || null,
+              campaignSource: campaignSource || null,
               attribution: attribution || null,
               recoveredFromOrderId: recoveredFromOrderId || null,
             },
@@ -1067,6 +1081,9 @@ export async function POST(req: NextRequest) {
             productNames,
             firstName,
             lastName,
+            campaignId === SUMMER_EBOOK_CAMPAIGN_ID
+              ? [SUMMER_EBOOK_CAMPAIGN_TAG]
+              : [],
           );
           console.log(
             `✅ Customer added to Mailchimp with product tags (free order): ${customerEmail}`,
@@ -1450,6 +1467,8 @@ export async function POST(req: NextRequest) {
               discountAmount > 0
                 ? SveaCheckoutService.formatPriceFromMinorUnits(discountAmount)
                 : null,
+            campaignId: campaignId || null,
+            campaignSource: campaignSource || null,
             attribution: attribution || null,
             recoveredFromOrderId: recoveredFromOrderId || null,
           },
