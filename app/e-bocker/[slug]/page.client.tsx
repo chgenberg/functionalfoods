@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { trackAddToCart, trackViewContent } from "@/app/lib/analytics";
+import { SUMMER_EBOOK_PRODUCTS } from "@/app/lib/campaigns/summer-ebooks";
 
 type EbookDefaults = {
   id: string;
@@ -87,12 +88,21 @@ export default function EbookSlugPageClient({
 
   const handleAddToCart = async () => {
     setIsAdding(true);
-    addItem(ebook);
+    const productsToAdd =
+      fallback.id === "sommar-bokbundle" ? SUMMER_EBOOK_PRODUCTS : [ebook];
+    productsToAdd.forEach((product) => addItem(product));
     try {
-      trackAddToCart(
-        { id: ebook.id, name: ebook.name, price: ebook.price, quantity: 1 },
-        "SEK",
-      );
+      productsToAdd.forEach((product) => {
+        trackAddToCart(
+          {
+            id: product.id,
+            name: product.name,
+            price: product.price,
+            quantity: 1,
+          },
+          "SEK",
+        );
+      });
     } catch {}
 
     setAdded(true);
