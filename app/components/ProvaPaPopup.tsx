@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import { storeSummerEbookCampaignSource } from "@/app/lib/campaigns/summer-ebooks";
 
 interface ProvaPaPopupProps {
   forceOpen?: boolean;
@@ -55,6 +56,11 @@ export default function ProvaPaPopup({
     onClose?.();
   };
 
+  const handleCampaignClick = () => {
+    storeSummerEbookCampaignSource("prova-popup");
+    handleClose();
+  };
+
   if (!isVisible) return null;
 
   return (
@@ -93,8 +99,8 @@ export default function ProvaPaPopup({
               {/* Image section */}
               <div className="relative h-48 sm:h-56">
                 <Image
-                  src="/grill-sommarmat-popup.png"
-                  alt="Grill och Sommarmat"
+                  src="/sommar-bokbundle-samlingssida.png"
+                  alt="Sommarkampanj med tre e-böcker"
                   fill
                   className="object-cover"
                   priority
@@ -105,14 +111,14 @@ export default function ProvaPaPopup({
                 <div className="absolute top-4 left-4">
                   <div className="bg-[#014421] text-white px-4 py-2 rounded-full font-bold text-sm flex items-center gap-2 shadow-lg">
                     <Sparkles className="w-4 h-4" />
-                    149 kr
+                    3 för 250 kr
                   </div>
                 </div>
 
                 {/* Title overlay */}
                 <div className="absolute bottom-4 left-4 right-4 text-white">
                   <h2 className="text-2xl sm:text-3xl font-bold leading-tight">
-                    Ny e-bok: Grill- & Sommarmat
+                    Sommarkampanj på e-böcker
                   </h2>
                   <p className="text-white/90 text-sm sm:text-base mt-1">
                     med Functional Foods
@@ -123,9 +129,9 @@ export default function ProvaPaPopup({
               {/* Content */}
               <div className="p-6">
                 <p className="text-gray-700 mb-6 leading-relaxed">
-                  Recept för sommarens alla måltider i en e-bok fylld med
-                  grillfavoriter, fräscha sallader, picknickmat, goda
-                  tapasrätter, mocktails och smakrika tillbehör.
+                  Fyll sommaren med god mat, smarta recept och inspiration.
+                  Just nu får du Grill- & Sommarmat, Söta Godsaker och Baka
+                  Glutenfritt till ett extra förmånligt paketpris.
                 </p>
 
                 {/* Features */}
@@ -133,37 +139,40 @@ export default function ProvaPaPopup({
                   <div className="text-center p-3 bg-[#014421]/5 rounded-xl">
                     <Calendar className="w-5 h-5 mx-auto text-[#014421] mb-1" />
                     <span className="text-xs text-gray-700 font-medium">
-                      Grillguide
+                      Populära e-böcker
                     </span>
                   </div>
                   <div className="text-center p-3 bg-[#014421]/5 rounded-xl">
                     <Utensils className="w-5 h-5 mx-auto text-[#014421] mb-1" />
                     <span className="text-xs text-gray-700 font-medium">
-                      90+ sommarrecept
+                      150+ sommarrecept
                     </span>
                   </div>
                   <div className="text-center p-3 bg-[#014421]/5 rounded-xl">
                     <ShoppingCart className="w-5 h-5 mx-auto text-[#014421] mb-1" />
                     <span className="text-xs text-gray-700 font-medium">
-                      149 kr
+                      250 kr
                     </span>
                   </div>
                 </div>
 
                 {/* CTA */}
-                <Link href="/e-bocker/grill-sommarmat" onClick={handleClose}>
+                <Link
+                  href="/e-bocker/sommar-bokbundle"
+                  onClick={handleCampaignClick}
+                >
                   <motion.button
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                     className="w-full bg-[#014421] text-white py-4 rounded-xl font-bold text-lg hover:bg-[#116530] transition-colors flex items-center justify-center gap-2 shadow-lg"
                   >
-                    Köp e-boken nu
+                    Se sommarerbjudandet
                     <ArrowRight className="w-5 h-5" />
                   </motion.button>
                 </Link>
 
                 <p className="text-center text-xs text-gray-500 mt-4">
-                  • Boken skickas som pdf direkt
+                  • E-böckerna skickas som pdf direkt
                 </p>
               </div>
             </motion.div>
@@ -214,12 +223,12 @@ export function ProvaPaFloatingButton({ onClick }: { onClick: () => void }) {
       {/* Desktop version */}
       <span className="hidden sm:flex items-center gap-2 px-5 py-3 font-semibold">
         <Sparkles className="w-4 h-4" />
-        Grill- & Sommarmat
+        Sommarkampanj E-böcker
       </span>
       {/* Mobile version */}
       <span className="sm:hidden flex items-center gap-2 px-4 py-3 font-semibold text-sm">
         <Sparkles className="w-4 h-4" />
-        Grill- & Sommarmat
+        Sommarkampanj E-böcker
       </span>
     </motion.button>
   );
