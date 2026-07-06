@@ -13,8 +13,11 @@ import { readAttribution } from '../lib/attribution';
 import {
   SUMMER_EBOOK_CAMPAIGN_ID,
   applySummerEbookBundlePricing,
+  getStoredSummerEbookCampaignSource,
   getMissingSummerEbookProducts,
+  hasSummerEbookBundle,
   isSummerEbookTriggerBook,
+  storeSummerEbookCampaignSource,
 } from '../lib/campaigns/summer-ebooks';
 
 // Course images mapping
@@ -56,10 +59,11 @@ export default function Checkout() {
 	    hasSummerEbookTriggerInCart && missingSummerEbookProducts.length > 0
 	      ? missingSummerEbookProducts
 	      : [];
+	const hasSummerBundleInCart = hasSummerEbookBundle(items);
 
 		const campaignId =
 	      searchParams.get('campaign') ||
-	      (checkoutUpsellBooks.length > 0 || hasSummerEbookTriggerInCart
+	      (hasSummerBundleInCart
 	        ? SUMMER_EBOOK_CAMPAIGN_ID
 	        : undefined);
 	const recoverOrderId = searchParams.get('recover') || undefined;
@@ -238,6 +242,10 @@ export default function Checkout() {
         } : undefined),
         couponCode: appliedCoupon?.code || undefined,
         campaignId,
+		campaignSource:
+          campaignId === SUMMER_EBOOK_CAMPAIGN_ID
+            ? getStoredSummerEbookCampaignSource()
+            : undefined,
         attribution,
         recoveredFromOrderId: recoverOrderId,
       };
@@ -643,7 +651,10 @@ export default function Checkout() {
                     </div>
                     <button
                       type="button"
-                      onClick={() => checkoutUpsellBooks.forEach((book) => addItem(book))}
+                      onClick={() => {
+                        checkoutUpsellBooks.forEach((book) => addItem(book));
+                        storeSummerEbookCampaignSource("checkout-upsell");
+                      }}
                       className="mt-3 w-full rounded-lg bg-[#014421] px-4 py-2.5 text-sm font-medium text-white hover:bg-[#1a5530] transition-colors"
                     >
                       Lägg till sommarerbjudandet
