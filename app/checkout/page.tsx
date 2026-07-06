@@ -47,15 +47,6 @@ export default function Checkout() {
   const [couponError, setCouponError] = useState<string | null>(null);
   const [applying, setApplying] = useState(false);
   const [pendingRecoveredCoupon, setPendingRecoveredCoupon] = useState<string | null>(null);
-  
-  	const grillCheckoutUpsellBook = {
-    id: 'grill-sommarmat',
-    name: 'Grill- & Sommarmat – E-bok av Ulrika Davidsson',
-    price: 140.57,
-    quantity: 1,
-    type: 'book' as const,
-    image: '/grill-sommarmat-square.png'
-  };
 	
 	const hasSummerEbookTriggerInCart = items.some(
 	    (item) => item.type === 'book' && isSummerEbookTriggerBook(item.id)
