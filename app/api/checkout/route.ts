@@ -18,6 +18,7 @@ export async function POST(req: NextRequest) {
         customer,
         couponCode,
         campaignId,
+        campaignSource,
         attribution,
         recoveredFromOrderId,
       } = body as {
@@ -31,6 +32,7 @@ export async function POST(req: NextRequest) {
         customer?: { email?: string; name?: string; id?: string };
         couponCode?: string;
         campaignId?: string;
+        campaignSource?: string;
         recoveredFromOrderId?: string;
         attribution?: {
           gclid?: string;
@@ -375,6 +377,8 @@ export async function POST(req: NextRequest) {
             couponCode: couponCode || null,
             discountAmount:
               discountAmount > 0 ? discountAmount / 100 : null,
+            campaignId: campaignId || null,
+            campaignSource: campaignSource || null,
             attribution: attribution || null,
             recoveredFromOrderId: recoveredFromOrderId || null,
           },
@@ -405,6 +409,8 @@ export async function POST(req: NextRequest) {
           orderType: "course_purchase",
           orderId,
           couponCode: couponCode || "",
+          campaignId: campaignId || "",
+          campaignSource: campaignSource || "",
           courseNames: pricedItems.map((item) => item.name).join(", "),
           totalItems: pricedItems.length.toString(),
           customerEmail: customerEmail,
