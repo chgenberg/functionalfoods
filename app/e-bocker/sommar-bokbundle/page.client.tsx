@@ -17,6 +17,7 @@ import { trackAddToCart, trackViewContent } from "@/app/lib/analytics";
 import {
   SUMMER_EBOOK_BUNDLE_GROSS_PRICE,
   SUMMER_EBOOK_PRODUCTS,
+  getStoredSummerEbookCampaignSource,
   storeSummerEbookCampaignSource,
 } from "@/app/lib/campaigns/summer-ebooks";
 
@@ -92,7 +93,9 @@ export default function SommarBokbundlePageClient() {
   const handleAddToCart = async () => {
     setIsAdding(true);
 
-    storeSummerEbookCampaignSource("product-page");
+    if (!getStoredSummerEbookCampaignSource()) {
+      storeSummerEbookCampaignSource("product-page");
+    }
     SUMMER_EBOOK_PRODUCTS.forEach((product) => addItem(product));
 
     try {
