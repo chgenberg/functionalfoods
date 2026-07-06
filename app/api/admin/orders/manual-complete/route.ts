@@ -4,6 +4,10 @@ import bcrypt from "bcryptjs";
 import { requireAdminAuth } from "@/app/lib/admin-auth";
 import { emailService } from "@/app/lib/email";
 import { getMailchimpMarketing } from "@/app/lib/mailchimp-marketing";
+import {
+  SUMMER_EBOOK_CAMPAIGN_ID,
+  SUMMER_EBOOK_CAMPAIGN_TAG,
+} from "@/app/lib/campaigns/summer-ebooks";
 
 const prisma = new PrismaClient();
 
@@ -382,7 +386,14 @@ export async function POST(request: NextRequest) {
                     email: normalizedEmail,
                     firstName: firstName || undefined,
                     lastName,
-                    tags: ["kund", purchaseTag],
+                    tags: [
+                      "kund",
+                      purchaseTag,
+                      ...(freshMetadata?.campaignId ===
+                      SUMMER_EBOOK_CAMPAIGN_ID
+                        ? [SUMMER_EBOOK_CAMPAIGN_TAG]
+                        : []),
+                    ],
                     status: "subscribed",
                   }),
                   new Promise((resolve) => setTimeout(resolve, 1500)),
