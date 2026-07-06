@@ -1,5 +1,6 @@
 export const SUMMER_EBOOK_CAMPAIGN_ID = "sommar-ebocker-2026";
 export const SUMMER_EBOOK_CAMPAIGN_STORAGE_KEY = "ff_campaign_sommar_ebocker_2026";
+export const SUMMER_EBOOK_CAMPAIGN_TAG = "Köp – Sommarkampanj E-böcker";
 export const SUMMER_EBOOK_BUNDLE_GROSS_PRICE = 250;
 export const SUMMER_EBOOK_BUNDLE_IDS = [
   "grill-sommarmat",
@@ -17,6 +18,46 @@ export type SummerEbookCartItem = {
   type: "course" | "book";
   vatRate?: number;
 };
+
+export type SummerEbookCampaignSource =
+  | "campaign-link"
+  | "cart-upsell"
+  | "checkout-upsell"
+  | "product-page";
+
+export function storeSummerEbookCampaignSource(
+  source: SummerEbookCampaignSource,
+) {
+  if (typeof window === "undefined") return;
+
+  try {
+    sessionStorage.setItem(
+      SUMMER_EBOOK_CAMPAIGN_STORAGE_KEY,
+      JSON.stringify({
+        id: SUMMER_EBOOK_CAMPAIGN_ID,
+        source,
+        createdAt: new Date().toISOString(),
+      }),
+    );
+  } catch {}
+}
+
+export function getStoredSummerEbookCampaignSource():
+  | SummerEbookCampaignSource
+  | undefined {
+  if (typeof window === "undefined") return undefined;
+
+  try {
+    const stored = sessionStorage.getItem(SUMMER_EBOOK_CAMPAIGN_STORAGE_KEY);
+    if (!stored) return undefined;
+
+    const parsed = JSON.parse(stored);
+    if (!isSummerEbookCampaignId(parsed?.id)) return undefined;
+    return parsed?.source;
+  } catch {
+    return undefined;
+  }
+}
 
 export const SUMMER_EBOOK_PRODUCTS = [
   {
