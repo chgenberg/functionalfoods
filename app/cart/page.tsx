@@ -20,9 +20,11 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { trackAddToCart, trackViewContent } from "@/app/lib/analytics";
 import {
   SUMMER_EBOOK_CAMPAIGN_ID,
+  SUMMER_EBOOK_PRODUCTS,
   applySummerEbookBundlePricing,
   getMissingSummerEbookProducts,
   hasSummerEbookBundle,
@@ -67,6 +69,7 @@ export default function CartPage() {
   const {
     items,
     addItem,
+    clearCart,
     removeItem,
     updateQuantity,
     isLoaded,
@@ -75,6 +78,7 @@ export default function CartPage() {
     applyCoupon,
     removeCoupon,
   } = useCart();
+  const searchParams = useSearchParams();
 
   const [removingItem, setRemovingItem] = useState<string | null>(null);
   const [couponInput, setCouponInput] = useState("");
@@ -82,6 +86,8 @@ export default function CartPage() {
   const [applying, setApplying] = useState(false);
   const [addingUpsell, setAddingUpsell] = useState(false);
   const [upsellAdded, setUpsellAdded] = useState(false);
+  const [campaignCartPrepared, setCampaignCartPrepared] = useState(false);
+  const [legacyBundleNormalized, setLegacyBundleNormalized] = useState(false);
 
   const hasSummerEbookTriggerInCart = items.some(
     (item) => item.type === "book" && isSummerEbookTriggerBook(item.id),
@@ -113,6 +119,50 @@ export default function CartPage() {
   const upsellHref = showBreakfastUpsell
     ? "/e-bocker/halsosamma-frukostar"
     : "/e-bocker/sommar-bokbundle";
+
+  useEffect(() => {
+    if (
+      !isLoaded ||
+      campaignCartPrepared ||
+      searchParams.get("campaign") !== SUMMER_EBOOK_CAMPAIGN_ID
+    ) {
+      return;
+    }
+
+    const hasFullCampaignCart = SUMMER_EBOOK_PRODUCTS.every((product) =>
+      items.some((item) => item.id === product.id && item.quantity > 0),
+    );
+    setCampaignCartPrepared(true);
+
+    if (hasFullCampaignCart) return;
+
+    clearCart();
+    SUMMER_EBOOK_PRODUCTS.forEach((product) => addItem(product));
+  }, [
+    isLoaded,
+    campaignCartPrepared,
+    searchParams,
+    items,
+    clearCart,
+    addItem,
+  ]);
+
+  useEffect(() => {
+    if (legacyBundleNormalized || !isLoaded) return;
+
+    const hasLegacyBundleProduct = items.some(
+      (item) => item.id === "sommar-bokbundle",
+    );
+    if (!hasLegacyBundleProduct) return;
+
+    setLegacyBundleNormalized(true);
+    removeItem("sommar-bokbundle");
+
+    SUMMER_EBOOK_PRODUCTS.forEach((product) => {
+      const alreadyInCart = items.some((item) => item.id === product.id);
+      if (!alreadyInCart) addItem(product);
+    });
+  }, [legacyBundleNormalized, isLoaded, items, removeItem, addItem]);
 
   useEffect(() => {
     if (!isLoaded || items.length === 0) return;
