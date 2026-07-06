@@ -1,6 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { withRateLimit, checkoutRateLimit } from "@/app/lib/rate-limit";
 import { prisma } from "@/app/lib/database";
+import {
+  applySummerEbookBundlePricing,
+  isSummerEbookCampaignId,
+} from "@/app/lib/campaigns/summer-ebooks";
 import bcrypt from "bcryptjs";
 
 export const dynamic = "force-dynamic";
@@ -13,6 +17,7 @@ export async function POST(req: NextRequest) {
         items,
         customer,
         couponCode,
+        campaignId,
         attribution,
         recoveredFromOrderId,
       } = body as {
@@ -25,6 +30,7 @@ export async function POST(req: NextRequest) {
         }>;
         customer?: { email?: string; name?: string; id?: string };
         couponCode?: string;
+        campaignId?: string;
         recoveredFromOrderId?: string;
         attribution?: {
           gclid?: string;
@@ -187,6 +193,9 @@ export async function POST(req: NextRequest) {
           vatRate: product.vatRate || 0.25,
         };
       });
+      const pricedItems = isSummerEbookCampaignId(campaignId)
+        ? applySummerEbookBundlePricing(validatedItems)
+        : validatedItems;
 
       // --- END SECURITY FIX ---
 
@@ -201,7 +210,7 @@ export async function POST(req: NextRequest) {
       const stripe = require("stripe")(secretKey);
 
       // Calculate subtotal using price INCLUDING VAT (dynamic per item: 6% for books, 25% for courses)
-      const subtotal = validatedItems.reduce((sum: number, i) => {
+      const subtotal = pricedItems.reduce((sum: number, i) => {
         const itemVatRate = i.vatRate || 0.25;
         const grossInOre = Math.round(i.price * (1 + itemVatRate) * 100);
         return sum + grossInOre * i.quantity;
@@ -228,8 +237,8 @@ export async function POST(req: NextRequest) {
               : null;
           const applicableItems =
             applicableIds && applicableIds.length > 0
-              ? validatedItems.filter((i) => applicableIds.includes(i.id))
-              : validatedItems;
+              ? pricedItems.filter((i) => applicableIds.includes(i.id))
+              : pricedItems;
           const applicableSubtotalExVat = applicableItems.reduce(
             (sum, i) => sum + Math.round(i.price * 100) * i.quantity,
             0,
@@ -278,7 +287,7 @@ export async function POST(req: NextRequest) {
         }
       }
 
-      const line_items = validatedItems.map((item) => {
+      const line_items = pricedItems.map((item) => {
         const itemVatRate = item.vatRate || 0.25;
         const grossUnitAmount = Math.round(
           item.price * (1 + itemVatRate) * 100,
@@ -296,7 +305,7 @@ export async function POST(req: NextRequest) {
 
       // Log checkout details for verification
       console.log("🔍 Stripe Checkout Debug (gross incl. VAT):", {
-        items: validatedItems.map((i) => ({
+        items: pricedItems.map((i) => ({
           name: i.name,
           type: i.type,
           vatRate: i.vatRate,
@@ -362,7 +371,7 @@ export async function POST(req: NextRequest) {
           customerEmail: normalizedEmail,
           customerName,
           metadata: {
-            items: validatedItems,
+            items: pricedItems,
             couponCode: couponCode || null,
             discountAmount:
               discountAmount > 0 ? discountAmount / 100 : null,
@@ -370,7 +379,7 @@ export async function POST(req: NextRequest) {
             recoveredFromOrderId: recoveredFromOrderId || null,
           },
           items: {
-            create: validatedItems.map((item) => ({
+            create: pricedItems.map((item) => ({
               courseId: null,
               name: item.name,
               quantity: item.quantity,
@@ -391,13 +400,13 @@ export async function POST(req: NextRequest) {
         cancel_url: `${origin}/checkout`,
         customer_email: customer?.email,
         metadata: {
-          items: JSON.stringify(validatedItems), // Use validated items in metadata
+          items: JSON.stringify(pricedItems), // Use campaign-priced items in metadata
           website: "ulrika-functional-foods",
           orderType: "course_purchase",
           orderId,
           couponCode: couponCode || "",
-          courseNames: validatedItems.map((item) => item.name).join(", "),
-          totalItems: validatedItems.length.toString(),
+          courseNames: pricedItems.map((item) => item.name).join(", "),
+          totalItems: pricedItems.length.toString(),
           customerEmail: customerEmail,
           customerName: customerName,
           // Attribution (flattened for Stripe metadata limits)
@@ -442,7 +451,7 @@ export async function POST(req: NextRequest) {
           checkoutUrl: `${origin}/checkout?recover=${encodeURIComponent(
             orderId,
           )}`,
-          items: validatedItems.map((item) => ({
+          items: pricedItems.map((item) => ({
             id: item.id,
             name: item.name,
             price: item.price,
