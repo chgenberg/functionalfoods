@@ -29,6 +29,7 @@ import {
   getMissingSummerEbookProducts,
   hasSummerEbookBundle,
   isSummerEbookTriggerBook,
+  storeSummerEbookCampaignSource,
 } from "@/app/lib/campaigns/summer-ebooks";
 
 const courseImages: Record<string, string> = {
@@ -133,6 +134,7 @@ export default function CartPage() {
       items.some((item) => item.id === product.id && item.quantity > 0),
     );
     setCampaignCartPrepared(true);
+    storeSummerEbookCampaignSource("campaign-link");
 
     if (hasFullCampaignCart) return;
 
@@ -239,6 +241,9 @@ export default function CartPage() {
 
     try {
       upsellItems.forEach((book) => addItem(book));
+      if (showSummerBundleUpsell) {
+        storeSummerEbookCampaignSource("cart-upsell");
+      }
 
       try {
         upsellItems.forEach((book) => {
