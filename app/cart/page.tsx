@@ -54,6 +54,15 @@ const getItemImage = (item: {
   return "/images/blog-placeholder.jpg";
 };
 
+const HEALTHY_BREAKFAST_UPSELL = {
+  id: "halsosamma-frukostar",
+  name: "Hälsosamma Frukostar – E-bok av Ulrika Davidsson",
+  price: 93.4,
+  quantity: 1,
+  type: "book" as const,
+  image: "/halsosamma-frukostar-square.png",
+};
+
 export default function CartPage() {
   const {
     items,
@@ -77,6 +86,10 @@ export default function CartPage() {
   const hasSummerEbookTriggerInCart = items.some(
     (item) => item.type === "book" && isSummerEbookTriggerBook(item.id),
   );
+  const hasCourseInCart = items.some((item) => item.type === "course");
+  const hasHealthyBreakfastInCart = items.some(
+    (item) => item.id === HEALTHY_BREAKFAST_UPSELL.id,
+  );
   const missingSummerEbookProducts = getMissingSummerEbookProducts(items);
   const campaignItems = applySummerEbookBundlePricing(items);
   const getPricedItem = (item: (typeof items)[number]) =>
@@ -85,10 +98,21 @@ export default function CartPage() {
   const checkoutHref = hasSummerBundle
     ? `/checkout?campaign=${SUMMER_EBOOK_CAMPAIGN_ID}`
     : "/checkout";
-  const showUpsell =
-    hasSummerEbookTriggerInCart && missingSummerEbookProducts.length > 0;
-  const upsellImage =
-    missingSummerEbookProducts[0]?.image || "/sommar-bokbundle-samlingssida.png";
+  const showBreakfastUpsell = hasSummerBundle && !hasHealthyBreakfastInCart;
+  const showSummerBundleUpsell =
+    !hasSummerBundle &&
+    (hasSummerEbookTriggerInCart || hasCourseInCart) &&
+    missingSummerEbookProducts.length > 0;
+  const showUpsell = showBreakfastUpsell || showSummerBundleUpsell;
+  const upsellItems = showBreakfastUpsell
+    ? [HEALTHY_BREAKFAST_UPSELL]
+    : missingSummerEbookProducts;
+  const upsellImage = showBreakfastUpsell
+    ? HEALTHY_BREAKFAST_UPSELL.image
+    : "/sommar-bokbundle-square.png";
+  const upsellHref = showBreakfastUpsell
+    ? "/e-bocker/halsosamma-frukostar"
+    : "/e-bocker/sommar-bokbundle";
 
   useEffect(() => {
     if (!isLoaded || items.length === 0) return;
@@ -164,10 +188,10 @@ export default function CartPage() {
     setAddingUpsell(true);
 
     try {
-      missingSummerEbookProducts.forEach((book) => addItem(book));
+      upsellItems.forEach((book) => addItem(book));
 
       try {
-        missingSummerEbookProducts.forEach((book) => {
+        upsellItems.forEach((book) => {
           trackAddToCart(
             {
               id: book.id,
@@ -431,7 +455,11 @@ export default function CartPage() {
                   <div className="flex-shrink-0 w-20 h-20 sm:w-28 sm:h-28 rounded-xl overflow-hidden bg-gray-100">
                     <Image
                       src={upsellImage}
-                      alt="Sommarerbjudande e-böcker"
+                      alt={
+                        showBreakfastUpsell
+                          ? "Hälsosamma Frukostar e-bok"
+                          : "Sommarerbjudande e-böcker"
+                      }
                       width={112}
                       height={112}
                       className="w-full h-full object-cover"
@@ -441,20 +469,35 @@ export default function CartPage() {
                   <div className="flex-1 min-w-0">
                     <div className="inline-flex items-center gap-1.5 px-2 py-1 rounded-full bg-[#93C560]/15 text-[#014421] text-[11px] sm:text-xs font-semibold mb-2">
                       <Sparkles className="w-3 h-3" />
-                      Sommarerbjudande
+                      {showBreakfastUpsell
+                        ? "Rekommenderat tillägg"
+                        : "Sommarerbjudande"}
                     </div>
 
                     <h3 className="text-sm sm:text-lg font-semibold text-[#014421] leading-snug mb-1">
-                      Köp 3 e-böcker för 250 kr – få en bok gratis!
+                      {showBreakfastUpsell
+                        ? "Lägg till Hälsosamma Frukostar"
+                        : "Köp 3 e-böcker för 250 kr – få en bok gratis!"}
                     </h3>
 
                     <p className="text-xs sm:text-sm text-gray-600 leading-snug mb-2 line-clamp-2 sm:line-clamp-none">
-                      Lägg till{" "}
-                      {missingSummerEbookProducts.length === 1
-                        ? "den saknade boken"
-                        : "de saknade böckerna"}{" "}
-                      och få Grill- & Sommarmat, Söta Godsaker och Baka
-                      Glutenfritt till kampanjpris.
+                      {showBreakfastUpsell ? (
+                        <>
+                          Få fler näringsrika frukostidéer som passar perfekt
+                          ihop med dina nya e-böcker.
+                        </>
+                      ) : (
+                        <>
+                          Lägg till{" "}
+                          {missingSummerEbookProducts.length === 1
+                            ? "den saknade boken"
+                            : "de saknade böckerna"}{" "}
+                          och få <strong>Grill- & Sommarmat</strong>,{" "}
+                          <strong>Söta Godsaker</strong> och{" "}
+                          <strong>Baka Glutenfritt</strong> till kampanjpris.
+                          Ordinarie pris 327 kr.
+                        </>
+                      )}
                     </p>
 
                     <div className="flex items-center gap-2 text-[11px] sm:text-sm text-gray-500 mb-2 sm:mb-3">
@@ -465,41 +508,55 @@ export default function CartPage() {
                     <div className="flex items-end justify-between gap-3">
                       <div className="min-w-0">
                         <div className="text-lg sm:text-2xl font-bold text-[#014421] leading-none">
-                          250 kr
+                           {showBreakfastUpsell ? "99 kr" : "250 kr"}
                         </div>
                         <div className="text-[11px] sm:text-sm text-gray-500 mt-1">
-                          för hela paketet
+                          {showBreakfastUpsell
+                            ? "inkl. 6% moms"
+                            : "för hela paketet"}
                         </div>
                       </div>
 
-                      <button
-                        onClick={handleAddUpsell}
-                        disabled={addingUpsell || !showUpsell}
-                        className={`inline-flex items-center justify-center gap-1.5 sm:gap-2 px-3 sm:px-5 py-2.5 sm:py-3 rounded-lg text-sm font-medium transition-all duration-200 whitespace-nowrap ${
-                          upsellAdded
-                            ? "bg-[#93C560] text-[#014421]"
-                            : "bg-[#FF7e70] text-white hover:bg-[#e56b5e]"
-                        } disabled:opacity-60 disabled:cursor-not-allowed`}
-                      >
-                        {addingUpsell ? (
-                          <>
-                            <span className="inline-block h-3.5 w-3.5 sm:h-4 sm:w-4 rounded-full border-2 border-white/40 border-t-white animate-spin" />
-                            <span className="hidden sm:inline">
-                              Lägger till...
-                            </span>
-                          </>
-                        ) : upsellAdded ? (
-                          <>
-                            <Check className="w-4 h-4" />
-                            <span className="hidden sm:inline">Tillagd</span>
-                          </>
-                        ) : (
-                          <>
-                            <Gift className="w-4 h-4" />
-                            <span>Lägg till erbjudandet</span>
-                          </>
-                        )}
-                      </button>
+                      <div className="flex flex-col sm:flex-row gap-2">
+                        <Link
+                          href={upsellHref}
+                          className="inline-flex items-center justify-center px-3 sm:px-5 py-2.5 sm:py-3 rounded-lg text-sm font-medium bg-[#014421] text-white hover:bg-[#1a5530] transition-colors whitespace-nowrap"
+                        >
+                          Läs mer
+                        </Link>
+                        <button
+                          onClick={handleAddUpsell}
+                          disabled={addingUpsell || !showUpsell}
+                          className={`inline-flex items-center justify-center gap-1.5 sm:gap-2 px-3 sm:px-5 py-2.5 sm:py-3 rounded-lg text-sm font-medium transition-all duration-200 whitespace-nowrap ${
+                            upsellAdded
+                              ? "bg-[#93C560] text-[#014421]"
+                              : "bg-[#FF7e70] text-white hover:bg-[#e56b5e]"
+                          } disabled:opacity-60 disabled:cursor-not-allowed`}
+                        >
+                          {addingUpsell ? (
+                            <>
+                              <span className="inline-block h-3.5 w-3.5 sm:h-4 sm:w-4 rounded-full border-2 border-white/40 border-t-white animate-spin" />
+                              <span className="hidden sm:inline">
+                                Lägger till...
+                              </span>
+                            </>
+                          ) : upsellAdded ? (
+                            <>
+                              <Check className="w-4 h-4" />
+                              <span className="hidden sm:inline">Tillagd</span>
+                            </>
+                          ) : (
+                            <>
+                              <Gift className="w-4 h-4" />
+                              <span>
+                                {showBreakfastUpsell
+                                  ? "Lägg till"
+                                  : "Lägg till erbjudandet"}
+                              </span>
+                            </>
+                          )}
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </div>
