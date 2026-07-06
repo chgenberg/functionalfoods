@@ -6,6 +6,10 @@ import {
 } from "@/app/lib/svea-checkout-service";
 import { emailService } from "@/app/lib/email";
 import { getMailchimpMarketing } from "@/app/lib/mailchimp-marketing";
+import {
+  applySummerEbookBundlePricing,
+  isSummerEbookCampaignId,
+} from "@/app/lib/campaigns/summer-ebooks";
 import bcrypt from "bcryptjs";
 import type {
   SveaCartItem,
@@ -47,6 +51,7 @@ interface CheckoutRequest {
     id?: string;
   };
   couponCode?: string;
+  campaignId?: string;
   attribution?: Attribution;
   recoveredFromOrderId?: string;
 }
@@ -70,7 +75,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const { items, customer, couponCode, attribution, recoveredFromOrderId } = body;
+    const { items, customer, couponCode, campaignId, attribution, recoveredFromOrderId } = body;
 
     // Validate request
     if (!items || !Array.isArray(items) || items.length === 0) {
@@ -103,6 +108,7 @@ export async function POST(req: NextRequest) {
       hasCustomer: !!customer,
       customerEmail: customer?.email,
       hasCoupon: !!couponCode,
+      campaignId: campaignId || null,
     });
 
     // --- SECURITY FIX: Fetch product data from database ---
@@ -303,6 +309,15 @@ export async function POST(req: NextRequest) {
       "🔍 VALIDATED ITEMS DEBUG:",
       JSON.stringify(validatedItems, null, 2),
     );
+    if (isSummerEbookCampaignId(campaignId)) {
+      const pricedItems = applySummerEbookBundlePricing(validatedItems);
+      validatedItems.length = 0;
+      validatedItems.push(...pricedItems);
+      console.log(
+        "☀️ SUMMER EBOOK CAMPAIGN ITEMS:",
+        JSON.stringify(validatedItems, null, 2),
+      );
+    }
     // --- END SECURITY FIX ---
 
     // If payments are simulated/disabled, short-circuit and create a completed order locally
