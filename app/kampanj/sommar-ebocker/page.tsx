@@ -26,7 +26,7 @@ export default function SummerEbookCampaignPage() {
 
     const params = new URLSearchParams(window.location.search);
     params.set("campaign", SUMMER_EBOOK_CAMPAIGN_ID);
-    window.location.href = `/checkout?${params.toString()}`;
+    window.location.href = `/cart?${params.toString()}`;
   }, []);
 
   return (
@@ -37,7 +37,7 @@ export default function SummerEbookCampaignPage() {
           Förbereder ditt sommarerbjudande
         </h1>
         <p className="mt-2 text-gray-600">
-          Grill- & Sommarmat, Söta Godsaker och Baka Glutenfritt läggs i kassan.
+          Grill- & Sommarmat, Söta Godsaker och Baka Glutenfritt läggs i varukorgen.
         </p>
       </div>
     </main>
