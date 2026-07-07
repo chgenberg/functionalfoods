@@ -207,6 +207,7 @@ class MailchimpMarketingService {
     courseNames: string[],
     firstName?: string,
     lastName?: string,
+    extraTags: string[] = [],
   ): Promise<boolean> {
     // --- helpers ---
     const stripInvisible = (s: string) =>
@@ -362,6 +363,10 @@ class MailchimpMarketingService {
       }
 
       if (!tags.includes(tag)) tags.push(tag);
+    }
+
+    for (const extraTag of extraTags.filter(Boolean)) {
+      if (!tags.includes(extraTag)) tags.push(extraTag);
     }
 
     console.log("🏷️ Mailchimp Marketing tags computed:", { email, tags });

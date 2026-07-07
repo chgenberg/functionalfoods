@@ -765,6 +765,22 @@ export default function UnifiedSalesPage() {
   const getOrderSourceLabel = (order: UnifiedOrder): { label: string; color: string; detail?: string } => {
     const sourceAttribution = order.metadata?.attribution as Attribution | undefined;
 
+  if (order.metadata?.campaignId === 'sommar-ebocker-2026') {
+      const sourceMap: Record<string, string> = {
+        'campaign-link': 'Kampanjlänk',
+        'cart-upsell': 'Cart upsell',
+        'checkout-upsell': 'Checkout upsell',
+        'product-page': 'Produktsida',
+        'prova-popup': 'Popup',
+      };
+
+      return {
+        label: 'Sommarkampanj e-böcker',
+        color: 'green',
+        detail: sourceMap[order.metadata?.campaignSource] || order.metadata?.campaignSource || '',
+      };
+    }
+
     if (isRecoveredCartOrder(order)) {
       return {
         label: 'Mailchimp',

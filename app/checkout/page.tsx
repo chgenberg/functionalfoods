@@ -10,6 +10,12 @@ import { useT } from '../lib/i18n/LanguageProvider';
 import { ArrowLeft, Lock, CreditCard, User, Tag, X, ShoppingCart, ArrowRight, Book } from 'lucide-react';
 import { trackInitiateCheckout } from '../lib/analytics';
 import { readAttribution } from '../lib/attribution';
+import {
+  SUMMER_EBOOK_CAMPAIGN_ID,
+  applySummerEbookBundlePricing,
+  getStoredSummerEbookCampaignSource,
+  hasSummerEbookBundle,
+} from '../lib/campaigns/summer-ebooks';
 
 const RECOVERED_ORDER_STORAGE_KEY = 'checkout_recovered_from_order_id';
 
@@ -43,36 +49,19 @@ export default function Checkout() {
   const [couponError, setCouponError] = useState<string | null>(null);
   const [applying, setApplying] = useState(false);
   const [pendingRecoveredCoupon, setPendingRecoveredCoupon] = useState<string | null>(null);
-  
-  	const grillCheckoutUpsellBook = {
-    id: 'grill-sommarmat',
-    name: 'Grill- & Sommarmat – E-bok av Ulrika Davidsson',
-    price: 140.57,
-    quantity: 1,
-    type: 'book' as const,
-    image: '/grill-sommarmat-square.png'
-  };
 	
-	const hasGrillSommarmatInCart = items.some((item) => item.id === 'grill-sommarmat');
-	const hasOtherCourseOrBookInCart = items.some(
-	    (item) =>
-	      (item.type === 'course' || item.type === 'book') &&
-	      item.id !== 'grill-sommarmat'
-	);
-	const showGrillCheckoutUpsell =
-	    !hasGrillSommarmatInCart &&
-	    hasOtherCourseOrBookInCart;
+  const hasSummerBundleInCart = hasSummerEbookBundle(items);
 
-	const checkoutUpsellBook = showGrillCheckoutUpsell
-    ? grillCheckoutUpsellBook
-    : null;
-
-  	const campaignId = searchParams.get('campaign') || undefined;
-	const recoverOrderId = searchParams.get('recover') || undefined;
-  	const recoverAttemptedRef = useRef(false);
-  	const campaignItems = items;
-  	const getPricedItem = (item: (typeof items)[number]) =>
-  		campaignItems.find((pricedItem) => pricedItem.id === item.id) || item;
+	const campaignId =
+	    searchParams.get('campaign') ||
+	    (hasSummerBundleInCart
+	    ? SUMMER_EBOOK_CAMPAIGN_ID
+	    : undefined);
+  const recoverOrderId = searchParams.get('recover') || undefined;
+  const recoverAttemptedRef = useRef(false);
+  const campaignItems = applySummerEbookBundlePricing(items);
+  const getPricedItem = (item: (typeof items)[number]) =>
+	  campaignItems.find((pricedItem) => pricedItem.id === item.id) || item;
 
 	
   // Guest checkout form data
@@ -106,7 +95,7 @@ export default function Checkout() {
       });
     }
   }, [user]);
-
+	
 	useEffect(() => {
     if (!recoverOrderId || recoverAttemptedRef.current) return;
     recoverAttemptedRef.current = true;
@@ -227,6 +216,10 @@ export default function Checkout() {
         } : undefined),
         couponCode: appliedCoupon?.code || undefined,
         campaignId,
+		campaignSource:
+          campaignId === SUMMER_EBOOK_CAMPAIGN_ID
+            ? getStoredSummerEbookCampaignSource()
+            : undefined,
         attribution,
         recoveredFromOrderId: persistedRecoveredOrderId,
       };
@@ -607,40 +600,6 @@ export default function Checkout() {
                     </div>
                   </div>
                 ))}
-
-                 {checkoutUpsellBook && (
-                  <div className="rounded-xl border border-[#93C560] bg-[#93C560]/10 p-3 sm:p-4">
-                    <div className="flex gap-3">
-                      <div className="w-14 h-14 rounded-lg overflow-hidden bg-white flex-shrink-0">
-                        <Image
-                          src={checkoutUpsellBook.image}
-                          alt={checkoutUpsellBook.name}
-                          width={56}
-                          height={56}
-                          className="w-full h-full object-cover"
-                        />
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <p className="text-xs font-semibold text-[#014421]">
-                          Rekommenderat tillägg
-                        </p>
-                        <h3 className="text-sm font-medium text-gray-900 truncate">
-                        	Lägg till {checkoutUpsellBook.name.replace(' – E-bok av Ulrika Davidsson', '')}
-                        </h3>
-                        <p className="text-xs text-gray-600 mt-1">
-                          För vardag, fest och grillkvällar.
-                        </p>
-                      </div>
-                    </div>
-                    <button
-                      type="button"
-                      onClick={() => addItem(checkoutUpsellBook)}
-                      className="mt-3 w-full rounded-lg bg-[#014421] px-4 py-2.5 text-sm font-medium text-white hover:bg-[#1a5530] transition-colors"
-                    >
-                      Lägg i varukorgen
-                    </button>
-                  </div>
-                )}
 
                 {/* Coupon */}
                 <div className="pt-3 sm:pt-4 border-t border-gray-100">

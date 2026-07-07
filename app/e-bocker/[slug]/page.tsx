@@ -99,6 +99,24 @@ const DEFAULT_BY_SLUG: Record<string, EbookDefaults> = {
     authorSection:
       "Ulrika Davidsson är kostrådgivare, receptkreatör och bästsäljande författare till över 40 böcker.",
   },
+  "sommar-bokbundle": {
+    id: "sommar-bokbundle",
+    title: "Sommarkampanj",
+    subtitle: "Köp 3 e-böcker för endast 250 kr",
+    description:
+      "Fyll sommaren med god mat, smarta recept och massor av inspiration. Under en begränsad tid får du tre av våra mest populära e-böcker inom Functional Foods till ett extra förmånligt pris.",
+    shortDescription:
+      "Erbjudandet gäller Grill- & Sommarmat, Söta Godsaker och Baka Glutenfritt. Allt levereras digitalt så du kan börja använda recepten direkt.",
+    image: "/sommar-bokbundle-square.png",
+    price: "250 kr",
+    features: [
+      "Grill- & Sommarmat – fräscha recept för grillen, buffén och sommaren",
+      "Söta Godsaker – nyttigare bakverk, desserter och fika utan onödigt socker",
+      "Baka Glutenfritt – recept för vardagsbröd, frallor & bröd till helgen",
+    ],
+    authorSection:
+      "Ulrika Davidsson är kostrådgivare, receptkreatör och bästsäljande författare till över 40 böcker.",
+  },
 };
 
 function humanizeSlug(slug: string): string {

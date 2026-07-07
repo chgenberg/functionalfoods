@@ -2,6 +2,10 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/app/lib/database";
 import { emailService } from "@/app/lib/email";
 import { getMailchimpMarketing } from "@/app/lib/mailchimp-marketing";
+import {
+  SUMMER_EBOOK_CAMPAIGN_ID,
+  SUMMER_EBOOK_CAMPAIGN_TAG,
+} from "@/app/lib/campaigns/summer-ebooks";
 
 export const dynamic = "force-dynamic";
 
@@ -412,6 +416,9 @@ export async function GET(req: NextRequest) {
                   productNames,
                   firstName,
                   lastName,
+                  metadata.campaignId === SUMMER_EBOOK_CAMPAIGN_ID
+                    ? [SUMMER_EBOOK_CAMPAIGN_TAG]
+                    : [],
                 );
 
                 const recoveredTaggedAt =

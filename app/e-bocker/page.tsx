@@ -10,6 +10,21 @@ export default function EBockerPage() {
 
   const ebooks = [
     {
+      id: "sommar-bokbundle",
+      title: "Sommarkampanj",
+      description:
+        "Fyll sommaren med god mat, smarta recept och massor av inspiration. Under en begränsad tid får du tre av våra mest populära e-böcker inom Functional Foods till ett extra förmånligt pris.",
+      href: "/e-bocker/sommar-bokbundle",
+      image: "/sommar-bokbundle-samlingssida.png",
+      price: "250 kr",
+      format: "PDF",
+      highlights: [
+        "Grill- & Sommarmat – fräscha recept för grillen, buffén och sommaren",
+        "Söta Godsaker – nyttigare bakverk, desserter och fika utan onödigt socker",
+        "Baka Glutenfritt – recept för vardagsbröd, frallor & bröd till helgen",
+      ],
+    },
+    {
       id: "grill-sommarmat",
       title: "Grill- & Sommarmat",
       description:
@@ -97,9 +112,14 @@ export default function EBockerPage() {
     );
     const priceExVat = +(numericPrice / 1.06).toFixed(2);
 
+    const productName =
+      ebook.id === "sommar-bokbundle"
+        ? "Sommarerbjudande – Bokbundle av Ulrika Davidsson"
+        : `${ebook.title} – E-bok av Ulrika Davidsson`;
+
     addItem({
       id: ebook.id,
-      name: `${ebook.title} – E-bok av Ulrika Davidsson`,
+      name: productName,
       price: priceExVat,
       quantity: 1,
       type: "book",

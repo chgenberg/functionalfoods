@@ -4,6 +4,10 @@ import { PaymentService } from "../../../lib/payment";
 import { emailService } from "../../../lib/email";
 import { getMailchimpMarketing } from "../../../lib/mailchimp-marketing";
 import { trackPurchaseServer } from "@/app/lib/server-analytics";
+import {
+  SUMMER_EBOOK_CAMPAIGN_ID,
+  SUMMER_EBOOK_CAMPAIGN_TAG,
+} from "@/app/lib/campaigns/summer-ebooks";
 
 export const dynamic = "force-dynamic";
 
@@ -766,6 +770,9 @@ async function handleCheckoutSessionCompleted(session: any) {
           productNames,
           firstName,
           lastName,
+          metadata.campaignId === SUMMER_EBOOK_CAMPAIGN_ID
+            ? [SUMMER_EBOOK_CAMPAIGN_TAG]
+            : [],
         );
 
         const recoveredTaggedAt =

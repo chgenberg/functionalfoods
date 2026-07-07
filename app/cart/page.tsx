@@ -20,7 +20,17 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import { useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { trackAddToCart, trackViewContent } from "@/app/lib/analytics";
+import {
+  SUMMER_EBOOK_CAMPAIGN_ID,
+  SUMMER_EBOOK_PRODUCTS,
+  applySummerEbookBundlePricing,
+  getMissingSummerEbookProducts,
+  hasSummerEbookBundle,
+  isSummerEbookTriggerBook,
+  storeSummerEbookCampaignSource,
+} from "@/app/lib/campaigns/summer-ebooks";
 
 const courseImages: Record<string, string> = {
   "functional-flow": "/Kurser_bilder/Functional_Gut Health.jpg",
@@ -47,19 +57,20 @@ const getItemImage = (item: {
   return "/images/blog-placeholder.jpg";
 };
 
-const UPSELL_BOOK = {
-  id: "grill-sommarmat",
-  name: "Grill- & Sommarmat – E-bok",
-  price: 140.57,
+const HEALTHY_BREAKFAST_UPSELL = {
+  id: "halsosamma-frukostar",
+  name: "Hälsosamma Frukostar – E-bok av Ulrika Davidsson",
+  price: 93.4,
+  quantity: 1,
   type: "book" as const,
-  image: "/grill-sommarmat-square.png",
-  description: "+90 recept för vardag, fest och grillkvällar",
+  image: "/halsosamma-frukostar-square.png",
 };
 
 export default function CartPage() {
   const {
     items,
     addItem,
+    clearCart,
     removeItem,
     updateQuantity,
     isLoaded,
@@ -68,6 +79,7 @@ export default function CartPage() {
     applyCoupon,
     removeCoupon,
   } = useCart();
+  const searchParams = useSearchParams();
 
   const [removingItem, setRemovingItem] = useState<string | null>(null);
   const [couponInput, setCouponInput] = useState("");
@@ -75,15 +87,84 @@ export default function CartPage() {
   const [applying, setApplying] = useState(false);
   const [addingUpsell, setAddingUpsell] = useState(false);
   const [upsellAdded, setUpsellAdded] = useState(false);
+  const [campaignCartPrepared, setCampaignCartPrepared] = useState(false);
+  const [legacyBundleNormalized, setLegacyBundleNormalized] = useState(false);
 
-  const activeUpsellBook = UPSELL_BOOK;
-  const hasUpsellBook = items.some((item) => item.id === activeUpsellBook.id);
-  const hasOtherCourseOrBookInCart = items.some(
-    (item) =>
-      (item.type === "course" || item.type === "book") &&
-      item.id !== activeUpsellBook.id,
+  const hasSummerEbookTriggerInCart = items.some(
+    (item) => item.type === "book" && isSummerEbookTriggerBook(item.id),
   );
-  const showUpsell = !hasUpsellBook && hasOtherCourseOrBookInCart;
+  const hasCourseInCart = items.some((item) => item.type === "course");
+  const hasHealthyBreakfastInCart = items.some(
+    (item) => item.id === HEALTHY_BREAKFAST_UPSELL.id,
+  );
+  const missingSummerEbookProducts = getMissingSummerEbookProducts(items);
+  const campaignItems = applySummerEbookBundlePricing(items);
+  const getPricedItem = (item: (typeof items)[number]) =>
+    campaignItems.find((pricedItem) => pricedItem.id === item.id) || item;
+  const hasSummerBundle = hasSummerEbookBundle(items);
+  const checkoutHref = hasSummerBundle
+    ? `/checkout?campaign=${SUMMER_EBOOK_CAMPAIGN_ID}`
+    : "/checkout";
+  const showBreakfastUpsell = hasSummerBundle && !hasHealthyBreakfastInCart;
+  const showSummerBundleUpsell =
+    !hasSummerBundle &&
+    (hasSummerEbookTriggerInCart || hasCourseInCart) &&
+    missingSummerEbookProducts.length > 0;
+  const showUpsell = showBreakfastUpsell || showSummerBundleUpsell;
+  const upsellItems = showBreakfastUpsell
+    ? [HEALTHY_BREAKFAST_UPSELL]
+    : missingSummerEbookProducts;
+  const upsellImage = showBreakfastUpsell
+    ? HEALTHY_BREAKFAST_UPSELL.image
+    : "/sommar-bokbundle-square.png";
+  const upsellHref = showBreakfastUpsell
+    ? "/e-bocker/halsosamma-frukostar"
+    : "/e-bocker/sommar-bokbundle";
+
+  useEffect(() => {
+    if (
+      !isLoaded ||
+      campaignCartPrepared ||
+      searchParams.get("campaign") !== SUMMER_EBOOK_CAMPAIGN_ID
+    ) {
+      return;
+    }
+
+    const hasFullCampaignCart = SUMMER_EBOOK_PRODUCTS.every((product) =>
+      items.some((item) => item.id === product.id && item.quantity > 0),
+    );
+    setCampaignCartPrepared(true);
+    storeSummerEbookCampaignSource("campaign-link");
+
+    if (hasFullCampaignCart) return;
+
+    clearCart();
+    SUMMER_EBOOK_PRODUCTS.forEach((product) => addItem(product));
+  }, [
+    isLoaded,
+    campaignCartPrepared,
+    searchParams,
+    items,
+    clearCart,
+    addItem,
+  ]);
+
+  useEffect(() => {
+    if (legacyBundleNormalized || !isLoaded) return;
+
+    const hasLegacyBundleProduct = items.some(
+      (item) => item.id === "sommar-bokbundle",
+    );
+    if (!hasLegacyBundleProduct) return;
+
+    setLegacyBundleNormalized(true);
+    removeItem("sommar-bokbundle");
+
+    SUMMER_EBOOK_PRODUCTS.forEach((product) => {
+      const alreadyInCart = items.some((item) => item.id === product.id);
+      if (!alreadyInCart) addItem(product);
+    });
+  }, [legacyBundleNormalized, isLoaded, items, removeItem, addItem]);
 
   useEffect(() => {
     if (!isLoaded || items.length === 0) return;
@@ -154,30 +235,28 @@ export default function CartPage() {
   };
 
   const handleAddUpsell = () => {
-    if (!isLoaded || hasUpsellBook) return;
+    if (!isLoaded || !showUpsell) return;
 
     setAddingUpsell(true);
 
     try {
-      addItem({
-        id: activeUpsellBook.id,
-        name: activeUpsellBook.name,
-        price: activeUpsellBook.price,
-        type: activeUpsellBook.type,
-        image: activeUpsellBook.image,
-        quantity: 1,
-      });
+      upsellItems.forEach((book) => addItem(book));
+      if (showSummerBundleUpsell) {
+        storeSummerEbookCampaignSource("cart-upsell");
+      }
 
       try {
-        trackAddToCart(
-          {
-            id: activeUpsellBook.id,
-            name: activeUpsellBook.name,
-            price: activeUpsellBook.price,
-            quantity: 1,
-          },
-          "SEK",
-        );
+        upsellItems.forEach((book) => {
+          trackAddToCart(
+            {
+              id: book.id,
+              name: book.name,
+              price: book.price,
+              quantity: 1,
+            },
+            "SEK",
+          );
+        });
       } catch {}
 
       setUpsellAdded(true);
@@ -329,7 +408,7 @@ export default function CartPage() {
                   <div className="text-right">
                     <div className="text-xl font-bold text-[#014421]">
                       {Math.round(
-                        item.price *
+                        getPricedItem(item).price *
                           item.quantity *
                           (item.type === "book" ? 1.06 : 1.25),
                       ).toLocaleString("sv-SE")}{" "}
@@ -403,7 +482,7 @@ export default function CartPage() {
                       <div className="text-right">
                         <div className="text-2xl font-bold text-[#014421]">
                           {Math.round(
-                            item.price *
+                            getPricedItem(item).price *
                               item.quantity *
                               (item.type === "book" ? 1.06 : 1.25),
                           ).toLocaleString("sv-SE")}{" "}
@@ -412,7 +491,8 @@ export default function CartPage() {
                         {item.quantity > 1 && (
                           <div className="text-sm text-gray-500">
                             {Math.round(
-                              item.price * (item.type === "book" ? 1.06 : 1.25),
+                              getPricedItem(item).price *
+                                (item.type === "book" ? 1.06 : 1.25),
                             ).toLocaleString("sv-SE")}{" "}
                             kr/st (inkl. moms)
                           </div>
@@ -429,8 +509,12 @@ export default function CartPage() {
                 <div className="flex gap-3 sm:gap-5">
                   <div className="flex-shrink-0 w-20 h-20 sm:w-28 sm:h-28 rounded-xl overflow-hidden bg-gray-100">
                     <Image
-                      src={activeUpsellBook.image}
-                      alt={activeUpsellBook.name}
+                      src={upsellImage}
+                      alt={
+                        showBreakfastUpsell
+                          ? "Hälsosamma Frukostar e-bok"
+                          : "Sommarerbjudande e-böcker"
+                      }
                       width={112}
                       height={112}
                       className="w-full h-full object-cover"
@@ -440,15 +524,35 @@ export default function CartPage() {
                   <div className="flex-1 min-w-0">
                     <div className="inline-flex items-center gap-1.5 px-2 py-1 rounded-full bg-[#93C560]/15 text-[#014421] text-[11px] sm:text-xs font-semibold mb-2">
                       <Sparkles className="w-3 h-3" />
-                      Rekommenderat tillägg
+                      {showBreakfastUpsell
+                        ? "Rekommenderat tillägg"
+                        : "Sommarerbjudande"}
                     </div>
 
                     <h3 className="text-sm sm:text-lg font-semibold text-[#014421] leading-snug mb-1">
-                      Lägg till {activeUpsellBook.name.replace(" – E-bok", "")}
+                      {showBreakfastUpsell
+                        ? "Lägg till Hälsosamma Frukostar"
+                        : "Köp 3 e-böcker för 250 kr – få en bok gratis!"}
                     </h3>
 
                     <p className="text-xs sm:text-sm text-gray-600 leading-snug mb-2 line-clamp-2 sm:line-clamp-none">
-                      {activeUpsellBook.description}
+                      {showBreakfastUpsell ? (
+                        <>
+                          Få fler näringsrika frukostidéer som passar perfekt
+                          ihop med dina nya e-böcker.
+                        </>
+                      ) : (
+                        <>
+                          Lägg till{" "}
+                          {missingSummerEbookProducts.length === 1
+                            ? "den saknade boken"
+                            : "de saknade böckerna"}{" "}
+                          och få <strong>Grill- & Sommarmat</strong>,{" "}
+                          <strong>Söta Godsaker</strong> och{" "}
+                          <strong>Baka Glutenfritt</strong> till kampanjpris.
+                          Ordinarie pris 327 kr.
+                        </>
+                      )}
                     </p>
 
                     <div className="flex items-center gap-2 text-[11px] sm:text-sm text-gray-500 mb-2 sm:mb-3">
@@ -459,44 +563,55 @@ export default function CartPage() {
                     <div className="flex items-end justify-between gap-3">
                       <div className="min-w-0">
                         <div className="text-lg sm:text-2xl font-bold text-[#014421] leading-none">
-                          {Math.round(
-                            activeUpsellBook.price * 1.06,
-                          ).toLocaleString("sv-SE")}{" "}
-                          kr
+                           {showBreakfastUpsell ? "99 kr" : "250 kr"}
                         </div>
                         <div className="text-[11px] sm:text-sm text-gray-500 mt-1">
-                          inkl. 6% moms
+                          {showBreakfastUpsell
+                            ? "inkl. 6% moms"
+                            : "för hela paketet"}
                         </div>
                       </div>
 
-                      <button
-                        onClick={handleAddUpsell}
-                        disabled={addingUpsell || hasUpsellBook}
-                        className={`inline-flex items-center justify-center gap-1.5 sm:gap-2 px-3 sm:px-5 py-2.5 sm:py-3 rounded-lg text-sm font-medium transition-all duration-200 whitespace-nowrap ${
-                          upsellAdded
-                            ? "bg-[#93C560] text-[#014421]"
-                            : "bg-[#FF7e70] text-white hover:bg-[#e56b5e]"
-                        } disabled:opacity-60 disabled:cursor-not-allowed`}
-                      >
-                        {addingUpsell ? (
-                          <>
-                            <span className="inline-block h-3.5 w-3.5 sm:h-4 sm:w-4 rounded-full border-2 border-white/40 border-t-white animate-spin" />
-                            <span className="hidden sm:inline">
-                              Lägger till...
-                            </span>
-                          </>
-                        ) : upsellAdded ? (
-                          <>
-                            <Check className="w-4 h-4" />
-                            <span className="hidden sm:inline">Tillagd</span>
-                          </>
-                        ) : (
-                          <>
-                            <Gift className="w-4 h-4" />
-                            <span>Lägg till</span>
-                          </>
-                        )}
-                      </button>
+                      <div className="flex flex-col sm:flex-row gap-2">
+                        <Link
+                          href={upsellHref}
+                          className="inline-flex items-center justify-center px-3 sm:px-5 py-2.5 sm:py-3 rounded-lg text-sm font-medium bg-[#014421] text-white hover:bg-[#1a5530] transition-colors whitespace-nowrap"
+                        >
+                          Läs mer
+                        </Link>
+                        <button
+                          onClick={handleAddUpsell}
+                          disabled={addingUpsell || !showUpsell}
+                          className={`inline-flex items-center justify-center gap-1.5 sm:gap-2 px-3 sm:px-5 py-2.5 sm:py-3 rounded-lg text-sm font-medium transition-all duration-200 whitespace-nowrap ${
+                            upsellAdded
+                              ? "bg-[#93C560] text-[#014421]"
+                              : "bg-[#FF7e70] text-white hover:bg-[#e56b5e]"
+                          } disabled:opacity-60 disabled:cursor-not-allowed`}
+                        >
+                          {addingUpsell ? (
+                            <>
+                              <span className="inline-block h-3.5 w-3.5 sm:h-4 sm:w-4 rounded-full border-2 border-white/40 border-t-white animate-spin" />
+                              <span className="hidden sm:inline">
+                                Lägger till...
+                              </span>
+                            </>
+                          ) : upsellAdded ? (
+                            <>
+                              <Check className="w-4 h-4" />
+                              <span className="hidden sm:inline">Tillagd</span>
+                            </>
+                          ) : (
+                            <>
+                              <Gift className="w-4 h-4" />
+                              <span>
+                                {showBreakfastUpsell
+                                  ? "Lägg till"
+                                  : "Lägg till erbjudandet"}
+                              </span>
+                            </>
+                          )}
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -608,7 +723,7 @@ export default function CartPage() {
                     </span>
                     <span className="font-medium text-gray-900 whitespace-nowrap">
                       {Math.round(
-                        item.price *
+                        getPricedItem(item).price *
                           item.quantity *
                           (item.type === "book" ? 1.06 : 1.25),
                       ).toLocaleString("sv-SE")}{" "}
@@ -625,10 +740,10 @@ export default function CartPage() {
                     (item) => item.type === "course",
                   );
 
-                  const bookItems = items.filter(
+                  const bookItems = campaignItems.filter(
                     (item) => item.type === "book",
                   );
-                  const courseItems = items.filter(
+                  const courseItems = campaignItems.filter(
                     (item) => item.type === "course",
                   );
 
@@ -640,7 +755,7 @@ export default function CartPage() {
                     (sum, item) => sum + item.price * item.quantity,
                     0,
                   );
-                  const subtotalExVat = items.reduce(
+                  const subtotalExVat = campaignItems.reduce(
                     (sum, item) => sum + item.price * item.quantity,
                     0,
                   );
@@ -723,7 +838,7 @@ export default function CartPage() {
               </div>
 
               <Link
-                href="/checkout"
+                href={checkoutHref}
                 className="w-full bg-gradient-to-r from-[#014421] to-[#116530] text-white font-bold py-3 sm:py-4 px-4 sm:px-6 rounded-lg hover:from-[#116530] hover:to-[#014421] transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 flex items-center justify-center gap-2 text-base sm:text-lg"
               >
                 <Shield className="w-4 h-4 sm:w-5 sm:h-5" />
@@ -772,12 +887,12 @@ export default function CartPage() {
             const hasBooks = items.some((item) => item.type === "book");
             const hasCourses = items.some((item) => item.type === "course");
 
-            const subtotalInclVat = items.reduce((sum, item) => {
+            const subtotalInclVat = campaignItems.reduce((sum, item) => {
               const vatMultiplier = item.type === "book" ? 1.06 : 1.25;
               return sum + item.price * item.quantity * vatMultiplier;
             }, 0);
 
-            const subtotalExVat = items.reduce((sum, item) => {
+            const subtotalExVat = campaignItems.reduce((sum, item) => {
               return sum + item.price * item.quantity;
             }, 0);
 
@@ -822,7 +937,7 @@ export default function CartPage() {
                   </p>
                 </div>
                 <Link
-                  href="/checkout"
+                  href={checkoutHref}
                   className="flex-1 bg-gradient-to-r from-[#014421] to-[#116530] text-white font-bold py-3 px-4 rounded-lg flex items-center justify-center gap-2 text-sm"
                 >
                   <Shield className="w-4 h-4" />
