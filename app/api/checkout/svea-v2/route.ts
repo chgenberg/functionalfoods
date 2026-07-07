@@ -121,6 +121,8 @@ export async function POST(req: NextRequest) {
       hasCoupon: !!couponCode,
       campaignId: campaignId || null,
       campaignSource: campaignSource || null,
+      recoveredFromOrderId: recoveredFromOrderId || null,
+      mailchimpCampaignId: attribution?.mc_cid || null,
     });
 
     // --- SECURITY FIX: Fetch product data from database ---
