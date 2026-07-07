@@ -253,7 +253,7 @@ export default function SommarBokbundlePageClient() {
               </motion.button>
 
               <p className="text-sm text-gray-400">
-                Digital leverans direkt efter köp.
+                Ordinarie pris: 327 kr – nu endast 250 kr för alla 3 e-böcker.
               </p>
             </div>
           </motion.div>
