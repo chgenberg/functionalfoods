@@ -99,7 +99,7 @@ export default function ProvaPaPopup({
               {/* Image section */}
               <div className="relative h-48 sm:h-56">
                 <Image
-                  src="/sommar-bokbundle-samlingssida.png"
+                  src="/sommar-bokbundle-popup.png"
                   alt="Sommarkampanj med tre e-böcker"
                   fill
                   className="object-cover"
