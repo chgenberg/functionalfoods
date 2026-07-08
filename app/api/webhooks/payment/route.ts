@@ -463,6 +463,18 @@ async function handleCheckoutSessionCompleted(session: any) {
             metadata: {
               ...currentMetadata,
               attribution: currentMetadata.attribution || attribution,
+              campaignId:
+                currentMetadata.campaignId ||
+                session.metadata?.campaignId ||
+                null,
+              campaignSource:
+                currentMetadata.campaignSource ||
+                session.metadata?.campaignSource ||
+                null,
+              recoveredFromOrderId:
+                currentMetadata.recoveredFromOrderId ||
+                session.metadata?.recoveredFromOrderId ||
+                null,
               stripeSessionId: session.id,
               stripePaymentIntentId: String(paymentIntentId),
             },
@@ -487,6 +499,10 @@ async function handleCheckoutSessionCompleted(session: any) {
             currency: String(session.currency || "SEK").toUpperCase(),
             metadata: {
               attribution,
+              campaignId: session.metadata?.campaignId || null,
+              campaignSource: session.metadata?.campaignSource || null,
+              recoveredFromOrderId:
+                session.metadata?.recoveredFromOrderId || null,
               stripeSessionId: session.id,
               stripePaymentIntentId: String(paymentIntentId),
             },
