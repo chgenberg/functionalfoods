@@ -162,6 +162,10 @@ export async function GET(req: NextRequest) {
                   metadata: {
                     items,
                     attribution,
+                    campaignId: session.metadata?.campaignId || null,
+                    campaignSource: session.metadata?.campaignSource || null,
+                    recoveredFromOrderId:
+                      session.metadata?.recoveredFromOrderId || null,
                   },
                   items: {
                     create: items.map((it) => ({
@@ -350,6 +354,18 @@ export async function GET(req: NextRequest) {
               ).toUpperCase(),
               metadata: {
                 ...existingMetadata,
+                campaignId:
+                  existingMetadata.campaignId ||
+                  session.metadata?.campaignId ||
+                  null,
+                campaignSource:
+                  existingMetadata.campaignSource ||
+                  session.metadata?.campaignSource ||
+                  null,
+                recoveredFromOrderId:
+                  existingMetadata.recoveredFromOrderId ||
+                  session.metadata?.recoveredFromOrderId ||
+                  null,
                 stripeSessionId: session.id,
                 stripePaymentIntentId: String(paymentIntentId),
               },
