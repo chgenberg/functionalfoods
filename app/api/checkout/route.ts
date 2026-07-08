@@ -3,7 +3,9 @@ import { withRateLimit, checkoutRateLimit } from "@/app/lib/rate-limit";
 import { prisma } from "@/app/lib/database";
 import {
   applySummerEbookBundlePricing,
+  hasSummerEbookBundle,
   isSummerEbookCampaignId,
+  SUMMER_EBOOK_CAMPAIGN_ID,
 } from "@/app/lib/campaigns/summer-ebooks";
 import bcrypt from "bcryptjs";
 
@@ -195,7 +197,71 @@ export async function POST(req: NextRequest) {
           vatRate: product.vatRate || 0.25,
         };
       });
-      const pricedItems = isSummerEbookCampaignId(campaignId)
+      const normalizedEmail = customerEmail.toLowerCase().trim();
+      const cartItemIds = validatedItems
+        .map((item) => item.id)
+        .filter(Boolean)
+        .sort();
+      const hasSameCartItems = (candidateItems: any[] | undefined) => {
+        if (!Array.isArray(candidateItems)) return false;
+        const candidateIds = candidateItems
+          .map((item) => item?.id)
+          .filter(Boolean)
+          .sort();
+        return JSON.stringify(candidateIds) === JSON.stringify(cartItemIds);
+      };
+
+      let inheritedCampaignMetadata: any = null;
+      let effectiveRecoveredFromOrderId = recoveredFromOrderId || null;
+
+      if (effectiveRecoveredFromOrderId) {
+        const recoveredOrder = await prisma.order.findUnique({
+          where: { id: effectiveRecoveredFromOrderId },
+          select: { metadata: true },
+        });
+        inheritedCampaignMetadata = (recoveredOrder?.metadata as any) || null;
+      } else if (!campaignId || !campaignSource) {
+        const recentPendingOrders = await prisma.order.findMany({
+          where: {
+            customerEmail: normalizedEmail,
+            status: "PENDING",
+            createdAt: {
+              gte: new Date(Date.now() - 2 * 60 * 60 * 1000),
+            },
+          },
+          orderBy: { createdAt: "desc" },
+          take: 5,
+          select: { id: true, metadata: true },
+        });
+
+        const matchingPendingOrder = recentPendingOrders.find((order) => {
+          const metadata = (order.metadata as any) || {};
+          return (
+            isSummerEbookCampaignId(metadata.campaignId) &&
+            !metadata.recoveredByOrderId &&
+            hasSameCartItems(metadata.items)
+          );
+        });
+
+        if (matchingPendingOrder) {
+          effectiveRecoveredFromOrderId = matchingPendingOrder.id;
+          inheritedCampaignMetadata =
+            (matchingPendingOrder.metadata as any) || null;
+        }
+      }
+
+      const effectiveCampaignId =
+        campaignId ||
+        inheritedCampaignMetadata?.campaignId ||
+        (hasSummerEbookBundle(validatedItems)
+          ? SUMMER_EBOOK_CAMPAIGN_ID
+          : undefined);
+      const effectiveCampaignSource =
+        campaignSource || inheritedCampaignMetadata?.campaignSource || null;
+      const effectiveAttribution =
+        attribution || inheritedCampaignMetadata?.attribution || null;
+
+      const pricedItems = isSummerEbookCampaignId(effectiveCampaignId)
         ? applySummerEbookBundlePricing(validatedItems)
         : validatedItems;
 
@@ -339,7 +405,6 @@ export async function POST(req: NextRequest) {
       const orderId = `FF-${Date.now()}-${Math.random()
         .toString(36)
         .slice(2, 9)}`;
-      const normalizedEmail = customerEmail.toLowerCase().trim();
       let user = await prisma.user.findUnique({
         where: { email: normalizedEmail },
       });
@@ -377,10 +442,10 @@ export async function POST(req: NextRequest) {
             couponCode: couponCode || null,
             discountAmount:
               discountAmount > 0 ? discountAmount / 100 : null,
-            campaignId: campaignId || null,
-            campaignSource: campaignSource || null,
-            attribution: attribution || null,
-            recoveredFromOrderId: recoveredFromOrderId || null,
+            campaignId: effectiveCampaignId || null,
+            campaignSource: effectiveCampaignSource,
+            attribution: effectiveAttribution,
+            recoveredFromOrderId: effectiveRecoveredFromOrderId,
           },
           items: {
             create: pricedItems.map((item) => ({
@@ -409,24 +474,25 @@ export async function POST(req: NextRequest) {
           orderType: "course_purchase",
           orderId,
           couponCode: couponCode || "",
-          campaignId: campaignId || "",
-          campaignSource: campaignSource || "",
+          campaignId: effectiveCampaignId || "",
+          campaignSource: effectiveCampaignSource || "",
+          recoveredFromOrderId: effectiveRecoveredFromOrderId || "",
           courseNames: pricedItems.map((item) => item.name).join(", "),
           totalItems: pricedItems.length.toString(),
           customerEmail: customerEmail,
           customerName: customerName,
           // Attribution (flattened for Stripe metadata limits)
-          gclid: attribution?.gclid || "",
-          gbraid: attribution?.gbraid || "",
-          wbraid: attribution?.wbraid || "",
-          fbclid: attribution?.fbclid || "",
-          mc_cid: attribution?.mc_cid || "",
-          mc_eid: attribution?.mc_eid || "",
-          utm_source: attribution?.utm_source || "",
-          utm_medium: attribution?.utm_medium || "",
-          utm_campaign: attribution?.utm_campaign || "",
-          utm_term: attribution?.utm_term || "",
-          utm_content: attribution?.utm_content || "",
+          gclid: effectiveAttribution?.gclid || "",
+          gbraid: effectiveAttribution?.gbraid || "",
+          wbraid: effectiveAttribution?.wbraid || "",
+          fbclid: effectiveAttribution?.fbclid || "",
+          mc_cid: effectiveAttribution?.mc_cid || "",
+          mc_eid: effectiveAttribution?.mc_eid || "",
+          utm_source: effectiveAttribution?.utm_source || "",
+          utm_medium: effectiveAttribution?.utm_medium || "",
+          utm_campaign: effectiveAttribution?.utm_campaign || "",
+          utm_term: effectiveAttribution?.utm_term || "",
+          utm_content: effectiveAttribution?.utm_content || "",
         },
       };
 
@@ -467,7 +533,7 @@ export async function POST(req: NextRequest) {
           })),
           totalAmount: (subtotal - discountAmount) / 100,
           currency: "SEK",
-          campaignId: attribution?.mc_cid || undefined,
+          campaignId: effectiveAttribution?.mc_cid || undefined,
         });
         
         if (mailchimpCartId) {
