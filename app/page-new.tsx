@@ -32,6 +32,7 @@ import FeaturePopup from "./components/FeaturePopup";
 import RecipeCarousel from "./components/RecipeCarousel";
 import CustomerReviews from "./components/CustomerReviews";
 import CustomerTestimonials from "./components/CustomerTestimonials";
+import HomeCoursesSection from "./components/HomeCoursesSection";
 import BlogCarousel from "./components/BlogCarousel";
 import ProvaPaPopup, { ProvaPaFloatingButton } from "./components/ProvaPaPopup";
 import { useT, useLanguage } from "./lib/i18n/LanguageProvider";
@@ -117,12 +118,13 @@ export default function Home() {
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0 z-0 overflow-hidden">
           {/* Desktop hero image */}
+
           <div
             className="hidden lg:block absolute inset-0"
             style={{ zIndex: 1 }}
           >
             <Image
-              src="/Hem/UDhero.jpeg"
+              src="/hero-functional-foods.jpg"
               alt="Functional Foods Hero"
               fill
               priority
@@ -130,7 +132,9 @@ export default function Home() {
               sizes="100vw"
             />
           </div>
+
           {/* Mobile hero image */}
+
           <div className="lg:hidden absolute inset-0" style={{ zIndex: 1 }}>
             <Image
               src="/Hem/UDheromobile.jpeg"
@@ -141,6 +145,7 @@ export default function Home() {
               sizes="100vw"
             />
           </div>
+
           <div
             className="absolute inset-0 bg-black/25 pointer-events-none"
             style={{ zIndex: 2 }}
@@ -148,232 +153,39 @@ export default function Home() {
         </div>
 
         <div className="relative z-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 md:py-16 lg:py-20 w-full">
-          {/* Mobile: Course cards in single column */}
-          <div className="lg:hidden">
-            <div className="text-center mb-6">
-              <h1 className="text-2xl sm:text-3xl font-bold text-white mb-2 leading-tight drop-shadow-lg">
-                UPPTÄCK KRAFTEN I
-                <span className="block text-white mt-1 drop-shadow-lg">
-                  FUNCTIONAL FOODS
-                </span>
-              </h1>
-              <p className="text-base sm:text-lg text-white/90 drop-shadow-lg">
-                Välj den kurs som passar dig
-              </p>
-            </div>
-
-            <div className="flex flex-col gap-4 max-w-md mx-auto">
-              {[
-                {
-                  name: "Functional Basics",
-                  image:
-                    "/Kurser_bilder/Functional_Basics - Grunden i functional foods.jpg",
-                  href: "/utbildning/functional-basics",
-                  description:
-                    "Använd maten som verktyg för bättre hälsa. Kunskap, recept och måltidsplaner som stärker immunförsvaret.",
-                },
-                {
-                  name: "Gut Health / Flow",
-                  image: "/Kurser_bilder/Functional_Gut Health.jpg",
-                  href: "/utbildning/functional-flow",
-                  description:
-                    "Skapa hållbar vardag med fokus på maghälsa, antiinflammatorisk kost och naturligt flöde.",
-                },
-                {
-                  name: "Insulin Balance / Energy",
-                  image: "/Kurser_bilder/Functional_insulin balance.jpg",
-                  href: "/utbildning/functional-energy",
-                  description:
-                    "Stabilisera blodsockret och få jämn energi. Perfekt för dig i riskzonen för typ 2-diabetes.",
-                },
-                {
-                  name: "Hormonell Balans",
-                  image: "/LAX_MED_SAFFRANSSAS_OCH_QUINOASALLAD.avif",
-                  href: "/utbildning/hormonell-balans",
-                  description:
-                    "Få koll på hormonerna! Minska symptom vid PMS, förklimakteriet eller klimakteriet.",
-                },
-              ].map((course, index) => (
-                <Link key={index} href={course.href} className="group">
-                  <div className="bg-white/95 backdrop-blur-sm rounded-xl overflow-hidden shadow-lg flex h-28 sm:h-32">
-                    {/* Image */}
-                    <div className="relative w-28 sm:w-32 flex-shrink-0">
-                      <Image
-                        src={course.image}
-                        alt={course.name}
-                        fill
-                        className="object-cover"
-                        sizes="128px"
-                      />
-                    </div>
-
-                    {/* Content */}
-                    <div className="flex-1 p-3 sm:p-4 flex flex-col justify-center">
-                      <h3 className="font-semibold text-gray-800 text-sm sm:text-base mb-1 group-hover:text-[#014421] transition-colors">
-                        {course.name}
-                      </h3>
-                      <p className="text-xs sm:text-sm text-gray-600 line-clamp-2 mb-2">
-                        {course.description}
-                      </p>
-                      <span className="inline-flex items-center gap-1 text-xs font-medium text-[#014421]">
-                        Läs mer
-                        <ArrowRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
-                      </span>
-                    </div>
-                  </div>
-                </Link>
-              ))}
-            </div>
-
-            {/* See all courses button */}
-            <div className="text-center mt-6">
-              <Link
-                href="/utbildning"
-                className="inline-flex items-center gap-2 bg-[#FF7e70] text-white px-6 py-3 rounded-full font-semibold text-sm hover:bg-[#ff6b5a] transition-all shadow-lg"
-              >
-                <Book className="w-4 h-4" />
-                Se alla kurser
-              </Link>
-            </div>
-          </div>
-
-          {/* Desktop: Course cards layout */}
-          <div className="hidden lg:block">
-            <div className="text-center mb-12">
-              <motion.h1
-                initial={{ opacity: 0, y: -20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.6 }}
-                className="text-5xl xl:text-6xl font-bold text-white mb-4 leading-tight drop-shadow-lg"
-              >
-                UPPTÄCK KRAFTEN I
-                <span className="block text-white mt-2 drop-shadow-lg">
-                  FUNCTIONAL FOODS
-                </span>
-              </motion.h1>
-              <motion.p
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 0.6, delay: 0.2 }}
-                className="text-2xl text-white/90 drop-shadow-lg"
-              >
-                Välj den kurs som passar dig bäst
-              </motion.p>
-            </div>
-
-            <div className="grid grid-cols-4 gap-6 max-w-6xl mx-auto">
-              {[
-                {
-                  name: "Functional Basics",
-                  image:
-                    "/Kurser_bilder/Functional_Basics - Grunden i functional foods.jpg",
-                  href: "/utbildning/functional-basics",
-                  description:
-                    "Vill du använda maten som ditt främsta verktyg för bättre hälsa och ett längre liv? Kursen ger dig kunskap, recept och måltidsplaner som stärker ditt immunförsvar.",
-                  color: "from-emerald-500 to-emerald-700",
-                },
-                {
-                  name: "Gut Health / Flow",
-                  image: "/Kurser_bilder/Functional_Gut Health.jpg",
-                  href: "/utbildning/functional-flow",
-                  description:
-                    "Vill du skapa en hållbar vardag där din kropp samarbetar med dig? En 6-veckorskurs med fokus på maghälsa, antiinflammatorisk kost och naturligt flöde.",
-                  color: "from-teal-500 to-teal-700",
-                },
-                {
-                  name: "Insulin Balance / Energy",
-                  image: "/Kurser_bilder/Functional_insulin balance.jpg",
-                  href: "/utbildning/functional-energy",
-                  description:
-                    "Lär dig stabilisera blodsockret och få jämn energi hela dagen. Perfekt för dig som vill bromsa en utveckling mot typ 2-diabetes.",
-                  color: "from-amber-500 to-amber-700",
-                },
-                {
-                  name: "Hormonell Balans",
-                  image: "/LAX_MED_SAFFRANSSAS_OCH_QUINOASALLAD.avif",
-                  href: "/utbildning/hormonell-balans",
-                  description:
-                    "För dig som vill få koll på dina hormoner! Med rätt kost och coachning kan symptom vid PMS, förklimakteriet eller klimakteriet minskas.",
-                  color: "from-rose-500 to-rose-700",
-                },
-              ].map((course, index) => (
-                <motion.div
-                  key={index}
-                  initial={{
-                    opacity: 0,
-                    y: 30,
-                    boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.25)",
-                  }}
-                  animate={{
-                    opacity: 1,
-                    y: 0,
-                    boxShadow: [
-                      "0 25px 50px -12px rgba(0, 0, 0, 0.25)",
-                      "0 25px 50px -12px rgba(1, 68, 33, 0.15)",
-                      "0 25px 50px -12px rgba(0, 0, 0, 0.25)",
-                    ],
-                  }}
-                  transition={{
-                    duration: 0.5,
-                    delay: 0.1 * index,
-                    boxShadow: {
-                      duration: 4,
-                      repeat: Infinity,
-                      ease: "easeInOut",
-                      delay: 0.5 * index,
-                    },
-                  }}
-                  className="group rounded-2xl shadow-2xl"
-                >
-                  <Link href={course.href} className="block">
-                    <div className="relative bg-white/95 backdrop-blur-sm rounded-2xl overflow-hidden transition-all duration-500 transform hover:-translate-y-2 hover:shadow-3xl h-full">
-                      {/* Image */}
-                      <div className="relative h-44 overflow-hidden">
-                        <Image
-                          src={course.image}
-                          alt={course.name}
-                          fill
-                          className="object-cover transition-transform duration-700 group-hover:scale-110"
-                          sizes="25vw"
-                        />
-                      </div>
-
-                      {/* Content */}
-                      <div className="p-5">
-                        <h3 className="text-lg font-bold text-gray-800 mb-2 group-hover:text-[#014421] transition-colors">
-                          {course.name}
-                        </h3>
-                        <p className="text-sm text-gray-600 leading-relaxed mb-4 line-clamp-3">
-                          {course.description}
-                        </p>
-
-                        {/* Button - no pulse */}
-                        <span className="inline-flex items-center gap-2 bg-[#014421] text-white px-5 py-2.5 rounded-full text-sm font-semibold group-hover:bg-[#013318] transition-all shadow-lg group-hover:shadow-xl">
-                          Läs mer
-                          <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-                        </span>
-                      </div>
-                    </div>
-                  </Link>
-                </motion.div>
-              ))}
-            </div>
-
-            {/* Bottom CTA */}
+          <div className="flex items-center min-h-[70vh]">
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.6 }}
-              className="text-center mt-10"
+              transition={{ duration: 0.6 }}
+              className="max-w-3xl"
             >
-              <Link
-                href="/utbildning"
-                className="inline-flex items-center gap-3 bg-[#FF7e70] text-white px-8 py-4 rounded-full font-semibold text-lg hover:bg-[#ff6b5a] transition-all shadow-lg hover:shadow-xl"
-              >
-                <Book className="w-5 h-5" />
-                Se alla kurser
-                <ArrowRight className="w-5 h-5" />
-              </Link>
+              <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white leading-tight text-left drop-shadow-lg">
+                Ät dig till bättre hälsa med oss
+              </h1>
+
+              <p className="mt-5 text-lg sm:text-xl md:text-2xl text-white/90 text-left max-w-2xl drop-shadow-lg">
+                Välj det område du vill förbättra och följ en kurs eller e-bok
+                som gör det enkelt att använda Functional Foods i vardagen.
+              </p>
+
+              <div className="mt-8 flex flex-col sm:flex-row gap-4">
+                <Link
+                  href="/utbildning"
+                  className="inline-flex items-center justify-center gap-2 bg-[#FF7e70] text-white px-8 py-4 rounded-full font-semibold text-base md:text-lg hover:bg-[#e56b5e] transition-all shadow-lg"
+                >
+                  Program
+                  <ArrowRight className="w-5 h-5" />
+                </Link>
+
+                <Link
+                  href="/e-bocker"
+                  className="inline-flex items-center justify-center gap-2 bg-primary backdrop-blur-sm  text-white px-8 py-4 rounded-full font-semibold text-base md:text-lg hover:bg-green-700 transition-all shadow-lg"
+                >
+                  E-böcker
+                  <Book className="w-5 h-5" />
+                </Link>
+              </div>
             </motion.div>
           </div>
         </div>
@@ -407,6 +219,8 @@ export default function Home() {
           },
         ]}
       />
+
+      <HomeCoursesSection />
 
       <RecipeCarousel />
 
