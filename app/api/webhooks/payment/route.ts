@@ -7,6 +7,7 @@ import { trackPurchaseServer } from "@/app/lib/server-analytics";
 import {
   SUMMER_EBOOK_CAMPAIGN_ID,
   SUMMER_EBOOK_CAMPAIGN_TAG,
+  hasSummerEbookBundleByIdentity,
 } from "@/app/lib/campaigns/summer-ebooks";
 
 export const dynamic = "force-dynamic";
@@ -755,6 +756,28 @@ async function handleCheckoutSessionCompleted(session: any) {
     if (!finalOrder) {
       console.warn("⚠️ Final order not found after webhook transaction");
       return;
+    }
+
+    const finalMetadata = (finalOrder.metadata as any) || {};
+    if (
+      finalMetadata.campaignId !== SUMMER_EBOOK_CAMPAIGN_ID &&
+      hasSummerEbookBundleByIdentity(finalOrder.items)
+    ) {
+      const detectedMetadata = {
+        ...finalMetadata,
+        campaignId: SUMMER_EBOOK_CAMPAIGN_ID,
+        campaignSource:
+          finalMetadata.campaignSource ||
+          session.metadata?.campaignSource ||
+          "bundle-detected",
+      };
+
+      await prisma.order.update({
+        where: { id: finalOrder.id },
+        data: { metadata: detectedMetadata },
+      });
+
+      finalOrder.metadata = detectedMetadata;
     }
 
     // --- Mailchimp Marketing tags ---
