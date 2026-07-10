@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import * as XLSX from 'xlsx';
 import { formatPrice } from '@/app/lib/utils';
+import { hasSummerEbookBundleByIdentity } from '@/app/lib/campaigns/summer-ebooks';
 
 interface UnifiedOrder {
   id: string;
@@ -772,12 +773,24 @@ export default function UnifiedSalesPage() {
         'checkout-upsell': 'Checkout upsell',
         'product-page': 'Produktsida',
         'prova-popup': 'Popup',
+        'bundle-detected': 'Bundle identifierad',
       };
 
       return {
         label: 'Sommarkampanj e-böcker',
         color: 'green',
         detail: sourceMap[order.metadata?.campaignSource] || order.metadata?.campaignSource || '',
+      };
+    }
+
+    if (
+      hasSummerEbookBundleByIdentity(order.items || []) &&
+      Math.round(Number(order.amount || 0)) === 250
+    ) {
+      return {
+        label: 'Sommarkampanj e-böcker',
+        color: 'green',
+        detail: 'Bundle identifierad',
       };
     }
 
