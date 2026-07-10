@@ -3,7 +3,7 @@ import { withRateLimit, checkoutRateLimit } from "@/app/lib/rate-limit";
 import { prisma } from "@/app/lib/database";
 import {
   applySummerEbookBundlePricing,
-  hasSummerEbookBundle,
+  hasSummerEbookBundleByIdentity,
   isSummerEbookCampaignId,
   SUMMER_EBOOK_CAMPAIGN_ID,
 } from "@/app/lib/campaigns/summer-ebooks";
@@ -253,7 +253,7 @@ export async function POST(req: NextRequest) {
       const effectiveCampaignId =
         campaignId ||
         inheritedCampaignMetadata?.campaignId ||
-        (hasSummerEbookBundle(validatedItems)
+        (hasSummerEbookBundleByIdentity(validatedItems)
           ? SUMMER_EBOOK_CAMPAIGN_ID
           : undefined);
       const effectiveCampaignSource =
