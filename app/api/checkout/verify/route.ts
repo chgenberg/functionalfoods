@@ -5,6 +5,7 @@ import { getMailchimpMarketing } from "@/app/lib/mailchimp-marketing";
 import {
   SUMMER_EBOOK_CAMPAIGN_ID,
   SUMMER_EBOOK_CAMPAIGN_TAG,
+  hasSummerEbookBundleByIdentity,
 } from "@/app/lib/campaigns/summer-ebooks";
 
 export const dynamic = "force-dynamic";
@@ -398,7 +399,25 @@ export async function GET(req: NextRequest) {
           const updatedOrder = await findOrder(true);
 
           if (updatedOrder) {
-            const metadata = (updatedOrder.metadata as any) || {};
+            let metadata = (updatedOrder.metadata as any) || {};
+            if (
+              metadata.campaignId !== SUMMER_EBOOK_CAMPAIGN_ID &&
+              hasSummerEbookBundleByIdentity(updatedOrder.items)
+            ) {
+              metadata = {
+                ...metadata,
+                campaignId: SUMMER_EBOOK_CAMPAIGN_ID,
+                campaignSource:
+                  metadata.campaignSource ||
+                  session.metadata?.campaignSource ||
+                  "bundle-detected",
+              };
+
+              await prisma.order.update({
+                where: { id: updatedOrder.id },
+                data: { metadata },
+              });
+            }
             const emailForTracking =
               updatedOrder.user?.email ||
               updatedOrder.customerEmail ||
