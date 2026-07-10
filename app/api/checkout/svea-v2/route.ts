@@ -1473,6 +1473,16 @@ export async function POST(req: NextRequest) {
             campaignSource: campaignSource || null,
             attribution: attribution || null,
             recoveredFromOrderId: recoveredFromOrderId || null,
+            sveaStatus: sveaResponse.status || "Created",
+            svea: {
+              checkoutOrderId: sveaResponse.orderId.toString(),
+              checkoutStatus: sveaResponse.status || "Created",
+              statusCheckedAt: new Date().toISOString(),
+              adminVisibility:
+                (sveaResponse.status || "Created") === "Created"
+                  ? "hide_unpaid_checkout"
+                  : "show",
+            },
           },
           items: {
             create: itemsWithDiscountedPrice.map((item) => ({
