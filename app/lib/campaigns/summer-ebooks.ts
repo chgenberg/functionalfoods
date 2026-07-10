@@ -111,6 +111,50 @@ export function hasSummerEbookBundle(items: SummerEbookCartItem[]) {
   );
 }
 
+export function hasSummerEbookBundleByIdentity(
+  items: Array<{
+    id?: string | null;
+    name?: string | null;
+    quantity?: number | null;
+  }>,
+) {
+  const present = new Set<string>();
+
+  for (const item of items) {
+    if ((item.quantity ?? 1) <= 0) continue;
+
+    const identity = `${item.id || ""} ${item.name || ""}`.toLowerCase();
+
+    if (
+      identity.includes("grill-sommarmat") ||
+      identity.includes("grill- & sommarmat") ||
+      identity.includes("grill & sommarmat") ||
+      identity.includes("grill och sommarmat")
+    ) {
+      present.add("grill-sommarmat");
+    }
+
+    if (
+      identity.includes("sota-godsaker") ||
+      identity.includes("söta godsaker") ||
+      identity.includes("sota godsaker")
+    ) {
+      present.add("sota-godsaker");
+    }
+
+    if (
+      identity.includes("brodboken-2026") ||
+      identity.includes("baka glutenfritt") ||
+      identity.includes("brödboken") ||
+      identity.includes("brodboken")
+    ) {
+      present.add("brodboken-2026");
+    }
+  }
+
+  return SUMMER_EBOOK_BUNDLE_IDS.every((id) => present.has(id));
+}
+
 export function getMissingSummerEbookProducts(items: SummerEbookCartItem[]) {
   const present = new Set(
     items.filter((item) => item.quantity > 0).map((item) => item.id),
