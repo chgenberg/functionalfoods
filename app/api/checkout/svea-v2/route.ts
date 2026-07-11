@@ -1213,7 +1213,7 @@ export async function POST(req: NextRequest) {
         termsUri: `${origin}/anvandarvillkor`,
         checkoutUri: `${origin}/checkout`,
         confirmationUri: `${origin}/checkout/success/svea-v2?orderId=${encodeURIComponent(orderId)}`,
-        pushUri: `${origin}/api/webhooks/svea-v2`,
+        pushUri: `${origin}/api/webhooks/svea-v2?checkoutOrderId={checkout.order.uri}`,
       },
       cart: {
         items: [...sveaItems], // Explicit copy to ensure it's set
@@ -1473,6 +1473,16 @@ export async function POST(req: NextRequest) {
             campaignSource: campaignSource || null,
             attribution: attribution || null,
             recoveredFromOrderId: recoveredFromOrderId || null,
+            sveaStatus: sveaResponse.status || "Created",
+            svea: {
+              checkoutOrderId: sveaResponse.orderId.toString(),
+              checkoutStatus: sveaResponse.status || "Created",
+              statusCheckedAt: new Date().toISOString(),
+              adminVisibility:
+                (sveaResponse.status || "Created") === "Created"
+                  ? "hide_unpaid_checkout"
+                  : "show",
+            },
           },
           items: {
             create: itemsWithDiscountedPrice.map((item) => ({

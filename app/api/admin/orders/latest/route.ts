@@ -18,6 +18,23 @@ function toDisplayPaymentStatus(orderStatus: string | null | undefined, paymentS
   return os || 'PENDING';
 }
 
+function getSveaCheckoutStatus(metadata: any): string | null {
+  return metadata?.svea?.checkoutStatus || metadata?.sveaStatus || metadata?.sveaCheckoutStatus || null;
+}
+
+function isUnpaidCreatedSveaCheckout(order: {
+  status: string;
+  checkoutOrderId: string | null;
+  metadata: unknown;
+}): boolean {
+  const metadata = (order.metadata as any) || {};
+  return (
+    order.status === 'PENDING' &&
+    !!order.checkoutOrderId &&
+    getSveaCheckoutStatus(metadata) === 'Created'
+  );
+}
+
 export async function GET() {
   try {
     // Get the 5 most recent orders with full details
@@ -46,8 +63,10 @@ export async function GET() {
       }
     });
 
+    const visibleOrders = orders.filter((order) => !isUnpaidCreatedSveaCheckout(order));
+
     // Format orders for easy reading
-    const formattedOrders = orders.map(order => ({
+    const formattedOrders = visibleOrders.map(order => ({
       orderNumber: order.orderNumber,
       status: order.status,
       orderStatus: order.status,
@@ -87,7 +106,7 @@ export async function GET() {
 
     return NextResponse.json({
       success: true,
-      count: orders.length,
+      count: visibleOrders.length,
       orders: formattedOrders,
       latestOrder: formattedOrders[0] || null,
     });
