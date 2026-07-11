@@ -719,6 +719,30 @@ async function handleOrderCompleted(
         }
       } catch (e) {
         console.warn("⚠️ Mailchimp E-commerce tracking failed:", e);
+        try {
+          const failedOrder = await prisma.order.findUnique({
+            where: { id: order.id },
+            select: { metadata: true },
+          });
+          const failedMetadata = (failedOrder?.metadata as any) || {};
+
+          await prisma.order.update({
+            where: { id: order.id },
+            data: {
+              metadata: {
+                ...failedMetadata,
+                mailchimpEcommerceErrorAt: new Date().toISOString(),
+                mailchimpEcommerceError:
+                  e instanceof Error ? e.message : String(e),
+              },
+            },
+          });
+        } catch (metadataError) {
+          console.warn(
+            "⚠️ Failed to record Mailchimp E-commerce error metadata:",
+            metadataError,
+          );
+        }
       }
 
       // Ensure abandoned cart cleanup is visible in admin even if purchase tracking
@@ -1050,6 +1074,24 @@ async function handleOrderCompleted(
                       }),
                       new Promise((resolve) => setTimeout(resolve, 1500)),
                     ]);
+
+                    const latestOrder = await prisma.order.findUnique({
+                      where: { id: order.id },
+                      select: { metadata: true },
+                    });
+                    const latestMetadata = (latestOrder?.metadata as any) || {};
+
+                    await prisma.order.update({
+                      where: { id: order.id },
+                      data: {
+                        metadata: {
+                          ...latestMetadata,
+                          mailchimpMarketingTaggedAt:
+                            latestMetadata.mailchimpMarketingTaggedAt ||
+                            new Date().toISOString(),
+                        },
+                      },
+                    });
                   }
                 } catch (e) {
                   console.warn(
@@ -1060,11 +1102,18 @@ async function handleOrderCompleted(
               }
             }
             // Mark email as sent in metadata
+            const latestOrderForEmailMetadata = await prisma.order.findUnique({
+              where: { id: order.id },
+              select: { metadata: true },
+            });
+            const latestEmailMetadata =
+              (latestOrderForEmailMetadata?.metadata as any) || metadata;
+            
             await prisma.order.update({
               where: { id: order.id },
               data: {
                 metadata: {
-                  ...metadata,
+                  ...latestEmailMetadata,
                   confirmationEmailSent: true,
                   confirmationEmailSentAt: new Date().toISOString(),
                 },
