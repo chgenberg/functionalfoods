@@ -345,7 +345,7 @@ class MailchimpEcommerceService {
         ? `${this.baseUrl}/orders/${encodeURIComponent(safeOrderId)}`
         : `${this.baseUrl}/orders`;
       
-      const response = await fetch(orderUrl, {
+      let response = await fetch(orderUrl, {
         method: usePut ? 'PUT' : 'POST',
         headers: {
           'Authorization': `Basic ${Buffer.from(`anystring:${this.config!.apiKey}`).toString('base64')}`,
@@ -354,8 +354,36 @@ class MailchimpEcommerceService {
         body: JSON.stringify(order)
       });
       
-      const responseText = await response.text();
+      let responseText = await response.text();
       
+      if (!response.ok) {
+        const invalidCampaignId =
+          !!order.campaign_id &&
+          response.status === 400 &&
+          /campaign/i.test(responseText);
+
+        if (invalidCampaignId) {
+          console.warn('⚠️ Mailchimp campaign_id rejected, retrying purchase tracking without campaign attribution:', {
+            orderId,
+            campaignId: order.campaign_id,
+            response: responseText,
+          });
+
+          delete order.campaign_id;
+
+          response = await fetch(orderUrl, {
+            method: usePut ? 'PUT' : 'POST',
+            headers: {
+              'Authorization': `Basic ${Buffer.from(`anystring:${this.config!.apiKey}`).toString('base64')}`,
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(order)
+          });
+
+          responseText = await response.text();
+        }
+      }
+
       if (!response.ok) {
         throw new Error(`Mailchimp API error: ${response.status} ${responseText}`);
       }
@@ -366,7 +394,7 @@ class MailchimpEcommerceService {
         customerEmail,
         totalAmount,
         itemsCount: items.length,
-        campaignId: campaignId || 'none',
+        campaignId: order.campaign_id || 'none',
         trackingCode: _trackingCode || 'none'
       });
 
