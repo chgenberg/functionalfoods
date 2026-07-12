@@ -13,6 +13,8 @@ export const dynamic = "force-dynamic";
 
 export async function POST(req: NextRequest) {
   return withRateLimit(req, checkoutRateLimit, async () => {
+    let createdPendingOrderId: string | null = null;
+    
     try {
       const body = await req.json();
       const {
@@ -458,9 +460,17 @@ export async function POST(req: NextRequest) {
           },
         },
       });
+      createdPendingOrderId = orderId;
 
       // Configure allowed payment methods explicitly (Stripe Checkout does not support automatic_payment_methods)
       const paymentMethodTypes: string[] = ["card"];
+      const safeStripeMetadataValue = (value: unknown) =>
+        String(value ?? "").slice(0, 500);
+      const compactStripeItems = pricedItems.map((item) => ({
+        id: item.id,
+        q: item.quantity,
+        t: item.type,
+      }));
 
       const baseSessionParams: any = {
         mode: "payment",
@@ -469,30 +479,32 @@ export async function POST(req: NextRequest) {
         cancel_url: `${origin}/checkout`,
         customer_email: customer?.email,
         metadata: {
-          items: JSON.stringify(pricedItems), // Use campaign-priced items in metadata
+          items: safeStripeMetadataValue(JSON.stringify(compactStripeItems)), // Use campaign-priced items in metadata
           website: "ulrika-functional-foods",
           orderType: "course_purchase",
           orderId,
-          couponCode: couponCode || "",
-          campaignId: effectiveCampaignId || "",
-          campaignSource: effectiveCampaignSource || "",
-          recoveredFromOrderId: effectiveRecoveredFromOrderId || "",
-          courseNames: pricedItems.map((item) => item.name).join(", "),
+          couponCode: safeStripeMetadataValue(couponCode),
+          campaignId: safeStripeMetadataValue(effectiveCampaignId),
+          campaignSource: safeStripeMetadataValue(effectiveCampaignSource),
+          recoveredFromOrderId: safeStripeMetadataValue(effectiveRecoveredFromOrderId),
+          courseNames: safeStripeMetadataValue(
+            pricedItems.map((item) => item.name).join(", "),
+          ),
           totalItems: pricedItems.length.toString(),
-          customerEmail: customerEmail,
-          customerName: customerName,
+          customerEmail: safeStripeMetadataValue(customerEmail),
+          customerName: safeStripeMetadataValue(customerName),
           // Attribution (flattened for Stripe metadata limits)
-          gclid: effectiveAttribution?.gclid || "",
-          gbraid: effectiveAttribution?.gbraid || "",
-          wbraid: effectiveAttribution?.wbraid || "",
-          fbclid: effectiveAttribution?.fbclid || "",
-          mc_cid: effectiveAttribution?.mc_cid || "",
-          mc_eid: effectiveAttribution?.mc_eid || "",
-          utm_source: effectiveAttribution?.utm_source || "",
-          utm_medium: effectiveAttribution?.utm_medium || "",
-          utm_campaign: effectiveAttribution?.utm_campaign || "",
-          utm_term: effectiveAttribution?.utm_term || "",
-          utm_content: effectiveAttribution?.utm_content || "",
+          gclid: safeStripeMetadataValue(effectiveAttribution?.gclid),
+          gbraid: safeStripeMetadataValue(effectiveAttribution?.gbraid),
+          wbraid: safeStripeMetadataValue(effectiveAttribution?.wbraid),
+          fbclid: safeStripeMetadataValue(effectiveAttribution?.fbclid),
+          mc_cid: safeStripeMetadataValue(effectiveAttribution?.mc_cid),
+          mc_eid: safeStripeMetadataValue(effectiveAttribution?.mc_eid),
+          utm_source: safeStripeMetadataValue(effectiveAttribution?.utm_source),
+          utm_medium: safeStripeMetadataValue(effectiveAttribution?.utm_medium),
+          utm_campaign: safeStripeMetadataValue(effectiveAttribution?.utm_campaign),
+          utm_term: safeStripeMetadataValue(effectiveAttribution?.utm_term),
+          utm_content: safeStripeMetadataValue(effectiveAttribution?.utm_content),
         },
       };
 
@@ -563,6 +575,27 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ url: session.url });
     } catch (err: any) {
       console.error("Create Checkout Session error:", err);
+      if (createdPendingOrderId) {
+        try {
+          const existingOrder = await prisma.order.findUnique({
+            where: { id: createdPendingOrderId },
+            select: { metadata: true },
+          });
+
+          await prisma.order.update({
+            where: { id: createdPendingOrderId },
+            data: {
+              status: "FAILED",
+              metadata: {
+                ...((existingOrder?.metadata as any) || {}),
+                checkoutCreationFailedAt: new Date().toISOString(),
+                checkoutCreationError:
+                  err?.message || "Stripe checkout session creation failed",
+                checkoutCreationProvider: "stripe",
+              },
+            },
+          });
+        } catch (cleanupError) {
       return NextResponse.json(
         { error: err?.message || "Kunde inte skapa betalning" },
         { status: 500 },
