@@ -491,6 +491,7 @@ class MailchimpEcommerceService {
       }
       
       const cartItems = params.items.map((item) => {
+        const productId = this.getSafeProductId(item);
         const variantId = `${item.id}-default`;
         const vatRate =
           typeof item.vatRate === 'number'
