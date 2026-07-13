@@ -15,6 +15,175 @@ export const dynamic = "force-dynamic";
 const prisma = new PrismaClient();
 const paymentService = new PaymentService();
 
+const EBOOK_DOWNLOAD_ROUTES: Record<string, string> = {
+  "brodboken-2026": "/brodboken/ladda-ner",
+  paskbuffe: "/e-bocker/paskbuffe/ladda-ner",
+  "sota-godsaker": "/e-bocker/sota-godsaker/ladda-ner",
+  "grill-sommarmat": "/e-bocker/grill-sommarmat/ladda-ner",
+  "halsosamma-frukostar": "/e-bocker/halsosamma-frukostar/ladda-ner",
+};
+
+const EBOOK_DISPLAY_NAMES: Record<string, string> = {
+  "brodboken-2026": "Baka Glutenfritt – E-bok",
+  paskbuffe: "Påskbuffé – E-bok av Ulrika Davidsson",
+  "sota-godsaker": "Söta Godsaker – E-bok av Ulrika Davidsson",
+  "grill-sommarmat": "Grill- & Sommarmat – E-bok av Ulrika Davidsson",
+  "halsosamma-frukostar": "Hälsosamma Frukostar – E-bok av Ulrika Davidsson",
+};
+
+const EBOOK_PRICES_EX_VAT: Record<string, number> = {
+  "brodboken-2026": 65.09,
+  paskbuffe: 93.4,
+  "sota-godsaker": 102.83,
+  "grill-sommarmat": 140.57,
+  "halsosamma-frukostar": 93.4,
+};
+
+function resolveEbookId(item: any): string | null {
+  const value = String(
+    [
+      item?.id,
+      item?.courseId,
+      item?.name,
+      item?.description,
+      item?.price?.product?.name,
+      item?.price?.product,
+    ]
+      .filter(Boolean)
+      .join(" "),
+  ).toLowerCase();
+
+  if (!value) return null;
+
+  if (
+    value.includes("söta godsaker") ||
+    value.includes("sota godsaker") ||
+    value.includes("sota-godsaker")
+  ) {
+    return "sota-godsaker";
+  }
+  
+  if (
+    value.includes("grill- & sommarmat") ||
+    value.includes("grill sommarmat") ||
+    value.includes("grill och sommarmat") ||
+    value.includes("grill-sommarmat")
+  ) {
+    return "grill-sommarmat";
+  }
+
+  if (value.includes("påskbuffé") || value.includes("paskbuffe")) {
+    return "paskbuffe";
+  }
+
+  if (
+    value.includes("hälsosamma frukostar") ||
+    value.includes("halsosamma frukostar") ||
+    value.includes("halsosamma-frukostar")
+  ) {
+    return "halsosamma-frukostar";
+  }
+
+  if (
+    value.includes("brodboken") ||
+    value.includes("brodbok") ||
+    value.includes("baka glutenfritt") ||
+    value.includes("glutenfritt") ||
+    value.includes("brodboken-2026")
+  ) {
+    return "brodboken-2026";
+  }
+
+  return null;
+}
+
+function buildEbookDownloadUrl(baseUrl: string, ebookId: string, token: string) {
+  const route =
+    EBOOK_DOWNLOAD_ROUTES[ebookId] || EBOOK_DOWNLOAD_ROUTES["brodboken-2026"];
+  return `${baseUrl}${route}?token=${token}`;
+}
+
+function normalizeStripeItem(item: any) {
+  const ebookId = resolveEbookId(item);
+  const type = item?.type || item?.t || (ebookId ? "book" : "course");
+  const id = item?.id || ebookId || "course";
+  const quantity = item?.quantity || item?.q || 1;
+  const name =
+    item?.name || (ebookId ? EBOOK_DISPLAY_NAMES[ebookId] : undefined);
+  const price =
+    item?.price ??
+    (ebookId ? EBOOK_PRICES_EX_VAT[ebookId] : undefined) ??
+    0;
+
+  return {
+    ...item,
+    id,
+    name,
+    price,
+    quantity,
+    type,
+  };
+}
+
+async function ensureEbookDownloadsForOrder(
+  order: any,
+  email: string,
+  name: string,
+) {
+  const bookItems = (order?.items || []).filter(
+    (item: any) => item.type === "book" || resolveEbookId(item),
+  );
+
+  if (bookItems.length === 0 || !email || email.startsWith("guest-")) {
+    return;
+  }
+
+  const crypto = await import("crypto");
+  const baseUrl =
+    process.env.NEXT_PUBLIC_SITE_URL ||
+    process.env.NEXT_PUBLIC_BASE_URL ||
+    "https://www.functionalfoods.se";
+
+  for (const book of bookItems) {
+    const ebookId = resolveEbookId(book) || "brodboken-2026";
+    const existingDownload = await prisma.ebookDownload.findFirst({
+      where: {
+        orderNumber: order.orderNumber,
+        ebookId,
+      },
+    });
+
+    if (existingDownload) continue;
+
+    const downloadToken = crypto.randomBytes(16).toString("hex").toUpperCase();
+
+    await prisma.ebookDownload.create({
+      data: {
+        token: downloadToken,
+        orderNumber: order.orderNumber,
+        customerEmail: email,
+        ebookId,
+        ebookName: book.name || EBOOK_DISPLAY_NAMES[ebookId],
+        maxDownloads: 5,
+        expiresAt: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000),
+      },
+    });
+
+    await emailService.sendEbookDownloadEmail({
+      email,
+      name,
+      ebookName: book.name || EBOOK_DISPLAY_NAMES[ebookId],
+      downloadUrl: buildEbookDownloadUrl(baseUrl, ebookId, downloadToken),
+      downloadPassword: downloadToken,
+      orderNumber: order.orderNumber,
+    });
+
+    console.log(
+      `✅ Ensured Stripe e-book delivery: ${order.orderNumber} (${ebookId})`,
+    );
+  }
+}
+
 export async function POST(request: Request) {
   try {
     const body = await request.text();
@@ -339,13 +508,26 @@ async function handleCheckoutSessionCompleted(session: any) {
     // 1. Idempotency: check if payment already exists
     const alreadyPayment = await prisma.payment.findFirst({
       where: { externalId: String(paymentIntentId) },
+      include: { order: { include: { items: true, user: true } } },
     });
     if (alreadyPayment) {
       console.log(
         "ℹ️ Payment already recorded for PI:",
         paymentIntentId,
-        "- Skipping duplicate processing.",
+        "- verifying e-book delivery before skipping duplicate processing.",
       );
+      if (alreadyPayment.order) {
+        await ensureEbookDownloadsForOrder(
+          alreadyPayment.order,
+          alreadyPayment.order.customerEmail ||
+            alreadyPayment.order.user?.email ||
+            customerEmail,
+          alreadyPayment.order.customerName ||
+            alreadyPayment.order.user?.name ||
+            customerName ||
+            customerEmail,
+        );
+      }
       return;
     }
 
@@ -364,7 +546,7 @@ async function handleCheckoutSessionCompleted(session: any) {
     if (!existingOrder) {
       try {
         const raw = (session.metadata as any)?.items || "";
-        if (raw) items = JSON.parse(raw);
+        if (raw) items = JSON.parse(raw).map(normalizeStripeItem);
       } catch (e) {
         console.warn(
           "⚠️ Failed to parse metadata items, will try Stripe line_items",
@@ -377,13 +559,17 @@ async function handleCheckoutSessionCompleted(session: any) {
             session.id,
             { limit: 50 },
           );
-          items = lineItems.data.map((li: any) => ({
-            id: "course",
-            name: li.description || li.price?.product || "Kurs",
-            price: (li.amount_total || li.amount_subtotal || 0) / 100,
-            quantity: li.quantity || 1,
-            type: "course",
-          }));
+          items = lineItems.data.map((li: any) => {
+            const normalized = normalizeStripeItem(li);
+            return {
+              id: normalized.id,
+              name:
+                normalized.name || li.description || li.price?.product || "Kurs",
+              price: (li.amount_total || li.amount_subtotal || 0) / 100,
+              quantity: li.quantity || 1,
+              type: normalized.type,
+            };
+          });
         } catch {}
       }
 
@@ -654,16 +840,7 @@ async function handleCheckoutSessionCompleted(session: any) {
                 .toString("hex")
                 .toUpperCase();
 
-              let ebookId = "brodboken-2026";
-              const n = book.name.toLowerCase();
-
-              if (n.includes("brodboken") || n.includes("brodbok")) {
-                ebookId = "brodboken-2026";
-              }
-
-              if (n.includes("påskbuffé") || n.includes("paskbuffe")) {
-                ebookId = "paskbuffe";
-              }
+              const ebookId = resolveEbookId(book) || "brodboken-2026";
 
               const existingDownload = await tx.ebookDownload.findFirst({
                 where: {
@@ -685,17 +862,15 @@ async function handleCheckoutSessionCompleted(session: any) {
                   },
                 });
 
-                let downloadUrl = `${baseUrl}/brodboken/ladda-ner?token=${downloadToken}`;
-
-                if (ebookId === "paskbuffe") {
-                  downloadUrl = `${baseUrl}/e-bocker/paskbuffe/ladda-ner?token=${downloadToken}`;
-                }
-
                 await emailService.sendEbookDownloadEmail({
                   email: user.email,
                   name: user.name || user.email,
-                  ebookName: book.name,
-                  downloadUrl,
+                  ebookName: book.name || EBOOK_DISPLAY_NAMES[ebookId],
+                  downloadUrl: buildEbookDownloadUrl(
+                    baseUrl,
+                    ebookId,
+                    downloadToken,
+                  ),
                   downloadPassword: downloadToken,
                   orderNumber: order.orderNumber,
                 });
@@ -757,6 +932,15 @@ async function handleCheckoutSessionCompleted(session: any) {
       console.warn("⚠️ Final order not found after webhook transaction");
       return;
     }
+
+    await ensureEbookDownloadsForOrder(
+      finalOrder,
+      finalOrder.customerEmail || finalOrder.user?.email || customerEmail,
+      finalOrder.customerName ||
+        finalOrder.user?.name ||
+        customerName ||
+        customerEmail,
+    );
 
     const finalMetadata = (finalOrder.metadata as any) || {};
     if (
