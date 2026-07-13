@@ -10,6 +10,68 @@ import {
 
 export const dynamic = "force-dynamic";
 
+const STRIPE_EBOOK_NAMES: Record<string, string> = {
+  "brodboken-2026": "Baka Glutenfritt – E-bok",
+  paskbuffe: "Påskbuffé – E-bok av Ulrika Davidsson",
+  "sota-godsaker": "Söta Godsaker – E-bok av Ulrika Davidsson",
+  "grill-sommarmat": "Grill- & Sommarmat – E-bok av Ulrika Davidsson",
+  "halsosamma-frukostar": "Hälsosamma Frukostar – E-bok av Ulrika Davidsson",
+};
+
+const STRIPE_EBOOK_PRICES_EX_VAT: Record<string, number> = {
+  "brodboken-2026": 65.09,
+  paskbuffe: 93.4,
+  "sota-godsaker": 102.83,
+  "grill-sommarmat": 140.57,
+  "halsosamma-frukostar": 93.4,
+};
+
+function resolveStripeEbookId(item: any): string | null {
+  const value = String([item?.id, item?.name].filter(Boolean).join(" "))
+    .toLowerCase();
+
+  if (!value) return null;
+  if (value.includes("sota-godsaker") || value.includes("söta godsaker")) {
+    return "sota-godsaker";
+  }
+  if (value.includes("grill-sommarmat") || value.includes("grill sommarmat")) {
+    return "grill-sommarmat";
+  }
+  if (value.includes("paskbuffe") || value.includes("påskbuffé")) {
+    return "paskbuffe";
+  }
+  if (
+    value.includes("halsosamma-frukostar") ||
+    value.includes("hälsosamma frukostar")
+  ) {
+    return "halsosamma-frukostar";
+  }
+  if (
+    value.includes("brodboken-2026") ||
+    value.includes("brodbok") ||
+    value.includes("glutenfritt")
+  ) {
+    return "brodboken-2026";
+  }
+
+  return null;
+}
+
+function normalizeStripeMetadataItem(item: any) {
+  const ebookId = resolveStripeEbookId(item);
+  return {
+    ...item,
+    id: item?.id || ebookId || "course",
+    name: item?.name || (ebookId ? STRIPE_EBOOK_NAMES[ebookId] : undefined),
+    price:
+      item?.price ??
+      (ebookId ? STRIPE_EBOOK_PRICES_EX_VAT[ebookId] : undefined) ??
+      0,
+    quantity: item?.quantity || item?.q || 1,
+    type: item?.type || item?.t || (ebookId ? "book" : "course"),
+  };
+}
+
 export async function GET(req: NextRequest) {
   try {
     const session_id = req.nextUrl.searchParams.get("session_id");
@@ -99,7 +161,7 @@ export async function GET(req: NextRequest) {
           }> = [];
           try {
             const raw = (session.metadata as any)?.items || "";
-            if (raw) items = JSON.parse(raw);
+            if (raw) items = JSON.parse(raw).map(normalizeStripeMetadataItem);
           } catch {}
 
           const attribution = {
