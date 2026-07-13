@@ -448,10 +448,12 @@ class MailchimpEcommerceService {
       price: number;
       quantity: number;
       type?: string;
+      vatRate?: number;
     }>;
     totalAmount: number;
     currency?: string;
     campaignId?: string;
+    previousCartIds?: string[];
   }): Promise<string | null> {
     if (!this.isConfigured() || !this.isAbandonedCartEnabled()) {
       console.log('ℹ️ Mailchimp abandoned cart not configured/enabled, skipping cart sync');
@@ -468,6 +470,14 @@ class MailchimpEcommerceService {
       : this.getSafeCartId(params.cartId);
 
     try {
+      const previousCartIds = Array.from(
+        new Set((params.previousCartIds || []).filter(Boolean)),
+      ).filter((cartId) => this.getSafeCartId(cartId) !== safeCartId && cartId !== safeCartId);
+
+      for (const previousCartId of previousCartIds) {
+        await this.deleteCart(previousCartId);
+      }
+      
       for (const item of params.items) {
         const variantId = `${item.id}-default`;
         const vatRate =
@@ -479,7 +489,7 @@ class MailchimpEcommerceService {
         const grossPrice = Math.round(item.price * (1 + vatRate) * 100) / 100;
         
         await this.syncProduct({
-          id: item.id,
+          id: productId,
           title: item.name,
           description: `${item.type || 'course'} - ${item.name}`,
           type: item.type || 'course',
@@ -511,6 +521,7 @@ class MailchimpEcommerceService {
         currency_code: (params.currency || 'SEK').toUpperCase(),
         order_total: params.totalAmount,
         lines: params.items.map((item, index) => {
+          const productId = this.getSafeProductId(item);
           const vatRate =
             typeof item.vatRate === 'number'
               ? item.vatRate
@@ -522,9 +533,9 @@ class MailchimpEcommerceService {
 
           return {
             id: String(index + 1),
-            product_id: item.id,
+            product_id: productId,
             product_title: item.name,
-            product_variant_id: `${item.id}-default`,
+            product_variant_id: `${productId}-default`,
             product_variant_title: item.name,
             quantity: item.quantity,
             price: grossPrice
@@ -538,6 +549,12 @@ class MailchimpEcommerceService {
         sourceCartId: params.cartId,
         customerEmail: params.customerEmail,
         checkoutUrl: params.checkoutUrl,
+        orderTotal: params.totalAmount,
+        linePrices: cart.lines.map((line) => ({
+          productId: line.product_id,
+          price: line.price,
+          quantity: line.quantity,
+        })),
       });
 
       const createResponse = await fetch(`${this.baseUrl}/carts`, {
