@@ -357,6 +357,19 @@ class MailchimpEcommerceService {
       let responseText = await response.text();
       
       if (!response.ok) {
+        const duplicateOrder =
+          response.status === 400 &&
+          /order with the provided id already exists/i.test(responseText);
+
+        if (duplicateOrder) {
+          console.log('ℹ️ Mailchimp purchase already exists, treating as tracked:', {
+            orderId,
+            safeOrderId,
+            customerEmail,
+          });
+          return;
+        }
+
         const invalidCampaignId =
           !!order.campaign_id &&
           response.status === 400 &&
@@ -385,6 +398,19 @@ class MailchimpEcommerceService {
       }
 
       if (!response.ok) {
+        const duplicateOrder =
+          response.status === 400 &&
+          /order with the provided id already exists/i.test(responseText);
+
+        if (duplicateOrder) {
+          console.log('ℹ️ Mailchimp purchase already exists after retry, treating as tracked:', {
+            orderId,
+            safeOrderId,
+            customerEmail,
+          });
+          return;
+        }
+        
         throw new Error(`Mailchimp API error: ${response.status} ${responseText}`);
       }
 
