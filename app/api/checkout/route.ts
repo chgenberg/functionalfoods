@@ -528,6 +528,23 @@ export async function POST(req: NextRequest) {
           "@/app/lib/mailchimp-ecommerce"
         );
         const mailchimpEcommerce = getMailchimpEcommerce();
+        const previousMailchimpCarts = await prisma.order.findMany({
+          where: {
+            customerEmail: normalizedEmail,
+            status: "PENDING",
+            id: { not: orderId },
+          },
+          orderBy: { createdAt: "desc" },
+          take: 10,
+          select: { id: true, metadata: true },
+        });
+        const previousCartIds = previousMailchimpCarts
+          .map((order) => {
+            const metadata = (order.metadata as any) || {};
+            return metadata.mailchimpCartId || null;
+          })
+          .filter(Boolean) as string[];
+        
         const mailchimpCartId = await mailchimpEcommerce.upsertCart({
           cartId: orderId,
           customerEmail,
@@ -546,6 +563,7 @@ export async function POST(req: NextRequest) {
           totalAmount: (subtotal - discountAmount) / 100,
           currency: "SEK",
           campaignId: effectiveAttribution?.mc_cid || undefined,
+          previousCartIds,
         });
         
         if (mailchimpCartId) {
