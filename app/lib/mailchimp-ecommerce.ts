@@ -166,7 +166,7 @@ class MailchimpEcommerceService {
     }
 
     const customerId = email.toLowerCase().trim();
-    const customerUrl = `${this.baseUrl}/customers/${customerId}`;
+    const customerUrl = `${this.baseUrl}/customers/${encodeURIComponent(customerId)}`;
 
     try {
       // Try to get existing customer
@@ -204,6 +204,18 @@ class MailchimpEcommerceService {
 
     if (!createResponse.ok) {
       const errorText = await createResponse.text();
+      const customerAlreadyExists =
+        createResponse.status === 400 &&
+        /customer with the id .* already exists/i.test(errorText);
+    
+      if (customerAlreadyExists) {
+        console.log('ℹ️ Mailchimp customer already exists, using existing customer:', {
+          customerId,
+          email: customerId,
+        });
+        return customerId;
+      }
+      
       throw new Error(`Failed to create Mailchimp customer: ${createResponse.status} ${errorText}`);
     }
 
@@ -478,7 +490,7 @@ class MailchimpEcommerceService {
         await this.deleteCart(previousCartId);
       }
       
-      for (const item of params.items) {
+      const cartItems = params.items.map((item) => {
         const variantId = `${item.id}-default`;
         const vatRate =
           typeof item.vatRate === 'number'
@@ -488,19 +500,32 @@ class MailchimpEcommerceService {
               : 0.25;
         const grossPrice = Math.round(item.price * (1 + vatRate) * 100) / 100;
         
-        await this.syncProduct({
-          id: productId,
-          title: item.name,
-          description: `${item.type || 'course'} - ${item.name}`,
-          type: item.type || 'course',
-          vendor: 'Functional Foods',
-          variants: [{
-            id: variantId,
+        return {
+          item,
+          productId,
+          variantId,
+          grossPrice,
+        };
+      });
+
+      for (const { item, productId, variantId, grossPrice } of cartItems) {
+        try {
+          await this.syncProduct({
+            id: productId,
             title: item.name,
-            price: grossPrice,
-            inventory_quantity: 999
-          }]
-        });
+            description: `${item.type || 'course'} - ${item.name}`,
+            type: item.type || 'course',
+            vendor: 'Functional Foods',
+            variants: [{
+              id: variantId,
+              title: item.name,
+              price: grossPrice,
+              inventory_quantity: 999
+            }]
+          });
+        } catch (error) {
+          console.warn(`⚠️ Failed to sync product ${productId} before cart sync:`, error);
+        }
       }
 
       const nameParts = params.customerName?.trim().split(/\s+/).filter(Boolean) || [];
@@ -520,27 +545,15 @@ class MailchimpEcommerceService {
         checkout_url: params.checkoutUrl,
         currency_code: (params.currency || 'SEK').toUpperCase(),
         order_total: params.totalAmount,
-        lines: params.items.map((item, index) => {
-          const productId = this.getSafeProductId(item);
-          const vatRate =
-            typeof item.vatRate === 'number'
-              ? item.vatRate
-              : item.type === 'book'
-                ? 0.06
-                : 0.25;
-          const grossPrice =
-            Math.round(item.price * (1 + vatRate) * 100) / 100;
-
-          return {
+        lines: cartItems.map(({ item, productId, variantId, grossPrice }, index) => ({
             id: String(index + 1),
             product_id: productId,
             product_title: item.name,
-            product_variant_id: `${productId}-default`,
+            product_variant_id: variantId,
             product_variant_title: item.name,
             quantity: item.quantity,
             price: grossPrice
-          };
-        }),
+        })),
         campaign_id: params.campaignId || undefined
       };
 
