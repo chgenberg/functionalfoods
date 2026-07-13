@@ -1514,6 +1514,23 @@ export async function POST(req: NextRequest) {
     try {
       const { getMailchimpEcommerce } = await import("@/app/lib/mailchimp-ecommerce");
       const mailchimpEcommerce = getMailchimpEcommerce();
+      const previousMailchimpCarts = await prisma.order.findMany({
+        where: {
+          customerEmail,
+          status: "PENDING",
+          id: { not: orderId },
+        },
+        orderBy: { createdAt: "desc" },
+        take: 10,
+        select: { id: true, metadata: true },
+      });
+      const previousCartIds = previousMailchimpCarts
+        .map((order) => {
+          const metadata = (order.metadata as any) || {};
+          return metadata.mailchimpCartId || null;
+        })
+        .filter(Boolean) as string[];
+      
       const mailchimpCartId = await mailchimpEcommerce.upsertCart({
         cartId: orderId,
         customerEmail,
@@ -1530,6 +1547,7 @@ export async function POST(req: NextRequest) {
         totalAmount,
         currency: "SEK",
         campaignId: attribution?.mc_cid || undefined,
+        previousCartIds,
       });
 
       if (mailchimpCartId) {
