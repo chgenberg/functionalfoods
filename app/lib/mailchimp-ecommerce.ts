@@ -112,6 +112,14 @@ class MailchimpEcommerceService {
     }
   }
 
+  private getSiteUrl(): string {
+    return (
+      process.env.NEXT_PUBLIC_SITE_URL ||
+      process.env.NEXT_PUBLIC_APP_URL ||
+      'https://www.functionalfoods.se'
+    ).replace(/\/$/, '');
+  }
+
   /**
    * Check if Mailchimp E-commerce is configured
    */
@@ -147,6 +155,9 @@ class MailchimpEcommerceService {
       if (normalizedName.includes('sota') || normalizedName.includes('sotsaker')) {
         return 'sota-godsaker';
       }
+      if (normalizedName.includes('halsosamma') && normalizedName.includes('frukostar')) {
+        return 'halsosamma-frukostar';
+      }
     }
 
     const rawId = item.id || item.name;
@@ -160,6 +171,32 @@ class MailchimpEcommerceService {
       .slice(0, 80);
 
     return safeId || 'product';
+  }
+
+  private getProductImagePath(productId: string): string | undefined {
+    const imageMap: Record<string, string> = {
+      'brodboken-2026': '/baka-glutenfritt-square.png',
+      paskbuffe: '/paskbuffe-square.jpg',
+      'sota-godsaker': '/sota-godsaker-square.png',
+      'grill-sommarmat': '/grill-sommarmat-square.png',
+      'halsosamma-frukostar': '/halsosamma-frukostar-square.png',
+      'functional-flow': '/Kurser_bilder/Functional_Gut Health.jpg',
+      'functional-basics': '/Kurser_bilder/Functional_Basics - Grunden i functional foods.jpg',
+      'functional-energy': '/Kurser_bilder/Functional_insulin balance.jpg',
+      'functional-hormone': '/Hormonell_balans/hormonell_balans_kurssida.png',
+      'hormonell-balans': '/Hormonell_balans/hormonell_balans_kurssida.png',
+    };
+
+    return imageMap[productId];
+  }
+
+  private getProductImageUrl(productId: string): string | undefined {
+    const imagePath = this.getProductImagePath(productId);
+    if (!imagePath) return undefined;
+    if (imagePath.startsWith('http://') || imagePath.startsWith('https://')) {
+      return imagePath;
+    }
+    return `${this.getSiteUrl()}${imagePath.startsWith('/') ? imagePath : `/${imagePath}`}`;
   }
 
   /**
@@ -306,9 +343,12 @@ class MailchimpEcommerceService {
         const variantId = `${productId}-default`;
 
         try {
+          const imageUrl = this.getProductImageUrl(productId);
+          
           await this.syncProduct({
             id: productId,
             title: item.name,
+            image_url: imageUrl,
             description: `${item.type || 'course'} - ${item.name}`,
             type: item.type || 'course',
             vendor: 'Functional Foods',
@@ -530,9 +570,12 @@ class MailchimpEcommerceService {
 
       for (const { item, productId, variantId, grossPrice } of cartItems) {
         try {
+          const imageUrl = this.getProductImageUrl(productId);
+          
           await this.syncProduct({
             id: productId,
             title: item.name,
+            image_url: imageUrl,
             description: `${item.type || 'course'} - ${item.name}`,
             type: item.type || 'course',
             vendor: 'Functional Foods',
@@ -587,6 +630,7 @@ class MailchimpEcommerceService {
           productId: line.product_id,
           price: line.price,
           quantity: line.quantity,
+          imageUrl: this.getProductImageUrl(line.product_id),
         })),
       });
 
@@ -684,6 +728,25 @@ class MailchimpEcommerceService {
         // If product already exists, that's okay
         if (response.status === 400 && errorText.includes('already exists')) {
           console.log(`ℹ️ Product ${product.id} already exists in Mailchimp`);
+          const updateResponse = await fetch(
+            `${this.baseUrl}/products/${encodeURIComponent(product.id)}`,
+            {
+              method: 'PATCH',
+              headers: {
+                'Authorization': `Basic ${Buffer.from(`anystring:${this.config!.apiKey}`).toString('base64')}`,
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify(product)
+            },
+          );
+
+          if (!updateResponse.ok) {
+            const updateText = await updateResponse.text();
+            console.warn(`⚠️ Mailchimp product update failed: ${product.id} ${updateResponse.status} ${updateText}`);
+          } else {
+            console.log(`✅ Product updated in Mailchimp: ${product.id}`);
+          }
+          
           if (product.variants?.length) {
             for (const variant of product.variants) {
               await this.syncProductVariant(product.id, variant);
