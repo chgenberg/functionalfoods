@@ -817,7 +817,7 @@ export default function UnifiedSalesPage() {
       return {
         label: 'Mailchimp',
         color: 'yellow',
-        detail: sourceAttribution?.mc_cid || 'Abandoned cart',
+        detail: 'Abandoned cart',
       };
     }
 
