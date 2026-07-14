@@ -100,6 +100,7 @@ export async function POST(req: NextRequest) {
     // Require customer name/email for all purchases (course or ebook)
     const customerName = (customer?.name || "").trim();
     const customerEmail = (customer?.email || "").trim();
+    const isValidEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(customerEmail);
     if (!customerName) {
       return NextResponse.json(
         { error: "Namn är obligatoriskt" },
@@ -109,6 +110,12 @@ export async function POST(req: NextRequest) {
     if (!customerEmail) {
       return NextResponse.json(
         { error: "E-postadress är obligatorisk" },
+        { status: 400 },
+      );
+    }
+    if (!isValidEmail) {
+      return NextResponse.json(
+        { error: "Ange en giltig e-postadress" },
         { status: 400 },
       );
     }
