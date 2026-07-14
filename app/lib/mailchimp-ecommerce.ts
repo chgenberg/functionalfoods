@@ -120,7 +120,12 @@ class MailchimpEcommerceService {
   }
 
   isAbandonedCartEnabled(): boolean {
-  return process.env.MAILCHIMP_ABANDONED_CART_ENABLED === 'true';
+    return process.env.MAILCHIMP_ABANDONED_CART_ENABLED === 'true';
+  }
+
+  private isValidCustomerEmail(email?: string | null): boolean {
+    const normalized = (email || '').trim().toLowerCase();
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalized);
   }
 
   private getSafeProductId(item: { id: string; name: string; type?: string }): string {
@@ -280,6 +285,20 @@ class MailchimpEcommerceService {
     const usePut = options?.usePut === true;
 
     try {
+      if (!this.isValidCustomerEmail(customerEmail)) {
+        console.warn('⚠️ Mailchimp E-commerce purchase skipped: invalid customer email', {
+          orderId,
+          customerEmail,
+        });
+        return;
+      }
+
+      // Parse customer name and ensure Mailchimp can accept the customer before syncing products.
+      const nameParts = customerName?.split(' ') || [];
+      const firstName = nameParts[0] || '';
+      const lastName = nameParts.slice(1).join(' ') || '';
+      const customerId = await this.getOrCreateCustomer(customerEmail, firstName, lastName);
+      
       // Sync products first
       // IMPORTANT: We create a deterministic "default" variant id.
       for (const item of items) {
@@ -305,14 +324,6 @@ class MailchimpEcommerceService {
           console.warn(`⚠️ Failed to sync product ${productId} before order tracking:`, error);
         }
       }
-
-      // Parse customer name
-      const nameParts = customerName?.split(' ') || [];
-      const firstName = nameParts[0] || '';
-      const lastName = nameParts.slice(1).join(' ') || '';
-
-      // Get or create customer
-      const customerId = await this.getOrCreateCustomer(customerEmail, firstName, lastName);
 
       // ✅ Create order lines with REQUIRED product_variant_id
       const orderLines: MailchimpOrderLine[] = items.map((item, index) => {
@@ -474,6 +485,14 @@ class MailchimpEcommerceService {
 
     if (!params.customerEmail || params.customerEmail.startsWith('guest-')) {
       console.log('ℹ️ Mailchimp cart sync skipped: missing/guest email');
+      return null;
+    }
+
+    if (!this.isValidCustomerEmail(params.customerEmail)) {
+      console.warn('⚠️ Mailchimp cart sync skipped: invalid customer email', {
+        cartId: params.cartId,
+        customerEmail: params.customerEmail,
+      });
       return null;
     }
 
