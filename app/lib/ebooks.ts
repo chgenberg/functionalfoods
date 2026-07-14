@@ -98,3 +98,7 @@ export function buildEbookDownloadUrl(
   baseUrl: string,
   ebookId: string,
   token: string,
+): string {
+  const product = EBOOK_PRODUCTS[ebookId] || EBOOK_PRODUCTS["brodboken-2026"];
+  return `${baseUrl}${product.downloadRoute}?token=${token}`;
+}
