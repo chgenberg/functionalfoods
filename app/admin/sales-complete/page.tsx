@@ -214,6 +214,39 @@ export default function UnifiedSalesPage() {
     }, 0);
   };
 
+  const determinePaymentProvider = (order: any): 'stripe' | 'svea' | 'manual' => {
+    const metadata = (order.metadata as any) || {};
+    const paymentMethod = String(order.payment?.paymentMethod || '').toLowerCase();
+    const paymentExternalId = String(order.payment?.externalId || '').toLowerCase();
+    const checkoutOrderId = String(order.checkoutOrderId || '').toLowerCase();
+
+    if (
+      paymentMethod.includes('stripe') ||
+      paymentExternalId.startsWith('pi_') ||
+      checkoutOrderId.startsWith('cs_') ||
+      metadata.stripeSessionId ||
+      metadata.stripePaymentIntentId
+    ) {
+      return 'stripe';
+    }
+
+    if (
+      paymentMethod.includes('svea') ||
+      paymentMethod.includes('swish') ||
+      paymentMethod.includes('faktura') ||
+      metadata.svea ||
+      metadata.sveaOrderId ||
+      metadata.sveaPaymentType ||
+      metadata.sveaStatus ||
+      checkoutOrderId === 'simulated' ||
+      /^\d+$/.test(checkoutOrderId)
+    ) {
+      return 'svea';
+    }
+
+    return 'manual';
+  };
+
   const extractCoursesFromDescription = (description: string): string[] => {
     if (!description) return [];
     const lower = description.toLowerCase();
@@ -264,24 +297,10 @@ export default function UnifiedSalesPage() {
       const combinedOrders: UnifiedOrder[] = [];
       
       ordersData.forEach((order: any) => {
-        // Determine payment provider
-        let paymentProvider: 'stripe' | 'svea' | 'manual' = 'manual';
-        
-        if (order.checkoutOrderId) {
-          // If there's a checkoutOrderId, it's from Svea
-          paymentProvider = 'svea';
-        } else if (order.payment?.paymentMethod) {
-          const method = order.payment.paymentMethod.toLowerCase();
-          if (method.includes('stripe') || method.includes('card')) {
-            paymentProvider = 'stripe';
-          } else if (method.includes('svea') || method.includes('swish') || method.includes('faktura')) {
-            paymentProvider = 'svea';
-          }
-        }
-
         const rawProducts = order.items?.map((i: any) => i?.name || '') || [];
         const normalizedCourses = normalizeCourseNames(rawProducts);
         const metadata = order.metadata as any || {};
+        const paymentProvider = determinePaymentProvider(order);
         const displayPaymentStatus = order.displayPaymentStatus || order.paymentStatus || order.payment?.status || order.status;
 
         combinedOrders.push({
