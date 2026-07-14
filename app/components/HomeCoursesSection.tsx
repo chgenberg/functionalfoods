@@ -46,7 +46,7 @@ const courses = [
 
 export default function HomeCoursesSection() {
   return (
-    <section className="py-12 md:py-20 px-4 bg-white">
+    <section className="py-12 md:py-20 px-4 bg-#F9F7F2">
       <div className="max-w-7xl mx-auto">
         {/* Mobile */}
         <div className="lg:hidden">

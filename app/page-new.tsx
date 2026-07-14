@@ -124,7 +124,7 @@ export default function Home() {
             style={{ zIndex: 1 }}
           >
             <Image
-              src="/hero-functional-foods.jpg"
+              src="/hero-functional-foods.jpeg"
               alt="Functional Foods Hero"
               fill
               priority
@@ -161,12 +161,16 @@ export default function Home() {
               className="max-w-3xl"
             >
               <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold text-white leading-tight text-left drop-shadow-lg">
-                Ät dig till bättre hälsa med oss
+                Ät dig till bättre
+                <br />
+                hälsa med oss
               </h1>
 
               <p className="mt-5 text-lg sm:text-xl md:text-2xl text-white/90 text-left max-w-2xl drop-shadow-lg">
-                Välj det område du vill förbättra och följ en kurs eller e-bok
-                som gör det enkelt att använda Functional Foods i vardagen.
+                Välj det område du vill förbättra och följ en kurs eller
+                <br />
+                e-bok som gör det enkelt att använda Functional Foods i
+                vardagen.
               </p>
 
               <div className="mt-8 flex flex-col sm:flex-row gap-4">
