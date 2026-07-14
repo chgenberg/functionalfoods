@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/app/lib/database";
-
+import { getEbookPdfPath } from "@/app/lib/ebooks";
 export const dynamic = "force-dynamic";
 
 /**
@@ -55,26 +55,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Get the download URL based on ebookId
-    let downloadPath = "";
-    if (downloadToken.ebookId === "brodboken-2026") {
-      downloadPath = "/baka-glutenfritt-ulrika-davidsson.pdf";
-    }
-
-    if (downloadToken.ebookId === "paskbuffe") {
-      downloadPath = "/paskbuffe-ulrika-davidsson.pdf";
-    }
-
-    if (downloadToken.ebookId === "sota-godsaker") {
-      downloadPath = "/sota-godsaker-ulrika-davidsson.pdf";
-    }
-
-    if (downloadToken.ebookId === "grill-sommarmat") {
-      downloadPath = "/grill-sommarmat-ulrika-davidsson.pdf";
-    }
-
-    if (downloadToken.ebookId === "halsosamma-frukostar") {
-      downloadPath = "/halsosamma-frukostar-ulrika-davidsson.pdf";
-    }
+    const downloadPath = getEbookPdfPath(downloadToken.ebookId);
 
     if (!downloadPath) {
       return NextResponse.json(
