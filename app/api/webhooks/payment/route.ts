@@ -5,6 +5,11 @@ import { emailService } from "../../../lib/email";
 import { getMailchimpMarketing } from "../../../lib/mailchimp-marketing";
 import { trackPurchaseServer } from "@/app/lib/server-analytics";
 import {
+  EBOOK_PRODUCTS,
+  buildEbookDownloadUrl,
+  resolveEbookIdFromItem,
+} from "@/app/lib/ebooks";
+import {
   SUMMER_EBOOK_CAMPAIGN_ID,
   SUMMER_EBOOK_CAMPAIGN_TAG,
   hasSummerEbookBundleByIdentity,
@@ -15,92 +20,8 @@ export const dynamic = "force-dynamic";
 const prisma = new PrismaClient();
 const paymentService = new PaymentService();
 
-const EBOOK_DOWNLOAD_ROUTES: Record<string, string> = {
-  "brodboken-2026": "/brodboken/ladda-ner",
-  paskbuffe: "/e-bocker/paskbuffe/ladda-ner",
-  "sota-godsaker": "/e-bocker/sota-godsaker/ladda-ner",
-  "grill-sommarmat": "/e-bocker/grill-sommarmat/ladda-ner",
-  "halsosamma-frukostar": "/e-bocker/halsosamma-frukostar/ladda-ner",
-};
-
-const EBOOK_DISPLAY_NAMES: Record<string, string> = {
-  "brodboken-2026": "Baka Glutenfritt – E-bok",
-  paskbuffe: "Påskbuffé – E-bok av Ulrika Davidsson",
-  "sota-godsaker": "Söta Godsaker – E-bok av Ulrika Davidsson",
-  "grill-sommarmat": "Grill- & Sommarmat – E-bok av Ulrika Davidsson",
-  "halsosamma-frukostar": "Hälsosamma Frukostar – E-bok av Ulrika Davidsson",
-};
-
-const EBOOK_PRICES_EX_VAT: Record<string, number> = {
-  "brodboken-2026": 65.09,
-  paskbuffe: 93.4,
-  "sota-godsaker": 102.83,
-  "grill-sommarmat": 140.57,
-  "halsosamma-frukostar": 93.4,
-};
-
 function resolveEbookId(item: any): string | null {
-  const value = String(
-    [
-      item?.id,
-      item?.courseId,
-      item?.name,
-      item?.description,
-      item?.price?.product?.name,
-      item?.price?.product,
-    ]
-      .filter(Boolean)
-      .join(" "),
-  ).toLowerCase();
-
-  if (!value) return null;
-
-  if (
-    value.includes("söta godsaker") ||
-    value.includes("sota godsaker") ||
-    value.includes("sota-godsaker")
-  ) {
-    return "sota-godsaker";
-  }
-  
-  if (
-    value.includes("grill- & sommarmat") ||
-    value.includes("grill sommarmat") ||
-    value.includes("grill och sommarmat") ||
-    value.includes("grill-sommarmat")
-  ) {
-    return "grill-sommarmat";
-  }
-
-  if (value.includes("påskbuffé") || value.includes("paskbuffe")) {
-    return "paskbuffe";
-  }
-
-  if (
-    value.includes("hälsosamma frukostar") ||
-    value.includes("halsosamma frukostar") ||
-    value.includes("halsosamma-frukostar")
-  ) {
-    return "halsosamma-frukostar";
-  }
-
-  if (
-    value.includes("brodboken") ||
-    value.includes("brodbok") ||
-    value.includes("baka glutenfritt") ||
-    value.includes("glutenfritt") ||
-    value.includes("brodboken-2026")
-  ) {
-    return "brodboken-2026";
-  }
-
-  return null;
-}
-
-function buildEbookDownloadUrl(baseUrl: string, ebookId: string, token: string) {
-  const route =
-    EBOOK_DOWNLOAD_ROUTES[ebookId] || EBOOK_DOWNLOAD_ROUTES["brodboken-2026"];
-  return `${baseUrl}${route}?token=${token}`;
+  return resolveEbookIdFromItem(item);
 }
 
 function normalizeStripeItem(item: any) {
@@ -109,10 +30,10 @@ function normalizeStripeItem(item: any) {
   const id = item?.id || ebookId || "course";
   const quantity = item?.quantity || item?.q || 1;
   const name =
-    item?.name || (ebookId ? EBOOK_DISPLAY_NAMES[ebookId] : undefined);
+    item?.name || (ebookId ? EBOOK_PRODUCTS[ebookId]?.name : undefined) || id;
   const price =
     item?.price ??
-    (ebookId ? EBOOK_PRICES_EX_VAT[ebookId] : undefined) ??
+    (ebookId ? EBOOK_PRODUCTS[ebookId]?.priceExVat : undefined) ??
     0;
 
   return {
@@ -163,7 +84,7 @@ async function ensureEbookDownloadsForOrder(
         orderNumber: order.orderNumber,
         customerEmail: email,
         ebookId,
-        ebookName: book.name || EBOOK_DISPLAY_NAMES[ebookId],
+        ebookName: book.name || EBOOK_PRODUCTS[ebookId]?.name || "E-bok",
         maxDownloads: 5,
         expiresAt: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000),
       },
@@ -172,7 +93,7 @@ async function ensureEbookDownloadsForOrder(
     await emailService.sendEbookDownloadEmail({
       email,
       name,
-      ebookName: book.name || EBOOK_DISPLAY_NAMES[ebookId],
+      ebookName: book.name || EBOOK_PRODUCTS[ebookId]?.name || "E-bok",
       downloadUrl: buildEbookDownloadUrl(baseUrl, ebookId, downloadToken),
       downloadPassword: downloadToken,
       orderNumber: order.orderNumber,
@@ -865,7 +786,7 @@ async function handleCheckoutSessionCompleted(session: any) {
                 await emailService.sendEbookDownloadEmail({
                   email: user.email,
                   name: user.name || user.email,
-                  ebookName: book.name || EBOOK_DISPLAY_NAMES[ebookId],
+                  ebookName: book.name || EBOOK_PRODUCTS[ebookId]?.name || "E-bok",
                   downloadUrl: buildEbookDownloadUrl(
                     baseUrl,
                     ebookId,
