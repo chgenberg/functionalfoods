@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/app/lib/database";
-import { getEbookPdfPath } from "@/app/lib/ebooks";
+import { EBOOK_PRODUCTS } from "@/app/lib/ebooks";
 export const dynamic = "force-dynamic";
 
 /**
@@ -55,7 +55,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Get the download URL based on ebookId
-    const downloadPath = getEbookPdfPath(downloadToken.ebookId);
+    const downloadPath = EBOOK_PRODUCTS[downloadToken.ebookId]?.pdfPath || "";
 
     if (!downloadPath) {
       return NextResponse.json(
