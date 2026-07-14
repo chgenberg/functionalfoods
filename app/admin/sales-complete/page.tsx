@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import * as XLSX from 'xlsx';
 import { formatPrice } from '@/app/lib/utils';
+import { hasSummerEbookBundleByIdentity } from '@/app/lib/campaigns/summer-ebooks';
 
 interface UnifiedOrder {
   id: string;
@@ -194,6 +195,58 @@ export default function UnifiedSalesPage() {
     });
   };
 
+  const isRecoveredCartOrder = (order: UnifiedOrder) =>
+    !!order.metadata?.recoveredFromOrderId || order.status === 'RECOVERED';
+
+  const getOrderGrossAmount = (order: UnifiedOrder) => {
+    if (order.amount && order.amount > 0) {
+      return order.amount;
+    }
+
+    return (order.items || []).reduce((sum, item) => {
+      const isBook =
+        item.type === 'book' ||
+        (item.name || '').toLowerCase().includes('bok');
+      const vatRate = isBook ? 0.06 : 0.25;
+      const unitPriceInclVat =
+        Math.round((item.price || 0) * (1 + vatRate) * 100) / 100;
+      return sum + unitPriceInclVat * (item.quantity || 1);
+    }, 0);
+  };
+
+  const determinePaymentProvider = (order: any): 'stripe' | 'svea' | 'manual' => {
+    const metadata = (order.metadata as any) || {};
+    const paymentMethod = String(order.payment?.paymentMethod || '').toLowerCase();
+    const paymentExternalId = String(order.payment?.externalId || '').toLowerCase();
+    const checkoutOrderId = String(order.checkoutOrderId || '').toLowerCase();
+
+    if (
+      paymentMethod.includes('stripe') ||
+      paymentExternalId.startsWith('pi_') ||
+      checkoutOrderId.startsWith('cs_') ||
+      metadata.stripeSessionId ||
+      metadata.stripePaymentIntentId
+    ) {
+      return 'stripe';
+    }
+
+    if (
+      paymentMethod.includes('svea') ||
+      paymentMethod.includes('swish') ||
+      paymentMethod.includes('faktura') ||
+      metadata.svea ||
+      metadata.sveaOrderId ||
+      metadata.sveaPaymentType ||
+      metadata.sveaStatus ||
+      checkoutOrderId === 'simulated' ||
+      /^\d+$/.test(checkoutOrderId)
+    ) {
+      return 'svea';
+    }
+
+    return 'manual';
+  };
+
   const extractCoursesFromDescription = (description: string): string[] => {
     if (!description) return [];
     const lower = description.toLowerCase();
@@ -244,24 +297,10 @@ export default function UnifiedSalesPage() {
       const combinedOrders: UnifiedOrder[] = [];
       
       ordersData.forEach((order: any) => {
-        // Determine payment provider
-        let paymentProvider: 'stripe' | 'svea' | 'manual' = 'manual';
-        
-        if (order.checkoutOrderId) {
-          // If there's a checkoutOrderId, it's from Svea
-          paymentProvider = 'svea';
-        } else if (order.payment?.paymentMethod) {
-          const method = order.payment.paymentMethod.toLowerCase();
-          if (method.includes('stripe') || method.includes('card')) {
-            paymentProvider = 'stripe';
-          } else if (method.includes('svea') || method.includes('swish') || method.includes('faktura')) {
-            paymentProvider = 'svea';
-          }
-        }
-
         const rawProducts = order.items?.map((i: any) => i?.name || '') || [];
         const normalizedCourses = normalizeCourseNames(rawProducts);
         const metadata = order.metadata as any || {};
+        const paymentProvider = determinePaymentProvider(order);
         const displayPaymentStatus = order.displayPaymentStatus || order.paymentStatus || order.payment?.status || order.status;
 
         combinedOrders.push({
@@ -321,21 +360,7 @@ export default function UnifiedSalesPage() {
     };
 
     const monthlyMap: Record<string, number> = {};
-    const getOrderGrossAmount = (order: UnifiedOrder) => {
-      if (order.amount && order.amount > 0) {
-        return order.amount;
-      }
-
-      return (order.items || []).reduce((sum, item) => {
-        const isBook =
-          item.type === 'book' ||
-          (item.name || '').toLowerCase().includes('bok');
-        const vatRate = isBook ? 0.06 : 0.25;
-        const unitPriceInclVat =
-          Math.round((item.price || 0) * (1 + vatRate) * 100) / 100;
-        return sum + unitPriceInclVat * (item.quantity || 1);
-      }, 0);
-    };
+    const countedRecoveredOrders = new Set<string>();
 
     orders.forEach(order => {
       // Only count actually sold items for completed payments (refunds should NOT count as sold)
@@ -356,9 +381,10 @@ export default function UnifiedSalesPage() {
         summary.failedOrders++;
       }
 
-      if (order.status === 'RECOVERED') {
+      if (isRecoveredCartOrder(order) && !countedRecoveredOrders.has(order.id)) {
         summary.abandonedCartOrders++;
         summary.abandonedCartRevenue += getOrderGrossAmount(order) - (order.refundAmount || 0);
+        countedRecoveredOrders.add(order.id);
       }
 
       // Provider breakdown - only count completed orders for revenue
@@ -566,7 +592,7 @@ export default function UnifiedSalesPage() {
       const net = order.amount - refund;
       const couponCode = order.metadata?.couponCode || '';
       const discountAmount = order.metadata?.discountAmount || '';
-      const sourceInfo = getAttributionLabel(order.metadata?.attribution as Attribution | undefined);
+      const sourceInfo = getOrderSourceLabel(order);
       return {
         'Order ID': order.id,
         'Ordernummer': order.orderNumber,
@@ -601,6 +627,8 @@ export default function UnifiedSalesPage() {
     // 2) Line-item export (easy to pivot by product, quantity, VAT buckets)
     const lineItemsData = filteredOrders.flatMap(order => {
       const createdAtIso = new Date(order.createdAt).toISOString().replace('T', ' ').slice(0, 19);
+      const sourceInfo = getOrderSourceLabel(order);
+      
       return (order.items || []).map((item) => {
         const isBook = item.type === 'book' || (item.name || '').toLowerCase().includes('bok');
         const vatRate = isBook ? 0.06 : 0.25;
@@ -615,8 +643,8 @@ export default function UnifiedSalesPage() {
           'Datum': createdAtIso,
           'E-post': order.customerEmail,
           'Kund': order.customerName,
-          'Källa': getAttributionLabel(order.metadata?.attribution as Attribution | undefined).label,
-          'Detalj': getAttributionLabel(order.metadata?.attribution as Attribution | undefined).detail || '',
+          'Källa': sourceInfo.label,
+          'Källdetaljer': sourceInfo.detail || '',
           'Leverantör (kod)': order.paymentProvider,
           'Status (kod)': order.status,
           'Produkt': item.name,
@@ -752,6 +780,48 @@ export default function UnifiedSalesPage() {
     }
 
     return { label: 'Direkt', color: 'gray' };
+  };
+
+  const getOrderSourceLabel = (order: UnifiedOrder): { label: string; color: string; detail?: string } => {
+    const sourceAttribution = order.metadata?.attribution as Attribution | undefined;
+
+  if (order.metadata?.campaignId === 'sommar-ebocker-2026') {
+      const sourceMap: Record<string, string> = {
+        'campaign-link': 'Kampanjlänk',
+        'cart-upsell': 'Cart upsell',
+        'checkout-upsell': 'Checkout upsell',
+        'product-page': 'Produktsida',
+        'prova-popup': 'Popup',
+        'bundle-detected': 'Bundle identifierad',
+      };
+
+      return {
+        label: 'Sommarkampanj e-böcker',
+        color: 'green',
+        detail: sourceMap[order.metadata?.campaignSource] || order.metadata?.campaignSource || '',
+      };
+    }
+
+    if (
+      hasSummerEbookBundleByIdentity(order.items || []) &&
+      Math.round(Number(order.amount || 0)) === 250
+    ) {
+      return {
+        label: 'Sommarkampanj e-böcker',
+        color: 'green',
+        detail: 'Bundle identifierad',
+      };
+    }
+
+    if (isRecoveredCartOrder(order)) {
+      return {
+        label: 'Mailchimp',
+        color: 'yellow',
+        detail: 'Abandoned cart',
+      };
+    }
+
+    return getAttributionLabel(sourceAttribution);
   };
 
   const resetFilters = () => {
@@ -1393,8 +1463,7 @@ export default function UnifiedSalesPage() {
                     </td>
                     <td className="whitespace-nowrap">
                       {(() => {
-                        const attribution = order.metadata?.attribution as Attribution | undefined;
-                        const attrInfo = getAttributionLabel(attribution);
+                        const attrInfo = getOrderSourceLabel(order);
                         const colorMap: Record<string, string> = {
                           blue: 'bg-blue-100 text-blue-800',
                           purple: 'bg-purple-100 text-purple-800',

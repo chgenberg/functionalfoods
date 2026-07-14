@@ -27,6 +27,23 @@ function toDisplayPaymentStatus(orderStatus: string | null | undefined, paymentS
   return os || 'PENDING';
 }
 
+function getSveaCheckoutStatus(metadata: any): string | null {
+  return metadata?.svea?.checkoutStatus || metadata?.sveaStatus || metadata?.sveaCheckoutStatus || null;
+}
+
+function isUnpaidCreatedSveaCheckout(order: {
+  status: string;
+  checkoutOrderId: string | null;
+  metadata: unknown;
+}): boolean {
+  const metadata = (order.metadata as any) || {};
+  return (
+    order.status === 'PENDING' &&
+    !!order.checkoutOrderId &&
+    getSveaCheckoutStatus(metadata) === 'Created'
+  );
+}
+
 export async function GET(request: NextRequest) {
   // Skip during build process
   if (process.env.NEXT_PHASE === 'phase-production-build') {
@@ -37,6 +54,7 @@ export async function GET(request: NextRequest) {
   if (authResult instanceof NextResponse) return authResult;
 
   try {
+    const includeCreated = request.nextUrl.searchParams.get('includeCreated') === 'true';
     
     const orders = await prisma.order.findMany({
       include: {
@@ -63,7 +81,11 @@ export async function GET(request: NextRequest) {
       }
     });
 
-    const formattedOrders = orders.map((order) => {
+    const visibleOrders = includeCreated
+      ? orders
+      : orders.filter((order) => !isUnpaidCreatedSveaCheckout(order));
+
+    const formattedOrders = visibleOrders.map((order) => {
       const metadata = (order.metadata as any) || {};
       const isRecoveredPending =
         order.status === 'PENDING' && !!metadata.recoveredByOrderId;

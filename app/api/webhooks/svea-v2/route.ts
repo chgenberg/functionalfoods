@@ -6,6 +6,10 @@ import {
 } from "@/app/lib/svea-checkout-service";
 import { emailService } from "@/app/lib/email";
 import { getMailchimpMarketing } from "@/app/lib/mailchimp-marketing";
+import {
+  SUMMER_EBOOK_CAMPAIGN_ID,
+  SUMMER_EBOOK_CAMPAIGN_TAG,
+} from "@/app/lib/campaigns/summer-ebooks";
 import bcrypt from "bcryptjs";
 
 export const dynamic = "force-dynamic";
@@ -430,6 +434,10 @@ async function handleOrderCompleted(
                 courseNames,
                 firstName,
                 lastName,
+                (order.metadata as any)?.campaignId ===
+                  SUMMER_EBOOK_CAMPAIGN_ID
+                  ? [SUMMER_EBOOK_CAMPAIGN_TAG]
+                  : [],
               );
               console.log(
                 `✅ New customer added to Mailchimp with course tags: ${normalizedEmail}`,
@@ -711,6 +719,30 @@ async function handleOrderCompleted(
         }
       } catch (e) {
         console.warn("⚠️ Mailchimp E-commerce tracking failed:", e);
+        try {
+          const failedOrder = await prisma.order.findUnique({
+            where: { id: order.id },
+            select: { metadata: true },
+          });
+          const failedMetadata = (failedOrder?.metadata as any) || {};
+
+          await prisma.order.update({
+            where: { id: order.id },
+            data: {
+              metadata: {
+                ...failedMetadata,
+                mailchimpEcommerceErrorAt: new Date().toISOString(),
+                mailchimpEcommerceError:
+                  e instanceof Error ? e.message : String(e),
+              },
+            },
+          });
+        } catch (metadataError) {
+          console.warn(
+            "⚠️ Failed to record Mailchimp E-commerce error metadata:",
+            metadataError,
+          );
+        }
       }
 
       // Ensure abandoned cart cleanup is visible in admin even if purchase tracking
@@ -1030,11 +1062,36 @@ async function handleOrderCompleted(
                         email: normalizedEmail,
                         firstName: firstName || undefined,
                         lastName,
-                        tags: ["kund", purchaseTag],
+                        tags: [
+                          "kund",
+                          purchaseTag,
+                          ...((metadata as any)?.campaignId ===
+                          SUMMER_EBOOK_CAMPAIGN_ID
+                            ? [SUMMER_EBOOK_CAMPAIGN_TAG]
+                            : []),
+                        ],
                         status: "subscribed",
                       }),
                       new Promise((resolve) => setTimeout(resolve, 1500)),
                     ]);
+
+                    const latestOrder = await prisma.order.findUnique({
+                      where: { id: order.id },
+                      select: { metadata: true },
+                    });
+                    const latestMetadata = (latestOrder?.metadata as any) || {};
+
+                    await prisma.order.update({
+                      where: { id: order.id },
+                      data: {
+                        metadata: {
+                          ...latestMetadata,
+                          mailchimpMarketingTaggedAt:
+                            latestMetadata.mailchimpMarketingTaggedAt ||
+                            new Date().toISOString(),
+                        },
+                      },
+                    });
                   }
                 } catch (e) {
                   console.warn(
@@ -1045,11 +1102,18 @@ async function handleOrderCompleted(
               }
             }
             // Mark email as sent in metadata
+            const latestOrderForEmailMetadata = await prisma.order.findUnique({
+              where: { id: order.id },
+              select: { metadata: true },
+            });
+            const latestEmailMetadata =
+              (latestOrderForEmailMetadata?.metadata as any) || metadata;
+            
             await prisma.order.update({
               where: { id: order.id },
               data: {
                 metadata: {
-                  ...metadata,
+                  ...latestEmailMetadata,
                   confirmationEmailSent: true,
                   confirmationEmailSentAt: new Date().toISOString(),
                 },

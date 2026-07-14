@@ -55,6 +55,11 @@ class MailchimpMarketingService {
     return this.config !== null && this.baseUrl !== null;
   }
 
+  private isValidEmail(email?: string | null): boolean {
+    const normalized = (email || "").trim().toLowerCase();
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalized);
+  }
+
   /**
    * Add or update a subscriber in the list
    */
@@ -68,6 +73,11 @@ class MailchimpMarketingService {
 
     try {
       const email = params.email.toLowerCase().trim();
+      if (!this.isValidEmail(email)) {
+        console.warn("⚠️ Mailchimp Marketing skipped: invalid email", { email });
+        return false;
+      }
+      
       const subscriberHash = crypto
         .createHash("md5")
         .update(email)
@@ -207,6 +217,7 @@ class MailchimpMarketingService {
     courseNames: string[],
     firstName?: string,
     lastName?: string,
+    extraTags: string[] = [],
   ): Promise<boolean> {
     // --- helpers ---
     const stripInvisible = (s: string) =>
@@ -362,6 +373,10 @@ class MailchimpMarketingService {
       }
 
       if (!tags.includes(tag)) tags.push(tag);
+    }
+
+    for (const extraTag of extraTags.filter(Boolean)) {
+      if (!tags.includes(extraTag)) tags.push(extraTag);
     }
 
     console.log("🏷️ Mailchimp Marketing tags computed:", { email, tags });

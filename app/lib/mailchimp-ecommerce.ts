@@ -112,6 +112,14 @@ class MailchimpEcommerceService {
     }
   }
 
+  private getSiteUrl(): string {
+    return (
+      process.env.NEXT_PUBLIC_SITE_URL ||
+      process.env.NEXT_PUBLIC_APP_URL ||
+      'https://www.functionalfoods.se'
+    ).replace(/\/$/, '');
+  }
+
   /**
    * Check if Mailchimp E-commerce is configured
    */
@@ -120,7 +128,12 @@ class MailchimpEcommerceService {
   }
 
   isAbandonedCartEnabled(): boolean {
-  return process.env.MAILCHIMP_ABANDONED_CART_ENABLED === 'true';
+    return process.env.MAILCHIMP_ABANDONED_CART_ENABLED === 'true';
+  }
+
+  private isValidCustomerEmail(email?: string | null): boolean {
+    const normalized = (email || '').trim().toLowerCase();
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalized);
   }
 
   private getSafeProductId(item: { id: string; name: string; type?: string }): string {
@@ -142,6 +155,9 @@ class MailchimpEcommerceService {
       if (normalizedName.includes('sota') || normalizedName.includes('sotsaker')) {
         return 'sota-godsaker';
       }
+      if (normalizedName.includes('halsosamma') && normalizedName.includes('frukostar')) {
+        return 'halsosamma-frukostar';
+      }
     }
 
     const rawId = item.id || item.name;
@@ -157,6 +173,32 @@ class MailchimpEcommerceService {
     return safeId || 'product';
   }
 
+  private getProductImagePath(productId: string): string | undefined {
+    const imageMap: Record<string, string> = {
+      'brodboken-2026': '/baka-glutenfritt-square.png',
+      paskbuffe: '/paskbuffe-square.jpg',
+      'sota-godsaker': '/sota-godsaker-square.png',
+      'grill-sommarmat': '/grill-sommarmat-square.png',
+      'halsosamma-frukostar': '/halsosamma-frukostar-square.png',
+      'functional-flow': '/Kurser_bilder/Functional_Gut Health.jpg',
+      'functional-basics': '/Kurser_bilder/Functional_Basics - Grunden i functional foods.jpg',
+      'functional-energy': '/Kurser_bilder/Functional_insulin balance.jpg',
+      'functional-hormone': '/Hormonell_balans/hormonell_balans_kurssida.png',
+      'hormonell-balans': '/Hormonell_balans/hormonell_balans_kurssida.png',
+    };
+
+    return imageMap[productId];
+  }
+
+  private getProductImageUrl(productId: string): string | undefined {
+    const imagePath = this.getProductImagePath(productId);
+    if (!imagePath) return undefined;
+    if (imagePath.startsWith('http://') || imagePath.startsWith('https://')) {
+      return imagePath;
+    }
+    return `${this.getSiteUrl()}${imagePath.startsWith('/') ? imagePath : `/${imagePath}`}`;
+  }
+
   /**
    * Get or create a customer in Mailchimp
    */
@@ -166,7 +208,7 @@ class MailchimpEcommerceService {
     }
 
     const customerId = email.toLowerCase().trim();
-    const customerUrl = `${this.baseUrl}/customers/${customerId}`;
+    const customerUrl = `${this.baseUrl}/customers/${encodeURIComponent(customerId)}`;
 
     try {
       // Try to get existing customer
@@ -204,6 +246,18 @@ class MailchimpEcommerceService {
 
     if (!createResponse.ok) {
       const errorText = await createResponse.text();
+      const customerAlreadyExists =
+        createResponse.status === 400 &&
+        /customer with the id .* already exists/i.test(errorText);
+    
+      if (customerAlreadyExists) {
+        console.log('ℹ️ Mailchimp customer already exists, using existing customer:', {
+          customerId,
+          email: customerId,
+        });
+        return customerId;
+      }
+      
       throw new Error(`Failed to create Mailchimp customer: ${createResponse.status} ${errorText}`);
     }
 
@@ -268,6 +322,20 @@ class MailchimpEcommerceService {
     const usePut = options?.usePut === true;
 
     try {
+      if (!this.isValidCustomerEmail(customerEmail)) {
+        console.warn('⚠️ Mailchimp E-commerce purchase skipped: invalid customer email', {
+          orderId,
+          customerEmail,
+        });
+        return;
+      }
+
+      // Parse customer name and ensure Mailchimp can accept the customer before syncing products.
+      const nameParts = customerName?.split(' ') || [];
+      const firstName = nameParts[0] || '';
+      const lastName = nameParts.slice(1).join(' ') || '';
+      const customerId = await this.getOrCreateCustomer(customerEmail, firstName, lastName);
+      
       // Sync products first
       // IMPORTANT: We create a deterministic "default" variant id.
       for (const item of items) {
@@ -275,9 +343,12 @@ class MailchimpEcommerceService {
         const variantId = `${productId}-default`;
 
         try {
+          const imageUrl = this.getProductImageUrl(productId);
+          
           await this.syncProduct({
             id: productId,
             title: item.name,
+            image_url: imageUrl,
             description: `${item.type || 'course'} - ${item.name}`,
             type: item.type || 'course',
             vendor: 'Functional Foods',
@@ -293,14 +364,6 @@ class MailchimpEcommerceService {
           console.warn(`⚠️ Failed to sync product ${productId} before order tracking:`, error);
         }
       }
-
-      // Parse customer name
-      const nameParts = customerName?.split(' ') || [];
-      const firstName = nameParts[0] || '';
-      const lastName = nameParts.slice(1).join(' ') || '';
-
-      // Get or create customer
-      const customerId = await this.getOrCreateCustomer(customerEmail, firstName, lastName);
 
       // ✅ Create order lines with REQUIRED product_variant_id
       const orderLines: MailchimpOrderLine[] = items.map((item, index) => {
@@ -345,7 +408,7 @@ class MailchimpEcommerceService {
         ? `${this.baseUrl}/orders/${encodeURIComponent(safeOrderId)}`
         : `${this.baseUrl}/orders`;
       
-      const response = await fetch(orderUrl, {
+      let response = await fetch(orderUrl, {
         method: usePut ? 'PUT' : 'POST',
         headers: {
           'Authorization': `Basic ${Buffer.from(`anystring:${this.config!.apiKey}`).toString('base64')}`,
@@ -354,9 +417,63 @@ class MailchimpEcommerceService {
         body: JSON.stringify(order)
       });
       
-      const responseText = await response.text();
+      let responseText = await response.text();
       
       if (!response.ok) {
+        const duplicateOrder =
+          response.status === 400 &&
+          /order with the provided id already exists/i.test(responseText);
+
+        if (duplicateOrder) {
+          console.log('ℹ️ Mailchimp purchase already exists, treating as tracked:', {
+            orderId,
+            safeOrderId,
+            customerEmail,
+          });
+          return;
+        }
+
+        const invalidCampaignId =
+          !!order.campaign_id &&
+          response.status === 400 &&
+          /campaign/i.test(responseText);
+
+        if (invalidCampaignId) {
+          console.warn('⚠️ Mailchimp campaign_id rejected, retrying purchase tracking without campaign attribution:', {
+            orderId,
+            campaignId: order.campaign_id,
+            response: responseText,
+          });
+
+          delete order.campaign_id;
+
+          response = await fetch(orderUrl, {
+            method: usePut ? 'PUT' : 'POST',
+            headers: {
+              'Authorization': `Basic ${Buffer.from(`anystring:${this.config!.apiKey}`).toString('base64')}`,
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(order)
+          });
+
+          responseText = await response.text();
+        }
+      }
+
+      if (!response.ok) {
+        const duplicateOrder =
+          response.status === 400 &&
+          /order with the provided id already exists/i.test(responseText);
+
+        if (duplicateOrder) {
+          console.log('ℹ️ Mailchimp purchase already exists after retry, treating as tracked:', {
+            orderId,
+            safeOrderId,
+            customerEmail,
+          });
+          return;
+        }
+        
         throw new Error(`Mailchimp API error: ${response.status} ${responseText}`);
       }
 
@@ -366,7 +483,7 @@ class MailchimpEcommerceService {
         customerEmail,
         totalAmount,
         itemsCount: items.length,
-        campaignId: campaignId || 'none',
+        campaignId: order.campaign_id || 'none',
         trackingCode: _trackingCode || 'none'
       });
 
@@ -394,10 +511,12 @@ class MailchimpEcommerceService {
       price: number;
       quantity: number;
       type?: string;
+      vatRate?: number;
     }>;
     totalAmount: number;
     currency?: string;
     campaignId?: string;
+    previousCartIds?: string[];
   }): Promise<string | null> {
     if (!this.isConfigured() || !this.isAbandonedCartEnabled()) {
       console.log('ℹ️ Mailchimp abandoned cart not configured/enabled, skipping cart sync');
@@ -409,12 +528,29 @@ class MailchimpEcommerceService {
       return null;
     }
 
+    if (!this.isValidCustomerEmail(params.customerEmail)) {
+      console.warn('⚠️ Mailchimp cart sync skipped: invalid customer email', {
+        cartId: params.cartId,
+        customerEmail: params.customerEmail,
+      });
+      return null;
+    }
+
     const safeCartId = params.cartId.startsWith('mc-cart-')
       ? params.cartId
       : this.getSafeCartId(params.cartId);
 
     try {
-      for (const item of params.items) {
+      const previousCartIds = Array.from(
+        new Set((params.previousCartIds || []).filter(Boolean)),
+      ).filter((cartId) => this.getSafeCartId(cartId) !== safeCartId && cartId !== safeCartId);
+
+      for (const previousCartId of previousCartIds) {
+        await this.deleteCart(previousCartId);
+      }
+      
+      const cartItems = params.items.map((item) => {
+        const productId = this.getSafeProductId(item);
         const variantId = `${item.id}-default`;
         const vatRate =
           typeof item.vatRate === 'number'
@@ -424,19 +560,35 @@ class MailchimpEcommerceService {
               : 0.25;
         const grossPrice = Math.round(item.price * (1 + vatRate) * 100) / 100;
         
-        await this.syncProduct({
-          id: item.id,
-          title: item.name,
-          description: `${item.type || 'course'} - ${item.name}`,
-          type: item.type || 'course',
-          vendor: 'Functional Foods',
-          variants: [{
-            id: variantId,
+        return {
+          item,
+          productId,
+          variantId,
+          grossPrice,
+        };
+      });
+
+      for (const { item, productId, variantId, grossPrice } of cartItems) {
+        try {
+          const imageUrl = this.getProductImageUrl(productId);
+          
+          await this.syncProduct({
+            id: productId,
             title: item.name,
-            price: grossPrice,
-            inventory_quantity: 999
-          }]
-        });
+            image_url: imageUrl,
+            description: `${item.type || 'course'} - ${item.name}`,
+            type: item.type || 'course',
+            vendor: 'Functional Foods',
+            variants: [{
+              id: variantId,
+              title: item.name,
+              price: grossPrice,
+              inventory_quantity: 999
+            }]
+          });
+        } catch (error) {
+          console.warn(`⚠️ Failed to sync product ${productId} before cart sync:`, error);
+        }
       }
 
       const nameParts = params.customerName?.trim().split(/\s+/).filter(Boolean) || [];
@@ -456,26 +608,15 @@ class MailchimpEcommerceService {
         checkout_url: params.checkoutUrl,
         currency_code: (params.currency || 'SEK').toUpperCase(),
         order_total: params.totalAmount,
-        lines: params.items.map((item, index) => {
-          const vatRate =
-            typeof item.vatRate === 'number'
-              ? item.vatRate
-              : item.type === 'book'
-                ? 0.06
-                : 0.25;
-          const grossPrice =
-            Math.round(item.price * (1 + vatRate) * 100) / 100;
-
-          return {
+        lines: cartItems.map(({ item, productId, variantId, grossPrice }, index) => ({
             id: String(index + 1),
-            product_id: item.id,
+            product_id: productId,
             product_title: item.name,
-            product_variant_id: `${item.id}-default`,
+            product_variant_id: variantId,
             product_variant_title: item.name,
             quantity: item.quantity,
             price: grossPrice
-          };
-        }),
+        })),
         campaign_id: params.campaignId || undefined
       };
 
@@ -484,6 +625,13 @@ class MailchimpEcommerceService {
         sourceCartId: params.cartId,
         customerEmail: params.customerEmail,
         checkoutUrl: params.checkoutUrl,
+        orderTotal: params.totalAmount,
+        linePrices: cart.lines.map((line) => ({
+          productId: line.product_id,
+          price: line.price,
+          quantity: line.quantity,
+          imageUrl: this.getProductImageUrl(line.product_id),
+        })),
       });
 
       const createResponse = await fetch(`${this.baseUrl}/carts`, {
@@ -580,6 +728,25 @@ class MailchimpEcommerceService {
         // If product already exists, that's okay
         if (response.status === 400 && errorText.includes('already exists')) {
           console.log(`ℹ️ Product ${product.id} already exists in Mailchimp`);
+          const updateResponse = await fetch(
+            `${this.baseUrl}/products/${encodeURIComponent(product.id)}`,
+            {
+              method: 'PATCH',
+              headers: {
+                'Authorization': `Basic ${Buffer.from(`anystring:${this.config!.apiKey}`).toString('base64')}`,
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify(product)
+            },
+          );
+
+          if (!updateResponse.ok) {
+            const updateText = await updateResponse.text();
+            console.warn(`⚠️ Mailchimp product update failed: ${product.id} ${updateResponse.status} ${updateText}`);
+          } else {
+            console.log(`✅ Product updated in Mailchimp: ${product.id}`);
+          }
+          
           if (product.variants?.length) {
             for (const variant of product.variants) {
               await this.syncProductVariant(product.id, variant);

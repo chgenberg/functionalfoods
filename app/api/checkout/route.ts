@@ -1,18 +1,28 @@
 import { NextRequest, NextResponse } from "next/server";
 import { withRateLimit, checkoutRateLimit } from "@/app/lib/rate-limit";
 import { prisma } from "@/app/lib/database";
+import {
+  applySummerEbookBundlePricing,
+  hasSummerEbookBundleByIdentity,
+  isSummerEbookCampaignId,
+  SUMMER_EBOOK_CAMPAIGN_ID,
+} from "@/app/lib/campaigns/summer-ebooks";
 import bcrypt from "bcryptjs";
 
 export const dynamic = "force-dynamic";
 
 export async function POST(req: NextRequest) {
   return withRateLimit(req, checkoutRateLimit, async () => {
+    let createdPendingOrderId: string | null = null;
+    
     try {
       const body = await req.json();
       const {
         items,
         customer,
         couponCode,
+        campaignId,
+        campaignSource,
         attribution,
         recoveredFromOrderId,
       } = body as {
@@ -25,6 +35,8 @@ export async function POST(req: NextRequest) {
         }>;
         customer?: { email?: string; name?: string; id?: string };
         couponCode?: string;
+        campaignId?: string;
+        campaignSource?: string;
         recoveredFromOrderId?: string;
         attribution?: {
           gclid?: string;
@@ -53,6 +65,7 @@ export async function POST(req: NextRequest) {
       // Require customer name (and email for receipts) for all purchases
       const customerName = (customer?.name || "").trim();
       const customerEmail = (customer?.email || "").trim();
+      const isValidEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(customerEmail);
       if (!customerName) {
         return NextResponse.json(
           { error: "Namn är obligatoriskt" },
@@ -62,6 +75,12 @@ export async function POST(req: NextRequest) {
       if (!customerEmail) {
         return NextResponse.json(
           { error: "E-postadress är obligatorisk" },
+          { status: 400 },
+        );
+      }
+      if (!isValidEmail) {
+        return NextResponse.json(
+          { error: "Ange en giltig e-postadress" },
           { status: 400 },
         );
       }
@@ -187,6 +206,73 @@ export async function POST(req: NextRequest) {
           vatRate: product.vatRate || 0.25,
         };
       });
+      const normalizedEmail = customerEmail.toLowerCase().trim();
+      const cartItemIds = validatedItems
+        .map((item) => item.id)
+        .filter(Boolean)
+        .sort();
+      const hasSameCartItems = (candidateItems: any[] | undefined) => {
+        if (!Array.isArray(candidateItems)) return false;
+        const candidateIds = candidateItems
+          .map((item) => item?.id)
+          .filter(Boolean)
+          .sort();
+        return JSON.stringify(candidateIds) === JSON.stringify(cartItemIds);
+      };
+
+      let inheritedCampaignMetadata: any = null;
+      let effectiveRecoveredFromOrderId = recoveredFromOrderId || null;
+
+      if (effectiveRecoveredFromOrderId) {
+        const recoveredOrder = await prisma.order.findUnique({
+          where: { id: effectiveRecoveredFromOrderId },
+          select: { metadata: true },
+        });
+        inheritedCampaignMetadata = (recoveredOrder?.metadata as any) || null;
+      } else if (!campaignId || !campaignSource) {
+        const recentPendingOrders = await prisma.order.findMany({
+          where: {
+            customerEmail: normalizedEmail,
+            status: "PENDING",
+            createdAt: {
+              gte: new Date(Date.now() - 2 * 60 * 60 * 1000),
+            },
+          },
+          orderBy: { createdAt: "desc" },
+          take: 5,
+          select: { id: true, metadata: true },
+        });
+
+        const matchingPendingOrder = recentPendingOrders.find((order) => {
+          const metadata = (order.metadata as any) || {};
+          return (
+            isSummerEbookCampaignId(metadata.campaignId) &&
+            !metadata.recoveredByOrderId &&
+            hasSameCartItems(metadata.items)
+          );
+        });
+
+        if (matchingPendingOrder) {
+          effectiveRecoveredFromOrderId = matchingPendingOrder.id;
+          inheritedCampaignMetadata =
+            (matchingPendingOrder.metadata as any) || null;
+        }
+      }
+
+      const effectiveCampaignId =
+        campaignId ||
+        inheritedCampaignMetadata?.campaignId ||
+        (hasSummerEbookBundleByIdentity(validatedItems)
+          ? SUMMER_EBOOK_CAMPAIGN_ID
+          : undefined);
+      const effectiveCampaignSource =
+        campaignSource || inheritedCampaignMetadata?.campaignSource || null;
+      const effectiveAttribution =
+        attribution || inheritedCampaignMetadata?.attribution || null;
+
+      const pricedItems = isSummerEbookCampaignId(effectiveCampaignId)
+        ? applySummerEbookBundlePricing(validatedItems)
+        : validatedItems;
 
       // --- END SECURITY FIX ---
 
@@ -201,7 +287,7 @@ export async function POST(req: NextRequest) {
       const stripe = require("stripe")(secretKey);
 
       // Calculate subtotal using price INCLUDING VAT (dynamic per item: 6% for books, 25% for courses)
-      const subtotal = validatedItems.reduce((sum: number, i) => {
+      const subtotal = pricedItems.reduce((sum: number, i) => {
         const itemVatRate = i.vatRate || 0.25;
         const grossInOre = Math.round(i.price * (1 + itemVatRate) * 100);
         return sum + grossInOre * i.quantity;
@@ -228,8 +314,8 @@ export async function POST(req: NextRequest) {
               : null;
           const applicableItems =
             applicableIds && applicableIds.length > 0
-              ? validatedItems.filter((i) => applicableIds.includes(i.id))
-              : validatedItems;
+              ? pricedItems.filter((i) => applicableIds.includes(i.id))
+              : pricedItems;
           const applicableSubtotalExVat = applicableItems.reduce(
             (sum, i) => sum + Math.round(i.price * 100) * i.quantity,
             0,
@@ -278,7 +364,7 @@ export async function POST(req: NextRequest) {
         }
       }
 
-      const line_items = validatedItems.map((item) => {
+      const line_items = pricedItems.map((item) => {
         const itemVatRate = item.vatRate || 0.25;
         const grossUnitAmount = Math.round(
           item.price * (1 + itemVatRate) * 100,
@@ -296,7 +382,7 @@ export async function POST(req: NextRequest) {
 
       // Log checkout details for verification
       console.log("🔍 Stripe Checkout Debug (gross incl. VAT):", {
-        items: validatedItems.map((i) => ({
+        items: pricedItems.map((i) => ({
           name: i.name,
           type: i.type,
           vatRate: i.vatRate,
@@ -328,7 +414,6 @@ export async function POST(req: NextRequest) {
       const orderId = `FF-${Date.now()}-${Math.random()
         .toString(36)
         .slice(2, 9)}`;
-      const normalizedEmail = customerEmail.toLowerCase().trim();
       let user = await prisma.user.findUnique({
         where: { email: normalizedEmail },
       });
@@ -362,15 +447,17 @@ export async function POST(req: NextRequest) {
           customerEmail: normalizedEmail,
           customerName,
           metadata: {
-            items: validatedItems,
+            items: pricedItems,
             couponCode: couponCode || null,
             discountAmount:
               discountAmount > 0 ? discountAmount / 100 : null,
-            attribution: attribution || null,
-            recoveredFromOrderId: recoveredFromOrderId || null,
+            campaignId: effectiveCampaignId || null,
+            campaignSource: effectiveCampaignSource,
+            attribution: effectiveAttribution,
+            recoveredFromOrderId: effectiveRecoveredFromOrderId,
           },
           items: {
-            create: validatedItems.map((item) => ({
+            create: pricedItems.map((item) => ({
               courseId: null,
               name: item.name,
               quantity: item.quantity,
@@ -380,9 +467,17 @@ export async function POST(req: NextRequest) {
           },
         },
       });
+      createdPendingOrderId = orderId;
 
       // Configure allowed payment methods explicitly (Stripe Checkout does not support automatic_payment_methods)
       const paymentMethodTypes: string[] = ["card"];
+      const safeStripeMetadataValue = (value: unknown) =>
+        String(value ?? "").slice(0, 500);
+      const compactStripeItems = pricedItems.map((item) => ({
+        id: item.id,
+        q: item.quantity,
+        t: item.type,
+      }));
 
       const baseSessionParams: any = {
         mode: "payment",
@@ -391,27 +486,32 @@ export async function POST(req: NextRequest) {
         cancel_url: `${origin}/checkout`,
         customer_email: customer?.email,
         metadata: {
-          items: JSON.stringify(validatedItems), // Use validated items in metadata
+          items: safeStripeMetadataValue(JSON.stringify(compactStripeItems)), // Use campaign-priced items in metadata
           website: "ulrika-functional-foods",
           orderType: "course_purchase",
           orderId,
-          couponCode: couponCode || "",
-          courseNames: validatedItems.map((item) => item.name).join(", "),
-          totalItems: validatedItems.length.toString(),
-          customerEmail: customerEmail,
-          customerName: customerName,
+          couponCode: safeStripeMetadataValue(couponCode),
+          campaignId: safeStripeMetadataValue(effectiveCampaignId),
+          campaignSource: safeStripeMetadataValue(effectiveCampaignSource),
+          recoveredFromOrderId: safeStripeMetadataValue(effectiveRecoveredFromOrderId),
+          courseNames: safeStripeMetadataValue(
+            pricedItems.map((item) => item.name).join(", "),
+          ),
+          totalItems: pricedItems.length.toString(),
+          customerEmail: safeStripeMetadataValue(customerEmail),
+          customerName: safeStripeMetadataValue(customerName),
           // Attribution (flattened for Stripe metadata limits)
-          gclid: attribution?.gclid || "",
-          gbraid: attribution?.gbraid || "",
-          wbraid: attribution?.wbraid || "",
-          fbclid: attribution?.fbclid || "",
-          mc_cid: attribution?.mc_cid || "",
-          mc_eid: attribution?.mc_eid || "",
-          utm_source: attribution?.utm_source || "",
-          utm_medium: attribution?.utm_medium || "",
-          utm_campaign: attribution?.utm_campaign || "",
-          utm_term: attribution?.utm_term || "",
-          utm_content: attribution?.utm_content || "",
+          gclid: safeStripeMetadataValue(effectiveAttribution?.gclid),
+          gbraid: safeStripeMetadataValue(effectiveAttribution?.gbraid),
+          wbraid: safeStripeMetadataValue(effectiveAttribution?.wbraid),
+          fbclid: safeStripeMetadataValue(effectiveAttribution?.fbclid),
+          mc_cid: safeStripeMetadataValue(effectiveAttribution?.mc_cid),
+          mc_eid: safeStripeMetadataValue(effectiveAttribution?.mc_eid),
+          utm_source: safeStripeMetadataValue(effectiveAttribution?.utm_source),
+          utm_medium: safeStripeMetadataValue(effectiveAttribution?.utm_medium),
+          utm_campaign: safeStripeMetadataValue(effectiveAttribution?.utm_campaign),
+          utm_term: safeStripeMetadataValue(effectiveAttribution?.utm_term),
+          utm_content: safeStripeMetadataValue(effectiveAttribution?.utm_content),
         },
       };
 
@@ -435,6 +535,23 @@ export async function POST(req: NextRequest) {
           "@/app/lib/mailchimp-ecommerce"
         );
         const mailchimpEcommerce = getMailchimpEcommerce();
+        const previousMailchimpCarts = await prisma.order.findMany({
+          where: {
+            customerEmail: normalizedEmail,
+            status: "PENDING",
+            id: { not: orderId },
+          },
+          orderBy: { createdAt: "desc" },
+          take: 10,
+          select: { id: true, metadata: true },
+        });
+        const previousCartIds = previousMailchimpCarts
+          .map((order) => {
+            const metadata = (order.metadata as any) || {};
+            return metadata.mailchimpCartId || null;
+          })
+          .filter(Boolean) as string[];
+        
         const mailchimpCartId = await mailchimpEcommerce.upsertCart({
           cartId: orderId,
           customerEmail,
@@ -442,7 +559,7 @@ export async function POST(req: NextRequest) {
           checkoutUrl: `${origin}/checkout?recover=${encodeURIComponent(
             orderId,
           )}`,
-          items: validatedItems.map((item) => ({
+          items: pricedItems.map((item) => ({
             id: item.id,
             name: item.name,
             price: item.price,
@@ -452,7 +569,8 @@ export async function POST(req: NextRequest) {
           })),
           totalAmount: (subtotal - discountAmount) / 100,
           currency: "SEK",
-          campaignId: attribution?.mc_cid || undefined,
+          campaignId: effectiveAttribution?.mc_cid || undefined,
+          previousCartIds,
         });
         
         if (mailchimpCartId) {
@@ -482,6 +600,35 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ url: session.url });
     } catch (err: any) {
       console.error("Create Checkout Session error:", err);
+
+      if (createdPendingOrderId) {
+        try {
+          const existingOrder = await prisma.order.findUnique({
+            where: { id: createdPendingOrderId },
+            select: { metadata: true },
+          });
+
+          await prisma.order.update({
+            where: { id: createdPendingOrderId },
+            data: {
+              status: "FAILED",
+              metadata: {
+                ...((existingOrder?.metadata as any) || {}),
+                checkoutCreationFailedAt: new Date().toISOString(),
+                checkoutCreationError:
+                  err?.message || "Stripe checkout session creation failed",
+                checkoutCreationProvider: "stripe",
+              },
+            },
+          });
+        } catch (cleanupError) {
+          console.warn(
+            "⚠️ Failed to mark Stripe checkout order as failed:",
+            cleanupError,
+          );
+        }
+      }
+
       return NextResponse.json(
         { error: err?.message || "Kunde inte skapa betalning" },
         { status: 500 },

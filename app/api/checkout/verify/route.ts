@@ -2,8 +2,41 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/app/lib/database";
 import { emailService } from "@/app/lib/email";
 import { getMailchimpMarketing } from "@/app/lib/mailchimp-marketing";
+import {
+  EBOOK_PRODUCTS,
+  buildEbookDownloadUrl,
+  resolveEbookIdFromItem,
+} from "@/app/lib/ebooks";
+import {
+  SUMMER_EBOOK_CAMPAIGN_ID,
+  SUMMER_EBOOK_CAMPAIGN_TAG,
+  hasSummerEbookBundleByIdentity,
+} from "@/app/lib/campaigns/summer-ebooks";
 
 export const dynamic = "force-dynamic";
+
+function resolveStripeEbookId(item: any): string | null {
+  return resolveEbookIdFromItem(item);
+}
+
+function normalizeStripeMetadataItem(item: any) {
+  const ebookId = resolveStripeEbookId(item);
+  return {
+    ...item,
+    id: item?.id || ebookId || "course",
+    name:
+      item?.name ||
+      (ebookId ? EBOOK_PRODUCTS[ebookId]?.name : undefined) ||
+      item?.id ||
+      "Kurs",
+    price:
+      item?.price ??
+      (ebookId ? EBOOK_PRODUCTS[ebookId]?.priceExVat : undefined) ??
+      0,
+    quantity: item?.quantity || item?.q || 1,
+    type: item?.type || item?.t || (ebookId ? "book" : "course"),
+  };
+}
 
 export async function GET(req: NextRequest) {
   try {
@@ -94,7 +127,7 @@ export async function GET(req: NextRequest) {
           }> = [];
           try {
             const raw = (session.metadata as any)?.items || "";
-            if (raw) items = JSON.parse(raw);
+            if (raw) items = JSON.parse(raw).map(normalizeStripeMetadataItem);
           } catch {}
 
           const attribution = {
@@ -158,6 +191,10 @@ export async function GET(req: NextRequest) {
                   metadata: {
                     items,
                     attribution,
+                    campaignId: session.metadata?.campaignId || null,
+                    campaignSource: session.metadata?.campaignSource || null,
+                    recoveredFromOrderId:
+                      session.metadata?.recoveredFromOrderId || null,
                   },
                   items: {
                     create: items.map((it) => ({
@@ -346,6 +383,18 @@ export async function GET(req: NextRequest) {
               ).toUpperCase(),
               metadata: {
                 ...existingMetadata,
+                campaignId:
+                  existingMetadata.campaignId ||
+                  session.metadata?.campaignId ||
+                  null,
+                campaignSource:
+                  existingMetadata.campaignSource ||
+                  session.metadata?.campaignSource ||
+                  null,
+                recoveredFromOrderId:
+                  existingMetadata.recoveredFromOrderId ||
+                  session.metadata?.recoveredFromOrderId ||
+                  null,
                 stripeSessionId: session.id,
                 stripePaymentIntentId: String(paymentIntentId),
               },
@@ -378,7 +427,25 @@ export async function GET(req: NextRequest) {
           const updatedOrder = await findOrder(true);
 
           if (updatedOrder) {
-            const metadata = (updatedOrder.metadata as any) || {};
+            let metadata = (updatedOrder.metadata as any) || {};
+            if (
+              metadata.campaignId !== SUMMER_EBOOK_CAMPAIGN_ID &&
+              hasSummerEbookBundleByIdentity(updatedOrder.items)
+            ) {
+              metadata = {
+                ...metadata,
+                campaignId: SUMMER_EBOOK_CAMPAIGN_ID,
+                campaignSource:
+                  metadata.campaignSource ||
+                  session.metadata?.campaignSource ||
+                  "bundle-detected",
+              };
+
+              await prisma.order.update({
+                where: { id: updatedOrder.id },
+                data: { metadata },
+              });
+            }
             const emailForTracking =
               updatedOrder.user?.email ||
               updatedOrder.customerEmail ||
@@ -412,6 +479,9 @@ export async function GET(req: NextRequest) {
                   productNames,
                   firstName,
                   lastName,
+                  metadata.campaignId === SUMMER_EBOOK_CAMPAIGN_ID
+                    ? [SUMMER_EBOOK_CAMPAIGN_TAG]
+                    : [],
                 );
 
                 const recoveredTaggedAt =
@@ -629,41 +699,7 @@ export async function GET(req: NextRequest) {
             "https://www.functionalfoods.se";
 
           for (const book of bookItems) {
-            let ebookId = "brodboken-2026";
-
-            if (book.id && typeof book.id === "string") {
-              ebookId = book.id;
-            }
-
-            if (
-              book.name.toLowerCase().includes("påskbuffé") ||
-              book.name.toLowerCase().includes("paskbuffe")
-            ) {
-              ebookId = "paskbuffe";
-            }
-            if (
-              book.name.toLowerCase().includes("söta godsaker") ||
-              book.name.toLowerCase().includes("sota godsaker") ||
-              book.name.toLowerCase().includes("sota-godsaker")
-            ) {
-              ebookId = "sota-godsaker";
-            }
-
-            if (
-              book.name.toLowerCase().includes("grill- & sommarmat") ||
-              book.name.toLowerCase().includes("grill sommarmat") ||
-              book.name.toLowerCase().includes("grill och sommarmat") ||
-              book.name.toLowerCase().includes("grill-sommarmat")
-            ) {
-              ebookId = "grill-sommarmat";
-            }
-            if (
-              book.name.toLowerCase().includes("hälsosamma frukostar") ||
-              book.name.toLowerCase().includes("halsosamma frukostar") ||
-              book.name.toLowerCase().includes("halsosamma-frukostar")
-            ) {
-              ebookId = "halsosamma-frukostar";
-            }
+            const ebookId = resolveEbookIdFromItem(book) || "brodboken-2026";
 
             const existing = await prisma.ebookDownload.findFirst({
               where: { orderNumber: order.orderNumber, ebookId },
@@ -678,32 +714,17 @@ export async function GET(req: NextRequest) {
                 orderNumber: order.orderNumber,
                 customerEmail: emailToUse,
                 ebookId,
-                ebookName: book.name,
+                ebookName: book.name || EBOOK_PRODUCTS[ebookId]?.name || "E-bok",
                 maxDownloads: 5,
                 expiresAt: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000),
               },
             });
 
-            let downloadUrl = `${baseUrl}/brodboken/ladda-ner?token=${token}`;
-
-            if (ebookId === "paskbuffe") {
-              downloadUrl = `${baseUrl}/e-bocker/paskbuffe/ladda-ner?token=${token}`;
-            }
-            if (ebookId === "sota-godsaker") {
-              downloadUrl = `${baseUrl}/e-bocker/sota-godsaker/ladda-ner?token=${token}`;
-            }
-            if (ebookId === "grill-sommarmat") {
-              downloadUrl = `${baseUrl}/e-bocker/grill-sommarmat/ladda-ner?token=${token}`;
-            }
-            if (ebookId === "halsosamma-frukostar") {
-              downloadUrl = `${baseUrl}/e-bocker/halsosamma-frukostar/ladda-ner?token=${token}`;
-            }
-
             await emailService.sendEbookDownloadEmail({
               email: emailToUse,
               name: nameToUse,
-              ebookName: book.name,
-              downloadUrl,
+              ebookName: book.name || EBOOK_PRODUCTS[ebookId]?.name || "E-bok",
+              downloadUrl: buildEbookDownloadUrl(baseUrl, ebookId, token),
               downloadPassword: token,
               orderNumber: order.orderNumber,
             });

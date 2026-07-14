@@ -6,6 +6,10 @@ import {
 } from "@/app/lib/svea-checkout-service";
 import { emailService } from "@/app/lib/email";
 import { getMailchimpMarketing } from "@/app/lib/mailchimp-marketing";
+import {
+  SUMMER_EBOOK_CAMPAIGN_ID,
+  SUMMER_EBOOK_CAMPAIGN_TAG,
+} from "@/app/lib/campaigns/summer-ebooks";
 import bcrypt from "bcryptjs";
 
 export const dynamic = "force-dynamic";
@@ -472,6 +476,9 @@ export async function POST(req: NextRequest) {
                 courseNames,
                 firstName,
                 lastName,
+                metadata.campaignId === SUMMER_EBOOK_CAMPAIGN_ID
+                  ? [SUMMER_EBOOK_CAMPAIGN_TAG]
+                  : [],
               );
 
               const recoveredTaggedAt =

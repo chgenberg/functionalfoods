@@ -6,6 +6,12 @@ import {
 } from "@/app/lib/svea-checkout-service";
 import { emailService } from "@/app/lib/email";
 import { getMailchimpMarketing } from "@/app/lib/mailchimp-marketing";
+import {
+  applySummerEbookBundlePricing,
+  isSummerEbookCampaignId,
+  SUMMER_EBOOK_CAMPAIGN_ID,
+  SUMMER_EBOOK_CAMPAIGN_TAG,
+} from "@/app/lib/campaigns/summer-ebooks";
 import bcrypt from "bcryptjs";
 import type {
   SveaCartItem,
@@ -47,6 +53,8 @@ interface CheckoutRequest {
     id?: string;
   };
   couponCode?: string;
+  campaignId?: string;
+  campaignSource?: string;
   attribution?: Attribution;
   recoveredFromOrderId?: string;
 }
@@ -70,7 +78,15 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const { items, customer, couponCode, attribution, recoveredFromOrderId } = body;
+    const {
+      items,
+      customer,
+      couponCode,
+      campaignId,
+      campaignSource,
+      attribution,
+      recoveredFromOrderId,
+    } = body;
 
     // Validate request
     if (!items || !Array.isArray(items) || items.length === 0) {
@@ -84,6 +100,7 @@ export async function POST(req: NextRequest) {
     // Require customer name/email for all purchases (course or ebook)
     const customerName = (customer?.name || "").trim();
     const customerEmail = (customer?.email || "").trim();
+    const isValidEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(customerEmail);
     if (!customerName) {
       return NextResponse.json(
         { error: "Namn är obligatoriskt" },
@@ -96,6 +113,12 @@ export async function POST(req: NextRequest) {
         { status: 400 },
       );
     }
+    if (!isValidEmail) {
+      return NextResponse.json(
+        { error: "Ange en giltig e-postadress" },
+        { status: 400 },
+      );
+    }
 
     console.log("📦 Processing checkout:", {
       itemCount: items.length,
@@ -103,6 +126,10 @@ export async function POST(req: NextRequest) {
       hasCustomer: !!customer,
       customerEmail: customer?.email,
       hasCoupon: !!couponCode,
+      campaignId: campaignId || null,
+      campaignSource: campaignSource || null,
+      recoveredFromOrderId: recoveredFromOrderId || null,
+      mailchimpCampaignId: attribution?.mc_cid || null,
     });
 
     // --- SECURITY FIX: Fetch product data from database ---
@@ -303,6 +330,15 @@ export async function POST(req: NextRequest) {
       "🔍 VALIDATED ITEMS DEBUG:",
       JSON.stringify(validatedItems, null, 2),
     );
+    if (isSummerEbookCampaignId(campaignId)) {
+      const pricedItems = applySummerEbookBundlePricing(validatedItems);
+      validatedItems.length = 0;
+      validatedItems.push(...pricedItems);
+      console.log(
+        "☀️ SUMMER EBOOK CAMPAIGN ITEMS:",
+        JSON.stringify(validatedItems, null, 2),
+      );
+    }
     // --- END SECURITY FIX ---
 
     // If payments are simulated/disabled, short-circuit and create a completed order locally
@@ -830,6 +866,8 @@ export async function POST(req: NextRequest) {
                     )
                   : null,
               freeOrder: true,
+              campaignId: campaignId || null,
+              campaignSource: campaignSource || null,
               attribution: attribution || null,
               recoveredFromOrderId: recoveredFromOrderId || null,
             },
@@ -1052,6 +1090,9 @@ export async function POST(req: NextRequest) {
             productNames,
             firstName,
             lastName,
+            campaignId === SUMMER_EBOOK_CAMPAIGN_ID
+              ? [SUMMER_EBOOK_CAMPAIGN_TAG]
+              : [],
           );
           console.log(
             `✅ Customer added to Mailchimp with product tags (free order): ${customerEmail}`,
@@ -1179,7 +1220,7 @@ export async function POST(req: NextRequest) {
         termsUri: `${origin}/anvandarvillkor`,
         checkoutUri: `${origin}/checkout`,
         confirmationUri: `${origin}/checkout/success/svea-v2?orderId=${encodeURIComponent(orderId)}`,
-        pushUri: `${origin}/api/webhooks/svea-v2`,
+        pushUri: `${origin}/api/webhooks/svea-v2?checkoutOrderId={checkout.order.uri}`,
       },
       cart: {
         items: [...sveaItems], // Explicit copy to ensure it's set
@@ -1435,8 +1476,20 @@ export async function POST(req: NextRequest) {
               discountAmount > 0
                 ? SveaCheckoutService.formatPriceFromMinorUnits(discountAmount)
                 : null,
+            campaignId: campaignId || null,
+            campaignSource: campaignSource || null,
             attribution: attribution || null,
             recoveredFromOrderId: recoveredFromOrderId || null,
+            sveaStatus: sveaResponse.status || "Created",
+            svea: {
+              checkoutOrderId: sveaResponse.orderId.toString(),
+              checkoutStatus: sveaResponse.status || "Created",
+              statusCheckedAt: new Date().toISOString(),
+              adminVisibility:
+                (sveaResponse.status || "Created") === "Created"
+                  ? "hide_unpaid_checkout"
+                  : "show",
+            },
           },
           items: {
             create: itemsWithDiscountedPrice.map((item) => ({
@@ -1468,6 +1521,23 @@ export async function POST(req: NextRequest) {
     try {
       const { getMailchimpEcommerce } = await import("@/app/lib/mailchimp-ecommerce");
       const mailchimpEcommerce = getMailchimpEcommerce();
+      const previousMailchimpCarts = await prisma.order.findMany({
+        where: {
+          customerEmail,
+          status: "PENDING",
+          id: { not: orderId },
+        },
+        orderBy: { createdAt: "desc" },
+        take: 10,
+        select: { id: true, metadata: true },
+      });
+      const previousCartIds = previousMailchimpCarts
+        .map((order) => {
+          const metadata = (order.metadata as any) || {};
+          return metadata.mailchimpCartId || null;
+        })
+        .filter(Boolean) as string[];
+      
       const mailchimpCartId = await mailchimpEcommerce.upsertCart({
         cartId: orderId,
         customerEmail,
@@ -1484,6 +1554,7 @@ export async function POST(req: NextRequest) {
         totalAmount,
         currency: "SEK",
         campaignId: attribution?.mc_cid || undefined,
+        previousCartIds,
       });
 
       if (mailchimpCartId) {
