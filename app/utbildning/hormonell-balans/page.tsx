@@ -28,6 +28,7 @@ import {
 } from "lucide-react";
 import { formatPrice } from "@/app/lib/utils";
 import { trackAddToCart, trackViewContent } from "@/app/lib/analytics";
+import { getCourseDisplayPricing } from "@/app/lib/course-pricing";
 
 export default function HormonellBalansPage() {
   const router = useRouter();
@@ -54,23 +55,13 @@ export default function HormonellBalansPage() {
               c.id === "functional-hormone" || c.id === "hormonell-balans",
           );
           if (hormone) {
-            // Calculate prices with VAT
-            const basePriceIncl = hormone.basePrice
-              ? Math.round(hormone.basePrice * 1.25)
-              : null;
-            const salePriceIncl = hormone.salePrice
-              ? Math.round(hormone.salePrice * 1.25)
-              : null;
-
-            // Set original price (basePrice)
-            setOriginalPrice(basePriceIncl);
-
-            // Use salePrice if available, otherwise basePrice or price
-            const activePriceIncl =
-              salePriceIncl ??
-              basePriceIncl ??
-              Math.round(hormone.price * 1.25);
-            setCoursePrice(activePriceIncl);
+            const pricing = getCourseDisplayPricing(hormone);
+            setOriginalPrice(
+              pricing.compareAtPrice
+                ? Math.round(pricing.compareAtPrice * 1.25)
+                : null,
+            );
+            setCoursePrice(Math.round(pricing.price * 1.25));
           }
         }
       } catch (error) {
