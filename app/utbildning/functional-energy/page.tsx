@@ -38,6 +38,7 @@ import {
 } from "lucide-react";
 import { formatPrice } from "@/app/lib/utils";
 import { trackAddToCart, trackViewContent } from "@/app/lib/analytics";
+import { getCourseDisplayPricing } from "@/app/lib/course-pricing";
 
 export default function FunctionalEnergyPage() {
   const router = useRouter();
@@ -92,21 +93,13 @@ export default function FunctionalEnergyPage() {
           const courses = await response.json();
           const energy = courses.find((c: any) => c.id === "functional-energy");
           if (energy) {
-            // Calculate prices with VAT
-            const basePriceIncl = energy.basePrice
-              ? Math.round(energy.basePrice * 1.25)
-              : null;
-            const salePriceIncl = energy.salePrice
-              ? Math.round(energy.salePrice * 1.25)
-              : null;
-
-            // Set original price (basePrice)
-            setOriginalPrice(basePriceIncl);
-
-            // Use salePrice if available, otherwise basePrice or price
-            const activePriceIncl =
-              salePriceIncl ?? basePriceIncl ?? Math.round(energy.price * 1.25);
-            setCoursePrice(activePriceIncl);
+            const pricing = getCourseDisplayPricing(energy);
+            setOriginalPrice(
+              pricing.compareAtPrice
+                ? Math.round(pricing.compareAtPrice * 1.25)
+                : null,
+            );
+            setCoursePrice(Math.round(pricing.price * 1.25));
           }
         }
       } catch (error) {
