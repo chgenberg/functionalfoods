@@ -20,12 +20,29 @@ const DURATION_PRESETS = [
   { value: 12, label: '12 veckor', description: 'Långkurs' },
 ];
 
+const toDateTimeLocal = (value?: string | null) => {
+  if (!value) return '';
+
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return '';
+
+  const timezoneOffsetMs = date.getTimezoneOffset() * 60 * 1000;
+  return new Date(date.getTime() - timezoneOffsetMs).toISOString().slice(0, 16);
+};
+
+const fromDateTimeLocal = (value: string) => {
+  if (value.trim() === '') return null;
+  return new Date(value).toISOString();
+};
+
 export default function Step1BasicInfo({ draft, onUpdate, onSave, saving }: Step1Props) {
   const [formData, setFormData] = useState({
     title: draft.title || '',
     description: draft.description || '',
     price: draft.price || 0,
     salePrice: draft.salePrice ?? null,
+    saleStartsAt: draft.saleStartsAt ?? null,
+    saleEndsAt: draft.saleEndsAt ?? null,
     weeksCount: draft.weeksCount || 6,
     level: draft.level || 'Beginner',
     targetAudience: draft.targetAudience || '',
@@ -198,6 +215,33 @@ export default function Step1BasicInfo({ draft, onUpdate, onSave, saving }: Step
               kr
             </span>
           </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-3">
+            <div>
+              <label className="block text-xs font-medium text-[var(--text-secondary)] mb-1">
+                Kampanj start
+              </label>
+              <input
+                type="datetime-local"
+                value={toDateTimeLocal(formData.saleStartsAt)}
+                onChange={(e) => handleChange('saleStartsAt', fromDateTimeLocal(e.target.value))}
+                className="w-full px-3 py-2 border border-[var(--border-light)] rounded-lg focus:ring-2 focus:ring-[var(--primary-green)]/20 focus:border-[var(--primary-green)] transition-all"
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-medium text-[var(--text-secondary)] mb-1">
+                Kampanj slut
+              </label>
+              <input
+                type="datetime-local"
+                value={toDateTimeLocal(formData.saleEndsAt)}
+                onChange={(e) => handleChange('saleEndsAt', fromDateTimeLocal(e.target.value))}
+                className="w-full px-3 py-2 border border-[var(--border-light)] rounded-lg focus:ring-2 focus:ring-[var(--primary-green)]/20 focus:border-[var(--primary-green)] transition-all"
+              />
+            </div>
+          </div>
+          <p className="text-xs text-[var(--text-secondary)] mt-2">
+            Lämna datumen tomma om kampanjpriset ska gälla utan schemalagd period.
+          </p>
         </div>
       </div>
 
