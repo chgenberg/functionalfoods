@@ -25,7 +25,7 @@ export default function Step1BasicInfo({ draft, onUpdate, onSave, saving }: Step
     title: draft.title || '',
     description: draft.description || '',
     price: draft.price || 0,
-    salePrice: draft.salePrice || undefined,
+    salePrice: draft.salePrice ?? null,
     weeksCount: draft.weeksCount || 6,
     level: draft.level || 'Beginner',
     targetAudience: draft.targetAudience || '',
@@ -189,8 +189,8 @@ export default function Step1BasicInfo({ draft, onUpdate, onSave, saving }: Step
               type="number"
               min="0"
               step="1"
-              value={formData.salePrice || ''}
-              onChange={(e) => handleChange('salePrice', e.target.value ? parseInt(e.target.value) : undefined)}
+              value={formData.salePrice ?? ''}
+              onChange={(e) => handleChange('salePrice', e.target.value.trim() === '' ? null : parseInt(e.target.value))}
               placeholder="Lämna tomt om inget kampanjpris"
               className="w-full px-4 py-3 border border-[var(--border-light)] rounded-xl focus:ring-2 focus:ring-[var(--primary-green)]/20 focus:border-[var(--primary-green)] transition-all pr-12"
             />
