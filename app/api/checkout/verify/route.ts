@@ -38,6 +38,55 @@ function normalizeStripeMetadataItem(item: any) {
   };
 }
 
+async function ensureStripeCourseConfirmationEmail(order: any, fallbackEmail?: string | null) {
+  const metadata = (order?.metadata as any) || {};
+  if (metadata.confirmationEmailSent) {
+    console.log("ℹ️ Stripe order confirmation email already sent (skipping):", {
+      orderId: order?.id,
+      orderNumber: order?.orderNumber,
+    });
+    return;
+  }
+
+  const courseItems = (order?.items || []).filter((item: any) => item.type === "course");
+  const emailToUse = order?.user?.email || order?.customerEmail || fallbackEmail;
+  if (courseItems.length === 0 || !emailToUse || emailToUse.startsWith("guest-")) {
+    return;
+  }
+
+  const customerName =
+    order?.customerName ||
+    order?.user?.name ||
+    emailToUse.split("@")[0] ||
+    "Kund";
+  const VAT_RATE = 0.25;
+
+  await emailService.sendOrderConfirmation({
+    customerEmail: emailToUse,
+    customerName,
+    orderNumber: order.orderNumber,
+    totalAmount: order.totalAmount || 0,
+    courses: courseItems.map((item: any) => ({
+      name: item.name,
+      price: Math.round(item.price * (1 + VAT_RATE)) * (item.quantity || 1),
+    })),
+    isExistingUser: true,
+  });
+
+  await prisma.order.update({
+    where: { id: order.id },
+    data: {
+      metadata: {
+        ...metadata,
+        confirmationEmailSent: true,
+        confirmationEmailSentAt: new Date().toISOString(),
+      },
+    },
+  });
+
+  console.log(`✅ Stripe order confirmation email ensured: ${emailToUse}`);
+}
+
 export async function GET(req: NextRequest) {
   try {
     const session_id = req.nextUrl.searchParams.get("session_id");
@@ -359,6 +408,17 @@ export async function GET(req: NextRequest) {
                       : undefined,
                   isExistingUser: !isNewUser,
                 });
+
+                await tx.order.update({
+                  where: { id: order.id },
+                  data: {
+                    metadata: {
+                      ...((order.metadata as any) || {}),
+                      confirmationEmailSent: true,
+                      confirmationEmailSentAt: new Date().toISOString(),
+                    },
+                  },
+                });
               } catch (e) {
                 console.error("Email send failed in verify fallback:", e);
               }
@@ -427,6 +487,8 @@ export async function GET(req: NextRequest) {
           const updatedOrder = await findOrder(true);
 
           if (updatedOrder) {
+            await ensureStripeCourseConfirmationEmail(updatedOrder, customerEmail);
+            
             let metadata = (updatedOrder.metadata as any) || {};
             if (
               metadata.campaignId !== SUMMER_EBOOK_CAMPAIGN_ID &&
