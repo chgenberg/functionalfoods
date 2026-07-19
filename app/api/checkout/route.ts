@@ -7,6 +7,7 @@ import {
   isSummerEbookCampaignId,
   SUMMER_EBOOK_CAMPAIGN_ID,
 } from "@/app/lib/campaigns/summer-ebooks";
+import { getCourseEffectivePrice } from "@/app/lib/course-pricing";
 import bcrypt from "bcryptjs";
 
 export const dynamic = "force-dynamic";
@@ -187,17 +188,10 @@ export async function POST(req: NextRequest) {
             `Produkten med id "${item.id}" och namn "${item.name}" hittades inte.`,
           );
         }
-        const basePrice =
-          typeof product.basePrice === "number"
-            ? product.basePrice
+        const effectivePrice =
+          product.type === "course"
+            ? getCourseEffectivePrice(product, now)
             : product.price;
-        const saleActive =
-          product.salePrice &&
-          (!product.saleStartsAt || new Date(product.saleStartsAt) <= now) &&
-          (!product.saleEndsAt || new Date(product.saleEndsAt) >= now);
-        const effectivePrice = saleActive
-          ? (product.salePrice as number)
-          : basePrice;
         return {
           ...item,
           price: effectivePrice,
