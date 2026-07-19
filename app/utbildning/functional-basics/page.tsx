@@ -34,6 +34,7 @@ import {
 } from "lucide-react";
 import { formatPrice } from "@/app/lib/utils";
 import { trackAddToCart, trackViewContent } from "@/app/lib/analytics";
+import { getCourseDisplayPricing } from "@/app/lib/course-pricing";
 
 export default function FunctionalBasicsPage() {
   const router = useRouter();
@@ -57,21 +58,13 @@ export default function FunctionalBasicsPage() {
           const courses = await response.json();
           const basics = courses.find((c: any) => c.id === "functional-basics");
           if (basics) {
-            // Calculate prices with VAT
-            const basePriceIncl = basics.basePrice
-              ? Math.round(basics.basePrice * 1.25)
-              : null;
-            const salePriceIncl = basics.salePrice
-              ? Math.round(basics.salePrice * 1.25)
-              : null;
-
-            // Set original price (basePrice)
-            setOriginalPrice(basePriceIncl);
-
-            // Use salePrice if available, otherwise basePrice or price
-            const activePriceIncl =
-              salePriceIncl ?? basePriceIncl ?? Math.round(basics.price * 1.25);
-            setCoursePrice(activePriceIncl);
+            const pricing = getCourseDisplayPricing(basics);
+            setOriginalPrice(
+              pricing.compareAtPrice
+                ? Math.round(pricing.compareAtPrice * 1.25)
+                : null,
+            );
+            setCoursePrice(Math.round(pricing.price * 1.25));
           }
         }
       } catch (error) {
