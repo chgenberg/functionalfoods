@@ -388,6 +388,55 @@ async function findStripeOrder(session: any, includeRelations = false) {
   });
 }
 
+async function ensureStripeCourseConfirmationEmail(order: any, fallbackEmail?: string | null) {
+  const metadata = (order?.metadata as any) || {};
+  if (metadata.confirmationEmailSent) {
+    console.log("ℹ️ Stripe webhook: confirmation email already sent (skipping):", {
+      orderId: order?.id,
+      orderNumber: order?.orderNumber,
+    });
+    return;
+  }
+
+  const courseItems = (order?.items || []).filter((item: any) => item.type === "course");
+  const emailToUse = order?.user?.email || order?.customerEmail || fallbackEmail;
+  if (courseItems.length === 0 || !emailToUse || emailToUse.startsWith("guest-")) {
+    return;
+  }
+
+  const customerName =
+    order?.customerName ||
+    order?.user?.name ||
+    emailToUse.split("@")[0] ||
+    "Kund";
+  const VAT_RATE = 0.25;
+
+  await emailService.sendOrderConfirmation({
+    customerEmail: emailToUse,
+    customerName,
+    orderNumber: order.orderNumber,
+    totalAmount: order.totalAmount || 0,
+    courses: courseItems.map((item: any) => ({
+      name: item.name,
+      price: Math.round(item.price * (1 + VAT_RATE)) * (item.quantity || 1),
+    })),
+    isExistingUser: true,
+  });
+
+  await prisma.order.update({
+    where: { id: order.id },
+    data: {
+      metadata: {
+        ...metadata,
+        confirmationEmailSent: true,
+        confirmationEmailSentAt: new Date().toISOString(),
+      },
+    },
+  });
+
+  console.log(`✅ Stripe webhook: confirmation email ensured for ${emailToUse}`);
+}
+
 async function handleCheckoutSessionCompleted(session: any) {
   try {
     console.log("🎉 Checkout session completed:", {
@@ -438,6 +487,10 @@ async function handleCheckoutSessionCompleted(session: any) {
         "- verifying e-book delivery before skipping duplicate processing.",
       );
       if (alreadyPayment.order) {
+        await ensureStripeCourseConfirmationEmail(
+          alreadyPayment.order,
+          customerEmail,
+        );
         await ensureEbookDownloadsForOrder(
           alreadyPayment.order,
           alreadyPayment.order.customerEmail ||
@@ -833,6 +886,17 @@ async function handleCheckoutSessionCompleted(session: any) {
           console.log(
             `✅ Order confirmation sent via webhook to ${user.email}`,
           );
+
+          await tx.order.update({
+            where: { id: order.id },
+            data: {
+              metadata: {
+                ...((order.metadata as any) || {}),
+                confirmationEmailSent: true,
+                confirmationEmailSentAt: new Date().toISOString(),
+              },
+            },
+          });
         }
       } catch (e) {
         console.error("❌ Failed to send confirmation via webhook:", e);
