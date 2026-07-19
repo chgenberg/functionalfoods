@@ -37,6 +37,8 @@ export interface CourseDraftData {
   description: string;
   price: number;
   salePrice?: number | null;
+  saleStartsAt?: string | null;
+  saleEndsAt?: string | null;
   duration: string;
   weeksCount: number;
   level: string;
