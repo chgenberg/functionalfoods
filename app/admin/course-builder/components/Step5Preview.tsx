@@ -25,8 +25,15 @@ interface Step5Props {
   saving: boolean;
 }
 
+const textItems = (items: unknown) =>
+  (Array.isArray(items) ? items : [])
+    .filter((item): item is string => typeof item === 'string')
+    .filter(item => item.trim() !== '');
+
 export default function Step5Preview({ draft, onUpdate, onSave, saving }: Step5Props) {
   const [publishing, setPublishing] = useState(false);
+  const objectives = textItems(draft.objectives);
+  const features = textItems(draft.features);
 
   const getMealCount = () => {
     return draft.weeks?.reduce((total, week) => {
@@ -41,8 +48,8 @@ export default function Step5Preview({ draft, onUpdate, onSave, saving }: Step5P
       { label: 'Kursnamn', ok: !!draft.title?.trim(), required: true },
       { label: 'Beskrivning', ok: !!draft.description?.trim(), required: true },
       { label: 'Pris', ok: draft.price !== undefined, required: true },
-      { label: 'Kursmål', ok: (draft.objectives?.filter(o => o.trim()).length || 0) > 0, required: false },
-      { label: 'Features', ok: (draft.features?.filter(f => f.trim()).length || 0) > 0, required: false },
+      { label: 'Kursmål', ok: objectives.length > 0, required: false },
+      { label: 'Features', ok: features.length > 0, required: false },
       { label: 'Omslagsbild', ok: !!draft.coverImage, required: false },
       { label: 'Introduktionsvideo', ok: !!draft.introVideoUrl, required: false },
       { label: 'Välkomstmeddelande', ok: !!draft.welcomeMessage?.trim(), required: false },
@@ -219,7 +226,7 @@ export default function Step5Preview({ draft, onUpdate, onSave, saving }: Step5P
             </div>
             <div className="bg-white rounded-lg p-3 text-center">
               <Target className="w-5 h-5 text-[var(--primary-green)] mx-auto mb-1" />
-              <p className="text-lg font-semibold">{draft.objectives?.filter(o => o.trim()).length || 0}</p>
+              <p className="text-lg font-semibold">{objectives.length}</p>
               <p className="text-xs text-[var(--text-secondary)]">Kursmål</p>
             </div>
             <div className="bg-white rounded-lg p-3 text-center">
@@ -251,13 +258,13 @@ export default function Step5Preview({ draft, onUpdate, onSave, saving }: Step5P
           </div>
 
           {/* Features */}
-          {draft.features && draft.features.filter(f => f.trim()).length > 0 && (
+          {features.length > 0 && (
             <div className="bg-white rounded-lg p-3">
               <p className="text-sm font-medium text-[var(--text-primary)] mb-2">
                 Vad som ingår:
               </p>
               <ul className="space-y-1">
-                {draft.features.filter(f => f.trim()).map((feature, i) => (
+                {features.map((feature, i) => (
                   <li key={i} className="flex items-center gap-2 text-sm text-[var(--text-secondary)]">
                     <Check className="w-4 h-4 text-green-500 flex-shrink-0" />
                     {feature}
