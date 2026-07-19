@@ -86,6 +86,11 @@ const MEAL_LABELS = {
 
 type PreviewMode = 'product' | 'dashboard' | 'week';
 
+const textItems = (items: unknown) =>
+  (Array.isArray(items) ? items : [])
+    .filter((item): item is string => typeof item === 'string')
+    .filter(item => item.trim() !== '');
+
 export default function CoursePreviewPage() {
   const params = useParams();
   const courseId = params.id as string;
@@ -143,6 +148,8 @@ export default function CoursePreviewPage() {
   }
 
   const saleActive = isCourseSaleActive(draft);
+  const objectives = textItems(draft.objectives);
+  const features = textItems(draft.features);
 
   const currentWeek = draft.weeks?.find(w => w.weekNumber === selectedWeek);
 
@@ -276,11 +283,11 @@ export default function CoursePreviewPage() {
                   )}
 
                   {/* Objectives */}
-                  {draft.objectives?.filter(o => o.trim()).length > 0 && (
+                  {objectives.length > 0 && (
                     <div className="bg-white rounded-2xl p-8 shadow-lg">
                       <h2 className="text-2xl font-bold text-[#014421] mb-6">Vad du kommer lära dig</h2>
                       <div className="grid md:grid-cols-2 gap-4">
-                        {draft.objectives.filter(o => o.trim()).map((objective, i) => (
+                        {objectives.map((objective, i) => (
                           <div key={i} className="flex items-start gap-3">
                             <div className="w-6 h-6 rounded-full bg-[#014421]/10 flex items-center justify-center flex-shrink-0 mt-0.5">
                               <Check className="w-4 h-4 text-[#014421]" />
@@ -293,11 +300,11 @@ export default function CoursePreviewPage() {
                   )}
 
                   {/* Features */}
-                  {draft.features?.filter(f => f.trim()).length > 0 && (
+                   {features.length > 0 && (
                     <div className="bg-white rounded-2xl p-8 shadow-lg">
                       <h2 className="text-2xl font-bold text-[#014421] mb-6">Vad som ingår</h2>
                       <ul className="space-y-3">
-                        {draft.features.filter(f => f.trim()).map((feature, i) => (
+                        {features.map((feature, i) => (
                           <li key={i} className="flex items-center gap-3">
                             <Check className="w-5 h-5 text-green-500" />
                             <span className="text-gray-700">{feature}</span>
