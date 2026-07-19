@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/app/lib/database';
 import { requireAdminAuth } from '@/app/lib/admin-auth';
+import { getCourseEffectivePrice } from '@/app/lib/course-pricing';
 
 export const dynamic = 'force-dynamic';
 
@@ -25,7 +26,7 @@ export async function POST(req: NextRequest) {
     const existing = await prisma.purchase.findUnique({ where: { userId_courseId: { userId: user.id, courseId: product.id } } });
     if (existing) return NextResponse.json({ message: 'Kurs finns redan på kontot', purchase: existing });
 
-    const price = typeof amount === 'number' ? amount : (product.salePrice ?? product.basePrice ?? product.price ?? 0);
+    const price = typeof amount === 'number' ? amount : getCourseEffectivePrice(product);
 
     const purchase = await prisma.purchase.create({
       data: {
