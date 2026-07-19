@@ -6,6 +6,24 @@ const prisma = new PrismaClient();
 
 export const dynamic = 'force-dynamic';
 
+function toStringList(value: unknown): string[] {
+  if (!Array.isArray(value)) return [];
+
+  return value
+    .map(item => {
+      if (typeof item === 'string') return item;
+      if (!item || typeof item !== 'object') return '';
+
+      const candidate = item as Record<string, unknown>;
+      for (const key of ['title', 'text', 'label', 'name', 'description']) {
+        if (typeof candidate[key] === 'string') return candidate[key] as string;
+      }
+
+      return '';
+    })
+    .filter(item => item.trim() !== '');
+}
+
 // GET - Get single course draft
 export async function GET(
   request: NextRequest,
@@ -47,8 +65,8 @@ export async function GET(
       weeksCount: builderData.weeksCount || 6,
       level: builderData.level || 'Beginner',
       targetAudience: builderData.targetAudience || '',
-      objectives: builderData.objectives || [],
-      features: builderData.features || [],
+      objectives: toStringList(builderData.objectives),
+      features: toStringList(builderData.features),
       coverImage: builderData.coverImage || '',
       introVideoUrl: builderData.introVideoUrl || course.overviewVideoUrl || '',
       welcomeMessage: builderData.welcomeMessage || course.welcomeText || '',
@@ -130,8 +148,8 @@ export async function PUT(
       weeksCount: weeksCount ?? existingBuilderData.weeksCount,
       level: level ?? existingBuilderData.level,
       targetAudience: targetAudience ?? existingBuilderData.targetAudience,
-      objectives: objectives ?? existingBuilderData.objectives,
-      features: features ?? existingBuilderData.features,
+      objectives: objectives === undefined ? toStringList(existingBuilderData.objectives) : toStringList(objectives),
+      features: features === undefined ? toStringList(existingBuilderData.features) : toStringList(features),
       coverImage: coverImage ?? existingBuilderData.coverImage,
       introVideoUrl: introVideoUrl ?? existingBuilderData.introVideoUrl,
       welcomeMessage: welcomeMessage ?? existingBuilderData.welcomeMessage,
