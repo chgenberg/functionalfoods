@@ -12,6 +12,7 @@ import {
   SUMMER_EBOOK_CAMPAIGN_ID,
   SUMMER_EBOOK_CAMPAIGN_TAG,
 } from "@/app/lib/campaigns/summer-ebooks";
+import { getCourseEffectivePrice } from "@/app/lib/course-pricing";
 import bcrypt from "bcryptjs";
 import type {
   SveaCartItem,
@@ -310,9 +311,14 @@ export async function POST(req: NextRequest) {
             { status: 400 },
           );
         }
+        const effectivePrice =
+          item.type === "course"
+            ? getCourseEffectivePrice(product)
+            : product.price;
+        
         validatedItems.push({
           ...item,
-          price: product.price, // Use price from database
+          price: effectivePrice, // Use server-authoritative campaign-aware price
           name: product.name, // Use name from database
           vatRate: product.vatRate || 0.25, // Use product VAT rate or default 25%
           courseId: item.type === "course" ? product.id : null,
