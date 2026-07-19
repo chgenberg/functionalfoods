@@ -118,8 +118,9 @@ export async function PUT(req: NextRequest) {
       return NextResponse.json({ error: 'Invalid course ID' }, { status: 400 });
     }
 
-    // Update price in CourseProduct table
-    const data: any = { price };
+    // Update only fields that were explicitly sent.
+    const data: any = {};
+    if (typeof price === 'number') data.price = price;
     if (typeof basePrice === 'number') data.basePrice = basePrice;
     if (basePrice === null) data.basePrice = null;
     if (typeof salePrice === 'number') data.salePrice = salePrice;
@@ -128,6 +129,10 @@ export async function PUT(req: NextRequest) {
     if (saleStartsAt === null) data.saleStartsAt = null;
     if (saleEndsAt) data.saleEndsAt = new Date(saleEndsAt);
     if (saleEndsAt === null) data.saleEndsAt = null;
+
+    if (Object.keys(data).length === 0) {
+      return NextResponse.json({ error: 'No valid fields to update' }, { status: 400 });
+    }
 
     const updated = await prisma.courseProduct.updateMany({
       where: { name: courseName },
