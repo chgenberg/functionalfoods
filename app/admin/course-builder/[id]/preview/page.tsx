@@ -22,6 +22,7 @@ import {
   ShoppingCart,
   X
 } from 'lucide-react';
+import { isCourseSaleActive } from '@/app/lib/course-pricing';
 
 interface CourseDraftData {
   id: string;
@@ -140,6 +141,8 @@ export default function CoursePreviewPage() {
       </div>
     );
   }
+
+  const saleActive = isCourseSaleActive(draft);
 
   const currentWeek = draft.weeks?.find(w => w.weekNumber === selectedWeek);
 
@@ -333,7 +336,7 @@ export default function CoursePreviewPage() {
                 <div className="md:col-span-1">
                   <div className="bg-white rounded-2xl p-6 shadow-lg sticky top-20">
                     <div className="text-center mb-6">
-                      {draft.salePrice ? (
+                      {saleActive ? (
                         <>
                           <div className="text-4xl font-bold text-[#014421]">{draft.salePrice} kr</div>
                           <div className="text-lg text-gray-400 line-through">{draft.price} kr</div>
