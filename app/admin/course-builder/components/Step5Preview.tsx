@@ -16,6 +16,7 @@ import {
   ExternalLink
 } from 'lucide-react';
 import type { CourseDraftData } from '../[id]/step/[stepNumber]/page';
+import { isCourseSaleActive } from '@/app/lib/course-pricing';
 
 interface Step5Props {
   draft: CourseDraftData;
@@ -63,6 +64,7 @@ export default function Step5Preview({ draft, onUpdate, onSave, saving }: Step5P
   };
 
   const status = getCompletionStatus();
+  const saleActive = isCourseSaleActive(draft);
 
   const handlePublish = async () => {
     if (!status.canPublish) return;
@@ -231,7 +233,7 @@ export default function Step5Preview({ draft, onUpdate, onSave, saving }: Step5P
           <div className="flex items-center justify-between bg-white rounded-lg p-3">
             <span className="text-sm text-[var(--text-secondary)]">Pris</span>
             <div className="text-right">
-              {draft.salePrice ? (
+              {saleActive ? (
                 <>
                   <span className="text-lg font-semibold text-[var(--primary-green)]">
                     {draft.salePrice} kr
