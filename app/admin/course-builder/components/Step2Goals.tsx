@@ -11,19 +11,40 @@ interface Step2Props {
   saving: boolean;
 }
 
+const toEditableString = (value: unknown) => {
+  if (typeof value === 'string') return value;
+  if (!value || typeof value !== 'object') return '';
+
+  const candidate = value as Record<string, unknown>;
+  for (const key of ['title', 'text', 'label', 'name', 'description']) {
+    if (typeof candidate[key] === 'string') return candidate[key] as string;
+  }
+
+  return '';
+};
+
+const toEditableList = (value: unknown) => {
+  const items = Array.isArray(value) ? value : [];
+  const normalized = items.map(toEditableString).filter(item => item.trim() !== '');
+  return normalized.length > 0 ? normalized : [''];
+};
+
+const filledItems = (items: unknown[]) =>
+  items.map(toEditableString).filter(item => item.trim() !== '');
+
 export default function Step2Goals({ draft, onUpdate, onSave, saving }: Step2Props) {
   const [objectives, setObjectives] = useState<string[]>(
-    draft.objectives?.length > 0 ? draft.objectives : ['']
+    toEditableList(draft.objectives)
   );
   const [features, setFeatures] = useState<string[]>(
-    draft.features?.length > 0 ? draft.features : ['']
+    toEditableList(draft.features)
   );
 
   useEffect(() => {
     const timer = setTimeout(() => {
       onUpdate({
-        objectives: objectives.filter(o => o.trim() !== ''),
-        features: features.filter(f => f.trim() !== '')
+        objectives: filledItems(objectives),
+        features: filledItems(features)
       });
     }, 500);
 
@@ -56,8 +77,8 @@ export default function Step2Goals({ draft, onUpdate, onSave, saving }: Step2Pro
 
   const handleSave = async () => {
     await onSave({
-      objectives: objectives.filter(o => o.trim() !== ''),
-      features: features.filter(f => f.trim() !== '')
+      objectives: filledItems(objectives),
+      features: filledItems(features)
     });
   };
 
@@ -178,7 +199,7 @@ export default function Step2Goals({ draft, onUpdate, onSave, saving }: Step2Pro
               type="button"
               onClick={() => {
                 if (!features.includes(suggestion)) {
-                  setFeatures([...features.filter(f => f.trim() !== ''), suggestion]);
+                  setFeatures([...filledItems(features), suggestion]);
                 }
               }}
               className="px-3 py-1 text-xs bg-white border border-[var(--border-light)] rounded-full hover:border-[var(--primary-green)] transition-colors"
@@ -192,7 +213,7 @@ export default function Step2Goals({ draft, onUpdate, onSave, saving }: Step2Pro
       {/* Save button */}
       <div className="flex items-center justify-between pt-4 border-t border-[var(--border-light)]">
         <p className="text-sm text-[var(--text-secondary)]">
-          {objectives.filter(o => o.trim()).length} mål, {features.filter(f => f.trim()).length} innehållspunkter
+          {filledItems(objectives).length} mål, {filledItems(features).length} innehållspunkter
         </p>
         <button
           onClick={handleSave}
