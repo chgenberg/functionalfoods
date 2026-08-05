@@ -1,11 +1,11 @@
-'use client';
+"use client";
 
-import React from 'react';
-import Link from 'next/link';
-import Image from 'next/image';
-import { Clock, Users, ChefHat, Lock, Star } from 'lucide-react';
-import { motion } from 'framer-motion';
-import { useT } from '@/app/lib/i18n/LanguageProvider';
+import React from "react";
+import Link from "next/link";
+import Image from "next/image";
+import { Clock, Users, ChefHat, Lock, Star } from "lucide-react";
+import { motion } from "framer-motion";
+import { useT } from "@/app/lib/i18n/LanguageProvider";
 
 interface Recipe {
   id: string;
@@ -39,24 +39,24 @@ interface RecipeCardProps {
 
 const RecipeCard: React.FC<RecipeCardProps> = ({ recipe, userAccess }) => {
   const canAccess = recipe.isFree || !recipe.isPremium || userAccess.hasAccess;
-  const imageUrl = recipe.imageUrl || '/images/recipe-placeholder.svg';
+  const imageUrl = recipe.imageUrl || "/images/recipe-placeholder.svg";
 
   return (
     <div className="group relative bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden transform hover:-translate-y-1 h-[520px] flex flex-col">
       {/* Image Container - Fixed height */}
       <div className="relative h-48 overflow-hidden flex-shrink-0">
         <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-        
+
         {recipe.imageUrl ? (
           <Image
             src={imageUrl}
             alt={recipe.imageAlt || recipe.title}
             fill
             className="object-cover group-hover:scale-110 transition-transform duration-500 recipe-image"
-            style={{ 
-              objectFit: 'cover', 
-              objectPosition: 'center',
-              imageOrientation: 'from-image'
+            style={{
+              objectFit: "cover",
+              objectPosition: "center",
+              imageOrientation: "from-image",
             }}
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
             priority={false}
@@ -64,8 +64,18 @@ const RecipeCard: React.FC<RecipeCardProps> = ({ recipe, userAccess }) => {
           />
         ) : (
           <div className="w-full h-full bg-background flex items-center justify-center">
-            <svg className="w-16 h-16 text-accent" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+            <svg
+              className="w-16 h-16 text-accent"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={1.5}
+                d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"
+              />
             </svg>
           </div>
         )}
@@ -87,7 +97,11 @@ const RecipeCard: React.FC<RecipeCardProps> = ({ recipe, userAccess }) => {
           <div className="absolute top-4 right-4 z-20">
             <div className="bg-[#93C560] md:bg-primary text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg flex items-center space-x-1">
               <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                <path
+                  fillRule="evenodd"
+                  d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                  clipRule="evenodd"
+                />
               </svg>
               <span>Gratis</span>
             </div>
@@ -117,11 +131,12 @@ const RecipeCard: React.FC<RecipeCardProps> = ({ recipe, userAccess }) => {
             {recipe.title}
           </h3>
         </div>
-        
+
         {/* Excerpt - Fixed height with line clamp */}
         <div className="h-16 mb-4">
           <p className="text-gray-600 text-sm line-clamp-3 leading-relaxed">
-            {recipe.excerpt || 'Upptäck detta läckra recept med funktionella livsmedel.'}
+            {recipe.excerpt ||
+              "Upptäck detta läckra recept med funktionella livsmedel."}
           </p>
         </div>
 
@@ -130,24 +145,54 @@ const RecipeCard: React.FC<RecipeCardProps> = ({ recipe, userAccess }) => {
           <div className="flex items-center space-x-3">
             {recipe.difficulty && (
               <span className="flex items-center">
-                <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                <svg
+                  className="w-4 h-4 mr-1"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M13 10V3L4 14h7v7l9-11h-7z"
+                  />
                 </svg>
                 {recipe.difficulty}
               </span>
             )}
             {recipe.prepTime && (
               <span className="flex items-center">
-                <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                <svg
+                  className="w-4 h-4 mr-1"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
                 </svg>
                 {recipe.prepTime}
               </span>
             )}
             {recipe.servings && (
               <span className="flex items-center">
-                <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+                <svg
+                  className="w-4 h-4 mr-1"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
+                  />
                 </svg>
                 {recipe.servings} port.
               </span>
@@ -158,15 +203,37 @@ const RecipeCard: React.FC<RecipeCardProps> = ({ recipe, userAccess }) => {
         {/* Author and ingredient count */}
         <div className="flex items-center justify-between text-xs text-gray-500 mb-4 h-4">
           <span className="flex items-center truncate">
-            <svg className="w-4 h-4 mr-1 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+            <svg
+              className="w-4 h-4 mr-1 flex-shrink-0"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+              />
             </svg>
-            <span className="truncate">{recipe.author?.name || 'Functional Foods'}</span>
+            <span className="truncate">
+              {recipe.author?.name || "Functional Foods"}
+            </span>
           </span>
           {recipe.ingredients && recipe.ingredients.length > 0 && (
             <span className="flex items-center flex-shrink-0 ml-2">
-              <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+              <svg
+                className="w-4 h-4 mr-1"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"
+                />
               </svg>
               {recipe.ingredients.length} ingredienser
             </span>
@@ -192,8 +259,18 @@ const RecipeCard: React.FC<RecipeCardProps> = ({ recipe, userAccess }) => {
                 className="block w-full text-center bg-gray-100 text-gray-400 py-3 rounded-lg font-medium cursor-not-allowed mb-2"
               >
                 <div className="flex items-center justify-center">
-                  <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                  <svg
+                    className="w-4 h-4 mr-2"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+                    />
                   </svg>
                   Premium recept
                 </div>
@@ -202,7 +279,7 @@ const RecipeCard: React.FC<RecipeCardProps> = ({ recipe, userAccess }) => {
                 href="/utbildning"
                 className="block text-center bg-[#FF7e70] text-white px-4 py-2 rounded-lg hover:bg-[#e56b5e] text-sm font-medium transition-colors"
               >
-                Köp kurs för tillgång →
+                Köp program för tillgång →
               </a>
             </div>
           )}
@@ -215,4 +292,4 @@ const RecipeCard: React.FC<RecipeCardProps> = ({ recipe, userAccess }) => {
   );
 };
 
-export default RecipeCard; 
+export default RecipeCard;

@@ -73,10 +73,10 @@ export default function UtbildningPage() {
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 md:pt-16 pb-0">
         <div className="mb-8 md:mb-12 text-center">
           <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight text-gray-900">
-            Alla kurser
+            Alla program
           </h1>
           <p className="mt-3 md:mt-4 text-gray-600 max-w-2xl mx-auto">
-            Välj den kurs som passar dig bäst. Oavsett om du vill komma igång
+            Välj det program som passar dig bäst. Oavsett om du vill komma igång
             eller fördjupa dig – här hittar du vägen framåt.
           </p>
         </div>
@@ -155,7 +155,7 @@ export default function UtbildningPage() {
         </div>
         <div className="mt-12 md:mt-16 mb-8 text-center max-w-7xl mx-auto px-4 sm:px-6 lg:px-10">
           <h1 className="text-3xl md:text-5xl font-extrabold tracking-tight text-gray-900">
-            Fler kurser av Ulrika
+            Fler program av Ulrika
           </h1>
           <p className="mt-3 md:mt-4 text-gray-900 max-w-2xl mx-auto">
             Kurser med inspirerande recept fyllda med matglädje och praktiska

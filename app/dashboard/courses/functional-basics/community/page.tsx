@@ -1,9 +1,23 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import Link from 'next/link';
-import { MessageSquare, ThumbsUp, Eye, Search, Edit, Filter, Plus, Clock, User, Tag, TrendingUp, Star, ChevronRight } from 'lucide-react';
+import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import Link from "next/link";
+import {
+  MessageSquare,
+  ThumbsUp,
+  Eye,
+  Search,
+  Edit,
+  Filter,
+  Plus,
+  Clock,
+  User,
+  Tag,
+  TrendingUp,
+  Star,
+  ChevronRight,
+} from "lucide-react";
 
 interface ForumCategory {
   id: string;
@@ -44,21 +58,21 @@ interface ForumThread {
 
 const getCategoryStyle = (color: string) => {
   const styles = {
-    green: 'bg-background-secondary text-secondary',
-    blue: 'bg-blue-100 text-blue-800',
-    purple: 'bg-purple-100 text-purple-800',
-    orange: 'bg-orange-100 text-orange-800',
-    red: 'bg-red-100 text-red-800',
-    yellow: 'bg-yellow-100 text-yellow-800',
-    gray: 'bg-gray-100 text-gray-800'
+    green: "bg-background-secondary text-secondary",
+    blue: "bg-blue-100 text-blue-800",
+    purple: "bg-purple-100 text-purple-800",
+    orange: "bg-orange-100 text-orange-800",
+    red: "bg-red-100 text-red-800",
+    yellow: "bg-yellow-100 text-yellow-800",
+    gray: "bg-gray-100 text-gray-800",
   };
   return styles[color as keyof typeof styles] || styles.gray;
 };
 
 const ThreadItem = ({ thread }: { thread: ForumThread }) => {
   const lastReply = thread.replies[0];
-  const timeAgo = new Date(thread.createdAt).toLocaleDateString('sv-SE');
-  
+  const timeAgo = new Date(thread.createdAt).toLocaleDateString("sv-SE");
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -70,10 +84,12 @@ const ThreadItem = ({ thread }: { thread: ForumThread }) => {
         <div className="w-10 h-10 sm:w-12 sm:h-12 bg-accent rounded-full flex items-center justify-center text-white font-bold flex-shrink-0">
           {thread.author.name?.charAt(0) || thread.author.email.charAt(0)}
         </div>
-        
+
         <div className="flex-grow min-w-0 w-full">
           <div className="flex flex-wrap items-center gap-2 mb-2">
-            <span className={`px-2 py-0.5 text-xs font-semibold rounded-full ${getCategoryStyle(thread.category.color)}`}>
+            <span
+              className={`px-2 py-0.5 text-xs font-semibold rounded-full ${getCategoryStyle(thread.category.color)}`}
+            >
               {thread.category.name}
             </span>
             {thread._count.likes > 5 && (
@@ -83,21 +99,25 @@ const ThreadItem = ({ thread }: { thread: ForumThread }) => {
               </span>
             )}
           </div>
-          
-          <Link href={`/dashboard/courses/functional-basics/community/thread/${thread.id}`}>
+
+          <Link
+            href={`/dashboard/courses/functional-basics/community/thread/${thread.id}`}
+          >
             <h3 className="text-base sm:text-lg font-semibold text-gray-900 hover:text-primary transition-colors group-hover:text-primary mb-2 break-words">
               {thread.title}
             </h3>
           </Link>
-          
+
           <p className="text-gray-600 text-sm mb-3 line-clamp-2 break-words">
             {thread.content.substring(0, 150)}...
           </p>
-          
+
           <div className="flex flex-wrap items-center gap-3 sm:gap-4 text-xs sm:text-sm text-gray-500 mb-3 sm:mb-0">
             <div className="flex items-center gap-1">
               <User className="w-3 h-3 sm:w-4 sm:h-4" />
-              <span className="truncate max-w-[120px] sm:max-w-none">{thread.author.name || thread.author.email.split('@')[0]}</span>
+              <span className="truncate max-w-[120px] sm:max-w-none">
+                {thread.author.name || thread.author.email.split("@")[0]}
+              </span>
             </div>
             <div className="flex items-center gap-1">
               <Clock className="w-3 h-3 sm:w-4 sm:h-4" />
@@ -105,28 +125,31 @@ const ThreadItem = ({ thread }: { thread: ForumThread }) => {
             </div>
           </div>
         </div>
-        
+
         <div className="flex sm:flex-col items-center sm:items-end gap-3 sm:gap-2 text-xs sm:text-sm text-gray-600 flex-shrink-0 w-full sm:w-auto justify-between sm:justify-end">
           <div className="flex items-center gap-4 sm:gap-2 sm:flex-col sm:text-right">
             <div className="flex items-center gap-1 sm:gap-2" title="Svar">
-              <MessageSquare className="w-3 h-3 sm:w-4 sm:h-4 text-gray-400"/>
+              <MessageSquare className="w-3 h-3 sm:w-4 sm:h-4 text-gray-400" />
               <span className="font-medium">{thread._count.replies}</span>
             </div>
-            <div className="flex items-center gap-1 sm:gap-2" title="Gillningar">
-              <ThumbsUp className="w-3 h-3 sm:w-4 sm:h-4 text-gray-400"/>
+            <div
+              className="flex items-center gap-1 sm:gap-2"
+              title="Gillningar"
+            >
+              <ThumbsUp className="w-3 h-3 sm:w-4 sm:h-4 text-gray-400" />
               <span className="font-medium">{thread._count.likes}</span>
             </div>
             <div className="flex items-center gap-1 sm:gap-2" title="Visningar">
-              <Eye className="w-3 h-3 sm:w-4 sm:h-4 text-gray-400"/>
+              <Eye className="w-3 h-3 sm:w-4 sm:h-4 text-gray-400" />
               <span className="font-medium">{thread.views}</span>
             </div>
           </div>
-          
+
           {lastReply && (
             <div className="text-right hidden sm:block">
               <p className="text-xs text-gray-500">Senaste svar</p>
               <p className="font-medium text-xs">
-                {new Date(lastReply.createdAt).toLocaleDateString('sv-SE')}
+                {new Date(lastReply.createdAt).toLocaleDateString("sv-SE")}
               </p>
             </div>
           )}
@@ -139,15 +162,15 @@ const ThreadItem = ({ thread }: { thread: ForumThread }) => {
 export default function FunctionalBasicsCommunityPage() {
   const [categories, setCategories] = useState<ForumCategory[]>([]);
   const [threads, setThreads] = useState<ForumThread[]>([]);
-  const [selectedCategory, setSelectedCategory] = useState<string>('all');
-  const [searchTerm, setSearchTerm] = useState('');
-  const [sortBy, setSortBy] = useState('latest');
+  const [selectedCategory, setSelectedCategory] = useState<string>("all");
+  const [searchTerm, setSearchTerm] = useState("");
+  const [sortBy, setSortBy] = useState("latest");
   const [loading, setLoading] = useState(true);
   const [showNewThreadModal, setShowNewThreadModal] = useState(false);
   const [newThreadData, setNewThreadData] = useState({
-    title: '',
-    content: '',
-    categoryId: ''
+    title: "",
+    content: "",
+    categoryId: "",
   });
   const [submitting, setSubmitting] = useState(false);
 
@@ -158,13 +181,13 @@ export default function FunctionalBasicsCommunityPage() {
 
   const fetchCategories = async () => {
     try {
-      const response = await fetch('/api/forum/categories');
+      const response = await fetch("/api/forum/categories");
       if (response.ok) {
         const data = await response.json();
         setCategories(data);
       }
     } catch (error) {
-      console.error('Error fetching categories:', error);
+      console.error("Error fetching categories:", error);
     }
   };
 
@@ -172,9 +195,10 @@ export default function FunctionalBasicsCommunityPage() {
     try {
       setLoading(true);
       const params = new URLSearchParams();
-      if (selectedCategory !== 'all') params.append('categoryId', selectedCategory);
-      if (searchTerm) params.append('search', searchTerm);
-      if (sortBy) params.append('sort', sortBy);
+      if (selectedCategory !== "all")
+        params.append("categoryId", selectedCategory);
+      if (searchTerm) params.append("search", searchTerm);
+      if (sortBy) params.append("sort", sortBy);
 
       const response = await fetch(`/api/forum/threads?${params}`);
       if (response.ok) {
@@ -182,7 +206,7 @@ export default function FunctionalBasicsCommunityPage() {
         setThreads(data);
       }
     } catch (error) {
-      console.error('Error fetching threads:', error);
+      console.error("Error fetching threads:", error);
     } finally {
       setLoading(false);
     }
@@ -190,40 +214,47 @@ export default function FunctionalBasicsCommunityPage() {
 
   const handleCreateThread = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!newThreadData.title || !newThreadData.content || !newThreadData.categoryId) {
-      alert('Vänligen fyll i alla fält');
+    if (
+      !newThreadData.title ||
+      !newThreadData.content ||
+      !newThreadData.categoryId
+    ) {
+      alert("Vänligen fyll i alla fält");
       return;
     }
 
     setSubmitting(true);
     try {
-      const token = localStorage.getItem('token');
-      const response = await fetch('/api/forum/threads', {
-        method: 'POST',
+      const token = localStorage.getItem("token");
+      const response = await fetch("/api/forum/threads", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify(newThreadData)
+        body: JSON.stringify(newThreadData),
       });
 
       if (response.ok) {
         setShowNewThreadModal(false);
-        setNewThreadData({ title: '', content: '', categoryId: '' });
+        setNewThreadData({ title: "", content: "", categoryId: "" });
         fetchThreads(); // Refresh threads list
-        alert('Diskussion skapad!');
+        alert("Diskussion skapad!");
       } else {
-        alert('Kunde inte skapa diskussion');
+        alert("Kunde inte skapa diskussion");
       }
     } catch (error) {
-      console.error('Error creating thread:', error);
-      alert('Ett fel uppstod');
+      console.error("Error creating thread:", error);
+      alert("Ett fel uppstod");
     } finally {
       setSubmitting(false);
     }
   };
 
-  const totalThreads = categories.reduce((sum, cat) => sum + cat._count.threads, 0);
+  const totalThreads = categories.reduce(
+    (sum, cat) => sum + cat._count.threads,
+    0,
+  );
 
   return (
     <div className="space-y-8">
@@ -231,22 +262,28 @@ export default function FunctionalBasicsCommunityPage() {
       <div className="relative overflow-hidden rounded-2xl bg-primary p-4 sm:p-6 lg:p-8 text-white shadow-xl">
         <div className="relative z-10 flex flex-col md:flex-row justify-between md:items-center gap-4">
           <div className="min-w-0">
-            <h1 className="text-2xl sm:text-3xl font-bold mb-2 break-words">Functional Basics Community</h1>
+            <h1 className="text-2xl sm:text-3xl font-bold mb-2 break-words">
+              Functional Basics Community
+            </h1>
             <p className="text-white/90 text-base sm:text-lg break-words">
-              Diskutera kursen och dela erfarenheter med andra deltagare
+              Diskutera programmet och dela erfarenheter med andra deltagare
             </p>
             <div className="flex flex-wrap items-center gap-4 sm:gap-6 mt-4">
               <div className="flex items-center gap-2">
                 <MessageSquare className="w-4 h-4 sm:w-5 sm:h-5" />
-                <span className="font-semibold text-sm sm:text-base">{totalThreads} diskussioner</span>
+                <span className="font-semibold text-sm sm:text-base">
+                  {totalThreads} diskussioner
+                </span>
               </div>
               <div className="flex items-center gap-2">
                 <User className="w-4 h-4 sm:w-5 sm:h-5" />
-                <span className="font-semibold text-sm sm:text-base">{threads.length} aktiva</span>
+                <span className="font-semibold text-sm sm:text-base">
+                  {threads.length} aktiva
+                </span>
               </div>
             </div>
           </div>
-          <motion.button 
+          <motion.button
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={() => setShowNewThreadModal(true)}
@@ -257,14 +294,14 @@ export default function FunctionalBasicsCommunityPage() {
             <span className="sm:hidden">Ny diskussion</span>
           </motion.button>
         </div>
-        
+
         {/* Decorative elements */}
         <div className="absolute -top-24 -right-24 w-48 h-48 bg-white/10 rounded-full blur-3xl"></div>
         <div className="absolute -bottom-12 -left-12 w-32 h-32 bg-white/10 rounded-full blur-2xl"></div>
       </div>
 
       {/* Categories with improved design */}
-      <motion.div 
+      <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         className="bg-background-secondary rounded-2xl shadow-sm border border-border p-6"
@@ -278,26 +315,34 @@ export default function FunctionalBasicsCommunityPage() {
           <motion.button
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
-            onClick={() => setSelectedCategory('all')}
+            onClick={() => setSelectedCategory("all")}
             className={`relative p-4 rounded-xl transition-all duration-200 text-left group ${
-              selectedCategory === 'all'
-                ? 'bg-accent text-white shadow-lg'
-                : 'bg-background hover:bg-background/70 hover:shadow-md'
+              selectedCategory === "all"
+                ? "bg-accent text-white shadow-lg"
+                : "bg-background hover:bg-background/70 hover:shadow-md"
             }`}
           >
             <div className="flex items-center justify-between">
               <span className="font-medium">Alla kategorier</span>
-              <span className={`text-2xl font-bold ${
-                selectedCategory === 'all' ? 'text-white' : 'text-accent'
-              }`}>{totalThreads}</span>
+              <span
+                className={`text-2xl font-bold ${
+                  selectedCategory === "all" ? "text-white" : "text-accent"
+                }`}
+              >
+                {totalThreads}
+              </span>
             </div>
-            <div className={`text-sm mt-1 ${
-              selectedCategory === 'all' ? 'text-white/80' : 'text-text-secondary'
-            }`}>
+            <div
+              className={`text-sm mt-1 ${
+                selectedCategory === "all"
+                  ? "text-white/80"
+                  : "text-text-secondary"
+              }`}
+            >
               diskussioner totalt
             </div>
           </motion.button>
-          
+
           {/* Category buttons */}
           {categories.map((category) => (
             <motion.button
@@ -307,23 +352,35 @@ export default function FunctionalBasicsCommunityPage() {
               onClick={() => setSelectedCategory(category.id)}
               className={`relative p-4 rounded-xl transition-all duration-200 text-left group ${
                 selectedCategory === category.id
-                  ? 'bg-accent text-white shadow-lg'
-                  : 'bg-background hover:bg-background/70 hover:shadow-md'
+                  ? "bg-accent text-white shadow-lg"
+                  : "bg-background hover:bg-background/70 hover:shadow-md"
               }`}
             >
               <div className="flex items-center justify-between">
                 <span className="font-medium">{category.name}</span>
-                <span className={`text-2xl font-bold ${
-                  selectedCategory === category.id ? 'text-white' : 'text-accent'
-                }`}>{category._count.threads}</span>
+                <span
+                  className={`text-2xl font-bold ${
+                    selectedCategory === category.id
+                      ? "text-white"
+                      : "text-accent"
+                  }`}
+                >
+                  {category._count.threads}
+                </span>
               </div>
-              <div className={`text-sm mt-1 ${
-                selectedCategory === category.id ? 'text-white/80' : 'text-text-secondary'
-              }`}>
-                {category._count.threads === 1 ? 'diskussion' : 'diskussioner'}
+              <div
+                className={`text-sm mt-1 ${
+                  selectedCategory === category.id
+                    ? "text-white/80"
+                    : "text-text-secondary"
+                }`}
+              >
+                {category._count.threads === 1 ? "diskussion" : "diskussioner"}
               </div>
               {/* Category color indicator */}
-              <div className={`absolute bottom-0 left-0 right-0 h-1 rounded-b-xl ${getCategoryStyle(category.color).split(' ')[0]}`}></div>
+              <div
+                className={`absolute bottom-0 left-0 right-0 h-1 rounded-b-xl ${getCategoryStyle(category.color).split(" ")[0]}`}
+              ></div>
             </motion.button>
           ))}
         </div>
@@ -331,27 +388,27 @@ export default function FunctionalBasicsCommunityPage() {
 
       {/* Search and Filter with better styling */}
       <div className="flex flex-col md:flex-row gap-4">
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
           className="relative flex-grow"
         >
           <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
-          <input 
-            type="text" 
-            placeholder="Sök diskussioner..." 
+          <input
+            type="text"
+            placeholder="Sök diskussioner..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="w-full pl-12 pr-4 py-3 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200 shadow-sm"
           />
         </motion.div>
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
           className="relative"
         >
           <Filter className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
-          <select 
+          <select
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value)}
             className="pl-12 pr-10 py-3 bg-white border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200 appearance-none shadow-sm cursor-pointer"
@@ -362,14 +419,14 @@ export default function FunctionalBasicsCommunityPage() {
           </select>
         </motion.div>
       </div>
-      
+
       {/* Threads */}
       <div className="space-y-4">
         {loading ? (
           <div className="space-y-4">
             {[1, 2, 3].map((i) => (
-              <motion.div 
-                key={i} 
+              <motion.div
+                key={i}
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: i * 0.1 }}
@@ -401,7 +458,7 @@ export default function FunctionalBasicsCommunityPage() {
             ))}
           </AnimatePresence>
         ) : (
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             className="text-center py-16 bg-white rounded-2xl shadow-sm border border-gray-100"
@@ -409,15 +466,19 @@ export default function FunctionalBasicsCommunityPage() {
             <div className="w-20 h-20 bg-background-secondary rounded-full flex items-center justify-center mx-auto mb-4">
               <MessageSquare className="w-10 h-10 text-primary" />
             </div>
-            <h3 className="text-xl font-semibold text-gray-900 mb-2">Inga diskussioner hittades</h3>
+            <h3 className="text-xl font-semibold text-gray-900 mb-2">
+              Inga diskussioner hittades
+            </h3>
             <p className="text-gray-600 mb-6 max-w-md mx-auto">
-              {searchTerm ? 'Prova att ändra din sökning' : 'Var den första att starta en diskussion och dela dina tankar med gruppen!'}
+              {searchTerm
+                ? "Prova att ändra din sökning"
+                : "Var den första att starta en diskussion och dela dina tankar med gruppen!"}
             </p>
-            <motion.button 
+            <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               onClick={() => setShowNewThreadModal(true)}
-                              className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-white rounded-xl hover:shadow-lg transition-all duration-200 font-semibold"
+              className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-white rounded-xl hover:shadow-lg transition-all duration-200 font-semibold"
             >
               <Plus className="w-5 h-5" />
               Starta första diskussionen
@@ -427,14 +488,16 @@ export default function FunctionalBasicsCommunityPage() {
       </div>
 
       {/* Community Stats with better design */}
-      <motion.div 
+      <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         className="bg-background-secondary rounded-2xl p-8 border border-border"
       >
         <div className="grid md:grid-cols-3 gap-6 text-center">
           <div className="bg-background rounded-xl p-6 shadow-sm">
-            <div className="text-3xl font-bold text-primary mb-1">{totalThreads}</div>
+            <div className="text-3xl font-bold text-primary mb-1">
+              {totalThreads}
+            </div>
             <div className="text-text-secondary">Diskussioner</div>
           </div>
           <div className="bg-background rounded-xl p-6 shadow-sm">
@@ -444,7 +507,9 @@ export default function FunctionalBasicsCommunityPage() {
             <div className="text-text-secondary">Svar</div>
           </div>
           <div className="bg-background rounded-xl p-6 shadow-sm">
-            <div className="text-3xl font-bold text-secondary mb-1">{categories.length}</div>
+            <div className="text-3xl font-bold text-secondary mb-1">
+              {categories.length}
+            </div>
             <div className="text-text-secondary">Kategorier</div>
           </div>
         </div>
@@ -475,19 +540,33 @@ export default function FunctionalBasicsCommunityPage() {
                 <div className="relative bg-primary p-6 text-white">
                   <div className="relative z-10">
                     <div className="flex items-center justify-between">
-                      <h2 className="text-2xl font-bold">Starta ny diskussion</h2>
+                      <h2 className="text-2xl font-bold">
+                        Starta ny diskussion
+                      </h2>
                       <motion.button
                         whileHover={{ scale: 1.1, rotate: 90 }}
                         whileTap={{ scale: 0.9 }}
                         onClick={() => setShowNewThreadModal(false)}
                         className="p-2 hover:bg-white/20 rounded-full transition-colors"
                       >
-                        <svg className="w-5 h-5 md:w-6 md:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                        <svg
+                          className="w-5 h-5 md:w-6 md:h-6"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M6 18L18 6M6 6l12 12"
+                          />
                         </svg>
                       </motion.button>
                     </div>
-                    <p className="text-white/90 mt-2">Dela dina tankar och frågor med gruppen</p>
+                    <p className="text-white/90 mt-2">
+                      Dela dina tankar och frågor med gruppen
+                    </p>
                   </div>
                 </div>
 
@@ -506,11 +585,18 @@ export default function FunctionalBasicsCommunityPage() {
                       <div className="relative">
                         <select
                           value={newThreadData.categoryId}
-                          onChange={(e) => setNewThreadData(prev => ({ ...prev, categoryId: e.target.value }))}
+                          onChange={(e) =>
+                            setNewThreadData((prev) => ({
+                              ...prev,
+                              categoryId: e.target.value,
+                            }))
+                          }
                           className="w-full px-4 py-3 pr-10 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200 appearance-none bg-gray-50 cursor-pointer"
                           required
                         >
-                          <option value="">Välj en kategori för din diskussion</option>
+                          <option value="">
+                            Välj en kategori för din diskussion
+                          </option>
                           {categories.map((category) => (
                             <option key={category.id} value={category.id}>
                               {category.name}
@@ -533,12 +619,19 @@ export default function FunctionalBasicsCommunityPage() {
                       <input
                         type="text"
                         value={newThreadData.title}
-                        onChange={(e) => setNewThreadData(prev => ({ ...prev, title: e.target.value }))}
+                        onChange={(e) =>
+                          setNewThreadData((prev) => ({
+                            ...prev,
+                            title: e.target.value,
+                          }))
+                        }
                         className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-200 bg-gray-50"
                         placeholder="En kort och beskrivande rubrik..."
                         required
                       />
-                      <p className="text-xs text-gray-500 mt-1">Max 100 tecken</p>
+                      <p className="text-xs text-gray-500 mt-1">
+                        Max 100 tecken
+                      </p>
                     </motion.div>
 
                     {/* Content */}
@@ -552,13 +645,20 @@ export default function FunctionalBasicsCommunityPage() {
                       </label>
                       <textarea
                         value={newThreadData.content}
-                        onChange={(e) => setNewThreadData(prev => ({ ...prev, content: e.target.value }))}
+                        onChange={(e) =>
+                          setNewThreadData((prev) => ({
+                            ...prev,
+                            content: e.target.value,
+                          }))
+                        }
                         rows={6}
                         className="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent resize-none transition-all duration-200 bg-gray-50"
                         placeholder="Beskriv din fråga eller diskussion i detalj..."
                         required
                       />
-                      <p className="text-xs text-gray-500 mt-1">Minst 20 tecken</p>
+                      <p className="text-xs text-gray-500 mt-1">
+                        Minst 20 tecken
+                      </p>
                     </motion.div>
 
                     {/* Tips Section */}
@@ -599,14 +699,23 @@ export default function FunctionalBasicsCommunityPage() {
                         type="submit"
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.98 }}
-                        disabled={submitting || !newThreadData.title || !newThreadData.content || !newThreadData.categoryId}
+                        disabled={
+                          submitting ||
+                          !newThreadData.title ||
+                          !newThreadData.content ||
+                          !newThreadData.categoryId
+                        }
                         className="px-6 py-3 bg-primary text-white rounded-xl hover:shadow-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 font-medium"
                       >
                         {submitting ? (
                           <>
                             <motion.div
                               animate={{ rotate: 360 }}
-                              transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+                              transition={{
+                                duration: 1,
+                                repeat: Infinity,
+                                ease: "linear",
+                              }}
                               className="w-5 h-5 border-2 border-white border-t-transparent rounded-full"
                             />
                             Publicerar...
@@ -628,4 +737,4 @@ export default function FunctionalBasicsCommunityPage() {
       </AnimatePresence>
     </div>
   );
-} 
+}

@@ -140,14 +140,7 @@ export default function CartPage() {
 
     clearCart();
     SUMMER_EBOOK_PRODUCTS.forEach((product) => addItem(product));
-  }, [
-    isLoaded,
-    campaignCartPrepared,
-    searchParams,
-    items,
-    clearCart,
-    addItem,
-  ]);
+  }, [isLoaded, campaignCartPrepared, searchParams, items, clearCart, addItem]);
 
   useEffect(() => {
     if (legacyBundleNormalized || !isLoaded) return;
@@ -294,7 +287,7 @@ export default function CartPage() {
                 Din varukorg är tom
               </h2>
               <p className="text-lg text-gray-600 mb-8">
-                Upptäck våra kurser och börja din resa mot bättre hälsa
+                Upptäck våra program och börja din resa mot bättre hälsa
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Link
@@ -302,7 +295,7 @@ export default function CartPage() {
                   className="inline-flex items-center px-6 py-3 bg-[#014421] text-white font-medium rounded-lg hover:bg-[#116530] transition-all duration-200 shadow-md hover:shadow-lg"
                 >
                   <Book className="w-5 h-5 inline mr-2" />
-                  Utforska kurser
+                  Utforska program
                 </Link>
                 <Link
                   href="/kunskapsbank"
@@ -563,7 +556,7 @@ export default function CartPage() {
                     <div className="flex items-end justify-between gap-3">
                       <div className="min-w-0">
                         <div className="text-lg sm:text-2xl font-bold text-[#014421] leading-none">
-                           {showBreakfastUpsell ? "99 kr" : "250 kr"}
+                          {showBreakfastUpsell ? "99 kr" : "250 kr"}
                         </div>
                         <div className="text-[11px] sm:text-sm text-gray-500 mt-1">
                           {showBreakfastUpsell

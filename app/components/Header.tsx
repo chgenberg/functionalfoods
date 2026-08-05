@@ -79,10 +79,10 @@ export default function Header() {
     { label: t("nav.home", "HEM"), href: "/" },
     { label: t("nav.book", "BÖCKER"), href: "/e-bocker" },
     {
-      label: t("nav.education", "UTBILDNING"),
+      label: t("nav.education", "PROGRAM"),
       href: "/utbildning",
       submenu: [
-        { label: t("nav.allCourses", "Alla kurser"), href: "/utbildning" },
+        { label: t("nav.allCourses", "Alla program"), href: "/utbildning" },
         { label: "Functional Basics", href: "/utbildning/functional-basics" },
         {
           label: "Functional Gut Health/Flow",
@@ -94,7 +94,7 @@ export default function Header() {
         },
         { label: "Hormonell Balans", href: "/utbildning/hormonell-balans" },
         {
-          label: "Fler kurser av Ulrika",
+          label: "Fler program av Ulrika",
           href: "https://ulrikadavidsson.se/ga-ner-i-vikt/kursutbud/",
         },
       ],
