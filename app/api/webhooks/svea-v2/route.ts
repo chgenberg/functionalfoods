@@ -78,7 +78,11 @@ export async function POST(request: NextRequest) {
   try {
     // Read raw body for signature validation
     body = await request.text();
-    const signature = request.headers.get("x-svea-signature") || "";
+    const signature =
+      request.headers.get("x-signature-512") ||
+      request.headers.get("x-svea-signature") ||
+      "";
+    const signatureTimestamp = request.headers.get("x-timestamp") || "";
     const url = request.url;
     const searchParams = new URL(url).searchParams;
 
@@ -104,6 +108,7 @@ export async function POST(request: NextRequest) {
       bodyPreview: body.substring(0, 100),
       hasSignature: !!signature,
       signatureLength: signature.length,
+      hasSignatureTimestamp: !!signatureTimestamp,
       url: url,
       queryOrderId,
       headerOrderId,
@@ -113,22 +118,36 @@ export async function POST(request: NextRequest) {
     // Initialize Svea service
     const sveaCheckout = getSveaCheckout();
 
-    // Validate webhook signature
-    if (
-      process.env.NODE_ENV === "production" ||
-      process.env.SVEA_WEBHOOK_VALIDATION === "true"
-    ) {
-      if (!signature) {
-        // Fallback: tillåt utan signatur men logga varning (för att inte blockera auto-godkännande)
-        console.warn("⚠️ Missing webhook signature - allowing due to fallback");
-      } else {
-        const isValid = sveaCheckout.validateWebhookSignature(body, signature);
-        if (!isValid) {
-          // Fallback: logga men fortsätt ändå
-          console.warn(
-            "⚠️ Invalid webhook signature - allowing due to fallback",
-          );
-        }
+    // SVEA_WEBHOOK_VALIDATION is our own feature flag, not a Svea API setting.
+    // Keep it disabled until the exact Checkout PushUri signing secret is confirmed.
+    const requireValidSignature =
+      process.env.SVEA_WEBHOOK_VALIDATION === "true";
+
+    if (requireValidSignature) {
+      const webhookSecret =
+        process.env.SVEA_WEBHOOK_SECRET || process.env.SVEA_SECRET_WORD || "";
+
+      if (!signature || !signatureTimestamp || !webhookSecret) {
+        console.warn("⚠️ Missing Svea webhook signature inputs");
+        return NextResponse.json(
+          { error: "Missing webhook signature" },
+          { status: 401 },
+        );
+      }
+
+      const isValid = sveaCheckout.validateWebhookSignature(
+        body,
+        signature,
+        signatureTimestamp,
+        webhookSecret,
+      );
+
+      if (!isValid) {
+        console.warn("⚠️ Invalid Svea webhook signature");
+        return NextResponse.json(
+          { error: "Invalid webhook signature" },
+          { status: 401 },
+        );
       }
     }
 
