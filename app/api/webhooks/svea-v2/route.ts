@@ -102,7 +102,8 @@ export async function POST(request: NextRequest) {
       request.headers.get("X-Svea-Checkout-OrderId") ||
       null;
 
-    console.log("📩 Svea webhook received:", {
+    const debugWebhookLogging = process.env.SVEA_WEBHOOK_DEBUG === "true";
+    const webhookLog: Record<string, unknown> = {
       hasBody: !!body,
       bodyLength: body.length,
       eventType: (() => {
