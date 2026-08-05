@@ -19,7 +19,7 @@ export default function Footer() {
   const footerLinks = {
     utbildning: [
       {
-        label: t("footer.links.allCourses", "Alla kurser"),
+        label: t("footer.links.allCourses", "Alla program"),
         href: "/utbildning/alla-kurser",
       },
       {
@@ -35,7 +35,7 @@ export default function Footer() {
         href: "/utbildning/functional-energy",
       },
       {
-        label: "Fler kurser av Ulrika",
+        label: "Fler program av Ulrika",
         href: "https://ulrikadavidsson.se/ga-ner-i-vikt/kursutbud/",
       },
     ],
@@ -129,7 +129,7 @@ export default function Footer() {
           {/* Utbildning */}
           <div>
             <h3 className="font-bold text-lg mb-4">
-              {t("footer.sections.education", "Utbildning")}
+              {t("footer.sections.education", "Program")}
             </h3>
             <ul className="space-y-2">
               {footerLinks.utbildning.map((link) => {

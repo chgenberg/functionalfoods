@@ -1,15 +1,26 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
+import { useState, useEffect } from "react";
+import { motion } from "framer-motion";
 
-import CourseNavigation from '../../components/CourseNavigation';
-import WeekHeroWithVideo from '../../components/WeekHeroWithVideo';
-import HelpGuide from '@/app/components/HelpGuide';
-import InfoPopupGrid from '../../components/InfoPopupGrid';
-import CompleteCourseDownload from '../../components/CompleteCourseDownload';
-import { mealPlans } from '@/app/data/mealPlans';
-import { HelpCircle, Check, Clock, Lock, BookOpen, Award, Calendar, TrendingUp, Users, Instagram } from 'lucide-react';
+import CourseNavigation from "../../components/CourseNavigation";
+import WeekHeroWithVideo from "../../components/WeekHeroWithVideo";
+import HelpGuide from "@/app/components/HelpGuide";
+import InfoPopupGrid from "../../components/InfoPopupGrid";
+import CompleteCourseDownload from "../../components/CompleteCourseDownload";
+import { mealPlans } from "@/app/data/mealPlans";
+import {
+  HelpCircle,
+  Check,
+  Clock,
+  Lock,
+  BookOpen,
+  Award,
+  Calendar,
+  TrendingUp,
+  Users,
+  Instagram,
+} from "lucide-react";
 
 export default function FunctionalBasicsOverview() {
   const [showHelpModal, setShowHelpModal] = useState(false);
@@ -17,42 +28,51 @@ export default function FunctionalBasicsOverview() {
   const [courseStartDate, setCourseStartDate] = useState<Date | null>(null);
   const [currentWeek, setCurrentWeek] = useState(1);
   const [currentDay, setCurrentDay] = useState(1);
-  
+
   useEffect(() => {
     // Save this course as the last visited for navigation persistence
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('lastVisitedCourse', 'basics');
+    if (typeof window !== "undefined") {
+      localStorage.setItem("lastVisitedCourse", "basics");
     }
-    
+
     // Get user email from auth to make localStorage key user-specific
-    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null;
-    let userEmail = '';
+    const token =
+      typeof window !== "undefined" ? localStorage.getItem("token") : null;
+    let userEmail = "";
     if (token) {
       try {
-        const payload = JSON.parse(atob(token.split('.')[1]));
-        userEmail = payload.email || payload.userId || '';
+        const payload = JSON.parse(atob(token.split(".")[1]));
+        userEmail = payload.email || payload.userId || "";
       } catch {}
     }
-    
-    const storageKey = userEmail ? `basicsStartDate_${userEmail}` : 'basicsStartDate';
-    const savedStartDate = typeof window !== 'undefined' ? localStorage.getItem(storageKey) : null;
-    
+
+    const storageKey = userEmail
+      ? `basicsStartDate_${userEmail}`
+      : "basicsStartDate";
+    const savedStartDate =
+      typeof window !== "undefined" ? localStorage.getItem(storageKey) : null;
+
     if (savedStartDate) {
       const startDate = new Date(savedStartDate as string);
       setCourseStartDate(startDate);
-      
+
       const today = new Date();
-      const daysSinceStart = Math.floor((today.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24));
-      const calculatedWeek = Math.max(1, Math.min(6, Math.ceil((daysSinceStart + 1) / 7)));
-      const calculatedDay = Math.max(1, Math.min(7, ((daysSinceStart % 7) + 1)));
-      
+      const daysSinceStart = Math.floor(
+        (today.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24),
+      );
+      const calculatedWeek = Math.max(
+        1,
+        Math.min(6, Math.ceil((daysSinceStart + 1) / 7)),
+      );
+      const calculatedDay = Math.max(1, Math.min(7, (daysSinceStart % 7) + 1));
+
       setCurrentWeek(calculatedWeek);
       setCurrentDay(calculatedDay);
     } else {
       // New user - set start date to TODAY
       const today = new Date();
       today.setHours(0, 0, 0, 0);
-      if (typeof window !== 'undefined') {
+      if (typeof window !== "undefined") {
         localStorage.setItem(storageKey, today.toISOString());
       }
       setCourseStartDate(today);
@@ -64,35 +84,72 @@ export default function FunctionalBasicsOverview() {
   // Listen for help button clicks
   useEffect(() => {
     const handler = () => {
-      console.log('Dashboard help event received in Overview!');
+      console.log("Dashboard help event received in Overview!");
       setShowHelpModal(true);
     };
-    window.addEventListener('open-dashboard-help', handler as EventListener);
-    return () => window.removeEventListener('open-dashboard-help', handler as EventListener);
+    window.addEventListener("open-dashboard-help", handler as EventListener);
+    return () =>
+      window.removeEventListener(
+        "open-dashboard-help",
+        handler as EventListener,
+      );
   }, []);
 
   // Progress calculations removed - not needed after removing progress section
 
   const weekData = [
-    { number: 1, title: "Grunden i Functional Foods", subtitle: "Lär dig grunderna", recipes: 21 },
-    { number: 2, title: "Proteiner & aminosyror", subtitle: "Fördjupa dig i proteiner", recipes: 18 },
-    { number: 3, title: "Fetter & kolhydrater", subtitle: "Lär dig om fetter", recipes: 19 },
-    { number: 4, title: "Vitaminer & mineraler", subtitle: "Upptäck vitaminer", recipes: 17 },
-    { number: 5, title: "Antioxidanter & fytokemikalier", subtitle: "Utforska antioxidanter", recipes: 20 },
-    { number: 6, title: "Att komma igång", subtitle: "Implementera allt", recipes: 16 }
+    {
+      number: 1,
+      title: "Grunden i Functional Foods",
+      subtitle: "Lär dig grunderna",
+      recipes: 21,
+    },
+    {
+      number: 2,
+      title: "Proteiner & aminosyror",
+      subtitle: "Fördjupa dig i proteiner",
+      recipes: 18,
+    },
+    {
+      number: 3,
+      title: "Fetter & kolhydrater",
+      subtitle: "Lär dig om fetter",
+      recipes: 19,
+    },
+    {
+      number: 4,
+      title: "Vitaminer & mineraler",
+      subtitle: "Upptäck vitaminer",
+      recipes: 17,
+    },
+    {
+      number: 5,
+      title: "Antioxidanter & fytokemikalier",
+      subtitle: "Utforska antioxidanter",
+      recipes: 20,
+    },
+    {
+      number: 6,
+      title: "Att komma igång",
+      subtitle: "Implementera allt",
+      recipes: 16,
+    },
   ];
 
   const getWeekStatus = (weekNumber: number) => {
-    if (weekNumber < currentWeek) return 'completed';
-    if (weekNumber === currentWeek) return 'current';
-    return 'locked';
+    if (weekNumber < currentWeek) return "completed";
+    if (weekNumber === currentWeek) return "current";
+    return "locked";
   };
 
   const getWeekIcon = (status: string) => {
     switch (status) {
-      case 'completed': return <Check className="w-6 h-6 text-green-600" />;
-      case 'current': return <Clock className="w-6 h-6 text-blue-600" />;
-      default: return <Lock className="w-6 h-6 text-gray-400" />;
+      case "completed":
+        return <Check className="w-6 h-6 text-green-600" />;
+      case "current":
+        return <Clock className="w-6 h-6 text-blue-600" />;
+      default:
+        return <Lock className="w-6 h-6 text-gray-400" />;
     }
   };
 
@@ -114,23 +171,33 @@ export default function FunctionalBasicsOverview() {
               </h1>
               <div className="space-y-4 text-gray-700 leading-relaxed">
                 <p>
-                  Nu har du en spännande resa framför dig under dessa 6 veckor med näringsrika och hälsobringade recept och du kommer att få lära dig grunderna i Functional Foods. Du får praktiska kostscheman att följa, recept för alla måltider och inköpslistor för varje vecka.
+                  Nu har du en spännande resa framför dig under dessa 6 veckor
+                  med näringsrika och hälsobringade recept och du kommer att få
+                  lära dig grunderna i Functional Foods. Du får praktiska
+                  kostscheman att följa, recept för alla måltider och
+                  inköpslistor för varje vecka.
                 </p>
                 <p>
-                  Efter dessa 6 veckor har du dels lärt dig mycket om matlagning och hur du får in alla näringsämnen i din kost samt fördelarna som kommer: ökad näringsnivå, förbättrad matsmältning, bättre hjärthälsa, minskad inflammation i kroppen, ökade energinivåer och ett bättre immunförsvar.
+                  Efter dessa 6 veckor har du dels lärt dig mycket om matlagning
+                  och hur du får in alla näringsämnen i din kost samt fördelarna
+                  som kommer: ökad näringsnivå, förbättrad matsmältning, bättre
+                  hjärthälsa, minskad inflammation i kroppen, ökade energinivåer
+                  och ett bättre immunförsvar.
                 </p>
                 <p>
-                  Du kommer att tacka dig själv, även om det kan finnas dagar när det känns tufft. Mitt bästa tips är planering! Förbered dig för veckan och laga gärna upp flera maträtter på samma gång så att du är väl förberedd.
+                  Du kommer att tacka dig själv, även om det kan finnas dagar
+                  när det känns tufft. Mitt bästa tips är planering! Förbered
+                  dig för veckan och laga gärna upp flera maträtter på samma
+                  gång så att du är väl förberedd.
                 </p>
                 <p className="font-semibold">
-                  Varmt välkommen till framtidens kost för en god hälsa och ett friskare liv!
+                  Varmt välkommen till framtidens kost för en god hälsa och ett
+                  friskare liv!
                 </p>
-                <p className="text-[#014421] font-signature text-xl">
-                  /Ulrika
-                </p>
+                <p className="text-[#014421] font-signature text-xl">/Ulrika</p>
               </div>
             </div>
-            
+
             {/* Video */}
             <div className="relative aspect-video rounded-2xl overflow-hidden shadow-lg">
               <iframe
@@ -143,7 +210,7 @@ export default function FunctionalBasicsOverview() {
               />
             </div>
           </div>
-          
+
           {/* Course Help Section + Facebook Group */}
           <div className="mt-8 flex items-center justify-center gap-3 flex-wrap">
             <motion.button
@@ -160,12 +227,29 @@ export default function FunctionalBasicsOverview() {
                 animate={{ scale: [1, 1.2, 1] }}
                 transition={{ duration: 2, repeat: Infinity }}
               />
-              <motion.div whileHover={{ rotate: 360 }} transition={{ duration: 0.5 }}>
+              <motion.div
+                whileHover={{ rotate: 360 }}
+                transition={{ duration: 0.5 }}
+              >
                 <HelpCircle className="w-6 h-6" />
               </motion.div>
-              <span className="relative z-10 text-lg">Så använder du kursen</span>
-              <motion.svg className="w-5 h-5 ml-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" animate={{ x: [0, 5, 0] }} transition={{ duration: 1.5, repeat: Infinity }}>
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+              <span className="relative z-10 text-lg">
+                Så använder du programmet
+              </span>
+              <motion.svg
+                className="w-5 h-5 ml-1"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                animate={{ x: [0, 5, 0] }}
+                transition={{ duration: 1.5, repeat: Infinity }}
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M9 5l7 7-7 7"
+                />
               </motion.svg>
             </motion.button>
 
@@ -176,7 +260,12 @@ export default function FunctionalBasicsOverview() {
               className="inline-flex items-center gap-3 px-6 py-4 rounded-full bg-[#1877F2] text-white font-medium shadow-lg hover:shadow-xl transition-all hover:bg-[#166FE1]"
               aria-label="Gå med i Facebook-gruppen"
             >
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                className="w-5 h-5"
+              >
                 <path d="M22 12.06C22 6.51 17.52 2 12 2S2 6.51 2 12.06c0 5.02 3.66 9.19 8.44 9.94v-7.03H7.9v-2.91h2.54V9.41c0-2.5 1.49-3.88 3.77-3.88 1.09 0 2.23.2 2.23.2v2.46h-1.26c-1.24 0-1.63.77-1.63 1.56v1.87h2.78l-.44 2.91h-2.34V22c4.78-.75 8.44-4.92 8.44-9.94Z" />
               </svg>
               Facebook‑grupp
@@ -187,7 +276,6 @@ export default function FunctionalBasicsOverview() {
 
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-24 md:pb-8">
-        
         {/* Coaching Button */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -197,7 +285,13 @@ export default function FunctionalBasicsOverview() {
         >
           <motion.button
             onClick={() => {
-              try { window.open('https://www.facebook.com/groups/1168295381877412/', '_blank', 'noopener'); } catch {}
+              try {
+                window.open(
+                  "https://www.facebook.com/groups/1168295381877412/",
+                  "_blank",
+                  "noopener",
+                );
+              } catch {}
             }}
             className="bg-[#014421] text-white px-8 py-4 rounded-full font-bold shadow-lg hover:shadow-xl transform transition-all duration-300 hover:scale-105 flex items-center gap-3 mx-auto"
             animate={{
@@ -206,7 +300,7 @@ export default function FunctionalBasicsOverview() {
             transition={{
               duration: 2,
               repeat: Infinity,
-              repeatType: "reverse"
+              repeatType: "reverse",
             }}
             whileHover={{ scale: 1.08 }}
             whileTap={{ scale: 0.95 }}
@@ -220,8 +314,6 @@ export default function FunctionalBasicsOverview() {
         <div className="relative z-10">
           <InfoPopupGrid courseType="basics" courseId="functional-basics" />
         </div>
-
-        
       </div>
 
       {/* Help Modal */}
@@ -234,13 +326,28 @@ export default function FunctionalBasicsOverview() {
           >
             <div className="text-center">
               <HelpCircle className="w-16 h-16 text-blue-500 mx-auto mb-4" />
-              <h3 className="text-xl font-bold text-gray-900 mb-4">Hur navigerar du?</h3>
+              <h3 className="text-xl font-bold text-gray-900 mb-4">
+                Hur navigerar du?
+              </h3>
               <div className="text-left space-y-3 text-sm text-gray-600">
-                <p>• <strong>Översikt:</strong> Se din framsteg och kursöversikt</p>
-                <p>• <strong>Vecka 1-6:</strong> Klicka för att gå till specifik vecka</p>
-                <p>• <strong>Grön vecka:</strong> Din nuvarande vecka</p>
-                <p>• <strong>Grå vecka:</strong> Låst tills du når dit</p>
-                <p>• <strong>Avslutning:</strong> Slutför kursen när du är klar</p>
+                <p>
+                  • <strong>Översikt:</strong> Se din framsteg och
+                  programöversikt
+                </p>
+                <p>
+                  • <strong>Vecka 1-6:</strong> Klicka för att gå till specifik
+                  vecka
+                </p>
+                <p>
+                  • <strong>Grön vecka:</strong> Din nuvarande vecka
+                </p>
+                <p>
+                  • <strong>Grå vecka:</strong> Låst tills du når dit
+                </p>
+                <p>
+                  • <strong>Avslutning:</strong> Slutför programmet när du är
+                  klar
+                </p>
               </div>
               <button
                 onClick={() => setShowHelpModal(false)}
@@ -262,32 +369,55 @@ export default function FunctionalBasicsOverview() {
             className="bg-white rounded-3xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto p-4 sm:p-8"
           >
             <div className="flex justify-between items-start mb-6">
-              <h2 className="text-lg sm:text-2xl font-bold text-gray-900 pr-4">COACHNING OCH FUNCTIONAL FOODS PÅ SOCIALA MEDIER</h2>
+              <h2 className="text-lg sm:text-2xl font-bold text-gray-900 pr-4">
+                COACHNING OCH FUNCTIONAL FOODS PÅ SOCIALA MEDIER
+              </h2>
               <button
                 onClick={() => setShowCoachingModal(false)}
                 className="text-gray-500 hover:text-gray-700 transition-colors"
               >
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                <svg
+                  className="w-6 h-6"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M6 18L18 6M6 6l12 12"
+                  />
                 </svg>
               </button>
             </div>
-            
+
             <div className="space-y-4 text-gray-700">
               <p>
-                För att du ska få en så värdefull och lärorik tid i din kurs som möjligt så erbjuder vi coachning via vår Facebook-grupp. 
-                I vår community kan du hålla kontakt med oss coacher som finns tillgängliga för att svara på dina frågor. 
-                Klicka på knappen nedan för att gå med i vår Facebook-grupp och bli en del av vår växande community.
+                För att du ska få en så värdefull och lärorik tid i ditt program
+                som möjligt så erbjuder vi coachning via vår Facebook-grupp. I
+                vår community kan du hålla kontakt med oss coacher som finns
+                tillgängliga för att svara på dina frågor. Klicka på knappen
+                nedan för att gå med i vår Facebook-grupp och bli en del av vår
+                växande community.
               </p>
-              
+
               <p>
-                Du kan alltid kontakta oss via vår kundsupport: <a href="mailto:info@functionalfoods.se" className="text-[#014421] font-medium hover:underline">info@functionalfoods.se</a>
+                Du kan alltid kontakta oss via vår kundsupport:{" "}
+                <a
+                  href="mailto:info@functionalfoods.se"
+                  className="text-[#014421] font-medium hover:underline"
+                >
+                  info@functionalfoods.se
+                </a>
               </p>
-              
+
               <p className="font-medium">
-                Vill du följa vad som händer kring Functional Foods och ta del av tips, recept, nyheter, erbjudanden och vår härliga gemenskap så häng med oss här →
+                Vill du följa vad som händer kring Functional Foods och ta del
+                av tips, recept, nyheter, erbjudanden och vår härliga gemenskap
+                så häng med oss här →
               </p>
-              
+
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6">
                 <a
                   href="https://www.facebook.com/groups/1168295381877412/"
@@ -298,10 +428,12 @@ export default function FunctionalBasicsOverview() {
                   <Users className="w-6 h-6" />
                   <div>
                     <div className="font-bold">COMMUNITY</div>
-                    <div className="text-sm opacity-90">Gå med i vår Facebook‑grupp</div>
+                    <div className="text-sm opacity-90">
+                      Gå med i vår Facebook‑grupp
+                    </div>
                   </div>
                 </a>
-                
+
                 <a
                   href="https://www.instagram.com/functionalfoods.se/"
                   target="_blank"
@@ -311,12 +443,14 @@ export default function FunctionalBasicsOverview() {
                   <Instagram className="w-6 h-6" />
                   <div>
                     <div className="font-bold">INSTAGRAM</div>
-                    <div className="text-sm opacity-90">@functionalfoods.se</div>
+                    <div className="text-sm opacity-90">
+                      @functionalfoods.se
+                    </div>
                   </div>
                 </a>
               </div>
             </div>
-            
+
             <button
               onClick={() => setShowCoachingModal(false)}
               className="mt-8 w-full bg-[#014421] text-white px-6 py-3 rounded-full font-bold hover:bg-[#116530] transition-colors"
@@ -328,11 +462,10 @@ export default function FunctionalBasicsOverview() {
       )}
 
       {/* Help Guide Modal */}
-      <HelpGuide 
-        isOpen={showHelpModal} 
-        onClose={() => setShowHelpModal(false)} 
+      <HelpGuide
+        isOpen={showHelpModal}
+        onClose={() => setShowHelpModal(false)}
       />
-
     </div>
   );
-} 
+}

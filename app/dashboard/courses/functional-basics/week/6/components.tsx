@@ -1,6 +1,6 @@
-'use client';
+"use client";
 
-import { motion } from 'framer-motion';
+import { motion } from "framer-motion";
 
 // Week 6 uses simpler components that are defined inline in the main page
 // This file exists for consistency with other weeks
@@ -16,8 +16,8 @@ export const CompletionMessage = () => {
         Grattis till din prestation!
       </h2>
       <p className="text-gray-700">
-        Du har nu slutfört Functional Basics kursen.
+        Du har nu slutfört Functional Basics programmet.
       </p>
     </motion.div>
   );
-}; 
+};

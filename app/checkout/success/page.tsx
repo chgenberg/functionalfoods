@@ -500,7 +500,7 @@ function CheckoutSuccessContent() {
 
           <p className="text-xl text-text-secondary mb-8">
             Din betalning har genomförts och du har nu tillgång till dina
-            kurser.
+            program.
           </p>
         </div>
 
@@ -583,7 +583,7 @@ function CheckoutSuccessContent() {
               </div>
               <div className="flex-1">
                 <h3 className="font-semibold text-text-primary mb-1">
-                  Kom åt din kurs
+                  Kom åt ditt program
                 </h3>
                 <p className="text-text-secondary text-sm mb-3">
                   Logga in på ditt konto för att börja din hälsoresa idag!
@@ -594,7 +594,7 @@ function CheckoutSuccessContent() {
                     className="inline-flex items-center gap-2 bg-[#FF7e70] text-white px-6 py-3 rounded-xl hover:bg-[#e56b5e] transition-colors font-medium shadow-lg hover:shadow-xl"
                   >
                     <Play className="w-4 h-4" />
-                    Kom igång med din kurs
+                    Kom igång med ditt program
                   </Link>
                 ) : (
                   <Link

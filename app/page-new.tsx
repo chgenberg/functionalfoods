@@ -167,9 +167,9 @@ export default function Home() {
               </h1>
 
               <p className="mt-5 text-lg sm:text-xl md:text-2xl text-white/90 text-left max-w-2xl drop-shadow-lg">
-                Välj det område du vill förbättra och följ en kurs eller
+                Välj det område du vill förbättra och följ ett program eller
                 <br />
-                e-bok som gör det enkelt att använda Functional Foods i
+                E-bok som gör det enkelt att använda Functional Foods i
                 vardagen.
               </p>
 

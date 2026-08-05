@@ -52,7 +52,7 @@ export default function HomeCoursesSection() {
         <div className="lg:hidden">
           <div className="text-center mb-6">
             <h2 className="text-2xl sm:text-3xl font-bold text-[#112A12] mb-2">
-              Våra program
+              ERBJUDANDE: alla våra program för 995kr
             </h2>
             <p className="text-base sm:text-lg text-gray-600">
               Välj det program som passar dig
@@ -104,11 +104,11 @@ export default function HomeCoursesSection() {
         {/* Desktop */}
         <div className="hidden lg:block">
           <div className="text-center mb-12">
-            <h2 className="text-4xl xl:text-5xl font-bold text-[#112A12] mb-4">
-              Våra program
+            <h2 className="text-4xl xl:text-5xl font-bold text-[#ff6b5a] mb-4">
+              Just nu får du alla våra program för 995kr
             </h2>
             <p className="text-xl text-gray-600">
-              Välj det program som passar dig bäst
+              Ordinariepris 1295kr. Erbjudandet gäller hela augusti.
             </p>
           </div>
 

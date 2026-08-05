@@ -1,8 +1,8 @@
 "use client";
-import { useEffect, useState } from 'react';
-import { motion } from 'framer-motion';
-import { AlertCircle, Calendar, Star, ThumbsUp, User, X } from 'lucide-react';
-import { useErrorHandler } from '../lib/errorHandler';
+import { useEffect, useState } from "react";
+import { motion } from "framer-motion";
+import { AlertCircle, Calendar, Star, ThumbsUp, User, X } from "lucide-react";
+import { useErrorHandler } from "../lib/errorHandler";
 
 interface Review {
   id: string;
@@ -16,7 +16,13 @@ interface Review {
   };
 }
 
-export default function CourseReviews({ courseId, limit = 6 }: { courseId: string; limit?: number }) {
+export default function CourseReviews({
+  courseId,
+  limit = 6,
+}: {
+  courseId: string;
+  limit?: number;
+}) {
   const [reviews, setReviews] = useState<Review[]>([]);
   const [selectedReview, setSelectedReview] = useState<Review | null>(null);
   const [loading, setLoading] = useState(true);
@@ -27,23 +33,27 @@ export default function CourseReviews({ courseId, limit = 6 }: { courseId: strin
     const loadReviews = async () => {
       const result = await withErrorHandling(
         async () => {
-          const res = await fetch(`/api/reviews?courseId=${courseId}&status=APPROVED`);
+          const res = await fetch(
+            `/api/reviews?courseId=${courseId}&status=APPROVED`,
+          );
           if (!res.ok) {
             throw new Error(`Failed to fetch reviews: ${res.status}`);
           }
           const data = await res.json();
           return data.reviews || [];
         },
-        'CourseReviews.loadReviews',
-        (errorMessage) => setError(errorMessage)
+        "CourseReviews.loadReviews",
+        (errorMessage) => setError(errorMessage),
       );
 
       if (result) {
         // Filter out anonymous reviews - only show reviews from users with names
         const reviewList = result.filter((review: Review) => {
-          return review.user?.name && review.user.name.trim() !== '';
+          return review.user?.name && review.user.name.trim() !== "";
         });
-        setReviews(limit && limit > 0 ? reviewList.slice(0, limit) : reviewList);
+        setReviews(
+          limit && limit > 0 ? reviewList.slice(0, limit) : reviewList,
+        );
       }
       setLoading(false);
     };
@@ -59,7 +69,7 @@ export default function CourseReviews({ courseId, limit = 6 }: { courseId: strin
             <div className="animate-pulse">
               <div className="h-8 bg-gray-300 rounded w-64 mx-auto mb-4"></div>
               <div className="grid md:grid-cols-3 gap-6">
-                {[1, 2, 3].map(i => (
+                {[1, 2, 3].map((i) => (
                   <div key={i} className="bg-white rounded-3xl p-6 shadow-lg">
                     <div className="h-6 bg-gray-200 rounded mb-4"></div>
                     <div className="h-20 bg-gray-100 rounded mb-4"></div>
@@ -80,10 +90,12 @@ export default function CourseReviews({ courseId, limit = 6 }: { courseId: strin
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <div className="bg-red-50 border border-red-200 rounded-lg p-6 max-w-md mx-auto">
             <AlertCircle className="w-8 h-8 text-red-500 mx-auto mb-4" />
-            <h3 className="text-lg font-medium text-red-800 mb-2">Kunde inte ladda recensioner</h3>
+            <h3 className="text-lg font-medium text-red-800 mb-2">
+              Kunde inte ladda recensioner
+            </h3>
             <p className="text-red-600 text-sm">{error}</p>
-            <button 
-              onClick={() => window.location.reload()} 
+            <button
+              onClick={() => window.location.reload()}
               className="mt-4 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors text-sm"
             >
               Försök igen
@@ -98,10 +110,13 @@ export default function CourseReviews({ courseId, limit = 6 }: { courseId: strin
     return (
       <section className="py-16 bg-gradient-to-br from-[#F7F1E8] to-[#F3EFE3]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h2 className="text-3xl font-bold text-gray-900 mb-4">Bli den första att recensera!</h2>
+          <h2 className="text-3xl font-bold text-gray-900 mb-4">
+            Bli den första att recensera!
+          </h2>
           <p className="text-gray-600 max-w-2xl mx-auto">
-            Denna kurs är ny och vi skulle uppskatta din feedback efter genomförd kurs. 
-            Din recension hjälper andra att fatta rätt beslut.
+            Detta program är nytt och vi skulle uppskatta din feedback efter
+            genomfört program. Din recension hjälper andra att fatta rätt
+            beslut.
           </p>
         </div>
       </section>
@@ -109,27 +124,31 @@ export default function CourseReviews({ courseId, limit = 6 }: { courseId: strin
   }
 
   // Calculate average rating
-  const ratingsWithValues = reviews.filter(r => r.rating).map(r => r.rating!);
-  const averageRating = ratingsWithValues.length > 0 
-    ? ratingsWithValues.reduce((sum, rating) => sum + rating, 0) / ratingsWithValues.length 
-    : 0;
+  const ratingsWithValues = reviews
+    .filter((r) => r.rating)
+    .map((r) => r.rating!);
+  const averageRating =
+    ratingsWithValues.length > 0
+      ? ratingsWithValues.reduce((sum, rating) => sum + rating, 0) /
+        ratingsWithValues.length
+      : 0;
 
   const getDisplayName = (review: Review) => {
     if (review.user?.name) {
-      return review.user.name.split(' ')[0]; // First name only
+      return review.user.name.split(" ")[0]; // First name only
     }
     // Should not happen since we filter out reviews without names
-    return '';
+    return "";
   };
 
   const getFeedbackText = (review: Review) => {
-    if (typeof review.answers === 'object' && review.answers.feedback) {
+    if (typeof review.answers === "object" && review.answers.feedback) {
       return review.answers.feedback;
     }
     if (Array.isArray(review.answers) && review.answers.length > 0) {
-      return review.answers[0]?.a || review.answers[1]?.a || '';
+      return review.answers[0]?.a || review.answers[1]?.a || "";
     }
-    return '';
+    return "";
   };
 
   return (
@@ -143,11 +162,13 @@ export default function CourseReviews({ courseId, limit = 6 }: { courseId: strin
             className="inline-flex items-center gap-3 bg-white rounded-full px-6 py-3 shadow-lg mb-6"
           >
             <div className="flex items-center gap-1">
-              {[1, 2, 3, 4, 5].map(star => (
+              {[1, 2, 3, 4, 5].map((star) => (
                 <Star
                   key={star}
                   className={`w-5 h-5 ${
-                    star <= averageRating ? 'text-yellow-400 fill-current' : 'text-gray-300'
+                    star <= averageRating
+                      ? "text-yellow-400 fill-current"
+                      : "text-gray-300"
                   }`}
                 />
               ))}
@@ -156,11 +177,12 @@ export default function CourseReviews({ courseId, limit = 6 }: { courseId: strin
               {averageRating.toFixed(1)} / 5
             </span>
             <span className="text-gray-500">
-              ({reviews.length} {reviews.length === 1 ? 'recension' : 'recensioner'})
+              ({reviews.length}{" "}
+              {reviews.length === 1 ? "recension" : "recensioner"})
             </span>
           </motion.div>
-          
-          <motion.h2 
+
+          <motion.h2
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
@@ -168,13 +190,14 @@ export default function CourseReviews({ courseId, limit = 6 }: { courseId: strin
           >
             Vad säger våra deltagare?
           </motion.h2>
-          <motion.p 
+          <motion.p
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2 }}
             className="text-xl text-gray-600 max-w-3xl mx-auto"
           >
-            Äkta recensioner från människor som har genomfört kursen och förändrat sina liv
+            Äkta recensioner från människor som har genomfört programmet och
+            förändrat sina liv
           </motion.p>
         </div>
 
@@ -191,11 +214,13 @@ export default function CourseReviews({ courseId, limit = 6 }: { courseId: strin
             >
               {/* Rating Stars */}
               <div className="flex items-center gap-1 mb-4">
-                {[1, 2, 3, 4, 5].map(star => (
+                {[1, 2, 3, 4, 5].map((star) => (
                   <Star
                     key={star}
                     className={`w-5 h-5 ${
-                      star <= (review.rating || 5) ? 'text-yellow-400 fill-current' : 'text-gray-300'
+                      star <= (review.rating || 5)
+                        ? "text-yellow-400 fill-current"
+                        : "text-gray-300"
                     }`}
                   />
                 ))}
@@ -212,12 +237,14 @@ export default function CourseReviews({ courseId, limit = 6 }: { courseId: strin
                   <User className="w-5 h-5 text-white" />
                 </div>
                 <div>
-                  <div className="font-medium text-gray-900">{getDisplayName(review)}</div>
+                  <div className="font-medium text-gray-900">
+                    {getDisplayName(review)}
+                  </div>
                   <div className="text-sm text-gray-500 flex items-center gap-1">
                     <Calendar className="w-3 h-3" />
-                    {new Date(review.createdAt).toLocaleDateString('sv-SE', { 
-                      year: 'numeric', 
-                      month: 'long' 
+                    {new Date(review.createdAt).toLocaleDateString("sv-SE", {
+                      year: "numeric",
+                      month: "long",
                     })}
                   </div>
                 </div>
@@ -235,7 +262,7 @@ export default function CourseReviews({ courseId, limit = 6 }: { courseId: strin
         {/* Show More Button */}
         {limit && reviews.length >= limit && (
           <div className="text-center mt-12">
-            <button 
+            <button
               onClick={() => setReviews([])} // This would load more in a real implementation
               className="bg-[#014421] text-white px-8 py-3 rounded-full font-medium hover:bg-[#116530] transition-colors"
             >
@@ -247,7 +274,7 @@ export default function CourseReviews({ courseId, limit = 6 }: { courseId: strin
 
       {/* Review Modal */}
       {selectedReview && (
-        <div 
+        <div
           className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4"
           onClick={() => setSelectedReview(null)}
         >
@@ -258,7 +285,9 @@ export default function CourseReviews({ courseId, limit = 6 }: { courseId: strin
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex justify-between items-center mb-6">
-              <h3 className="text-xl sm:text-2xl font-bold text-gray-900">Kursrecension</h3>
+              <h3 className="text-xl sm:text-2xl font-bold text-gray-900">
+                Programrecension
+              </h3>
               <button
                 onClick={() => setSelectedReview(null)}
                 className="p-2 rounded-full hover:bg-gray-100 transition-colors"
@@ -271,11 +300,13 @@ export default function CourseReviews({ courseId, limit = 6 }: { courseId: strin
             {/* Rating */}
             <div className="flex items-center gap-3 mb-6">
               <div className="flex items-center gap-1">
-                {[1, 2, 3, 4, 5].map(star => (
+                {[1, 2, 3, 4, 5].map((star) => (
                   <Star
                     key={star}
                     className={`w-6 h-6 ${
-                      star <= (selectedReview.rating || 5) ? 'text-yellow-400 fill-current' : 'text-gray-300'
+                      star <= (selectedReview.rating || 5)
+                        ? "text-yellow-400 fill-current"
+                        : "text-gray-300"
                     }`}
                   />
                 ))}
@@ -299,13 +330,19 @@ export default function CourseReviews({ courseId, limit = 6 }: { courseId: strin
                 <User className="w-6 h-6 text-white" />
               </div>
               <div>
-                <div className="font-medium text-gray-900">{getDisplayName(selectedReview)}</div>
+                <div className="font-medium text-gray-900">
+                  {getDisplayName(selectedReview)}
+                </div>
                 <div className="text-sm text-gray-500">
-                  Genomförde kursen {new Date(selectedReview.createdAt).toLocaleDateString('sv-SE', { 
-                    year: 'numeric', 
-                    month: 'long',
-                    day: 'numeric'
-                  })}
+                  Genomförde programmet{" "}
+                  {new Date(selectedReview.createdAt).toLocaleDateString(
+                    "sv-SE",
+                    {
+                      year: "numeric",
+                      month: "long",
+                      day: "numeric",
+                    },
+                  )}
                 </div>
               </div>
             </div>
@@ -314,4 +351,4 @@ export default function CourseReviews({ courseId, limit = 6 }: { courseId: strin
       )}
     </section>
   );
-} 
+}

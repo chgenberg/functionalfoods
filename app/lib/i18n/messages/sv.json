@@ -1,7 +1,7 @@
 {
   "nav.home": "Hem",
   "nav.book": "Böcker",
-  "nav.education": "Utbildning",
+  "nav.education": "Program",
   "nav.recipes": "Recept",
   "nav.knowledge": "Kunskapsbank",
   "nav.sources": "Källor",
@@ -165,7 +165,7 @@
   "quiz.tip.exercise.3": "Rörlighet 5 min efter uppvärmning",
   "quiz.next": "Nästa",
   "quiz.toOverview": "Till översikt",
-  
+
   "healthtest.welcome": "Välkommen till ditt personliga hälsoquiz!",
   "healthtest.welcomeText": "Innan vi börjar behöver vi veta lite om dig. Dina uppgifter behandlas säkert enligt vår integritetspolicy.",
   "healthtest.firstName": "Förnamn",
@@ -358,7 +358,7 @@
   "footer.heading.education": "Utbildning",
   "footer.heading.knowledge": "Kunskapsbank",
   "footer.heading.contact": "Kontakt",
-  "footer.links.allCourses": "Alla kurser",
+  "footer.links.allCourses": "Alla program",
   "footer.links.functionalBasics": "Functional Basics",
   "footer.links.functionalFlow": "Functional Gut Health/Flow",
   "footer.links.catalog": "Kurskatalog",
@@ -392,4 +392,4 @@
   "auth.signupError": "Fel vid registrering",
   "auth.technical": "Tekniskt fel, försök igen.",
   "auth.createdPleaseLogin": "Konto skapat! Logga in med dina uppgifter."
-} 
+}

@@ -1,13 +1,25 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import Link from 'next/link';
-import { motion } from 'framer-motion';
-import { ArrowRight, Book, BookOpen, Calendar, Clock, Loader, Lock, PlayCircle, TrendingUp, Unlock, User } from "lucide-react";;
-import { GiFruitBowl, GiHealthNormal } from 'react-icons/gi';
-import { useAuth } from '@/app/hooks/useAuth';
-import OnboardingGuide from '@/app/components/OnboardingGuide';
-import HealthDisclaimer from '@/app/components/HealthDisclaimer';
+import { useState, useEffect } from "react";
+import Link from "next/link";
+import { motion } from "framer-motion";
+import {
+  ArrowRight,
+  Book,
+  BookOpen,
+  Calendar,
+  Clock,
+  Loader,
+  Lock,
+  PlayCircle,
+  TrendingUp,
+  Unlock,
+  User,
+} from "lucide-react";
+import { GiFruitBowl, GiHealthNormal } from "react-icons/gi";
+import { useAuth } from "@/app/hooks/useAuth";
+import OnboardingGuide from "@/app/components/OnboardingGuide";
+import HealthDisclaimer from "@/app/components/HealthDisclaimer";
 
 interface Course {
   id: string;
@@ -16,20 +28,22 @@ interface Course {
   duration: string;
   modules: number;
   progress: number;
-  status: 'active' | 'completed' | 'locked';
+  status: "active" | "completed" | "locked";
   icon: React.ElementType;
   color: string;
   gradient: string;
   link: string;
   isPurchased: boolean;
-  onboardingKey?: 'basics' | 'flow' | 'energy';
+  onboardingKey?: "basics" | "flow" | "energy";
 }
 
 export default function CoursesPage() {
   const [courses, setCourses] = useState<Course[]>([]);
   const [loading, setLoading] = useState(true);
   const [showOnboarding, setShowOnboarding] = useState(false);
-  const [onboardingCourse, setOnboardingCourse] = useState<'basics' | 'flow' | 'energy'>('basics');
+  const [onboardingCourse, setOnboardingCourse] = useState<
+    "basics" | "flow" | "energy"
+  >("basics");
   const { user } = useAuth();
 
   useEffect(() => {
@@ -40,110 +54,143 @@ export default function CoursesPage() {
 
   const fetchUserCourses = async () => {
     try {
-      const token = localStorage.getItem('token');
+      const token = localStorage.getItem("token");
       if (!token) return;
 
-      const response = await fetch('/api/user/purchases', {
+      const response = await fetch("/api/user/purchases", {
         headers: {
-          'Authorization': `Bearer ${token}`
-        }
+          Authorization: `Bearer ${token}`,
+        },
       });
 
       if (response.ok) {
         const data = await response.json();
-        const purchases = Array.isArray(data) ? data : (data.purchases || []);
+        const purchases = Array.isArray(data) ? data : data.purchases || [];
         const purchasedCourseNames = purchases.map((p: any) => p.course.name);
         const accessByName: Record<string, boolean> = {};
         purchases.forEach((p: any) => {
           accessByName[p.course.name] = !!p.isActive;
         });
         const provaPurchase = purchases.find((p: any) =>
-          (p.course?.name || '').toLowerCase().includes('prova')
+          (p.course?.name || "").toLowerCase().includes("prova"),
         );
-        const provaCourseName = provaPurchase?.course?.name || 'Prova på vecka med Functional Foods!';
+        const provaCourseName =
+          provaPurchase?.course?.name || "Prova på vecka med Functional Foods!";
         const hasProva = !!provaPurchase;
         const provaActive = provaPurchase ? !!provaPurchase.isActive : false;
-        
+
         const allCourses: Course[] = [
           {
-            id: 'functional-basics',
-            title: 'Functional Basics',
-            description: '6 veckors hälsoprogram med grunderna i functional foods',
-            duration: '6 veckor',
+            id: "functional-basics",
+            title: "Functional Basics",
+            description:
+              "6 veckors hälsoprogram med grunderna i functional foods",
+            duration: "6 veckor",
             modules: 6,
             progress: 30,
-            status: purchasedCourseNames.includes('Functional Basics') && accessByName['Functional Basics'] ? 'active' : purchasedCourseNames.includes('Functional Basics') ? 'locked' : 'locked',
+            status:
+              purchasedCourseNames.includes("Functional Basics") &&
+              accessByName["Functional Basics"]
+                ? "active"
+                : purchasedCourseNames.includes("Functional Basics")
+                  ? "locked"
+                  : "locked",
             icon: GiFruitBowl,
-            color: 'accent',
-            gradient: 'from-green-500 to-teal-600',
-            link: '/dashboard/courses/functional-basics',
-            isPurchased: purchasedCourseNames.includes('Functional Basics'),
-            onboardingKey: 'basics'
+            color: "accent",
+            gradient: "from-green-500 to-teal-600",
+            link: "/dashboard/courses/functional-basics",
+            isPurchased: purchasedCourseNames.includes("Functional Basics"),
+            onboardingKey: "basics",
           },
           {
-            id: 'functional-flow',
-            title: 'Functional Gut Health/Flow',
-            description: 'Avancerat program för optimal hälsa och livsstil',
-            duration: '6 veckor',
+            id: "functional-flow",
+            title: "Functional Gut Health/Flow",
+            description: "Avancerat program för optimal hälsa och livsstil",
+            duration: "6 veckor",
             modules: 6,
             progress: 0,
-            status: purchasedCourseNames.includes('Functional Gut Health/Flow') && accessByName['Functional Gut Health/Flow'] ? 'active' : purchasedCourseNames.includes('Functional Gut Health/Flow') ? 'locked' : 'locked',
+            status:
+              purchasedCourseNames.includes("Functional Gut Health/Flow") &&
+              accessByName["Functional Gut Health/Flow"]
+                ? "active"
+                : purchasedCourseNames.includes("Functional Gut Health/Flow")
+                  ? "locked"
+                  : "locked",
             icon: GiHealthNormal,
-            color: 'primary',
-            gradient: 'from-green-800 to-green-900',
-            link: '/dashboard/courses/functional-flow',
-            isPurchased: purchasedCourseNames.includes('Functional Gut Health/Flow'),
-            onboardingKey: 'flow'
+            color: "primary",
+            gradient: "from-green-800 to-green-900",
+            link: "/dashboard/courses/functional-flow",
+            isPurchased: purchasedCourseNames.includes(
+              "Functional Gut Health/Flow",
+            ),
+            onboardingKey: "flow",
           },
           {
-            id: 'functional-energy',
-            title: 'Functional Energy',
-            description: 'Program för optimal energi och blodsockerkontroll',
-            duration: '6 veckor',
+            id: "functional-energy",
+            title: "Functional Energy",
+            description: "Program för optimal energi och blodsockerkontroll",
+            duration: "6 veckor",
             modules: 6,
             progress: 0,
-            status: purchasedCourseNames.includes('Functional Energy') && accessByName['Functional Energy'] ? 'active' : purchasedCourseNames.includes('Functional Energy') ? 'locked' : 'locked',
+            status:
+              purchasedCourseNames.includes("Functional Energy") &&
+              accessByName["Functional Energy"]
+                ? "active"
+                : purchasedCourseNames.includes("Functional Energy")
+                  ? "locked"
+                  : "locked",
             icon: TrendingUp,
-            color: 'primary',
-            gradient: 'from-orange-500 to-red-600',
-            link: '/dashboard/courses/functional-energy',
-            isPurchased: purchasedCourseNames.includes('Functional Energy'),
-            onboardingKey: 'energy'
+            color: "primary",
+            gradient: "from-orange-500 to-red-600",
+            link: "/dashboard/courses/functional-energy",
+            isPurchased: purchasedCourseNames.includes("Functional Energy"),
+            onboardingKey: "energy",
           },
           {
-            id: 'functional-hormone',
-            title: 'Hormonell Balans',
-            description: '6 veckors program för hormonell balans',
-            duration: '6 veckor',
+            id: "functional-hormone",
+            title: "Hormonell Balans",
+            description: "6 veckors program för hormonell balans",
+            duration: "6 veckor",
             modules: 6,
             progress: 0,
-            status: purchasedCourseNames.includes('Hormonell Balans') && accessByName['Hormonell Balans'] ? 'active' : purchasedCourseNames.includes('Hormonell Balans') ? 'locked' : 'locked',
+            status:
+              purchasedCourseNames.includes("Hormonell Balans") &&
+              accessByName["Hormonell Balans"]
+                ? "active"
+                : purchasedCourseNames.includes("Hormonell Balans")
+                  ? "locked"
+                  : "locked",
             icon: GiHealthNormal,
-            color: 'primary',
-            gradient: 'from-pink-500 to-purple-600',
-            link: '/dashboard/courses/functional-hormone',
-            isPurchased: purchasedCourseNames.includes('Hormonell Balans')
+            color: "primary",
+            gradient: "from-pink-500 to-purple-600",
+            link: "/dashboard/courses/functional-hormone",
+            isPurchased: purchasedCourseNames.includes("Hormonell Balans"),
           },
           {
-            id: 'prova-pa-vecka',
+            id: "prova-pa-vecka",
             title: provaCourseName,
-            description: 'Gratisvecka med ett urval av functional foods-recept',
-            duration: '1 vecka',
+            description: "Gratisvecka med ett urval av functional foods-recept",
+            duration: "1 vecka",
             modules: 1,
             progress: 0,
-            status: hasProva && provaActive ? 'active' : hasProva ? 'locked' : 'locked',
+            status:
+              hasProva && provaActive
+                ? "active"
+                : hasProva
+                  ? "locked"
+                  : "locked",
             icon: PlayCircle,
-            color: 'primary',
-            gradient: 'from-green-600 to-emerald-700',
-            link: '/dashboard/courses/prova-pa-vecka',
-            isPurchased: hasProva
-          }
+            color: "primary",
+            gradient: "from-green-600 to-emerald-700",
+            link: "/dashboard/courses/prova-pa-vecka",
+            isPurchased: hasProva,
+          },
         ];
-        
+
         setCourses(allCourses);
       }
     } catch (error) {
-      console.error('Error fetching courses:', error);
+      console.error("Error fetching courses:", error);
     } finally {
       setLoading(false);
     }
@@ -157,14 +204,16 @@ export default function CoursesPage() {
     );
   }
 
-  const purchasedCourses = courses.filter(c => c.isPurchased);
-  const availableCourses = courses.filter(c => !c.isPurchased);
+  const purchasedCourses = courses.filter((c) => c.isPurchased);
+  const availableCourses = courses.filter((c) => !c.isPurchased);
 
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-3xl font-bold text-text-primary mb-2">Mina kurser</h1>
-        <p className="text-text-secondary">Hantera och fortsätt dina kurser</p>
+        <h1 className="text-3xl font-bold text-text-primary mb-2">
+          Mina program
+        </h1>
+        <p className="text-text-secondary">Hantera och fortsätt dina program</p>
       </div>
 
       {/* Health Disclaimer for course participants */}
@@ -175,7 +224,9 @@ export default function CoursesPage() {
       {/* Purchased Courses */}
       {purchasedCourses.length > 0 && (
         <div className="space-y-6">
-          <h2 className="text-xl font-semibold text-text-primary">Aktiva kurser</h2>
+          <h2 className="text-xl font-semibold text-text-primary">
+            Aktiva program
+          </h2>
           <div className="grid md:grid-cols-2 gap-6">
             {purchasedCourses.map((course) => (
               <motion.div
@@ -185,21 +236,32 @@ export default function CoursesPage() {
                 whileHover={{ y: -5 }}
                 transition={{ duration: 0.3 }}
               >
-                <Link href={course.id === 'prova-pa-vecka' ? '/dashboard/courses/prova-pa-vecka/week/1' : course.link}>
+                <Link
+                  href={
+                    course.id === "prova-pa-vecka"
+                      ? "/dashboard/courses/prova-pa-vecka/week/1"
+                      : course.link
+                  }
+                >
                   <div className="bg-white rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 overflow-hidden cursor-pointer">
                     {/* Course Header */}
-                    <div 
+                    <div
                       className="p-6 text-white"
                       style={{
-                        background: course.id === 'functional-flow' ? '#1a4324' : 
-                                   course.id === 'functional-basics' ? 'linear-gradient(to right, #10b981, #0d9488)' : 
-                                   '#1a4324'
+                        background:
+                          course.id === "functional-flow"
+                            ? "#1a4324"
+                            : course.id === "functional-basics"
+                              ? "linear-gradient(to right, #10b981, #0d9488)"
+                              : "#1a4324",
                       }}
                     >
                       <div className="flex items-start justify-between">
                         <div>
                           <course.icon className="w-12 h-12 mb-3 opacity-90" />
-                          <h3 className="text-2xl font-bold mb-1">{course.title}</h3>
+                          <h3 className="text-2xl font-bold mb-1">
+                            {course.title}
+                          </h3>
                           <p className="opacity-90">{course.description}</p>
                         </div>
                         <ArrowRight className="w-6 h-6 opacity-70 group-hover:opacity-100 group-hover:translate-x-1 transition-all" />
@@ -215,15 +277,21 @@ export default function CoursesPage() {
                         </div>
                         <div className="flex items-center gap-2 text-text-secondary">
                           <BookOpen className="w-4 h-4" />
-                          <span className="text-sm">{course.modules} moduler</span>
+                          <span className="text-sm">
+                            {course.modules} moduler
+                          </span>
                         </div>
                       </div>
 
                       {/* Progress Bar */}
                       <div className="mb-4">
                         <div className="flex items-center justify-between mb-2">
-                          <span className="text-sm text-text-secondary">Framsteg</span>
-                          <span className="text-sm font-medium text-primary">{course.progress}%</span>
+                          <span className="text-sm text-text-secondary">
+                            Framsteg
+                          </span>
+                          <span className="text-sm font-medium text-primary">
+                            {course.progress}%
+                          </span>
                         </div>
                         <div className="w-full bg-gray-200 rounded-full h-2">
                           <motion.div
@@ -232,9 +300,12 @@ export default function CoursesPage() {
                             transition={{ duration: 1, delay: 0.2 }}
                             className="h-2 rounded-full"
                             style={{
-                              background: course.id === 'functional-flow' ? '#1a4324' : 
-                                         course.id === 'functional-basics' ? 'linear-gradient(to right, #10b981, #0d9488)' : 
-                                         '#1a4324'
+                              background:
+                                course.id === "functional-flow"
+                                  ? "#1a4324"
+                                  : course.id === "functional-basics"
+                                    ? "linear-gradient(to right, #10b981, #0d9488)"
+                                    : "#1a4324",
                             }}
                           />
                         </div>
@@ -242,30 +313,71 @@ export default function CoursesPage() {
 
                       {/* Week + Next step */}
                       <div className="flex items-center justify-between text-sm mb-4">
-                        <span className="text-text-secondary">Vecka 1 av {course.modules}</span>
-                        <span className="text-text-secondary">Nästa steg: Öppna kostschema</span>
+                        <span className="text-text-secondary">
+                          Vecka 1 av {course.modules}
+                        </span>
+                        <span className="text-text-secondary">
+                          Nästa steg: Öppna kostschema
+                        </span>
                       </div>
 
                       {/* Quick links */}
                       <div className="grid grid-cols-3 gap-2 mb-4">
-                        {course.id === 'prova-pa-vecka' ? (
+                        {course.id === "prova-pa-vecka" ? (
                           <>
-                            <Link href="/dashboard/courses/prova-pa-vecka/week/1" className="text-center text-xs bg-gray-100 hover:bg-gray-200 rounded-lg py-2">Vecka 1</Link>
-                            <Link href="/dashboard/courses/prova-pa-vecka/inkopslista?week=1" className="text-center text-xs bg-gray-100 hover:bg-gray-200 rounded-lg py-2">Inköp</Link>
-                            <Link href="/dashboard/courses/prova-pa-vecka/avslutning" className="text-center text-xs bg-gray-100 hover:bg-gray-200 rounded-lg py-2">Avslut</Link>
+                            <Link
+                              href="/dashboard/courses/prova-pa-vecka/week/1"
+                              className="text-center text-xs bg-gray-100 hover:bg-gray-200 rounded-lg py-2"
+                            >
+                              Vecka 1
+                            </Link>
+                            <Link
+                              href="/dashboard/courses/prova-pa-vecka/inkopslista?week=1"
+                              className="text-center text-xs bg-gray-100 hover:bg-gray-200 rounded-lg py-2"
+                            >
+                              Inköp
+                            </Link>
+                            <Link
+                              href="/dashboard/courses/prova-pa-vecka/avslutning"
+                              className="text-center text-xs bg-gray-100 hover:bg-gray-200 rounded-lg py-2"
+                            >
+                              Avslut
+                            </Link>
                           </>
                         ) : (
                           <>
-                            <Link href={`${course.link}/kostschema?view=week&week=1`} className="text-center text-xs bg-gray-100 hover:bg-gray-200 rounded-lg py-2">Kostschema</Link>
-                            <Link href={`${course.link}/inkopslista?week=1`} className="text-center text-xs bg-gray-100 hover:bg-gray-200 rounded-lg py-2">Inköp</Link>
-                            <Link href={`${course.link}/goals`} className="text-center text-xs bg-gray-100 hover:bg-gray-200 rounded-lg py-2">Mål</Link>
+                            <Link
+                              href={`${course.link}/kostschema?view=week&week=1`}
+                              className="text-center text-xs bg-gray-100 hover:bg-gray-200 rounded-lg py-2"
+                            >
+                              Kostschema
+                            </Link>
+                            <Link
+                              href={`${course.link}/inkopslista?week=1`}
+                              className="text-center text-xs bg-gray-100 hover:bg-gray-200 rounded-lg py-2"
+                            >
+                              Inköp
+                            </Link>
+                            <Link
+                              href={`${course.link}/goals`}
+                              className="text-center text-xs bg-gray-100 hover:bg-gray-200 rounded-lg py-2"
+                            >
+                              Mål
+                            </Link>
                           </>
                         )}
                       </div>
 
                       <div className="flex items-center justify-between">
                         <div className="flex gap-2">
-                          <Link href={course.id === 'prova-pa-vecka' ? '/dashboard/courses/prova-pa-vecka/week/1' : `${course.link}/kostschema?view=week&week=1`} className="inline-flex items-center gap-2 bg-primary text-white px-4 py-2 rounded-lg hover:bg-secondary transition-colors">
+                          <Link
+                            href={
+                              course.id === "prova-pa-vecka"
+                                ? "/dashboard/courses/prova-pa-vecka/week/1"
+                                : `${course.link}/kostschema?view=week&week=1`
+                            }
+                            className="inline-flex items-center gap-2 bg-primary text-white px-4 py-2 rounded-lg hover:bg-secondary transition-colors"
+                          >
                             Fortsätt
                             <ArrowRight />
                           </Link>
@@ -277,11 +389,14 @@ export default function CoursesPage() {
                               }}
                               className="inline-flex items-center gap-2 bg-green-100 text-green-700 px-4 py-2 rounded-lg hover:bg-green-200 transition-colors"
                             >
-                              <Book className="w-5 h-5 inline text-accent" /> Guide
+                              <Book className="w-5 h-5 inline text-accent" />{" "}
+                              Guide
                             </button>
                           )}
                         </div>
-                        <span className={`text-primary font-medium flex items-center gap-1`}>
+                        <span
+                          className={`text-primary font-medium flex items-center gap-1`}
+                        >
                           <Unlock />
                           Aktiv
                         </span>
@@ -298,7 +413,9 @@ export default function CoursesPage() {
       {/* Available Courses */}
       {availableCourses.length > 0 && (
         <div className="space-y-6">
-          <h2 className="text-xl font-semibold text-text-primary">Tillgängliga kurser</h2>
+          <h2 className="text-xl font-semibold text-text-primary">
+            Tillgängliga program
+          </h2>
           <div className="grid md:grid-cols-2 gap-6">
             {availableCourses.map((course) => (
               <motion.div
@@ -310,15 +427,18 @@ export default function CoursesPage() {
                 className="relative"
               >
                 <div className="bg-white rounded-2xl shadow-lg overflow-hidden opacity-75">
-                                     {/* Course Header */}
-                   <div 
-                     className="p-6 text-white opacity-60"
-                     style={{
-                       background: course.id === 'functional-flow' ? '#1a4324' : 
-                                  course.id === 'functional-basics' ? 'linear-gradient(to right, #10b981, #0d9488)' : 
-                                  '#1a4324'
-                     }}
-                   >
+                  {/* Course Header */}
+                  <div
+                    className="p-6 text-white opacity-60"
+                    style={{
+                      background:
+                        course.id === "functional-flow"
+                          ? "#1a4324"
+                          : course.id === "functional-basics"
+                            ? "linear-gradient(to right, #10b981, #0d9488)"
+                            : "#1a4324",
+                    }}
+                  >
                     <course.icon className="w-12 h-12 mb-3" />
                     <h3 className="text-2xl font-bold mb-1">{course.title}</h3>
                     <p>{course.description}</p>
@@ -333,7 +453,9 @@ export default function CoursesPage() {
                       </div>
                       <div className="flex items-center gap-2 text-text-secondary">
                         <BookOpen className="w-4 h-4" />
-                        <span className="text-sm">{course.modules} moduler</span>
+                        <span className="text-sm">
+                          {course.modules} moduler
+                        </span>
                       </div>
                     </div>
 
@@ -341,7 +463,7 @@ export default function CoursesPage() {
                       href="/utbildning"
                       className="block w-full text-center bg-[#FF7e70] text-white py-3 rounded-lg font-medium hover:bg-[#e56b5e] transition-colors"
                     >
-                      Köp kurs
+                      Köp program
                     </Link>
                   </div>
                 </div>
@@ -362,18 +484,22 @@ export default function CoursesPage() {
       {courses.length === 0 && (
         <div className="text-center py-12">
           <BookOpen className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-          <h3 className="text-xl font-semibold text-gray-700 mb-2">Inga kurser ännu</h3>
-          <p className="text-gray-500 mb-6">Utforska vårt kursutbud och börja din hälsoresa idag!</p>
+          <h3 className="text-xl font-semibold text-gray-700 mb-2">
+            Inga program ännu
+          </h3>
+          <p className="text-gray-500 mb-6">
+            Utforska vårt programutbud och börja din hälsoresa idag!
+          </p>
           <Link
             href="/utbildning"
             className="inline-flex items-center gap-2 bg-primary text-white px-6 py-3 rounded-lg hover:bg-primary-dark transition-colors"
           >
             <BookOpen />
-            Utforska kurser
+            Utforska program
           </Link>
         </div>
       )}
-      
+
       {/* Onboarding Guide */}
       <OnboardingGuide
         isOpen={showOnboarding}
@@ -383,4 +509,4 @@ export default function CoursesPage() {
       />
     </div>
   );
-} 
+}

@@ -1,15 +1,18 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
-import { motion } from 'framer-motion';
-import { Calendar, CheckCircle, Clock, PartyPopper } from "lucide-react";;
+import { useEffect, useState } from "react";
+import { motion } from "framer-motion";
+import { Calendar, CheckCircle, Clock, PartyPopper } from "lucide-react";
 
 interface CourseProgressBarProps {
   startDate: string; // ISO date string
   courseName: string;
 }
 
-export default function CourseProgressBar({ startDate, courseName }: CourseProgressBarProps) {
+export default function CourseProgressBar({
+  startDate,
+  courseName,
+}: CourseProgressBarProps) {
   const [currentDay, setCurrentDay] = useState(1);
   const [totalDays] = useState(42); // 6 veckor * 7 dagar
   const [isCompleted, setIsCompleted] = useState(false);
@@ -20,10 +23,10 @@ export default function CourseProgressBar({ startDate, courseName }: CourseProgr
       const today = new Date();
       today.setHours(0, 0, 0, 0); // Reset tid för korrekt jämförelse
       start.setHours(0, 0, 0, 0);
-      
+
       const diffTime = today.getTime() - start.getTime();
       const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-      
+
       if (diffDays < 1) {
         setCurrentDay(1);
       } else if (diffDays > totalDays) {
@@ -35,19 +38,22 @@ export default function CourseProgressBar({ startDate, courseName }: CourseProgr
     };
 
     calculateCurrentDay();
-    
+
     // Uppdatera vid midnatt
     const now = new Date();
     const tomorrow = new Date(now);
     tomorrow.setDate(tomorrow.getDate() + 1);
     tomorrow.setHours(0, 0, 0, 0);
-    
+
     const timeUntilMidnight = tomorrow.getTime() - now.getTime();
-    
+
     const midnightTimeout = setTimeout(() => {
       calculateCurrentDay();
       // Sätt upp interval för daglig uppdatering
-      const dailyInterval = setInterval(calculateCurrentDay, 24 * 60 * 60 * 1000);
+      const dailyInterval = setInterval(
+        calculateCurrentDay,
+        24 * 60 * 60 * 1000,
+      );
       return () => clearInterval(dailyInterval);
     }, timeUntilMidnight);
 
@@ -73,17 +79,21 @@ export default function CourseProgressBar({ startDate, courseName }: CourseProgr
             <h3 className="font-semibold text-gray-800">{courseName}</h3>
             <p className="text-sm text-gray-600">
               {isCompleted ? (
-                'Grattis! Du har genomfört kursen! <PartyPopper className="w-5 h-5 inline" />'
+                'Grattis! Du har genomfört programmet! <PartyPopper className="w-5 h-5 inline" />'
               ) : (
-                <>Dag {currentDay} av {totalDays} • Vecka {currentWeek}</>
+                <>
+                  Dag {currentDay} av {totalDays} • Vecka {currentWeek}
+                </>
               )}
             </p>
           </div>
         </div>
-        
+
         {!isCompleted && (
           <div className="text-right">
-            <p className="text-2xl font-bold text-primary">{Math.round(progressPercentage)}%</p>
+            <p className="text-2xl font-bold text-primary">
+              {Math.round(progressPercentage)}%
+            </p>
             <p className="text-xs text-gray-600">slutfört</p>
           </div>
         )}
@@ -121,16 +131,16 @@ export default function CourseProgressBar({ startDate, courseName }: CourseProgr
           const weekNumber = weekIndex + 1;
           const isCurrentWeek = weekNumber === currentWeek;
           const isPastWeek = weekNumber < currentWeek;
-          
+
           return (
             <div
               key={weekIndex}
               className={`text-center py-2 rounded-lg text-sm font-medium transition-all ${
                 isCurrentWeek
-                  ? 'bg-primary text-white shadow-md'
+                  ? "bg-primary text-white shadow-md"
                   : isPastWeek
-                  ? 'bg-primary/20 text-primary'
-                  : 'bg-gray-100 text-gray-500'
+                    ? "bg-primary/20 text-primary"
+                    : "bg-gray-100 text-gray-500"
               }`}
             >
               V{weekNumber}
@@ -166,4 +176,4 @@ export default function CourseProgressBar({ startDate, courseName }: CourseProgr
       `}</style>
     </div>
   );
-} 
+}

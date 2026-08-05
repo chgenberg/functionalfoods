@@ -381,7 +381,7 @@ function SveaSuccessContent() {
 
               <p className="text-xl text-gray-600 mb-8">
                 Din betalning har genomförts och du har nu tillgång till dina
-                kurser.
+                program.
               </p>
             </>
           )}
@@ -684,7 +684,7 @@ function SveaSuccessContent() {
                 </div>
                 <div>
                   <h3 className="font-semibold text-gray-900 mb-1">
-                    🎓 Kom åt din kurs
+                    🎓 Kom åt ditt program
                   </h3>
                   <p className="text-gray-600 text-sm mb-3">
                     Logga in på ditt konto för att börja din hälsoresa idag!

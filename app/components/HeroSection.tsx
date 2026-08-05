@@ -2,7 +2,15 @@
 import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, Book, Microscope, Moon, Shield, Star, Zap } from "lucide-react";;
+import {
+  ArrowRight,
+  Book,
+  Microscope,
+  Moon,
+  Shield,
+  Star,
+  Zap,
+} from "lucide-react";
 interface HeroSectionProps {
   onQuizStart: () => void;
 }
@@ -14,7 +22,7 @@ export default function HeroSection({ onQuizStart }: HeroSectionProps) {
     { icon: "🛡️", text: "Stärkt immunförsvar" },
     { icon: "🧠", text: "Bättre fokus" },
     { icon: "😊", text: "Förbättrat humör" },
-    { icon: "💤", text: "Bättre sömn" }
+    { icon: "💤", text: "Bättre sömn" },
   ];
 
   return (
@@ -29,7 +37,7 @@ export default function HeroSection({ onQuizStart }: HeroSectionProps) {
           transition={{
             duration: 20,
             repeat: Infinity,
-            ease: "linear"
+            ease: "linear",
           }}
           className="absolute -top-20 md:-top-40 -right-20 md:-right-40 w-64 md:w-96 h-64 md:h-96 bg-gradient-to-br from-green-200/30 to-blue-200/30 rounded-full blur-3xl"
         />
@@ -41,11 +49,11 @@ export default function HeroSection({ onQuizStart }: HeroSectionProps) {
           transition={{
             duration: 25,
             repeat: Infinity,
-            ease: "linear"
+            ease: "linear",
           }}
           className="absolute -bottom-20 md:-bottom-40 -left-20 md:-left-40 w-64 md:w-96 h-64 md:h-96 bg-gradient-to-br from-purple-200/30 to-pink-200/30 rounded-full blur-3xl"
         />
-        
+
         {/* Floating particles */}
         {[...Array(20)].map((_, i) => (
           <motion.div
@@ -87,7 +95,7 @@ export default function HeroSection({ onQuizStart }: HeroSectionProps) {
             <p className="text-lg sm:text-xl md:text-2xl text-gray-700 mb-6 md:mb-8 leading-relaxed">
               Mat som medicin för kropp och själ
             </p>
-            
+
             <div className="flex flex-col sm:flex-row gap-3 md:gap-4 mb-8 md:mb-12">
               <motion.button
                 whileHover={{ scale: 1.05 }}
@@ -95,7 +103,7 @@ export default function HeroSection({ onQuizStart }: HeroSectionProps) {
                 onClick={onQuizStart}
                 className="group bg-gradient-to-r from-green-600 to-green-700 text-white px-6 md:px-8 py-4 md:py-5 rounded-full font-semibold text-base md:text-lg shadow-xl hover:shadow-2xl transition-all flex items-center justify-center gap-3"
               >
-                                    Starta Hälsoquiz
+                Starta Hälsoquiz
                 <ArrowRight className="w-4 h-4 md:w-5 md:h-5 group-hover:translate-x-1 transition-transform" />
               </motion.button>
               <Link
@@ -103,7 +111,7 @@ export default function HeroSection({ onQuizStart }: HeroSectionProps) {
                 className="bg-white border-2 border-gray-200 text-gray-700 px-6 md:px-8 py-4 md:py-5 rounded-full font-semibold text-base md:text-lg hover:border-primary hover:text-primary transition-all flex items-center justify-center gap-3"
               >
                 <Book className="w-4 h-4 md:w-5 md:h-5" />
-                Våra kurser
+                Våra program
               </Link>
             </div>
 
@@ -118,7 +126,9 @@ export default function HeroSection({ onQuizStart }: HeroSectionProps) {
                   className="flex items-center gap-2 text-gray-700 justify-center lg:justify-start bg-white/80 backdrop-blur-sm rounded-lg px-3 py-2 shadow-sm"
                 >
                   <span className="text-xl md:text-2xl">{benefit.icon}</span>
-                  <span className="text-xs sm:text-sm font-medium">{benefit.text}</span>
+                  <span className="text-xs sm:text-sm font-medium">
+                    {benefit.text}
+                  </span>
                 </motion.div>
               ))}
             </div>
@@ -139,7 +149,7 @@ export default function HeroSection({ onQuizStart }: HeroSectionProps) {
                 transition={{
                   duration: 4,
                   repeat: Infinity,
-                  ease: "easeInOut"
+                  ease: "easeInOut",
                 }}
               >
                 <Image
@@ -151,7 +161,7 @@ export default function HeroSection({ onQuizStart }: HeroSectionProps) {
                   priority
                 />
               </motion.div>
-              
+
               {/* Floating card */}
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
@@ -165,13 +175,20 @@ export default function HeroSection({ onQuizStart }: HeroSectionProps) {
                     UD
                   </div>
                   <div>
-                    <p className="font-semibold text-gray-800 text-sm md:text-base">Ulrika Davidsson</p>
-                    <p className="text-xs md:text-sm text-gray-600">"Bästa kursen jag har gått - Lisa J"</p>
+                    <p className="font-semibold text-gray-800 text-sm md:text-base">
+                      Ulrika Davidsson
+                    </p>
+                    <p className="text-xs md:text-sm text-gray-600">
+                      "Bästa kursen jag har gått - Lisa J"
+                    </p>
                   </div>
                 </div>
                 <div className="flex items-center gap-1 text-yellow-400">
                   {[...Array(5)].map((_, i) => (
-                    <Star key={i} className="w-3 h-3 md:w-4 md:h-4 fill-current" />
+                    <Star
+                      key={i}
+                      className="w-3 h-3 md:w-4 md:h-4 fill-current"
+                    />
                   ))}
                 </div>
               </motion.div>
@@ -192,4 +209,4 @@ export default function HeroSection({ onQuizStart }: HeroSectionProps) {
       </motion.div>
     </section>
   );
-} 
+}
