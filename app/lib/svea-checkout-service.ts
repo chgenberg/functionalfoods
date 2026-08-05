@@ -3,7 +3,7 @@
  * Documentation: https://www.svea.com/se/foretag/betallosningar/e-handel/svea-checkout/
  */
 
-import { createHash, randomUUID } from 'crypto';
+import { createHash, createHmac, randomUUID, timingSafeEqual } from 'crypto';
 
 // Types according to Svea API documentation
 export interface SveaConfig {
@@ -478,25 +478,33 @@ export class SveaCheckoutService {
   /**
    * Validate webhook signature
    */
-  validateWebhookSignature(body: string, signature: string): boolean {
-    // According to Svea docs: SHA-512(request body + secret)
-    const expectedSignature = createHash('sha512')
-      .update(body + this.config.secretWord)
+  validateWebhookSignature(
+    body: string,
+    signature: string,
+    timestamp: string,
+    secret: string = this.config.secretWord,
+    maxAgeSeconds: number = 300,
+  ): boolean {
+    const timestampSeconds = Number.parseInt(timestamp, 10);
+    if (
+      !Number.isFinite(timestampSeconds) ||
+      Math.abs(Date.now() / 1000 - timestampSeconds) > maxAgeSeconds
+    ) {
+      return false;
+    }
+
+    const expectedSignature = createHmac('sha512', secret)
+      .update(`${timestamp}.${body}`, 'utf8')
       .digest('base64');
     
-    // Constant time comparison to prevent timing attacks
-    if (signature.length !== expectedSignature.length) {
+    const expectedBuffer = Buffer.from(expectedSignature, 'utf8');
+    const receivedBuffer = Buffer.from(signature, 'utf8');
+
+    if (expectedBuffer.length !== receivedBuffer.length) {
       return false;
     }
     
-    let match = true;
-    for (let i = 0; i < signature.length; i++) {
-      if (signature[i] !== expectedSignature[i]) {
-        match = false;
-      }
-    }
-    
-    return match;
+    return timingSafeEqual(expectedBuffer, receivedBuffer);
   }
 
   /**
