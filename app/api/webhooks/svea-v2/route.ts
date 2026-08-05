@@ -105,15 +105,30 @@ export async function POST(request: NextRequest) {
     console.log("📩 Svea webhook received:", {
       hasBody: !!body,
       bodyLength: body.length,
-      bodyPreview: body.substring(0, 100),
+      eventType: (() => {
+        try {
+          return JSON.parse(body || "{}")?.type;
+        } catch {
+          return undefined;
+        }
+      })(),
       hasSignature: !!signature,
       signatureLength: signature.length,
       hasSignatureTimestamp: !!signatureTimestamp,
-      url: url,
+      path: new URL(url).pathname,
       queryOrderId,
       headerOrderId,
-      allHeaders: Object.fromEntries(request.headers.entries()),
-    });
+      userAgent: request.headers.get("user-agent"),
+      forwardedFor: request.headers.get("x-forwarded-for"),
+      requestId: request.headers.get("x-request-id"),
+    };
+
+    if (debugWebhookLogging) {
+      webhookLog.bodyPreview = body.substring(0, 100);
+      webhookLog.allHeaders = Object.fromEntries(request.headers.entries());
+    }
+
+    console.log("📩 Svea webhook received:", webhookLog);
 
     // Initialize Svea service
     const sveaCheckout = getSveaCheckout();
