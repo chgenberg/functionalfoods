@@ -213,6 +213,7 @@ model Order {
   user             User        @relation(fields: [userId], references: [id])
   items            OrderItem[]
   payment          Payment?
+  affiliatePostbacks AffiliatePostback[]
 
   @@index([userId])
   @@index([orderNumber])
@@ -249,6 +250,24 @@ model Payment {
 
   @@index([externalId])
   @@index([status])
+}
+
+model AffiliatePostback {
+  id         String   @id @default(uuid())
+  orderId    String
+  provider   String
+  status     String   @default("pending")
+  payload    Json?
+  response   String?
+  error      String?
+  statusCode Int?
+  sentAt     DateTime?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  order      Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+
+  @@unique([orderId, provider])
+  @@index([provider, status])
 }
 
 model Purchase {
