@@ -1176,6 +1176,11 @@ async function handleCheckoutSessionCompleted(session: any) {
             orderId: refreshedOrder.orderNumber,
             ok: result.ok,
           });
+        } else {
+          console.log("ℹ️ Addrevenue postback skipped (stripe webhook):", {
+            orderId: refreshedOrder.orderNumber,
+            reason: result.reason,
+          });
         }
       }
     } catch (addrevenueError) {
