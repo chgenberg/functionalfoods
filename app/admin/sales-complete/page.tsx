@@ -776,7 +776,6 @@ export default function UnifiedSalesPage() {
       hasAddrevenue,
       clickId,
       channelId,
-      advertiserId,
       status: metadata.addrevenuePostbackStatus || '',
     };
   };
