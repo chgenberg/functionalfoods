@@ -18,6 +18,12 @@ export type Attribution = {
   utm_campaign?: string;
   utm_term?: string;
   utm_content?: string;
+  // Addrevenue affiliate tracking
+  addrevenue_clickId?: string;
+  addrevenue_channelId?: string;
+  addrevenue_advertiserId?: string;
+  addrevenue_market?: string;
+  addrevenue_clickRef?: string;
   // Referrer
   ref?: string;
   // Timestamp when captured
@@ -47,6 +53,13 @@ export function getAttributionFromUrl(url?: string): Attribution | null {
       utm_campaign: p.get('utm_campaign') || undefined,
       utm_term: p.get('utm_term') || undefined,
       utm_content: p.get('utm_content') || undefined,
+      // Addrevenue may redirect with explicit names, while their own
+      // tracking links use short aliases before the redirect.
+      addrevenue_clickId: p.get('clickId') || p.get('clickid') || undefined,
+      addrevenue_channelId: p.get('channelId') || p.get('channelid') || p.get('c') || undefined,
+      addrevenue_advertiserId: p.get('advertiserId') || p.get('advertiserid') || p.get('a') || undefined,
+      addrevenue_market: p.get('market') || p.get('m') || undefined,
+      addrevenue_clickRef: p.get('clickRef') || p.get('clickref') || p.get('r') || undefined,
       // Referrer
       ref: (typeof document !== 'undefined' ? document.referrer : undefined) || undefined,
       ts: Date.now()
@@ -106,7 +119,7 @@ export function attachAttributionToUrl(url: string, attr?: Attribution | null): 
     const a = attr || readAttribution();
     if (!a) return url;
     const u = new URL(url, typeof window !== 'undefined' ? window.location.origin : undefined);
-    const keys: Array<keyof Attribution> = ['gclid','gbraid','wbraid','fbclid','mc_cid','mc_eid','utm_source','utm_medium','utm_campaign','utm_term','utm_content'];
+    const keys: Array<keyof Attribution> = ['gclid','gbraid','wbraid','fbclid','mc_cid','mc_eid','utm_source','utm_medium','utm_campaign','utm_term','utm_content','addrevenue_clickId','addrevenue_channelId','addrevenue_advertiserId','addrevenue_market','addrevenue_clickRef'];
     for (const k of keys) {
       const v = a[k];
       if (v && !u.searchParams.get(k as string)) {
