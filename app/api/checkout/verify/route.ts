@@ -12,6 +12,7 @@ import {
   SUMMER_EBOOK_CAMPAIGN_TAG,
   hasSummerEbookBundleByIdentity,
 } from "@/app/lib/campaigns/summer-ebooks";
+import { sendAddrevenuePostbackForOrder } from "@/app/lib/addrevenue";
 
 export const dynamic = "force-dynamic";
 
@@ -191,6 +192,12 @@ export async function GET(req: NextRequest) {
             utm_campaign: session.metadata?.utm_campaign || "",
             utm_term: session.metadata?.utm_term || "",
             utm_content: session.metadata?.utm_content || "",
+            addrevenue_clickId: session.metadata?.addrevenue_clickId || "",
+            addrevenue_channelId: session.metadata?.addrevenue_channelId || "",
+            addrevenue_advertiserId:
+              session.metadata?.addrevenue_advertiserId || "",
+            addrevenue_market: session.metadata?.addrevenue_market || "",
+            addrevenue_clickRef: session.metadata?.addrevenue_clickRef || "",
           };
 
           if (items.length > 0) {
@@ -443,6 +450,29 @@ export async function GET(req: NextRequest) {
               ).toUpperCase(),
               metadata: {
                 ...existingMetadata,
+                attribution: existingMetadata.attribution || {
+                  gclid: session.metadata?.gclid || "",
+                  gbraid: session.metadata?.gbraid || "",
+                  wbraid: session.metadata?.wbraid || "",
+                  fbclid: session.metadata?.fbclid || "",
+                  mc_cid: session.metadata?.mc_cid || "",
+                  mc_eid: session.metadata?.mc_eid || "",
+                  utm_source: session.metadata?.utm_source || "",
+                  utm_medium: session.metadata?.utm_medium || "",
+                  utm_campaign: session.metadata?.utm_campaign || "",
+                  utm_term: session.metadata?.utm_term || "",
+                  utm_content: session.metadata?.utm_content || "",
+                  addrevenue_clickId:
+                    session.metadata?.addrevenue_clickId || "",
+                  addrevenue_channelId:
+                    session.metadata?.addrevenue_channelId || "",
+                  addrevenue_advertiserId:
+                    session.metadata?.addrevenue_advertiserId || "",
+                  addrevenue_market:
+                    session.metadata?.addrevenue_market || "",
+                  addrevenue_clickRef:
+                    session.metadata?.addrevenue_clickRef || "",
+                },
                 campaignId:
                   existingMetadata.campaignId ||
                   session.metadata?.campaignId ||
@@ -664,6 +694,24 @@ export async function GET(req: NextRequest) {
           console.warn(
             "⚠️ Stripe verify fallback: Mailchimp tracking failed (non-critical):",
             e,
+          );
+        }
+
+        try {
+          const stripeOrder = await findOrder(true);
+          if (stripeOrder) {
+            const result = await sendAddrevenuePostbackForOrder(stripeOrder);
+            if (!result.skipped) {
+              console.log("✅ Addrevenue postback attempted (stripe verify):", {
+                orderId: stripeOrder.orderNumber,
+                ok: result.ok,
+              });
+            }
+          }
+        } catch (addrevenueError) {
+          console.warn(
+            "⚠️ Addrevenue postback failed (stripe verify, non-critical):",
+            addrevenueError,
           );
         }
 
