@@ -125,7 +125,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                       (function(){
                         try {
                           var params = new URLSearchParams(window.location.search);
-                          var hasAttr = params.get('utm_source') || params.get('utm_medium') || params.get('utm_campaign') || params.get('gclid') || params.get('gbraid') || params.get('wbraid') || params.get('fbclid');
+                          var hasAttr = params.get('utm_source') || params.get('utm_medium') || params.get('utm_campaign') || params.get('gclid') || params.get('gbraid') || params.get('wbraid') || params.get('fbclid') || params.get('clickId') || params.get('channelId') || params.get('advertiserId') || params.get('c') || params.get('a');
                           if (hasAttr) {
                             window.localStorage.setItem('ff_attr_url', window.location.href);
                           }
