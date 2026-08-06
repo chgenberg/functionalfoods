@@ -51,6 +51,11 @@ export async function POST(req: NextRequest) {
           utm_campaign?: string;
           utm_term?: string;
           utm_content?: string;
+          addrevenue_clickId?: string;
+          addrevenue_channelId?: string;
+          addrevenue_advertiserId?: string;
+          addrevenue_market?: string;
+          addrevenue_clickRef?: string;
           ref?: string;
           ts?: number;
         };
@@ -506,6 +511,11 @@ export async function POST(req: NextRequest) {
           utm_campaign: safeStripeMetadataValue(effectiveAttribution?.utm_campaign),
           utm_term: safeStripeMetadataValue(effectiveAttribution?.utm_term),
           utm_content: safeStripeMetadataValue(effectiveAttribution?.utm_content),
+          addrevenue_clickId: safeStripeMetadataValue(effectiveAttribution?.addrevenue_clickId),
+          addrevenue_channelId: safeStripeMetadataValue(effectiveAttribution?.addrevenue_channelId),
+          addrevenue_advertiserId: safeStripeMetadataValue(effectiveAttribution?.addrevenue_advertiserId),
+          addrevenue_market: safeStripeMetadataValue(effectiveAttribution?.addrevenue_market),
+          addrevenue_clickRef: safeStripeMetadataValue(effectiveAttribution?.addrevenue_clickRef),
         },
       };
 

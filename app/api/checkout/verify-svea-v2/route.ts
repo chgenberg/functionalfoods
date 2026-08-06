@@ -1032,6 +1032,7 @@ export async function POST(req: NextRequest) {
           e,
         );
       }
+      
       // Ensure abandoned cart cleanup is visible in admin even if purchase tracking
       // was skipped or handled by another completion path.
       try {

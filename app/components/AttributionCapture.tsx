@@ -29,7 +29,8 @@ export default function AttributionCapture() {
           gclid: attr.gclid ? 'present' : 'none',
           gbraid: attr.gbraid ? 'present' : 'none',
           wbraid: attr.wbraid ? 'present' : 'none',
-          fbclid: attr.fbclid ? 'present' : 'none'
+          fbclid: attr.fbclid ? 'present' : 'none',
+          addrevenue: attr.addrevenue_clickId || attr.addrevenue_channelId ? 'present' : 'none'
         });
         
         saveAttribution(attr);
@@ -67,4 +68,3 @@ export default function AttributionCapture() {
   // This component doesn't render anything
   return null;
 }
-

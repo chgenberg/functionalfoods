@@ -54,6 +54,11 @@ interface Attribution {
   utm_campaign?: string;
   utm_term?: string;
   utm_content?: string;
+  addrevenue_clickId?: string;
+  addrevenue_channelId?: string;
+  addrevenue_advertiserId?: string;
+  addrevenue_market?: string;
+  addrevenue_clickRef?: string;
   ref?: string;
   ts?: number;
 }
@@ -746,8 +751,47 @@ export default function UnifiedSalesPage() {
     return statusMap[status] || status;
   };
 
+  const getAddrevenueInfo = (order: UnifiedOrder) => {
+    const metadata = order.metadata || {};
+    const attr = (metadata.attribution || {}) as Attribution;
+    const stored = metadata.addrevenue || {};
+    const payload = metadata.addrevenuePayload || {};
+
+    const clickId =
+      stored.clickId ||
+      payload.clickId ||
+      attr.addrevenue_clickId ||
+      (attr as any).clickId ||
+      '';
+    const channelId =
+      stored.channelId ||
+      payload.channelId ||
+      attr.addrevenue_channelId ||
+      (attr as any).channelId ||      
+      '';
+
+    const hasAddrevenue = Boolean(clickId || channelId || metadata.addrevenueTrackedAt || metadata.addrevenuePostbackStatus);
+
+    return {
+      hasAddrevenue,
+      clickId,
+      channelId,
+      status: metadata.addrevenuePostbackStatus || '',
+    };
+  };
+
   const getAttributionLabel = (attr: Attribution | undefined): { label: string; color: string; detail?: string } => {
     if (!attr) return { label: 'Direkt', color: 'gray' };
+
+    if (attr.addrevenue_clickId || attr.addrevenue_channelId) {
+      return {
+        label: 'Addrevenue',
+        color: 'indigo',
+        detail: attr.addrevenue_channelId
+          ? `Channel ${attr.addrevenue_channelId}`
+          : attr.addrevenue_clickId,
+      };
+    }
 
     // Check for Google Ads click identifiers
     if (attr.gclid || attr.gbraid || attr.wbraid) {
@@ -784,6 +828,17 @@ export default function UnifiedSalesPage() {
 
   const getOrderSourceLabel = (order: UnifiedOrder): { label: string; color: string; detail?: string } => {
     const sourceAttribution = order.metadata?.attribution as Attribution | undefined;
+    const addrevenue = getAddrevenueInfo(order);
+
+    if (addrevenue.hasAddrevenue) {
+      return {
+        label: 'Addrevenue',
+        color: 'indigo',
+        detail: addrevenue.channelId
+          ? `Channel ${addrevenue.channelId}`
+          : addrevenue.clickId,
+      };
+    }
 
   if (order.metadata?.campaignId === 'sommar-ebocker-2026') {
       const sourceMap: Record<string, string> = {
