@@ -14,6 +14,7 @@ import {
   SUMMER_EBOOK_CAMPAIGN_TAG,
   hasSummerEbookBundleByIdentity,
 } from "@/app/lib/campaigns/summer-ebooks";
+import { sendAddrevenuePostbackForOrder } from "@/app/lib/addrevenue";
 
 export const dynamic = "force-dynamic";
 
@@ -565,6 +566,12 @@ async function handleCheckoutSessionCompleted(session: any) {
       utm_campaign: session.metadata?.utm_campaign || "",
       utm_term: session.metadata?.utm_term || "",
       utm_content: session.metadata?.utm_content || "",
+      addrevenue_clickId: session.metadata?.addrevenue_clickId || "",
+      addrevenue_channelId: session.metadata?.addrevenue_channelId || "",
+      addrevenue_advertiserId:
+        session.metadata?.addrevenue_advertiserId || "",
+      addrevenue_market: session.metadata?.addrevenue_market || "",
+      addrevenue_clickRef: session.metadata?.addrevenue_clickRef || "",
     };
 
     let finalOrderId: string | null = null;
@@ -1154,6 +1161,28 @@ async function handleCheckoutSessionCompleted(session: any) {
       }
     } catch (e) {
       console.warn("⚠️ Mailchimp E-commerce tracking failed:", e);
+    }
+
+    try {
+      const refreshedOrder = await prisma.order.findUnique({
+        where: { id: finalOrder.id },
+        include: { items: true, user: true },
+      });
+
+      if (refreshedOrder) {
+        const result = await sendAddrevenuePostbackForOrder(refreshedOrder);
+        if (!result.skipped) {
+          console.log("✅ Addrevenue postback attempted (stripe webhook):", {
+            orderId: refreshedOrder.orderNumber,
+            ok: result.ok,
+          });
+        }
+      }
+    } catch (addrevenueError) {
+      console.warn(
+        "⚠️ Addrevenue postback failed (stripe webhook, non-critical):",
+        addrevenueError,
+      );
     }
 
     // Ensure abandoned cart cleanup is persisted even if purchase tracking was
