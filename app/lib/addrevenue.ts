@@ -1,10 +1,12 @@
 import { prisma } from "@/app/lib/database";
+import { Prisma } from "@prisma/client";
 
 const ADDREVENUE_ENDPOINT = "https://addrevenue.io/t";
 const ADDREVENUE_ADVERTISER_ID = "988141";
 const ADDREVENUE_EVENT_TYPE = "Purchase";
 const ADDREVENUE_MARKET = "SE";
 const ADDREVENUE_CURRENCY = "SEK";
+const ADDREVENUE_PROVIDER = "addrevenue";
 
 type AddrevenueAttribution = {
   addrevenue_clickId?: string;
@@ -71,25 +73,10 @@ function formatValue(value: number): number {
 export async function sendAddrevenuePostbackForOrder(order: TrackOrderInput) {
   const metadata = ((order.metadata as any) || {}) as Record<string, any>;
 
-  if (metadata.addrevenueTrackedAt || metadata.addrevenuePostbackPendingAt) {
-    return { skipped: true, reason: "already_tracked_or_pending" };
-  }
-
   const addrevenue = getAddrevenueAttribution(metadata);
   if (!addrevenue) {
     return { skipped: true, reason: "missing_addrevenue_attribution" };
   }
-
-  const now = new Date().toISOString();
-  await prisma.order.update({
-    where: { id: order.id },
-    data: {
-      metadata: {
-        ...metadata,
-        addrevenuePostbackPendingAt: now,
-      },
-    },
-  });
 
   const payload = {
     type: ADDREVENUE_EVENT_TYPE,
@@ -104,13 +91,34 @@ export async function sendAddrevenuePostbackForOrder(order: TrackOrderInput) {
   };
 
   try {
+    await prisma.affiliatePostback.create({
+      data: {
+        orderId: freshOrder.id,
+        provider: ADDREVENUE_PROVIDER,
+        status: "pending",
+        payload,
+      },
+    });
+  } catch (error: any) {
+    if (
+      error instanceof Prisma.PrismaClientKnownRequestError &&
+      error.code === "P2002"
+    ) {
+      return { skipped: true, reason: "already_claimed" };
+    }
+
+    throw error;
+  }
+
+  try {
     const response = await fetch(ADDREVENUE_ENDPOINT, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),
     });
     const responseText = await response.text();
-    const trackedAt = new Date().toISOString();
+    const trackedAtDate = new Date();
+    const trackedAt = trackedAtDate.toISOString();
 
     await prisma.order.update({
       where: { id: order.id },
@@ -129,8 +137,22 @@ export async function sendAddrevenuePostbackForOrder(order: TrackOrderInput) {
           addrevenuePostbackStatus: response.ok ? "success" : "failed",
           addrevenuePostbackStatusCode: response.status,
           addrevenuePostbackResponse: responseText.slice(0, 500),
-          addrevenuePostbackPendingAt: null,
         },
+      },
+    });
+
+    await prisma.affiliatePostback.update({
+      where: {
+        orderId_provider: {
+          orderId: freshOrder.id,
+          provider: ADDREVENUE_PROVIDER,
+        },
+      },
+      data: {
+        status: response.ok ? "success" : "failed",
+        response: responseText.slice(0, 500),
+        statusCode: response.status,
+        sentAt: response.ok ? trackedAtDate : null,
       },
     });
 
@@ -158,8 +180,20 @@ export async function sendAddrevenuePostbackForOrder(order: TrackOrderInput) {
           addrevenuePostbackStatus: "error",
           addrevenuePostbackError:
             error?.message || "Unknown Addrevenue postback error",
-          addrevenuePostbackPendingAt: null,
         },
+      },
+    });
+
+    await prisma.affiliatePostback.update({
+      where: {
+        orderId_provider: {
+          orderId: freshOrder.id,
+          provider: ADDREVENUE_PROVIDER,
+        },
+      },
+      data: {
+        status: "error",
+        error: error?.message || "Unknown Addrevenue postback error",
       },
     });
 
