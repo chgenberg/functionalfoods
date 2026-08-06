@@ -10,6 +10,7 @@ import {
   SUMMER_EBOOK_CAMPAIGN_ID,
   SUMMER_EBOOK_CAMPAIGN_TAG,
 } from "@/app/lib/campaigns/summer-ebooks";
+import { sendAddrevenuePostbackForOrder } from "@/app/lib/addrevenue";
 import bcrypt from "bcryptjs";
 
 export const dynamic = "force-dynamic";
@@ -1032,6 +1033,29 @@ export async function POST(req: NextRequest) {
           e,
         );
       }
+
+      try {
+        const sveaOrder = await prisma.order.findUnique({
+          where: { id: order.id },
+          include: { items: true, user: true },
+        });
+
+        if (sveaOrder) {
+          const result = await sendAddrevenuePostbackForOrder(sveaOrder);
+          if (!result.skipped) {
+            console.log("✅ Addrevenue postback attempted (svea verify):", {
+              orderId: sveaOrder.orderNumber,
+              ok: result.ok,
+            });
+          }
+        }
+      } catch (addrevenueError) {
+        console.warn(
+          "⚠️ Addrevenue postback failed (svea verify, non-critical):",
+          addrevenueError,
+        );
+      }
+      
       // Ensure abandoned cart cleanup is visible in admin even if purchase tracking
       // was skipped or handled by another completion path.
       try {
