@@ -598,7 +598,6 @@ export default function UnifiedSalesPage() {
       const couponCode = order.metadata?.couponCode || '';
       const discountAmount = order.metadata?.discountAmount || '';
       const sourceInfo = getOrderSourceLabel(order);
-      const addrevenue = getAddrevenueInfo(order);
       return {
         'Order ID': order.id,
         'Ordernummer': order.orderNumber,
@@ -613,19 +612,8 @@ export default function UnifiedSalesPage() {
         'Kurser': (order.courses || []).join(' | ') || '',
         'Rabattkod': couponCode,
         'Rabatt (SEK)': discountAmount ? Number(discountAmount) : '',
-        'Kampanj': addrevenue.hasAddrevenue ? addrevenue.campaign : sourceInfo.label,
         'Källa': sourceInfo.label,
         'Detalj': sourceInfo.detail || '',
-        'Addrevenue Click ID': addrevenue.clickId,
-        'Addrevenue Channel ID': addrevenue.channelId,
-        'Addrevenue Advertiser ID': addrevenue.advertiserId,
-        'Addrevenue Event': addrevenue.event,
-        'Addrevenue Market': addrevenue.market,
-        'Addrevenue skickad': addrevenue.trackedAt ? 'Ja' : 'Nej',
-        'Addrevenue skickad datum': addrevenue.trackedAt,
-        'Addrevenue status': addrevenue.status,
-        'Addrevenue statuskod': addrevenue.statusCode,
-        'Addrevenue fel': addrevenue.error,
         // Export numeric amounts as numbers (Excel-friendly)
         'Belopp (SEK)': Number(order.amount),
         'Återbetalat (SEK)': Number(refund),
@@ -645,7 +633,6 @@ export default function UnifiedSalesPage() {
     const lineItemsData = filteredOrders.flatMap(order => {
       const createdAtIso = new Date(order.createdAt).toISOString().replace('T', ' ').slice(0, 19);
       const sourceInfo = getOrderSourceLabel(order);
-      const addrevenue = getAddrevenueInfo(order);
       
       return (order.items || []).map((item) => {
         const isBook = item.type === 'book' || (item.name || '').toLowerCase().includes('bok');
@@ -661,12 +648,8 @@ export default function UnifiedSalesPage() {
           'Datum': createdAtIso,
           'E-post': order.customerEmail,
           'Kund': order.customerName,
-          'Kampanj': addrevenue.hasAddrevenue ? addrevenue.campaign : sourceInfo.label,
           'Källa': sourceInfo.label,
           'Källdetaljer': sourceInfo.detail || '',
-          'Addrevenue Click ID': addrevenue.clickId,
-          'Addrevenue Channel ID': addrevenue.channelId,
-          'Addrevenue status': addrevenue.status,
           'Leverantör (kod)': order.paymentProvider,
           'Status (kod)': order.status,
           'Produkt': item.name,
@@ -784,37 +767,17 @@ export default function UnifiedSalesPage() {
       stored.channelId ||
       payload.channelId ||
       attr.addrevenue_channelId ||
-      (attr as any).channelId ||
-      '';
-    const advertiserId =
-      stored.advertiserId ||
-      payload.advertiserId ||
-      attr.addrevenue_advertiserId ||
-      (attr as any).advertiserId ||
-      '';
-    const market =
-      stored.market ||
-      payload.market ||
-      attr.addrevenue_market ||
-      (attr as any).market ||
+      (attr as any).channelId ||      
       '';
 
     const hasAddrevenue = Boolean(clickId || channelId || metadata.addrevenueTrackedAt || metadata.addrevenuePostbackStatus);
 
     return {
       hasAddrevenue,
-      campaign: hasAddrevenue ? 'Addrevenue' : '',
-      source: channelId ? `Channel ${channelId}` : 'Addrevenue',
-      detail: clickId ? `Click ${clickId}` : metadata.addrevenuePostbackStatus || '',
       clickId,
       channelId,
       advertiserId,
-      market,
-      event: payload.type || 'Purchase',
-      trackedAt: metadata.addrevenueTrackedAt || '',
       status: metadata.addrevenuePostbackStatus || '',
-      statusCode: metadata.addrevenuePostbackStatusCode || '',
-      error: metadata.addrevenuePostbackError || '',
     };
   };
 
@@ -1498,7 +1461,7 @@ export default function UnifiedSalesPage() {
                 <th className="text-left">Status</th>
                 <th className="text-left">Order</th>
                 <th className="text-left">Kund</th>
-                <th className="text-left">Kampanj / Källa / Detalj</th>
+                <th className="text-left">Källa</th>
                 <th className="text-left">Rabattkod</th>
                 <th className="text-left">Produkter</th>
                 <th className="text-left">Belopp</th>
@@ -1557,7 +1520,6 @@ export default function UnifiedSalesPage() {
                     <td className="whitespace-nowrap">
                       {(() => {
                         const attrInfo = getOrderSourceLabel(order);
-                        const addrevenue = getAddrevenueInfo(order);
                         const colorMap: Record<string, string> = {
                           blue: 'bg-blue-100 text-blue-800',
                           purple: 'bg-purple-100 text-purple-800',
@@ -1570,11 +1532,6 @@ export default function UnifiedSalesPage() {
                         };
                         return (
                           <div>
-                            {addrevenue.hasAddrevenue && (
-                              <p className="mb-1 text-[11px] font-medium text-gray-500">
-                                Kampanj: {addrevenue.campaign}
-                              </p>
-                            )}
                             <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${colorMap[attrInfo.color] || colorMap.gray}`}>
                               {attrInfo.label}
                             </span>
