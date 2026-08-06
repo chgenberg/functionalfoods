@@ -10,7 +10,6 @@ import {
   SUMMER_EBOOK_CAMPAIGN_ID,
   SUMMER_EBOOK_CAMPAIGN_TAG,
 } from "@/app/lib/campaigns/summer-ebooks";
-import { sendAddrevenuePostbackForOrder } from "@/app/lib/addrevenue";
 import bcrypt from "bcryptjs";
 
 export const dynamic = "force-dynamic";
@@ -1031,33 +1030,6 @@ export async function POST(req: NextRequest) {
         console.warn(
           "⚠️ Mailchimp E-commerce tracking failed (verify, non-critical):",
           e,
-        );
-      }
-
-      try {
-        const sveaOrder = await prisma.order.findUnique({
-          where: { id: order.id },
-          include: { items: true, user: true },
-        });
-
-        if (sveaOrder) {
-          const result = await sendAddrevenuePostbackForOrder(sveaOrder);
-          if (!result.skipped) {
-            console.log("✅ Addrevenue postback attempted (svea verify):", {
-              orderId: sveaOrder.orderNumber,
-              ok: result.ok,
-            });
-          } else {
-            console.log("ℹ️ Addrevenue postback skipped (svea verify):", {
-              orderId: sveaOrder.orderNumber,
-              reason: result.reason,
-            });
-          }
-        }
-      } catch (addrevenueError) {
-        console.warn(
-          "⚠️ Addrevenue postback failed (svea verify, non-critical):",
-          addrevenueError,
         );
       }
       
