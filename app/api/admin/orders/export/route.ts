@@ -11,23 +11,11 @@ function getAddrevenueInfo(metadata: any) {
   const payload = metadata?.addrevenuePayload || {};
   const clickId = stored.clickId || payload.clickId || attr.addrevenue_clickId || attr.clickId || '';
   const channelId = stored.channelId || payload.channelId || attr.addrevenue_channelId || attr.channelId || '';
-  const advertiserId = stored.advertiserId || payload.advertiserId || attr.addrevenue_advertiserId || attr.advertiserId || '';
-  const market = stored.market || payload.market || attr.addrevenue_market || attr.market || '';
 
   return {
     hasAddrevenue: Boolean(clickId || channelId || metadata?.addrevenueTrackedAt || metadata?.addrevenuePostbackStatus),
-    campaign: 'Addrevenue',
     source: channelId ? `Channel ${channelId}` : 'Addrevenue',
     detail: clickId ? `Click ${clickId}` : metadata?.addrevenuePostbackStatus || '',
-    clickId,
-    channelId,
-    advertiserId,
-    market,
-    event: payload.type || 'Purchase',
-    trackedAt: metadata?.addrevenueTrackedAt || '',
-    status: metadata?.addrevenuePostbackStatus || '',
-    statusCode: metadata?.addrevenuePostbackStatusCode || '',
-    error: metadata?.addrevenuePostbackError || '',
   };
 }
 
@@ -36,12 +24,12 @@ function getSourceInfo(metadata: any) {
   if (addrevenue.hasAddrevenue) return addrevenue;
 
   const attr = metadata?.attribution || {};
-  if (attr.gclid || attr.gbraid || attr.wbraid) return { campaign: attr.utm_campaign || '', source: 'Google Ads', detail: attr.utm_campaign || '' };
-  if (attr.fbclid) return { campaign: attr.utm_campaign || '', source: 'Facebook Ads', detail: attr.utm_campaign || '' };
-  if (attr.mc_cid) return { campaign: attr.mc_cid, source: 'Mailchimp', detail: attr.mc_cid };
-  if (attr.utm_source) return { campaign: attr.utm_campaign || '', source: attr.utm_source, detail: attr.utm_medium || attr.utm_campaign || '' };
+  if (attr.gclid || attr.gbraid || attr.wbraid) return { source: 'Google Ads', detail: attr.utm_campaign || '' };
+  if (attr.fbclid) return { source: 'Facebook Ads', detail: attr.utm_campaign || '' };
+  if (attr.mc_cid) return { source: 'Mailchimp', detail: attr.mc_cid };
+  if (attr.utm_source) return { source: attr.utm_source, detail: attr.utm_medium || attr.utm_campaign || '' };
 
-  return { campaign: '', source: 'Direkt', detail: '' };
+  return { source: 'Direkt', detail: '' };
 }
 
 export async function GET(req: NextRequest) {
@@ -117,7 +105,6 @@ export async function GET(req: NextRequest) {
     // Förbered data för Excel
     const excelData = orders.map(order => {
       const metadata = (order.metadata as any) || {};
-      const addrevenue = getAddrevenueInfo(metadata);
       const source = getSourceInfo(metadata);
       const statusLabel = (() => {
         switch (order.status) {
@@ -142,19 +129,8 @@ export async function GET(req: NextRequest) {
           `${item.course?.name || item.name} (${item.quantity}x)`
         ).join(', '),
         'Antal produkter': order.items.reduce((sum, item) => sum + item.quantity, 0),
-        'Kampanj': source.campaign,
         'Källa': source.source,
         'Detalj': source.detail,
-        'Addrevenue Click ID': addrevenue.clickId,
-        'Addrevenue Channel ID': addrevenue.channelId,
-        'Addrevenue Advertiser ID': addrevenue.advertiserId,
-        'Addrevenue Event': addrevenue.event,
-        'Addrevenue Market': addrevenue.market,
-        'Addrevenue skickad': addrevenue.trackedAt ? 'Ja' : 'Nej',
-        'Addrevenue skickad datum': addrevenue.trackedAt,
-        'Addrevenue status': addrevenue.status,
-        'Addrevenue statuskod': addrevenue.statusCode,
-        'Addrevenue fel': addrevenue.error,
         'Totalt belopp (SEK)': order.totalAmount,
         'Status': statusLabel,
         'Betalmetod': order.payment?.paymentMethod === 'stripe' ? 'Kort (Stripe)' :
