@@ -21,6 +21,10 @@ type TrackOrderInput = {
   totalAmount?: number | null;
   currency?: string | null;
   metadata?: unknown;
+  items?: Array<{
+    price?: number | null;
+    quantity?: number | null;
+  }>;
 };
 
 function getAddrevenueAttribution(metadata: any): AddrevenueAttribution | null {
@@ -69,6 +73,21 @@ function formatValue(value: number): number {
   return Math.round(value * 100) / 100;
 }
 
+function getOrderValueExVat(
+  items: TrackOrderInput["items"],
+  fallbackTotalInclVat: number,
+): number {
+  const itemValueExVat = (items || []).reduce((sum, item) => {
+    return sum + Number(item.price || 0) * Number(item.quantity || 1);
+  }, 0);
+
+  if (itemValueExVat > 0) {
+    return itemValueExVat;
+  }
+
+  return fallbackTotalInclVat / 1.06;
+}
+
 function isFreshPending(metadata: Record<string, any>): boolean {
   if (metadata.addrevenuePostbackStatus !== "pending") {
     return false;
@@ -90,6 +109,12 @@ export async function sendAddrevenuePostbackForOrder(order: TrackOrderInput) {
       totalAmount: true,
       currency: true,
       metadata: true,
+      items: {
+        select: {
+          price: true,
+          quantity: true,
+        },
+      },
     },
   });
 
@@ -100,6 +125,7 @@ export async function sendAddrevenuePostbackForOrder(order: TrackOrderInput) {
   const orderId = orderRecord.id;
   const orderNumber = orderRecord.orderNumber || order.orderNumber || order.id;
   const orderTotal = Number(orderRecord.totalAmount || order.totalAmount || 0);
+  const orderValueExVat = getOrderValueExVat(orderRecord.items, orderTotal);
   const orderCurrency = (
     orderRecord.currency ||
     order.currency ||
@@ -118,7 +144,7 @@ export async function sendAddrevenuePostbackForOrder(order: TrackOrderInput) {
       addrevenue.addrevenue_advertiserId || ADDREVENUE_ADVERTISER_ID,
     channelId: addrevenue.addrevenue_channelId,
     clickId: addrevenue.addrevenue_clickId,
-    value: formatValue(orderTotal),
+    value: formatValue(orderValueExVat),
     currency: orderCurrency,
     orderId: orderNumber,
     market: addrevenue.addrevenue_market || ADDREVENUE_MARKET,
