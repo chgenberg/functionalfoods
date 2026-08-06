@@ -7,6 +7,7 @@ const ADDREVENUE_EVENT_TYPE = "Purchase";
 const ADDREVENUE_MARKET = "SE";
 const ADDREVENUE_CURRENCY = "SEK";
 const ADDREVENUE_PROVIDER = "addrevenue";
+const PENDING_RETRY_AFTER_MS = 2 * 60 * 1000;
 
 type AddrevenueAttribution = {
   addrevenue_clickId?: string;
@@ -71,7 +72,30 @@ function formatValue(value: number): number {
 }
 
 export async function sendAddrevenuePostbackForOrder(order: TrackOrderInput) {
-  const metadata = ((order.metadata as any) || {}) as Record<string, any>;
+  const orderRecord = await prisma.order.findUnique({
+    where: { id: order.id },
+    select: {
+      id: true,
+      orderNumber: true,
+      totalAmount: true,
+      currency: true,
+      metadata: true,
+    },
+  });
+
+  if (!orderRecord) {
+    return { skipped: true, reason: "order_not_found" };
+  }
+
+  const orderId = orderRecord.id;
+  const orderNumber = orderRecord.orderNumber || order.orderNumber || order.id;
+  const orderTotal = Number(orderRecord.totalAmount || order.totalAmount || 0);
+  const orderCurrency = (
+    orderRecord.currency ||
+    order.currency ||
+    ADDREVENUE_CURRENCY
+  ).toUpperCase();
+  const metadata = ((orderRecord.metadata as any) || {}) as Record<string, any>;
 
   const addrevenue = getAddrevenueAttribution(metadata);
   if (!addrevenue) {
@@ -84,16 +108,16 @@ export async function sendAddrevenuePostbackForOrder(order: TrackOrderInput) {
       addrevenue.addrevenue_advertiserId || ADDREVENUE_ADVERTISER_ID,
     channelId: addrevenue.addrevenue_channelId,
     clickId: addrevenue.addrevenue_clickId,
-    value: formatValue(Number(order.totalAmount || 0)),
-    currency: (order.currency || ADDREVENUE_CURRENCY).toUpperCase(),
-    orderId: order.orderNumber || order.id,
+    value: formatValue(orderTotal),
+    currency: orderCurrency,
+    orderId: orderNumber,
     market: addrevenue.addrevenue_market || ADDREVENUE_MARKET,
   };
 
   try {
     await prisma.affiliatePostback.create({
       data: {
-        orderId: freshOrder.id,
+        orderId,
         provider: ADDREVENUE_PROVIDER,
         status: "pending",
         payload,
@@ -104,10 +128,47 @@ export async function sendAddrevenuePostbackForOrder(order: TrackOrderInput) {
       error instanceof Prisma.PrismaClientKnownRequestError &&
       error.code === "P2002"
     ) {
-      return { skipped: true, reason: "already_claimed" };
-    }
+      const existingPostback = await prisma.affiliatePostback.findUnique({
+        where: {
+          orderId_provider: {
+            orderId,
+            provider: ADDREVENUE_PROVIDER,
+          },
+        },
+      });
 
-    throw error;
+      if (existingPostback?.status === "success") {
+        return { skipped: true, reason: "already_tracked" };
+      }
+
+      const pendingIsFresh =
+        existingPostback?.status === "pending" &&
+        Date.now() - existingPostback.updatedAt.getTime() <
+          PENDING_RETRY_AFTER_MS;
+
+      if (pendingIsFresh) {
+        return { skipped: true, reason: "already_pending" };
+      }
+
+      await prisma.affiliatePostback.update({
+        where: {
+          orderId_provider: {
+            orderId,
+            provider: ADDREVENUE_PROVIDER,
+          },
+        },
+        data: {
+          status: "pending",
+          payload,
+          response: null,
+          error: null,
+          statusCode: null,
+          sentAt: null,
+        },
+      });
+    } else {
+      throw error;
+    }
   }
 
   try {
@@ -121,7 +182,7 @@ export async function sendAddrevenuePostbackForOrder(order: TrackOrderInput) {
     const trackedAt = trackedAtDate.toISOString();
 
     await prisma.order.update({
-      where: { id: order.id },
+      where: { id: orderId },
       data: {
         metadata: {
           ...metadata,
@@ -144,7 +205,7 @@ export async function sendAddrevenuePostbackForOrder(order: TrackOrderInput) {
     await prisma.affiliatePostback.update({
       where: {
         orderId_provider: {
-          orderId: freshOrder.id,
+          orderId,
           provider: ADDREVENUE_PROVIDER,
         },
       },
@@ -165,7 +226,7 @@ export async function sendAddrevenuePostbackForOrder(order: TrackOrderInput) {
     };
   } catch (error: any) {
     await prisma.order.update({
-      where: { id: order.id },
+      where: { id: orderId },
       data: {
         metadata: {
           ...metadata,
@@ -187,7 +248,7 @@ export async function sendAddrevenuePostbackForOrder(order: TrackOrderInput) {
     await prisma.affiliatePostback.update({
       where: {
         orderId_provider: {
-          orderId: freshOrder.id,
+          orderId,
           provider: ADDREVENUE_PROVIDER,
         },
       },
