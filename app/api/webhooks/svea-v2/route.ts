@@ -803,6 +803,33 @@ async function handleOrderCompleted(
         );
       }
 
+      try {
+        const sveaOrder = await prisma.order.findUnique({
+          where: { id: order.id },
+          include: { items: true, user: true },
+        });
+
+        if (sveaOrder) {
+          const result = await sendAddrevenuePostbackForOrder(sveaOrder);
+          if (!result.skipped) {
+            console.log("✅ Addrevenue postback attempted (svea webhook):", {
+              orderId: sveaOrder.orderNumber,
+              ok: result.ok,
+            });
+          } else {
+            console.log("ℹ️ Addrevenue postback skipped (svea webhook):", {
+              orderId: sveaOrder.orderNumber,
+              reason: result.reason,
+            });
+          }
+        }
+      } catch (addrevenueError) {
+        console.warn(
+          "⚠️ Addrevenue postback failed (svea webhook, non-critical):",
+          addrevenueError,
+        );
+      }
+
       // Ensure abandoned cart cleanup is visible in admin even if purchase tracking
       // was skipped or handled by another completion path.
       try {
