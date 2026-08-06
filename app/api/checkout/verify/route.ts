@@ -12,7 +12,6 @@ import {
   SUMMER_EBOOK_CAMPAIGN_TAG,
   hasSummerEbookBundleByIdentity,
 } from "@/app/lib/campaigns/summer-ebooks";
-import { sendAddrevenuePostbackForOrder } from "@/app/lib/addrevenue";
 
 export const dynamic = "force-dynamic";
 
@@ -694,29 +693,6 @@ export async function GET(req: NextRequest) {
           console.warn(
             "⚠️ Stripe verify fallback: Mailchimp tracking failed (non-critical):",
             e,
-          );
-        }
-
-        try {
-          const stripeOrder = await findOrder(true);
-          if (stripeOrder) {
-            const result = await sendAddrevenuePostbackForOrder(stripeOrder);
-            if (!result.skipped) {
-              console.log("✅ Addrevenue postback attempted (stripe verify):", {
-                orderId: stripeOrder.orderNumber,
-                ok: result.ok,
-              });
-            } else {
-              console.log("ℹ️ Addrevenue postback skipped (stripe verify):", {
-                orderId: stripeOrder.orderNumber,
-                reason: result.reason,
-              });
-            }
-          }
-        } catch (addrevenueError) {
-          console.warn(
-            "⚠️ Addrevenue postback failed (stripe verify, non-critical):",
-            addrevenueError,
           );
         }
 
