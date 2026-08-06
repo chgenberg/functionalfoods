@@ -42,6 +42,11 @@ interface Attribution {
   utm_campaign?: string;
   utm_term?: string;
   utm_content?: string;
+  addrevenue_clickId?: string;
+  addrevenue_channelId?: string;
+  addrevenue_advertiserId?: string;
+  addrevenue_market?: string;
+  addrevenue_clickRef?: string;
   ref?: string;
   ts?: number;
 }
