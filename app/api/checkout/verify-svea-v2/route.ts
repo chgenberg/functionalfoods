@@ -1047,6 +1047,11 @@ export async function POST(req: NextRequest) {
               orderId: sveaOrder.orderNumber,
               ok: result.ok,
             });
+          } else {
+            console.log("ℹ️ Addrevenue postback skipped (svea verify):", {
+              orderId: sveaOrder.orderNumber,
+              reason: result.reason,
+            });
           }
         }
       } catch (addrevenueError) {
