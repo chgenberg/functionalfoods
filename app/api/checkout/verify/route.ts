@@ -706,6 +706,11 @@ export async function GET(req: NextRequest) {
                 orderId: stripeOrder.orderNumber,
                 ok: result.ok,
               });
+            } else {
+              console.log("ℹ️ Addrevenue postback skipped (stripe verify):", {
+                orderId: stripeOrder.orderNumber,
+                reason: result.reason,
+              });
             }
           }
         } catch (addrevenueError) {
