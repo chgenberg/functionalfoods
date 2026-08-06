@@ -511,11 +511,11 @@ export async function POST(req: NextRequest) {
           utm_campaign: safeStripeMetadataValue(effectiveAttribution?.utm_campaign),
           utm_term: safeStripeMetadataValue(effectiveAttribution?.utm_term),
           utm_content: safeStripeMetadataValue(effectiveAttribution?.utm_content),
-          addrevenue_clickId: attribution?.addrevenue_clickId || "",
-          addrevenue_channelId: attribution?.addrevenue_channelId || "",
-          addrevenue_advertiserId: attribution?.addrevenue_advertiserId || "",
-          addrevenue_market: attribution?.addrevenue_market || "",
-          addrevenue_clickRef: attribution?.addrevenue_clickRef || "",
+          addrevenue_clickId: safeStripeMetadataValue(effectiveAttribution?.addrevenue_clickId),
+          addrevenue_channelId: safeStripeMetadataValue(effectiveAttribution?.addrevenue_channelId),
+          addrevenue_advertiserId: safeStripeMetadataValue(effectiveAttribution?.addrevenue_advertiserId),
+          addrevenue_market: safeStripeMetadataValue(effectiveAttribution?.addrevenue_market),
+          addrevenue_clickRef: safeStripeMetadataValue(effectiveAttribution?.addrevenue_clickRef),
         },
       };
 
