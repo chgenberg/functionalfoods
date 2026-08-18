@@ -156,17 +156,17 @@ export default function FunctionalBasicsPage() {
 
   const benefits = [
     {
-      icon: Zap,
-      title: "Mer energi & bättre humör",
+      icon: GiStomach,
+      title: "Enklare för magen",
       description:
-        "Stabilt blodsocker minskar humörsvängningar hos både barn och vuxna.",
+        "För dig som reagerar på gluten kan en glutenfri kost bidra till mindre uppblåsthet och bättre magkomfort.",
       color: "text-yellow-600",
     },
     {
-      icon: GiStomach,
-      title: "Bättre matsmältning",
+      icon: Zap,
+      title: "Mer matglädje",
       description:
-        "Fiberrik mat och probiotiska livsmedel stöder tarmhälsan och minskar magproblem.",
+        "Upptäck nya råvaror, smaker och glutenfria alternativ som gör det enkelt att variera maten.",
       color: "text-primary",
     },
     {
@@ -232,11 +232,11 @@ export default function FunctionalBasicsPage() {
   ];
 
   const forWho = [
-    "Vill förbättra din hälsa steg för steg utan att det blir krångligt",
-    "Vill bli av med ojämnt blodsocker och känna dig mätt efter måltider",
-    "Vill ha mer energi och känna dig piggare hela dagen",
-    "Vill lära dig mer om antiinflammatorisk kost och longevity",
-    "Vill skapa bättre matvanor på ett hållbart sätt",
+    "Du misstänker att du reagerar på gluten",
+    "Du vill utforska hur du mår av glutenfri mat",
+    "Du behöver undvika gluten på grund av celiaki",
+    "Du vill hitta fler naturligt glutenfria alternativ",
+    "Du upplever att magen fungerar bättre utan gluten",
   ];
 
   const functionalFoodsBenefits = [
@@ -317,7 +317,7 @@ export default function FunctionalBasicsPage() {
                 transition={{ delay: 0.8, duration: 0.5 }}
                 className="absolute -top-4 -right-4 bg-blue-500 text-white px-4 py-2 rounded-full text-sm font-medium shadow-lg"
               >
-                Grundkurs
+                Glutenfritt
               </motion.div>
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
@@ -344,7 +344,8 @@ export default function FunctionalBasicsPage() {
               transition={{ delay: 0.3 }}
               className="text-4xl md:text-5xl lg:text-6xl font-light mb-6 tracking-tight"
             >
-              Functional <span className="text-accent font-bold">Basics</span>
+              <span className="text-accent font-bold"> Functional Basics</span>{" "}
+              - Mat för ett glutenfritt liv
             </motion.h1>
 
             <motion.div
@@ -359,7 +360,7 @@ export default function FunctionalBasicsPage() {
               </div>
               <div className="flex items-center gap-2 bg-white/80 backdrop-blur-sm px-3 py-2 rounded-full">
                 <Target className="w-5 h-5 text-primary" />
-                <span className="font-medium">Grundkurs</span>
+                <span className="font-medium">Glutenfritt</span>
               </div>
               <div className="flex items-center gap-2 bg-white/80 backdrop-blur-sm px-3 py-2 rounded-full">
                 <Users className="w-5 h-5 text-primary" />
@@ -373,10 +374,10 @@ export default function FunctionalBasicsPage() {
               transition={{ delay: 0.5 }}
               className="text-lg lg:text-xl text-text-secondary mb-8 leading-relaxed"
             >
-              Vill du använda maten som ditt främsta verktyg för bättre hälsa
-              och ett längre liv? Kursen Functional Basics ger dig kunskap,
-              recept och måltidsplaner som stärker ditt immunförsvar och får
-              kropp och sinne att prestera på topp.
+              Vill du lära dig att laga god, näringsrik och naturligt glutenfri
+              mat utan att det blir krångligt? Mat för ett glutenfritt liv ger
+              dig kunskap, inspiration, recept och måltidsplaner som hjälper dig
+              att skapa en enklare och mer hållbar glutenfri vardag.
             </motion.p>
 
             {/* Price Box */}
@@ -499,24 +500,23 @@ export default function FunctionalBasicsPage() {
               {/* Course Description */}
               <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-8 shadow-xl max-w-4xl mx-auto">
                 <h2 className="text-2xl md:text-3xl font-light mb-6 text-center">
-                  En perfekt start för{" "}
-                  <span className="text-accent font-bold">bättre hälsa</span>
+                  Varför välja{" "}
+                  <span className="text-accent font-bold">Glutenfritt?</span>
                 </h2>
                 <p className="text-lg text-text-secondary mb-6 leading-relaxed">
-                  Ulrika har skapat näringsrika och goda recept för hela
-                  familjen, och måltidsplanerna säkerställer en varierad kost
-                  med alla viktiga näringsämnen. Kursen är en perfekt start för
-                  dig som vill laga hälsosam mat från grunden, bygga goda vanor
-                  och göra functional foods och longevity till en naturlig del
-                  av din vardag.
+                  För vissa är gluten något kroppen inte mår bra av. Det kan
+                  handla om celiaki, känslighet eller att du helt enkelt
+                  upplever att magen och kroppen fungerar bättre utan gluten.
+                  Att välja glutenfritt kan också vara ett sätt att upptäcka nya
+                  råvaror och hitta en kost som känns bra för dig. Glutenfritt
+                  är däremot inte automatiskt hälsosammare. Det viktiga är att
+                  välja näringsrika, naturligt glutenfria råvaror och skapa en
+                  varierad kost.
                 </p>
 
-                <h3 className="text-xl font-medium mb-4">För vem?</h3>
-                <p className="text-text-secondary mb-6">
-                  Den här kursen är för dig som vill förbättra din hälsa steg
-                  för steg och samtidigt njuta av god och näringsrik mat – utan
-                  att det blir krångligt.
-                </p>
+                <h3 className="text-xl font-medium mb-4">
+                  Känner du igen dig?
+                </h3>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   {forWho.map((item, index) => (
@@ -526,21 +526,28 @@ export default function FunctionalBasicsPage() {
                     </div>
                   ))}
                 </div>
+
+                <p className="text-lg text-text-secondary mb-6 mt-6 leading-relaxed">
+                  Det handlar inte om en strikt diet – utan om att hitta mat som
+                  fungerar för dig och din vardag.
+                </p>
               </div>
 
               {/* Food Examples */}
               <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-8 shadow-xl max-w-4xl mx-auto">
                 <h3 className="text-2xl font-light mb-6 text-center">
-                  Vad för typ av{" "}
+                  En enklare väg till ett{" "}
                   <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent font-bold">
-                    mat?
+                    glutenfritt liv
                   </span>
                 </h3>
                 <p className="text-text-secondary mb-6 leading-relaxed">
-                  I Functional Basics lagar vi mat baserad på näringsrika
-                  råvaror. Naturliga smaker kombineras med hälsosamma fetter,
-                  proteinrika ingredienser och långsamma kolhydrater för att
-                  skapa balanserade måltider.
+                  Glutenfri mat behöver varken vara krånglig eller tråkig. Med
+                  rätt kunskap blir det enkelt att laga goda och varierade
+                  måltider med naturligt glutenfria råvaror. I Mat för ett
+                  glutenfritt liv får du recept, inspiration och konkreta
+                  verktyg för att känna dig trygg i köket och göra glutenfri mat
+                  till en naturlig del av vardagen.
                 </p>
                 <p className="text-text-secondary mb-6">
                   <strong>Du får hela 75 recept i kursen</strong> och här är
@@ -597,9 +604,9 @@ export default function FunctionalBasicsPage() {
               className="mb-16"
             >
               <h2 className="text-2xl md:text-3xl font-light text-center mb-12">
-                Vinsten med att äta enligt{" "}
+                Vinsten med att äta{" "}
                 <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent font-bold">
-                  Functional Foods
+                  glutenfritt
                 </span>
               </h2>
 
@@ -625,11 +632,12 @@ export default function FunctionalBasicsPage() {
 
               <div className="mt-12 bg-white/80 backdrop-blur-sm rounded-2xl p-8 shadow-xl max-w-4xl mx-auto">
                 <p className="text-text-secondary leading-relaxed">
-                  Functional foods handlar om mat som inte bara mättar, utan
-                  också stärker kroppen inifrån. Vi fokuserar på råvaror som är
-                  vetenskapligt bevisade att stötta kroppen på olika sätt. Genom
-                  att inkludera dessa näringsrika livsmedel i hela familjens
-                  kost kan ni uppleva förbättringar inom alla dessa områden.
+                  Glutenfri mat handlar om mer än att bara utesluta gluten. Det
+                  handlar om att hitta näringsrika råvaror och måltider som
+                  passar din kropp och gör det enkelt att äta gott och varierat.
+                  Genom att välja naturligt glutenfria livsmedel och laga mat
+                  från grunden kan du skapa en glutenfri kost som fungerar för
+                  hela familjen – varje dag.
                 </p>
               </div>
             </motion.div>
