@@ -7,18 +7,18 @@ export default function UtbildningPage() {
   const courses = [
     {
       id: "basics",
-      title: "Functional Basics",
+      title: "Functional Basics - Mat för ett glutenfritt liv",
       description:
-        "Lär dig grunderna i Functional Foods och bygg hållbara vanor som ger energi och balans.",
+        "Lär dig att laga god, näringsrik och naturligt glutenfri mat utan att det blir krångligt",
       href: "/utbildning/functional-basics",
       image:
         "/Kurser_bilder/Functional_Basics - Grunden i functional foods.jpg",
       duration: "6 veckor",
       level: "Nybörjare",
       highlights: [
-        "Grunderna i functional foods",
-        "Veckomenyer och recept",
-        "Praktiska verktyg och mål",
+        "För dig som reagerar på gluten",
+        "Upptäck nya råvaror, smaker och glutenfria alternativ",
+        "Kunskap, inspiration, recept och måltidsplaner",
       ],
     },
     {
@@ -63,7 +63,7 @@ export default function UtbildningPage() {
       highlights: [
         "Hormonell balans",
         "Antiinflammatorisk kost",
-        "Styrketräning & coaching",
+        "Gruppcoaching",
       ],
     },
   ];
