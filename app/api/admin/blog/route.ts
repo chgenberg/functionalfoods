@@ -100,6 +100,14 @@ export async function POST(request: NextRequest) {
     }
 
     // Create post
+    const localizedFields = Object.fromEntries(
+      ['en', 'es', 'de', 'fr'].flatMap((locale) =>
+        ['title', 'excerpt', 'content']
+          .map((field) => [`${field}_${locale}`, data[`${field}_${locale}`]])
+          .filter(([, value]) => typeof value === 'string' && value.trim() !== '')
+      )
+    );
+    
     const post = await prisma.blogPost.create({
       data: {
         title,
@@ -109,7 +117,8 @@ export async function POST(request: NextRequest) {
         coverImage,
         published: published || false,
         publishedAt: published ? new Date() : null,
-        authorId: authResult.userId
+        authorId: authResult.userId,
+        ...localizedFields
       },
       include: {
         author: {
