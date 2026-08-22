@@ -59,16 +59,17 @@ export default function AdminBlogPage() {
     }
   };
 
-  const handleDeletePost = async (slug: string, title: string) => {
+  const handleDeletePost = async (id: string, title: string) => {
     if (!confirm(`Är du säker på att du vill ta bort artikeln "${title}"?`)) return;
 
     try {
       const response = await fetch(`/api/admin/blog/${encodeURIComponent(id)}`, { method: 'DELETE' });
       if (response.ok) {
-        setPosts(posts.filter(post => post.id !== id));
+        setPosts(currentPosts => currentPosts.filter(post => post.id !== id));
         alert('Artikeln har tagits bort');
       } else {
-        alert('Fel vid borttagning av artikel');
+        const data = await response.json().catch(() => null);
+        alert(data?.error || 'Fel vid borttagning av artikel');
       }
     } catch (err) {
       alert('Fel vid borttagning av artikel');
