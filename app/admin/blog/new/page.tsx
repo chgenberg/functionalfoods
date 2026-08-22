@@ -180,7 +180,7 @@ export default function NewBlogPage() {
         metaDescription_en: blogData.metaDescription_en, metaDescription_es: blogData.metaDescription_es, metaDescription_de: blogData.metaDescription_de, metaDescription_fr: blogData.metaDescription_fr,
       } as any;
 
-      const response = await fetch('/api/blog', {
+      const response = await fetch('/api/admin/blog', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -189,7 +189,8 @@ export default function NewBlogPage() {
       });
 
       if (!response.ok) {
-        throw new Error('Failed to save blog post');
+        const data = await response.json().catch(() => null);
+        throw new Error(data?.error || 'Failed to save blog post');
       }
 
       const savedPost = await response.json();
