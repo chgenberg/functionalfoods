@@ -99,6 +99,24 @@ const DEFAULT_BY_SLUG: Record<string, EbookDefaults> = {
     authorSection:
       "Ulrika Davidsson är kostrådgivare, receptkreatör och bästsäljande författare till över 40 böcker.",
   },
+  "juice-glow": {
+    id: "juice-glow",
+    title: "Juice & Glow",
+    subtitle: "E-bok av Ulrika Davidsson",
+    description:
+      "Ulrika bjuder in till en färgstark juicingvärld i en inspirerande e-bok fylld med goda juicer, shots och smoothies för energi, välmående och en friskare vardag.",
+    shortDescription: "Juicer, smoothies och varma drycker.",
+    image: "/juice-glow-omslag.png",
+    price: "129 kr",
+    features: [
+      "41 recept på juicer, smoothies och varma kvällsdrycker",
+      "En komplett 3–5 dagars juicekur",
+      "Praktiska råd om utrustning, flaskor, kylväska och råvaror",
+      "Tips på örter, citrus, ingefära och kryddor som lyfter smaken",
+    ],
+    authorSection:
+      "Ulrika Davidsson är kostrådgivare, receptkreatör och bästsäljande författare till över 40 böcker.",
+  },
   "sommar-bokbundle": {
     id: "sommar-bokbundle",
     title: "Sommarkampanj",

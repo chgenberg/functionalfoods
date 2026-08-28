@@ -15,7 +15,7 @@ export const dynamic = "force-dynamic";
 export async function POST(req: NextRequest) {
   return withRateLimit(req, checkoutRateLimit, async () => {
     let createdPendingOrderId: string | null = null;
-    
+
     try {
       const body = await req.json();
       const {
@@ -159,6 +159,14 @@ export async function POST(req: NextRequest) {
           name: "Hälsosamma Frukostar – E-bok av Ulrika Davidsson",
           price: 93.4,
           basePrice: 93.4,
+          type: "book" as const,
+          vatRate: 0.06,
+        },
+        {
+          id: "juice-glow",
+          name: "Juice & Glow – E-bok av Ulrika Davidsson",
+          price: 121.7,
+          basePrice: 121.7,
           type: "book" as const,
           vatRate: 0.06,
         },
@@ -448,8 +456,7 @@ export async function POST(req: NextRequest) {
           metadata: {
             items: pricedItems,
             couponCode: couponCode || null,
-            discountAmount:
-              discountAmount > 0 ? discountAmount / 100 : null,
+            discountAmount: discountAmount > 0 ? discountAmount / 100 : null,
             campaignId: effectiveCampaignId || null,
             campaignSource: effectiveCampaignSource,
             attribution: effectiveAttribution,
@@ -492,7 +499,9 @@ export async function POST(req: NextRequest) {
           couponCode: safeStripeMetadataValue(couponCode),
           campaignId: safeStripeMetadataValue(effectiveCampaignId),
           campaignSource: safeStripeMetadataValue(effectiveCampaignSource),
-          recoveredFromOrderId: safeStripeMetadataValue(effectiveRecoveredFromOrderId),
+          recoveredFromOrderId: safeStripeMetadataValue(
+            effectiveRecoveredFromOrderId,
+          ),
           courseNames: safeStripeMetadataValue(
             pricedItems.map((item) => item.name).join(", "),
           ),
@@ -508,14 +517,28 @@ export async function POST(req: NextRequest) {
           mc_eid: safeStripeMetadataValue(effectiveAttribution?.mc_eid),
           utm_source: safeStripeMetadataValue(effectiveAttribution?.utm_source),
           utm_medium: safeStripeMetadataValue(effectiveAttribution?.utm_medium),
-          utm_campaign: safeStripeMetadataValue(effectiveAttribution?.utm_campaign),
+          utm_campaign: safeStripeMetadataValue(
+            effectiveAttribution?.utm_campaign,
+          ),
           utm_term: safeStripeMetadataValue(effectiveAttribution?.utm_term),
-          utm_content: safeStripeMetadataValue(effectiveAttribution?.utm_content),
-          addrevenue_clickId: safeStripeMetadataValue(effectiveAttribution?.addrevenue_clickId),
-          addrevenue_channelId: safeStripeMetadataValue(effectiveAttribution?.addrevenue_channelId),
-          addrevenue_advertiserId: safeStripeMetadataValue(effectiveAttribution?.addrevenue_advertiserId),
-          addrevenue_market: safeStripeMetadataValue(effectiveAttribution?.addrevenue_market),
-          addrevenue_clickRef: safeStripeMetadataValue(effectiveAttribution?.addrevenue_clickRef),
+          utm_content: safeStripeMetadataValue(
+            effectiveAttribution?.utm_content,
+          ),
+          addrevenue_clickId: safeStripeMetadataValue(
+            effectiveAttribution?.addrevenue_clickId,
+          ),
+          addrevenue_channelId: safeStripeMetadataValue(
+            effectiveAttribution?.addrevenue_channelId,
+          ),
+          addrevenue_advertiserId: safeStripeMetadataValue(
+            effectiveAttribution?.addrevenue_advertiserId,
+          ),
+          addrevenue_market: safeStripeMetadataValue(
+            effectiveAttribution?.addrevenue_market,
+          ),
+          addrevenue_clickRef: safeStripeMetadataValue(
+            effectiveAttribution?.addrevenue_clickRef,
+          ),
         },
       };
 
@@ -535,9 +558,8 @@ export async function POST(req: NextRequest) {
       });
 
       try {
-        const { getMailchimpEcommerce } = await import(
-          "@/app/lib/mailchimp-ecommerce"
-        );
+        const { getMailchimpEcommerce } =
+          await import("@/app/lib/mailchimp-ecommerce");
         const mailchimpEcommerce = getMailchimpEcommerce();
         const previousMailchimpCarts = await prisma.order.findMany({
           where: {
@@ -555,7 +577,7 @@ export async function POST(req: NextRequest) {
             return metadata.mailchimpCartId || null;
           })
           .filter(Boolean) as string[];
-        
+
         const mailchimpCartId = await mailchimpEcommerce.upsertCart({
           cartId: orderId,
           customerEmail,
@@ -576,7 +598,7 @@ export async function POST(req: NextRequest) {
           campaignId: effectiveAttribution?.mc_cid || undefined,
           previousCartIds,
         });
-        
+
         if (mailchimpCartId) {
           const existingOrder = await prisma.order.findUnique({
             where: { id: orderId },
@@ -600,7 +622,7 @@ export async function POST(req: NextRequest) {
           mailchimpCartError,
         );
       }
-      
+
       return NextResponse.json({ url: session.url });
     } catch (err: any) {
       console.error("Create Checkout Session error:", err);

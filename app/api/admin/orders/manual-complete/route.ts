@@ -250,6 +250,15 @@ export async function POST(request: NextRequest) {
           ) {
             ebookId = "halsosamma-frukostar";
           }
+          if (
+            book.name.toLowerCase().includes("juice & glow") ||
+            book.name.toLowerCase().includes("juice glow") ||
+            book.name.toLowerCase().includes("juice och glow") ||
+            book.name.toLowerCase().includes("juice-glow")
+          ) {
+            ebookId = "juice-glow";
+          }
+
           await tx.ebookDownload.create({
             data: {
               token: downloadToken,
@@ -349,6 +358,9 @@ export async function POST(request: NextRequest) {
           if (downloadRecord.ebookId === "halsosamma-frukostar") {
             downloadUrl = `${baseUrl}/e-bocker/halsosamma-frukostar/ladda-ner?token=${downloadRecord.token}`;
           }
+          if (downloadRecord.ebookId === "juice-glow") {
+            downloadUrl = `${baseUrl}/e-bocker/juice-glow/ladda-ner?token=${downloadRecord.token}`;
+          }
 
           const sent = await emailService.sendEbookDownloadEmail({
             email: customerEmail,
@@ -379,7 +391,9 @@ export async function POST(request: NextRequest) {
                         ? "Köp - Sötsaker"
                         : downloadRecord.ebookId === "halsosamma-frukostar"
                           ? "Köp - Hälsosamma Frukostar"
-                          : "Köp - Brödboken";
+                          : downloadRecord.ebookId === "juice-glow"
+                            ? "Köp - Juice & Glow"
+                            : "Köp - Brödboken";
 
                 await Promise.race([
                   mailchimpMarketing.addSubscriber({
@@ -389,8 +403,7 @@ export async function POST(request: NextRequest) {
                     tags: [
                       "kund",
                       purchaseTag,
-                      ...(freshMetadata?.campaignId ===
-                      SUMMER_EBOOK_CAMPAIGN_ID
+                      ...(freshMetadata?.campaignId === SUMMER_EBOOK_CAMPAIGN_ID
                         ? [SUMMER_EBOOK_CAMPAIGN_TAG]
                         : []),
                     ],

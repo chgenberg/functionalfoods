@@ -743,6 +743,14 @@ export async function POST(req: NextRequest) {
                   ) {
                     ebookId = "halsosamma-frukostar";
                   }
+                  if (
+                    n.includes("juice & glow") ||
+                    n.includes("juice glow") ||
+                    n.includes("juice och glow") ||
+                    n.includes("juice-glow")
+                  ) {
+                    ebookId = "juice-glow";
+                  }
 
                   await prisma.ebookDownload.create({
                     data: {
@@ -771,6 +779,9 @@ export async function POST(req: NextRequest) {
                   }
                   if (ebookId === "halsosamma-frukostar") {
                     downloadUrl = `${baseUrl}/e-bocker/halsosamma-frukostar/ladda-ner?token=${downloadToken}`;
+                  }
+                  if (ebookId === "juice-glow") {
+                    downloadUrl = `${baseUrl}/e-bocker/juice-glow/ladda-ner?token=${downloadToken}`;
                   }
 
                   await emailService.sendEbookDownloadEmail({
@@ -964,7 +975,9 @@ export async function POST(req: NextRequest) {
               });
 
               await mailchimpEcommerce.deleteCart(
-                metadata.mailchimpCartId || updatedOrder.orderNumber || updatedOrder.id,
+                metadata.mailchimpCartId ||
+                  updatedOrder.orderNumber ||
+                  updatedOrder.id,
               );
 
               if (metadata.recoveredFromOrderId) {
@@ -973,10 +986,12 @@ export async function POST(req: NextRequest) {
                     where: { id: metadata.recoveredFromOrderId },
                     select: { id: true, metadata: true },
                   });
-                  const recoveredMetadata = (recoveredOrder?.metadata as any) || {};
+                  const recoveredMetadata =
+                    (recoveredOrder?.metadata as any) || {};
 
                   await mailchimpEcommerce.deleteCart(
-                    recoveredMetadata.mailchimpCartId || metadata.recoveredFromOrderId,
+                    recoveredMetadata.mailchimpCartId ||
+                      metadata.recoveredFromOrderId,
                   );
 
                   if (recoveredOrder) {
@@ -1032,7 +1047,7 @@ export async function POST(req: NextRequest) {
           e,
         );
       }
-      
+
       // Ensure abandoned cart cleanup is visible in admin even if purchase tracking
       // was skipped or handled by another completion path.
       try {
@@ -1083,8 +1098,7 @@ export async function POST(req: NextRequest) {
                   ...recoveredMetadata,
                   recoveredByOrderId: cleanupOrder?.id || order.id,
                   recoveredAt:
-                    recoveredMetadata.recoveredAt ||
-                    new Date().toISOString(),
+                    recoveredMetadata.recoveredAt || new Date().toISOString(),
                   recoveryReason: "abandoned_cart_recovered",
                   mailchimpCartDeletedAt: new Date().toISOString(),
                 },

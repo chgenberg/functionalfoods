@@ -225,6 +225,9 @@ function CheckoutSuccessContent() {
       name.includes("grill- & sommarmat") ||
       name.includes("hälsosamma frukostar") ||
       name.includes("halsosamma frukostar") ||
+      name.includes("juice glow") ||
+      name.includes("juice och glow") ||
+      name.includes("juice & glow") ||
       name.includes("e-bok")
     );
   });
@@ -254,6 +257,9 @@ function CheckoutSuccessContent() {
       name.includes("grill- & sommarmat") ||
       name.includes("hälsosamma frukostar") ||
       name.includes("halsosamma frukostar") ||
+      name.includes("juice glow") ||
+      name.includes("juice och glow") ||
+      name.includes("juice & glow") ||
       name.includes("e-bok")
     );
   });
@@ -281,6 +287,12 @@ function CheckoutSuccessContent() {
     ebookKey.includes("halsosamma-frukostar") ||
     ebookKey.includes("hälsosamma frukostar") ||
     ebookKey.includes("halsosamma frukostar");
+
+  const isJuiceGlow =
+    ebookKey.includes("juice-glow") ||
+    ebookKey.includes("juice glow") ||
+    ebookKey.includes("juice och glow") ||
+    ebookKey.includes("juice & glow");
 
   const ebookDisplay = isPaskbuffe
     ? {
@@ -322,14 +334,24 @@ function CheckoutSuccessContent() {
                 "Goda, balanserade och näringsrika frukostar för en hälsosam start på dagen.",
               enjoyTitle: "Njut av dina hälsosamma frukostar!",
             }
-          : {
-              title: "Baka Glutenfritt – E-bok",
-              image: "/baka-glutenfritt.png",
-              alt: "Baka Glutenfritt E-bok",
-              subtitle: "PDF-format • 26 recept",
-              description: "Upptäck Ulrikas väg till mer hälsosam brödbakning.",
-              enjoyTitle: "Njut av glutenfritt!",
-            };
+          : isJuiceGlow
+            ? {
+                title: "Juice & Glow – E-bok",
+                image: "/juice-glow-samlingssida.png",
+                alt: "Juice Glow E-bok",
+                subtitle: "PDF-format • 41 recept",
+                description: "Juicer, smoothies och varma kvällsdrycker",
+                enjoyTitle: "Njut av dina färgstarka juicer!",
+              }
+            : {
+                title: "Baka Glutenfritt – E-bok",
+                image: "/baka-glutenfritt.png",
+                alt: "Baka Glutenfritt E-bok",
+                subtitle: "PDF-format • 26 recept",
+                description:
+                  "Upptäck Ulrikas väg till mer hälsosam brödbakning.",
+                enjoyTitle: "Njut av glutenfritt!",
+              };
 
   // E-book only purchase - show special confirmation
   if (onlyEbooks) {
