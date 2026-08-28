@@ -9,8 +9,10 @@ const productImages: Record<string, string> = {
   "sota-godsaker": "/sota-godsaker-square.png",
   "grill-sommarmat": "/grill-sommarmat-square.png",
   "halsosamma-frukostar": "/halsosamma-frukostar-square.png",
+  "juice-glow": "/juice-glow-square.png",
   "functional-flow": "/Kurser_bilder/Functional_Gut Health.jpg",
-  "functional-basics": "/Kurser_bilder/Functional_Basics - Grunden i functional foods.jpg",
+  "functional-basics":
+    "/Kurser_bilder/Functional_Basics - Grunden i functional foods.jpg",
   "functional-energy": "/Kurser_bilder/Functional_insulin balance.jpg",
   "functional-hormone": "/Hormonell_balans/hormonell_balans_kurssida.png",
   "hormonell-balans": "/Hormonell_balans/hormonell_balans_kurssida.png",
@@ -33,7 +35,10 @@ export async function GET(req: NextRequest) {
     });
 
     if (!order) {
-      return NextResponse.json({ error: "Kundvagnen hittades inte" }, { status: 404 });
+      return NextResponse.json(
+        { error: "Kundvagnen hittades inte" },
+        { status: 404 },
+      );
     }
 
     const metadata = (order.metadata as any) || {};
@@ -47,7 +52,8 @@ export async function GET(req: NextRequest) {
       items: order.items.map((item: any) => {
         const originalItem = originalItems.find((candidate: any) => {
           if (!candidate) return false;
-          if (item.courseId && candidate.courseId === item.courseId) return true;
+          if (item.courseId && candidate.courseId === item.courseId)
+            return true;
           if (item.courseId && candidate.id === item.courseId) return true;
           return candidate.name === item.name && candidate.type === item.type;
         });

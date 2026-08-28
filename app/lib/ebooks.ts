@@ -64,6 +64,14 @@ export const EBOOK_PRODUCTS: Record<
       "hälsosamma frukostar",
     ],
   },
+  "juice-glow": {
+    id: "juice-glow",
+    name: "Juice & Glow – E-bok av Ulrika Davidsson",
+    priceExVat: 121.7,
+    downloadRoute: "/e-bocker/juice-glow/ladda-ner",
+    pdfPath: "/juice-glow-ulrika-davidsson.pdf",
+    matchers: ["juice-glow", "juice glow", "juice & glow", "juice och glow"],
+  },
 };
 
 export function resolveEbookIdFromValue(value: unknown): string | null {

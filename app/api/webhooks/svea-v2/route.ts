@@ -1033,7 +1033,7 @@ async function handleOrderCompleted(
                   n.includes("halsosamma frukostar") ||
                   n.includes("halsosamma-frukostar")
                 ) {
-                  ebookId = "juice-glow";
+                  ebookId = "halsosamma-frukostar";
                 } else if (
                   n.includes("juice & glow") ||
                   n.includes("juice glow") ||
