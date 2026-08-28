@@ -104,7 +104,7 @@ const DEFAULT_BY_SLUG: Record<string, EbookDefaults> = {
     title: "Juice & Glow",
     subtitle: "E-bok av Ulrika Davidsson",
     description:
-      "Ulrika bjuder in till en färgstark juicingvärld i en inspirerande e-bok fylld med goda juicer, shots och smoothies för energi, välmående och en friskare vardag.",
+      "Ulrika bjuder in till en färgstark juicingvärld i en inspirerande e-bok fylld med goda juicer och smoothies för energi, välmående och en friskare vardag.",
     shortDescription: "Juicer, smoothies och varma drycker.",
     image: "/juice-glow-omslag.png",
     price: "129 kr",

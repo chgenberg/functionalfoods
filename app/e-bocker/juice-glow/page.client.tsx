@@ -20,7 +20,7 @@ const DEFAULT_CONTENT = {
   title: "JUICE & GLOW",
   subtitle: "Juicing, smoothies & detox",
   description:
-    "Ulrika bjuder in till en färgstark juicingvärld i en inspirerande e-bok fylld med goda juicer, shots och smoothies för energi, välmående och en friskare vardag.",
+    "Ulrika bjuder in till en färgstark juicingvärld i en inspirerande e-bok fylld med goda juicer och smoothies för energi, välmående och en friskare vardag.",
   shortDescription:
     "Här får du följa med på en 3–5 dagars juicekur och samtidigt upptäcka hur enkelt och gott juicing kan bli en härlig del av din hälsosamma livsstil.",
   image: "/juice-glow-omslag.png",

@@ -341,6 +341,61 @@ const PAGE_CONFIGS: Record<string, PageConfig> = {
       },
     ],
   },
+  "juice-glow": {
+    pageId: "juice-glow",
+    name: "Juice & Glow E-bok",
+    path: "/e-bocker/juice-glow",
+    fields: [
+      {
+        key: "title",
+        label: "Rubrik",
+        type: "text",
+        placeholder: "Juice & Glow",
+      },
+      {
+        key: "subtitle",
+        label: "Underrubrik",
+        type: "text",
+        placeholder: "Inspirerande e-bok fylld med goda juicer och smoothies",
+      },
+      {
+        key: "description",
+        label: "Beskrivning",
+        type: "textarea",
+        placeholder: "Huvudbeskrivning av e-boken...",
+      },
+      {
+        key: "shortDescription",
+        label: "Kort beskrivning",
+        type: "textarea",
+        placeholder: "Kortare beskrivning...",
+      },
+      {
+        key: "image",
+        label: "Produktbild",
+        type: "image",
+        help: "Huvudbild för e-boken (visas på produktsidan)",
+      },
+      {
+        key: "price",
+        label: "Pris (visningstext)",
+        type: "text",
+        placeholder: "129 kr",
+      },
+      {
+        key: "features",
+        label: "Funktioner/Features",
+        type: "array",
+        placeholder: 'T.ex. "Recept för juicer & smoothies"',
+      },
+      {
+        key: "authorSection",
+        label: "Om författaren",
+        type: "textarea",
+        placeholder: "Text om Ulrika...",
+      },
+    ],
+  },
   boken: {
     pageId: "boken",
     name: "Functional Foods Boken",

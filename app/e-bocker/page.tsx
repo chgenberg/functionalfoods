@@ -28,7 +28,7 @@ export default function EBockerPage() {
       id: "juice-glow",
       title: "Juice & Glow",
       description:
-        "Ulrika bjuder in till en färgstark juicingvärld i en inspirerande e-bok fylld med goda juicer, shots och smoothies för energi, välmående och en friskare vardag.",
+        "Ulrika bjuder in till en färgstark juicingvärld i en inspirerande e-bok fylld med goda juicer och smoothies för energi, välmående och en friskare vardag.",
       href: "/e-bocker/juice-glow",
       image: "/juice-glow-samlingssida.png",
       price: "129 kr",

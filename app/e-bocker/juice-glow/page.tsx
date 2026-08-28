@@ -7,7 +7,7 @@ export async function generateMetadata() {
     url: "/e-bocker/juice-glow",
     fallbackTitle: "Juice & Glow - E-bok",
     fallbackDescription:
-      "Ulrika bjuder in till en färgstark juicingvärld i en inspirerande e-bok fylld med goda juicer, shots och smoothies för energi, välmående och en friskare vardag.",
+      "Ulrika bjuder in till en färgstark juicingvärld i en inspirerande e-bok fylld med goda juicer och smoothies för energi, välmående och en friskare vardag.",
     fallbackImage: "/juice-glow-square.png",
     keywords: [
       "juicing",
@@ -16,7 +16,6 @@ export async function generateMetadata() {
       "juicekur",
       "smoothierecept",
       "hälsosamma smoothies",
-      "shots",
       "detox",
       "juice detox",
       "gröna juicer",
