@@ -36,6 +36,12 @@ const KNOWN_PAGES = [
     path: "/e-bocker/halsosamma-frukostar",
   },
   {
+    pageId: "juice-glow",
+    name: "Juice & Glow E-bok",
+    description: "E-boken som säljs på /e-bocker/juice-glow",
+    path: "/e-bocker/juice-glow",
+  },
+  {
     pageId: "boken",
     name: "Functional Foods Boken",
     description: "Den fysiska boken på /boken",

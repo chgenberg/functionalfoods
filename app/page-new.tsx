@@ -200,26 +200,26 @@ export default function Home() {
 
       <BookShowcaseSection
         reverse
-        title="Grill- & Sommarmat"
+        title="JUICE & GLOW"
         subtitle="Inspireras av"
-        description="Passar lika bra till en enkel middag på altanen som till sommarens större grillfester och bufféer."
-        image="/grill-sommarmat-square.png"
-        href="/e-bocker/grill-sommarmat"
-        productId="grill-sommarmat"
-        productPrice="149"
+        description="Ulrika bjuder in till en färgstark juicingvärld i en inspirerande e-bok fylld med goda juicer och smoothies för energi, välmående och en friskare vardag."
+        image="/juice-glow-square.png"
+        href="/e-bocker/juice-glow"
+        productId="juice-glow"
+        productPrice="129"
         buttonText="Läs mer om boken"
         highlights={[
           {
-            title: "Över 90 favoritrecept",
-            text: "För vardag, fest och grillkvällar",
+            title: "41 recept",
+            text: "Juicer, smoothies och varma kvällsdrycker",
           },
           {
-            title: "Grillguide i e-boksformat",
-            text: "Inspirerande recept och smarta tips",
+            title: "För hela dagen",
+            text: "Från energigivande morgondrycker till lugnande kvällsfavoriter",
           },
           {
-            title: "Balans, näring och njutning",
-            text: " Sommar och grillat går hand i hand",
+            title: "Näring, energi och glow",
+            text: " Färgstarka recept fyllda med frukt, grönt och goda smaker",
           },
         ]}
       />
