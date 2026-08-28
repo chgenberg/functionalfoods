@@ -223,6 +223,7 @@ function SveaSuccessContent() {
       id.includes("sota-godsaker") ||
       id.includes("grill-sommarmat") ||
       id.includes("halsosamma-frukostar") ||
+      id.includes("juice-glow") ||
       name.includes("e-bok") ||
       name.includes("brodboken") ||
       name.includes("glutenfritt") ||
@@ -233,7 +234,10 @@ function SveaSuccessContent() {
       name.includes("grill sommarmat") ||
       name.includes("grill och sommarmat") ||
       name.includes("grill- & sommarmat") ||
-      name.includes("halsosamma frukostar")
+      name.includes("halsosamma frukostar") ||
+      name.includes("juice glow") ||
+      name.includes("juice och glow") ||
+      name.includes("juice & glow")
     );
   });
 
@@ -252,8 +256,8 @@ function SveaSuccessContent() {
       id.includes("paskbuffe") ||
       id.includes("sota-godsaker") ||
       id.includes("grill-sommarmat") ||
-      id.includes("grill-sommarmat") ||
       id.includes("halsosamma-frukostar") ||
+      id.includes("juice-glow") ||
       name.includes("glutenfritt") ||
       name.includes("brodboken") ||
       name.includes("påskbuffé") ||
@@ -265,6 +269,9 @@ function SveaSuccessContent() {
       name.includes("grill- & sommarmat") ||
       name.includes("hälsosamma frukostar") ||
       name.includes("halsosamma frukostar") ||
+      name.includes("juice glow") ||
+      name.includes("juice och glow") ||
+      name.includes("juice & glow") ||
       name.includes("e-bok")
     );
   });
@@ -292,6 +299,12 @@ function SveaSuccessContent() {
     ebookKey.includes("halsosamma-frukostar") ||
     ebookKey.includes("hälsosamma frukostar") ||
     ebookKey.includes("halsosamma frukostar");
+
+  const isJuiceGlow =
+    ebookKey.includes("juice-glow") ||
+    ebookKey.includes("juice glow") ||
+    ebookKey.includes("juice och glow") ||
+    ebookKey.includes("juice & glow");
 
   const ebookDisplay = isPaskbuffe
     ? {
@@ -333,14 +346,24 @@ function SveaSuccessContent() {
                 "Goda, balanserade och näringsrika frukostar utan krångel.",
               enjoyTitle: "Njut av dina hälsosamma frukostar!",
             }
-          : {
-              title: "Baka Glutenfritt – E-bok av Ulrika Davidsson",
-              image: "/baka-glutenfritt.png",
-              alt: "Baka Glutenfritt E-bok",
-              subtitle: "PDF-format • 26 recept",
-              description: "Upptäck Ulrikas väg till mer hälsosam brödbakning.",
-              enjoyTitle: "Njut av att baka glutenfritt!",
-            };
+          : isJuiceGlow
+            ? {
+                title: "Juice & Glow – E-bok av Ulrika Davidsson",
+                image: "/juice-glow-samlingssida.png",
+                alt: "Juice Glow E-bok",
+                subtitle: "PDF-format • 41 recept",
+                description: "Juicer, smoothies och varma kvällsdrycker",
+                enjoyTitle: "Njut av dina färgstarka juicer!",
+              }
+            : {
+                title: "Baka Glutenfritt – E-bok av Ulrika Davidsson",
+                image: "/baka-glutenfritt.png",
+                alt: "Baka Glutenfritt E-bok",
+                subtitle: "PDF-format • 26 recept",
+                description:
+                  "Upptäck Ulrikas väg till mer hälsosam brödbakning.",
+                enjoyTitle: "Njut av att baka glutenfritt!",
+              };
 
   console.log("SVEA SUCCESS orderDetails:", orderDetails);
   console.log("SVEA SUCCESS purchasedEbook:", purchasedEbook);

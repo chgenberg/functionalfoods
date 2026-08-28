@@ -348,6 +348,14 @@ async function completeOrder(order: any, sveaOrder: any) {
       ) {
         ebookId = "halsosamma-frukostar";
       }
+      if (
+        n.includes("juice & glow") ||
+        n.includes("juice glow") ||
+        n.includes("juice och glow") ||
+        n.includes("juice-glow")
+      ) {
+        ebookId = "juice-glow";
+      }
 
       await prisma.ebookDownload.create({
         data: {
@@ -376,6 +384,10 @@ async function completeOrder(order: any, sveaOrder: any) {
 
       if (ebookId === "halsosamma-frukostar") {
         downloadUrl = `${baseUrl}/e-bocker/halsosamma-frukostar/ladda-ner?token=${downloadToken}`;
+      }
+
+      if (ebookId === "juice-glow") {
+        downloadUrl = `${baseUrl}/e-bocker/juice-glow/ladda-ner?token=${downloadToken}`;
       }
 
       await emailService.sendEbookDownloadEmail({
@@ -407,7 +419,9 @@ async function completeOrder(order: any, sveaOrder: any) {
                   ? "Köp - Sötsaker"
                   : ebookId === "halsosamma-frukostar"
                     ? "Köp - Hälsosamma Frukostar"
-                    : "Köp - Brödboken";
+                    : ebookId === "juice-glow"
+                      ? "Köp - Juice & Glow"
+                      : "Köp - Brödboken";
 
           await Promise.race([
             mailchimpMarketing.addSubscriber({

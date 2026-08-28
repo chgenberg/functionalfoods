@@ -71,7 +71,7 @@ export async function POST(req: NextRequest) {
 
     let body: CheckoutRequest;
     let itemsWithDiscountedPrice: Array<any> = [];
-    
+
     try {
       body = (await req.json()) as CheckoutRequest;
     } catch (parseError) {
@@ -240,6 +240,13 @@ export async function POST(req: NextRequest) {
         type: "book",
         vatRate: 0.06,
       },
+      "juice-glow": {
+        id: "juice-glow",
+        name: "Juice & Glow – E-bok",
+        price: 121.7,
+        type: "book",
+        vatRate: 0.06,
+      },
     };
 
     // Add book products to productMap
@@ -320,7 +327,7 @@ export async function POST(req: NextRequest) {
           item.type === "course"
             ? getCourseEffectivePrice(product)
             : product.price;
-        
+
         validatedItems.push({
           ...item,
           price: effectivePrice, // Use server-authoritative campaign-aware price
@@ -666,6 +673,15 @@ export async function POST(req: NextRequest) {
       ) {
         return "EBOOK-HALSOSAMMA-FRUKOSTAR";
       }
+      if (
+        key.includes("juice-glow") ||
+        key.includes("juice-och-glow") ||
+        key.includes("juice glow") ||
+        key.includes("juice & glow") ||
+        key.includes("juice och glow")
+      ) {
+        return "EBOOK-JUICE-GLOW";
+      }
 
       return item.id; // fallback
     };
@@ -985,6 +1001,14 @@ export async function POST(req: NextRequest) {
             ) {
               ebookId = "halsosamma-frukostar";
             }
+            if (
+              book.name.toLowerCase().includes("juice & glow") ||
+              book.name.toLowerCase().includes("juice glow") ||
+              book.name.toLowerCase().includes("juice och glow") ||
+              book.name.toLowerCase().includes("juice-glow")
+            ) {
+              ebookId = "juice-glow";
+            }
 
             // Optional: avoid duplicates if route is retried
             const existing = await prisma.ebookDownload.findFirst({
@@ -1029,6 +1053,9 @@ export async function POST(req: NextRequest) {
             }
             if (ebookId === "halsosamma-frukostar") {
               downloadUrl = `${baseUrl}/e-bocker/halsosamma-frukostar/ladda-ner?token=${downloadToken}`;
+            }
+            if (ebookId === "juice-glow") {
+              downloadUrl = `${baseUrl}/e-bocker/juice-glow/ladda-ner?token=${downloadToken}`;
             }
 
             await emailService.sendEbookDownloadEmail({
@@ -1530,7 +1557,8 @@ export async function POST(req: NextRequest) {
     }
 
     try {
-      const { getMailchimpEcommerce } = await import("@/app/lib/mailchimp-ecommerce");
+      const { getMailchimpEcommerce } =
+        await import("@/app/lib/mailchimp-ecommerce");
       const mailchimpEcommerce = getMailchimpEcommerce();
       const previousMailchimpCarts = await prisma.order.findMany({
         where: {
@@ -1548,13 +1576,16 @@ export async function POST(req: NextRequest) {
           return metadata.mailchimpCartId || null;
         })
         .filter(Boolean) as string[];
-      
+
       const mailchimpCartId = await mailchimpEcommerce.upsertCart({
         cartId: orderId,
         customerEmail,
         customerName,
         checkoutUrl: `${origin}/checkout?recover=${encodeURIComponent(orderId)}`,
-        items: (itemsWithDiscountedPrice.length > 0 ? itemsWithDiscountedPrice : validatedItems).map((item: any) => ({
+        items: (itemsWithDiscountedPrice.length > 0
+          ? itemsWithDiscountedPrice
+          : validatedItems
+        ).map((item: any) => ({
           id: item.courseId || item.id,
           name: item.name,
           price: item.discountedPrice || item.price,
@@ -1585,7 +1616,10 @@ export async function POST(req: NextRequest) {
         });
       }
     } catch (mailchimpCartError) {
-      console.warn("⚠️ Mailchimp abandoned cart sync failed (svea, non-critical):", mailchimpCartError);
+      console.warn(
+        "⚠️ Mailchimp abandoned cart sync failed (svea, non-critical):",
+        mailchimpCartError,
+      );
     }
 
     // Update coupon usage

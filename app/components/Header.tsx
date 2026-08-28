@@ -83,7 +83,10 @@ export default function Header() {
       href: "/utbildning",
       submenu: [
         { label: t("nav.allCourses", "Alla program"), href: "/utbildning" },
-        { label: "Functional Basics", href: "/utbildning/functional-basics" },
+        {
+          label: "Functional Basics - Mat för ett glutenfritt liv",
+          href: "/utbildning/functional-basics",
+        },
         {
           label: "Functional Gut Health/Flow",
           href: "/utbildning/functional-flow",

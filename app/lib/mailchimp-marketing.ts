@@ -74,10 +74,12 @@ class MailchimpMarketingService {
     try {
       const email = params.email.toLowerCase().trim();
       if (!this.isValidEmail(email)) {
-        console.warn("⚠️ Mailchimp Marketing skipped: invalid email", { email });
+        console.warn("⚠️ Mailchimp Marketing skipped: invalid email", {
+          email,
+        });
         return false;
       }
-      
+
       const subscriberHash = crypto
         .createHash("md5")
         .update(email)
@@ -320,7 +322,6 @@ class MailchimpMarketingService {
       [normalize("Grill- & Sommarmat – e-bok")]: "Köp - Grill & Sommarmat",
 
       // Hälsosamma Frukostar (ebook)
-      // Hälsosamma Frukostar (ebook)
       [normalize("halsosamma-frukostar")]: "Köp - Hälsosamma Frukostar",
       [normalize("hälsosamma frukostar")]: "Köp - Hälsosamma Frukostar",
       [normalize("halsosamma frukostar")]: "Köp - Hälsosamma Frukostar",
@@ -332,6 +333,20 @@ class MailchimpMarketingService {
       [normalize("Ebok Hälsosamma Frukostar")]: "Köp - Hälsosamma Frukostar",
       [normalize("Hälsosamma Frukostar - e-bok")]: "Köp - Hälsosamma Frukostar",
       [normalize("Hälsosamma Frukostar – e-bok")]: "Köp - Hälsosamma Frukostar",
+
+      // Juice & Glow (ebook)
+      [normalize("juice-glow")]: "Köp - Juice & Glow",
+      [normalize("juice glow")]: "Köp - Juice & Glow",
+      [normalize("juice och glow")]: "Köp - Juice & Glow",
+      [normalize("juice & glow")]: "Köp - Juice & Glow",
+      [normalize("Juice & Glow")]: "Köp - Juice & Glow",
+      [normalize("Juice & Glow (E-bok)")]: "Köp - Juice & Glow",
+      [normalize("Juice & Glow ebook")]: "Köp - Juice & Glow",
+      [normalize("Juice & Glow e-bok")]: "Köp - Juice & Glow",
+      [normalize("E-bok Juice & Glow")]: "Köp - Juice & Glow",
+      [normalize("Ebok Juice & Glow")]: "Köp - Juice & Glow",
+      [normalize("Juice & Glow - e-bok")]: "Köp - Juice & Glow",
+      [normalize("Juice & Glow – e-bok")]: "Köp - Juice & Glow",
     };
 
     const tags: string[] = ["kund"];

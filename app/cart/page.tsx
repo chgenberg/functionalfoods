@@ -51,6 +51,7 @@ const getItemImage = (item: {
   if (item.id === "grill-sommarmat") return "/grill-sommarmat-square.png";
   if (item.id === "halsosamma-frukostar")
     return "/halsosamma-frukostar-square.png";
+  if (item.id === "juice-glow") return "/juice-glow-square.png";
 
   if (item.image) return item.image;
   if (courseImages[item.id]) return courseImages[item.id];
