@@ -99,8 +99,8 @@ export default function ProvaPaPopup({
               {/* Image section */}
               <div className="relative h-48 sm:h-56">
                 <Image
-                  src="/sommar-bokbundle-popup.png"
-                  alt="Sommarkampanj med tre e-böcker"
+                  src="/juice-glow-popup.png"
+                  alt="Juice & glow E-bok"
                   fill
                   className="object-cover"
                   priority
@@ -111,14 +111,14 @@ export default function ProvaPaPopup({
                 <div className="absolute top-4 left-4">
                   <div className="bg-[#014421] text-white px-4 py-2 rounded-full font-bold text-sm flex items-center gap-2 shadow-lg">
                     <Sparkles className="w-4 h-4" />
-                    3 för 250 kr
+                    129kr
                   </div>
                 </div>
 
                 {/* Title overlay */}
                 <div className="absolute bottom-4 left-4 right-4 text-white">
                   <h2 className="text-2xl sm:text-3xl font-bold leading-tight">
-                    Sommarkampanj på e-böcker
+                    Juice & Glow
                   </h2>
                   <p className="text-white/90 text-sm sm:text-base mt-1">
                     med Functional Foods
@@ -129,9 +129,9 @@ export default function ProvaPaPopup({
               {/* Content */}
               <div className="p-6">
                 <p className="text-gray-700 mb-6 leading-relaxed">
-                  Fyll sommaren med god mat, smarta recept och inspiration.
-                  Just nu får du Grill- & Sommarmat, Söta Godsaker och Baka
-                  Glutenfritt till ett extra förmånligt paketpris.
+                  Ulrika bjuder in till en färgstark juicingvärld i en
+                  inspirerande e-bok fylld med goda juicer och smoothies för
+                  energi, välmående och en friskare vardag.
                 </p>
 
                 {/* Features */}
@@ -139,34 +139,31 @@ export default function ProvaPaPopup({
                   <div className="text-center p-3 bg-[#014421]/5 rounded-xl">
                     <Calendar className="w-5 h-5 mx-auto text-[#014421] mb-1" />
                     <span className="text-xs text-gray-700 font-medium">
-                      Populära e-böcker
+                      41 recept
                     </span>
                   </div>
                   <div className="text-center p-3 bg-[#014421]/5 rounded-xl">
                     <Utensils className="w-5 h-5 mx-auto text-[#014421] mb-1" />
                     <span className="text-xs text-gray-700 font-medium">
-                      150+ sommarrecept
+                      3-5 dagars juicekur
                     </span>
                   </div>
                   <div className="text-center p-3 bg-[#014421]/5 rounded-xl">
                     <ShoppingCart className="w-5 h-5 mx-auto text-[#014421] mb-1" />
                     <span className="text-xs text-gray-700 font-medium">
-                      250 kr
+                      129 kr
                     </span>
                   </div>
                 </div>
 
                 {/* CTA */}
-                <Link
-                  href="/e-bocker/sommar-bokbundle"
-                  onClick={handleCampaignClick}
-                >
+                <Link href="/e-bocker/juice-glow" onClick={handleCampaignClick}>
                   <motion.button
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                     className="w-full bg-[#014421] text-white py-4 rounded-xl font-bold text-lg hover:bg-[#116530] transition-colors flex items-center justify-center gap-2 shadow-lg"
                   >
-                    Se sommarerbjudandet
+                    Läs mer om boken
                     <ArrowRight className="w-5 h-5" />
                   </motion.button>
                 </Link>
@@ -223,12 +220,12 @@ export function ProvaPaFloatingButton({ onClick }: { onClick: () => void }) {
       {/* Desktop version */}
       <span className="hidden sm:flex items-center gap-2 px-5 py-3 font-semibold">
         <Sparkles className="w-4 h-4" />
-        Sommarkampanj E-böcker
+        Juice & Glow
       </span>
       {/* Mobile version */}
       <span className="sm:hidden flex items-center gap-2 px-4 py-3 font-semibold text-sm">
         <Sparkles className="w-4 h-4" />
-        Sommarkampanj E-böcker
+        Juice & Glow
       </span>
     </motion.button>
   );

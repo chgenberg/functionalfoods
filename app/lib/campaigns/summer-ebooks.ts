@@ -1,5 +1,7 @@
 export const SUMMER_EBOOK_CAMPAIGN_ID = "sommar-ebocker-2026";
-export const SUMMER_EBOOK_CAMPAIGN_STORAGE_KEY = "ff_campaign_sommar_ebocker_2026";
+export const SUMMER_EBOOK_CAMPAIGN_ACTIVE = false;
+export const SUMMER_EBOOK_CAMPAIGN_STORAGE_KEY =
+  "ff_campaign_sommar_ebocker_2026";
 export const SUMMER_EBOOK_CAMPAIGN_TAG = "Köp – Sommarkampanj E-böcker";
 export const SUMMER_EBOOK_BUNDLE_GROSS_PRICE = 250;
 export const SUMMER_EBOOK_BUNDLE_IDS = [
@@ -166,6 +168,7 @@ export function getMissingSummerEbookProducts(items: SummerEbookCartItem[]) {
 export function applySummerEbookBundlePricing<T extends SummerEbookCartItem>(
   items: T[],
 ): T[] {
+  if (!SUMMER_EBOOK_CAMPAIGN_ACTIVE) return items;
   if (!hasSummerEbookBundle(items)) return items;
 
   const bundleItems = SUMMER_EBOOK_BUNDLE_IDS.map((id) =>
