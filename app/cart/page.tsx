@@ -23,6 +23,7 @@ import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import { trackAddToCart, trackViewContent } from "@/app/lib/analytics";
 import {
+  SUMMER_EBOOK_CAMPAIGN_ACTIVE,
   SUMMER_EBOOK_CAMPAIGN_ID,
   SUMMER_EBOOK_PRODUCTS,
   applySummerEbookBundlePricing,
@@ -66,6 +67,14 @@ const HEALTHY_BREAKFAST_UPSELL = {
   type: "book" as const,
   image: "/halsosamma-frukostar-square.png",
 };
+const JUICE_GLOW_UPSELL = {
+  id: "juice-glow",
+  name: "Juice & Glow – E-bok av Ulrika Davidsson",
+  price: 121.7,
+  quantity: 1,
+  type: "book" as const,
+  image: "/juice-glow-square.png",
+};
 
 export default function CartPage() {
   const {
@@ -91,36 +100,44 @@ export default function CartPage() {
   const [campaignCartPrepared, setCampaignCartPrepared] = useState(false);
   const [legacyBundleNormalized, setLegacyBundleNormalized] = useState(false);
 
-  const hasSummerEbookTriggerInCart = items.some(
-    (item) => item.type === "book" && isSummerEbookTriggerBook(item.id),
-  );
-  const hasCourseInCart = items.some((item) => item.type === "course");
   const hasHealthyBreakfastInCart = items.some(
     (item) => item.id === HEALTHY_BREAKFAST_UPSELL.id,
   );
-  const missingSummerEbookProducts = getMissingSummerEbookProducts(items);
+
+  const hasJuiceGlowInCart = items.some(
+    (item) => item.id === JUICE_GLOW_UPSELL.id,
+  );
+
   const campaignItems = applySummerEbookBundlePricing(items);
+
   const getPricedItem = (item: (typeof items)[number]) =>
     campaignItems.find((pricedItem) => pricedItem.id === item.id) || item;
+
   const hasSummerBundle = hasSummerEbookBundle(items);
+
   const checkoutHref = hasSummerBundle
     ? `/checkout?campaign=${SUMMER_EBOOK_CAMPAIGN_ID}`
     : "/checkout";
-  const showBreakfastUpsell = hasSummerBundle && !hasHealthyBreakfastInCart;
-  const showSummerBundleUpsell =
-    !hasSummerBundle &&
-    (hasSummerEbookTriggerInCart || hasCourseInCart) &&
-    missingSummerEbookProducts.length > 0;
-  const showUpsell = showBreakfastUpsell || showSummerBundleUpsell;
-  const upsellItems = showBreakfastUpsell
-    ? [HEALTHY_BREAKFAST_UPSELL]
-    : missingSummerEbookProducts;
-  const upsellImage = showBreakfastUpsell
-    ? HEALTHY_BREAKFAST_UPSELL.image
-    : "/sommar-bokbundle-square.png";
-  const upsellHref = showBreakfastUpsell
-    ? "/e-bocker/halsosamma-frukostar"
-    : "/e-bocker/sommar-bokbundle";
+
+  // Ny upsell:
+  // 1. Visa Juice & Glow om den inte redan finns i varukorgen
+  // 2. Om Juice & Glow finns, visa Hälsosamma Frukostar istället
+  const upsellProduct = !hasJuiceGlowInCart
+    ? JUICE_GLOW_UPSELL
+    : !hasHealthyBreakfastInCart
+      ? HEALTHY_BREAKFAST_UPSELL
+      : null;
+
+  const showUpsell = upsellProduct !== null;
+
+  const upsellItems = upsellProduct ? [upsellProduct] : [];
+
+  const upsellImage = upsellProduct?.image || "";
+
+  const upsellHref =
+    upsellProduct?.id === "juice-glow"
+      ? "/e-bocker/juice-glow"
+      : "/e-bocker/halsosamma-frukostar";
 
   useEffect(() => {
     if (
@@ -504,11 +521,7 @@ export default function CartPage() {
                   <div className="flex-shrink-0 w-20 h-20 sm:w-28 sm:h-28 rounded-xl overflow-hidden bg-gray-100">
                     <Image
                       src={upsellImage}
-                      alt={
-                        showBreakfastUpsell
-                          ? "Hälsosamma Frukostar e-bok"
-                          : "Sommarerbjudande e-böcker"
-                      }
+                      alt={upsellProduct?.name || "Rekommenderad e-bok"}
                       width={112}
                       height={112}
                       className="w-full h-full object-cover"
@@ -518,33 +531,25 @@ export default function CartPage() {
                   <div className="flex-1 min-w-0">
                     <div className="inline-flex items-center gap-1.5 px-2 py-1 rounded-full bg-[#93C560]/15 text-[#014421] text-[11px] sm:text-xs font-semibold mb-2">
                       <Sparkles className="w-3 h-3" />
-                      {showBreakfastUpsell
-                        ? "Rekommenderat tillägg"
-                        : "Sommarerbjudande"}
+                      Rekommenderat tillägg
                     </div>
 
                     <h3 className="text-sm sm:text-lg font-semibold text-[#014421] leading-snug mb-1">
-                      {showBreakfastUpsell
-                        ? "Lägg till Hälsosamma Frukostar"
-                        : "Köp 3 e-böcker för 250 kr – få en bok gratis!"}
+                      {upsellProduct?.id === "juice-glow"
+                        ? "Lägg till Juice & Glow"
+                        : "Lägg till Hälsosamma Frukostar"}
                     </h3>
 
                     <p className="text-xs sm:text-sm text-gray-600 leading-snug mb-2 line-clamp-2 sm:line-clamp-none">
-                      {showBreakfastUpsell ? (
+                      {upsellProduct?.id === "juice-glow" ? (
                         <>
-                          Få fler näringsrika frukostidéer som passar perfekt
-                          ihop med dina nya e-böcker.
+                          Upptäck 41 inspirerande recept på juicer, smoothies
+                          och varma kvällsdrycker.
                         </>
                       ) : (
                         <>
-                          Lägg till{" "}
-                          {missingSummerEbookProducts.length === 1
-                            ? "den saknade boken"
-                            : "de saknade böckerna"}{" "}
-                          och få <strong>Grill- & Sommarmat</strong>,{" "}
-                          <strong>Söta Godsaker</strong> och{" "}
-                          <strong>Baka Glutenfritt</strong> till kampanjpris.
-                          Ordinarie pris 327 kr.
+                          Få fler näringsrika frukostidéer med recept för en god
+                          och hälsosam start på dagen.
                         </>
                       )}
                     </p>
@@ -557,12 +562,12 @@ export default function CartPage() {
                     <div className="flex items-end justify-between gap-3">
                       <div className="min-w-0">
                         <div className="text-lg sm:text-2xl font-bold text-[#014421] leading-none">
-                          {showBreakfastUpsell ? "99 kr" : "250 kr"}
+                          {upsellProduct?.id === "juice-glow"
+                            ? "129 kr"
+                            : "99 kr"}
                         </div>
                         <div className="text-[11px] sm:text-sm text-gray-500 mt-1">
-                          {showBreakfastUpsell
-                            ? "inkl. 6% moms"
-                            : "för hela paketet"}
+                          inkl. 6% moms
                         </div>
                       </div>
 
@@ -597,11 +602,7 @@ export default function CartPage() {
                           ) : (
                             <>
                               <Gift className="w-4 h-4" />
-                              <span>
-                                {showBreakfastUpsell
-                                  ? "Lägg till"
-                                  : "Lägg till erbjudandet"}
-                              </span>
+                              <span>Lägg till</span>
                             </>
                           )}
                         </button>
