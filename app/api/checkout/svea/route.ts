@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/app/lib/database';
+import { filterCouponItems } from '@/app/lib/coupon-applicability';
 
 export const dynamic = 'force-dynamic';
 
@@ -57,14 +58,16 @@ export async function POST(req: NextRequest) {
         if (coupon && coupon.usageLimit && coupon.timesUsed >= coupon.usageLimit) {
           // Coupon usage limit reached
         } else if (coupon) {
+          const applicableItems = filterCouponItems(items, coupon.applicableCourseIds);
+          const applicableSubtotal = applicableItems.reduce((sum, item) => sum + Math.round(item.price * 100) * item.quantity, 0);
           const couponType = String(coupon.type || '').toUpperCase();
           const isPercentage = couponType === 'PERCENTAGE' || couponType === 'PERCENT';
           const isFixed = couponType === 'FIXED' || couponType === 'AMOUNT';
 
           if (isPercentage) {
-            discountAmount = Math.round(subtotal * (coupon.amount / 100));
+            discountAmount = Math.round(applicableSubtotal * (coupon.amount / 100));
           } else if (isFixed) {
-            discountAmount = Math.round(coupon.amount * 100); // Convert to öre
+            discountAmount = Math.min(applicableSubtotal, Math.round(coupon.amount * 100)); // Convert to öre
           }
         }
       } catch (couponError) {
