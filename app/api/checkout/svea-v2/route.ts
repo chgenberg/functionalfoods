@@ -450,9 +450,14 @@ export async function POST(req: NextRequest) {
               if (isPercentage) {
                 discountAmount = Math.round(applicableSubtotal * (coupon.amount / 100));
               } else if (isFixed) {
-                discountAmount = SveaCheckoutService.formatPriceToMinorUnits(
-                  coupon.amount,
+                const applicableSubtotalExVat = applicableItems.reduce(
+                  (sum, item) => sum + Math.round(item.price * 100) * item.quantity,
+                  0,
                 );
+                const vatMultiplier = applicableSubtotalExVat > 0
+                  ? applicableSubtotal / applicableSubtotalExVat
+                  : 1;
+                discountAmount = Math.round(coupon.amount * 100 * vatMultiplier);
               }
               discountAmount = Math.min(discountAmount, applicableSubtotal);
               if (discountAmount > 0) appliedCoupon = coupon;
@@ -710,9 +715,8 @@ export async function POST(req: NextRequest) {
           (item.type === "book" ? BOOK_VAT_RATE : DEFAULT_VAT_RATE);
         // Lägg till moms för att få inkl-pris (runda INTE före moms läggs till!)
         const priceInclVAT = item.price * (1 + itemVatRate);
-        // Runda till närmsta krona för slutpris, sedan konvertera till öre
-        const priceInclVATRounded = Math.round(priceInclVAT);
-        const priceInOre = priceInclVATRounded * 100;
+        // Behåll öresprecision, precis som Stripe.
+        const priceInOre = Math.round(priceInclVAT * 100);
         // För subtotal-tracking
         subtotal += priceInOre * item.quantity;
 
@@ -720,7 +724,7 @@ export async function POST(req: NextRequest) {
         const sveaVatPercent = Math.round(itemVatRate * 10000);
 
         console.log(
-          `🔍 ITEM PRICE DEBUG: ${item.name} - DB price: ${item.price} kr (exkl VAT), VAT rate: ${itemVatRate * 100}%, With VAT: ${priceInclVAT} kr, Rounded: ${priceInclVATRounded} kr, In öre: ${priceInOre}, Sending to Svea: ${priceInOre} öre`,
+          `🔍 ITEM PRICE DEBUG: ${item.name} - DB price: ${item.price} kr (exkl VAT), VAT rate: ${itemVatRate * 100}%, With VAT: ${priceInclVAT} kr, In öre: ${priceInOre}, Sending to Svea: ${priceInOre} öre`,
         );
 
         sveaItems.push({
@@ -782,14 +786,17 @@ export async function POST(req: NextRequest) {
             if (isPercentage) {
               // subtotal är inkl moms i öre, räkna rabatt på det
               discountAmount = Math.round(applicableSubtotal * (coupon.amount / 100));
-              // Runda NER rabatten till närmsta krona (så kunden betalar ett jämnt belopp)
-              const discountInKr = Math.floor(discountAmount / 100);
-              discountAmount = discountInKr * 100;
             } else if (isFixed) {
-              // Fixed rabatt är i kr exkl moms, konvertera till inkl moms
-              const fixedDiscountInKr = coupon.amount * 1.25;
-              const roundedDiscountInKr = Math.ceil(fixedDiscountInKr);
-              discountAmount = Math.round(roundedDiscountInKr * 100);
+              // Fast rabatt lagras exkl. moms. Använd samma effektiva
+              // momsmultiplikator som Stripe, även för e-böcker och blandade köp.
+              const applicableSubtotalExVat = applicableItems.reduce(
+                (sum, item) => sum + Math.round(item.price * 100) * item.quantity,
+                0,
+              );
+              const vatMultiplier = applicableSubtotalExVat > 0
+                ? applicableSubtotal / applicableSubtotalExVat
+                : 1;
+              discountAmount = Math.round(coupon.amount * 100 * vatMultiplier);
             }
             discountAmount = Math.min(discountAmount, applicableSubtotal);
             if (discountAmount > 0) appliedCoupon = coupon;
@@ -1188,9 +1195,7 @@ export async function POST(req: NextRequest) {
       for (const it of validatedItems) {
         const vat = it.vatRate ?? (it.type === "book" ? 0.06 : 0.25);
         const priceInclVat = it.price * (1 + vat); // it.price exkl moms
-        // OBS: här behöver vi vara konsekventa med din avrundningslogik (du rundar till kronor innan öre)
-        const priceInclVatRoundedKr = Math.round(priceInclVat);
-        const ore = priceInclVatRoundedKr * 100 * it.quantity;
+        const ore = Math.round(priceInclVat * 100) * it.quantity;
 
         if (Math.abs(vat - 0.06) < 0.001) subtotal6 += ore;
         else subtotal25 += ore;
@@ -1213,14 +1218,14 @@ export async function POST(req: NextRequest) {
     // Add discount as negative item(s) if applicable (split by VAT when mixed)
     if (discountAmount > 0 && appliedCoupon) {
       const { discount6, discount25 } = splitDiscountByVat(
-        validatedItems,
+        filterCouponItems(validatedItems, appliedCoupon.applicableCourseIds),
         discountAmount,
       );
 
       if (discount6 > 0) {
         sveaItems.push({
           articleNumber: "DISCOUNT-6",
-          name: `Rabatt 6% (${appliedCoupon.code})`,
+          name: `Rabatt (${appliedCoupon.code}, 6 % moms)`,
           quantity: 100,
           unitPrice: -discount6, // öre, inkl moms
           vatPercent: 600,
@@ -1231,7 +1236,7 @@ export async function POST(req: NextRequest) {
       if (discount25 > 0) {
         sveaItems.push({
           articleNumber: "DISCOUNT-25",
-          name: `Rabatt 25% (${appliedCoupon.code})`,
+          name: `Rabatt (${appliedCoupon.code}, 25 % moms)`,
           quantity: 100,
           unitPrice: -discount25, // öre, inkl moms
           vatPercent: 2500,
@@ -1391,10 +1396,7 @@ export async function POST(req: NextRequest) {
     // Store order in database
     // Calculate total amount AFTER discount (in öre, then convert to SEK)
     const totalAmountInOre = subtotal - discountAmount;
-    // Runda upp till närmsta krona
-    const totalAmount = Math.ceil(
-      SveaCheckoutService.formatPriceFromMinorUnits(totalAmountInOre),
-    );
+    const totalAmount = SveaCheckoutService.formatPriceFromMinorUnits(totalAmountInOre);
 
     // Calculate discounted price per item (proportionally)
     // If discount is applied, distribute it proportionally across items
