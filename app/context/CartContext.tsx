@@ -100,16 +100,10 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         const isPercentage = normalizedType === 'PERCENTAGE' || normalizedType === 'PERCENT';
         
         if (isPercentage) {
-          newDiscount = Math.round(applicableSubtotal * (appliedCoupon.amount / 100));
+          newDiscount = Math.round(applicableSubtotal * (appliedCoupon.amount / 100) * 100) / 100;
         } else {
-          const applicableSubtotalInclVat = applicableItems.reduce((sum, item) => {
-            const vatMultiplier = item.type === 'book' ? 1.06 : 1.25;
-            return sum + item.price * item.quantity * vatMultiplier;
-          }, 0);
-          const effectiveVatMultiplier =
-            applicableSubtotal > 0 ? applicableSubtotalInclVat / applicableSubtotal : 1;
-          const fixedDiscountInclVat = Math.ceil(appliedCoupon.amount * 1.25);
-          newDiscount = Math.round((fixedDiscountInclVat / effectiveVatMultiplier) * 100) / 100;
+          // Fasta rabattbelopp lagras exklusive moms, precis som produktpriserna.
+          newDiscount = Math.round(Math.min(applicableSubtotal, appliedCoupon.amount) * 100) / 100;
         }
         if (newDiscount > applicableSubtotal) newDiscount = applicableSubtotal;
       }
