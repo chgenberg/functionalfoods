@@ -26,6 +26,7 @@ import {
   getStoredSummerEbookCampaignSource,
   hasSummerEbookBundle,
 } from "../lib/campaigns/summer-ebooks";
+import { filterCouponItems } from '../lib/coupon-applicability';
 
 const RECOVERED_ORDER_STORAGE_KEY = "checkout_recovered_from_order_id";
 
@@ -356,11 +357,14 @@ export default function Checkout() {
   );
 
   // Distribute discount proportionally
-  const discountExVat = discount;
-  const bookDiscountRatio =
-    subtotalExVat > 0 ? bookSubtotalExVat / subtotalExVat : 0;
-  const courseDiscountRatio =
-    subtotalExVat > 0 ? courseSubtotalExVat / subtotalExVat : 0;
+  const discountableItems = appliedCoupon?.appliesTo === 'all'
+    ? campaignItems
+    : filterCouponItems(campaignItems, appliedCoupon?.appliesTo);
+  const discountableBookSubtotal = discountableItems.filter(item => item.type === 'book').reduce((sum, item) => sum + item.price * item.quantity, 0);
+  const discountableCourseSubtotal = discountableItems.filter(item => item.type === 'course').reduce((sum, item) => sum + item.price * item.quantity, 0);
+  const discountableSubtotal = discountableBookSubtotal + discountableCourseSubtotal;
+  const bookDiscountRatio = discountableSubtotal > 0 ? discountableBookSubtotal / discountableSubtotal : 0;
+  const courseDiscountRatio = discountableSubtotal > 0 ? discountableCourseSubtotal / discountableSubtotal : 0;
   const bookDiscount = discount * bookDiscountRatio;
   const courseDiscount = discount * courseDiscountRatio;
 
@@ -371,7 +375,7 @@ export default function Checkout() {
   const courseVat = Math.round(courseTaxableBase * COURSE_VAT_RATE * 100) / 100;
   const vatAmount = Math.round((bookVat + courseVat) * 100) / 100;
 
-  const taxableBaseExVat = Math.max(0, subtotalExVat - discountExVat);
+  const taxableBaseExVat = Math.max(0, subtotalExVat - discount);
   const totalInclVat = Math.round((taxableBaseExVat + vatAmount) * 100) / 100;
 
   // Determine which VAT label to show
@@ -799,7 +803,7 @@ export default function Checkout() {
                     <div className="flex justify-between text-xs sm:text-sm">
                       <span className="text-gray-600">Rabatt</span>
                       <span className="text-green-600 whitespace-nowrap">
-                        -{discountExVat.toLocaleString()} kr
+                        -{discount.toLocaleString('sv-SE', { minimumFractionDigits: Number.isInteger(discount) ? 0 : 2, maximumFractionDigits: 2 })} kr
                       </span>
                     </div>
                   )}
@@ -818,7 +822,7 @@ export default function Checkout() {
                       Totalt (inkl. moms)
                     </span>
                     <span className="text-base sm:text-lg font-bold text-gray-900">
-                      {Math.round(totalInclVat).toLocaleString()} kr
+                      {totalInclVat.toLocaleString('sv-SE', { minimumFractionDigits: Number.isInteger(totalInclVat) ? 0 : 2, maximumFractionDigits: 2 })} kr
                     </span>
                   </div>
                 </div>
@@ -865,7 +869,7 @@ export default function Checkout() {
           <div className="flex-1">
             <p className="text-xs text-gray-500">Totalt att betala</p>
             <p className="text-lg font-bold text-[#014421]">
-              {Math.round(totalInclVat).toLocaleString()} kr
+              {totalInclVat.toLocaleString('sv-SE', { minimumFractionDigits: Number.isInteger(totalInclVat) ? 0 : 2, maximumFractionDigits: 2 })} kr
             </p>
           </div>
           <button

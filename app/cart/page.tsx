@@ -32,6 +32,7 @@ import {
   isSummerEbookTriggerBook,
   storeSummerEbookCampaignSource,
 } from "@/app/lib/campaigns/summer-ebooks";
+import { filterCouponItems } from "@/app/lib/coupon-applicability";
 
 const courseImages: Record<string, string> = {
   "functional-flow": "/Kurser_bilder/Functional_Gut Health.jpg",
@@ -755,19 +756,31 @@ export default function CartPage() {
                     0,
                   );
 
-                  const discountExVat = discount;
-                  const bookDiscountRatio =
-                    subtotalExVat > 0 ? bookSubtotalExVat / subtotalExVat : 0;
-                  const courseDiscountRatio =
-                    subtotalExVat > 0 ? courseSubtotalExVat / subtotalExVat : 0;
+                  const discountableItems = appliedCoupon?.appliesTo === "all"
+                    ? campaignItems
+                    : filterCouponItems(campaignItems, appliedCoupon?.appliesTo);
+                  const discountableBookSubtotal = discountableItems
+                    .filter((item) => item.type === "book")
+                    .reduce((sum, item) => sum + item.price * item.quantity, 0);
+                  const discountableCourseSubtotal = discountableItems
+                    .filter((item) => item.type === "course")
+                    .reduce((sum, item) => sum + item.price * item.quantity, 0);
+                  const discountableSubtotal =
+                    discountableBookSubtotal + discountableCourseSubtotal;
+                  const bookDiscountRatio = discountableSubtotal > 0
+                    ? discountableBookSubtotal / discountableSubtotal
+                    : 0;
+                  const courseDiscountRatio = discountableSubtotal > 0
+                    ? discountableCourseSubtotal / discountableSubtotal
+                    : 0;
 
                   const bookTaxableBase = Math.max(
                     0,
-                    bookSubtotalExVat - discountExVat * bookDiscountRatio,
+                    bookSubtotalExVat - discount * bookDiscountRatio,
                   );
                   const courseTaxableBase = Math.max(
                     0,
-                    courseSubtotalExVat - discountExVat * courseDiscountRatio,
+                    courseSubtotalExVat - discount * courseDiscountRatio,
                   );
 
                   const bookVat =
@@ -779,7 +792,7 @@ export default function CartPage() {
 
                   const totalInclVat =
                     Math.round(
-                      (Math.max(0, subtotalExVat - discountExVat) + vatAmount) *
+                      (Math.max(0, subtotalExVat - discount) + vatAmount) *
                         100,
                     ) / 100;
 
@@ -801,11 +814,14 @@ export default function CartPage() {
                         </span>
                       </div>
 
-                      {discountExVat > 0 && (
+                      {discount > 0 && (
                         <div className="flex justify-between text-xs sm:text-sm">
-                          <span className="text-[#93C560]">Rabatt</span>
+                          <span className="text-[#93C560]">Rabatt (exkl. moms)</span>
                           <span className="text-[#93C560] whitespace-nowrap">
-                            -{discountExVat.toLocaleString("sv-SE")} kr
+                            -{discount.toLocaleString("sv-SE", {
+                              minimumFractionDigits: Number.isInteger(discount) ? 0 : 2,
+                              maximumFractionDigits: 2,
+                            })} kr
                           </span>
                         </div>
                       )}
@@ -824,7 +840,10 @@ export default function CartPage() {
                       <div className="flex justify-between items-center text-base sm:text-xl font-bold pt-2 sm:pt-3 p-3 sm:p-4 bg-gradient-to-r from-[#93C560]/10 to-[#7ab050]/10 rounded-lg">
                         <span className="text-[#014421]">Totalt</span>
                         <span className="text-[#014421] text-lg sm:text-2xl">
-                          {Math.round(totalInclVat).toLocaleString("sv-SE")} kr
+                          {totalInclVat.toLocaleString("sv-SE", {
+                            minimumFractionDigits: Number.isInteger(totalInclVat) ? 0 : 2,
+                            maximumFractionDigits: 2,
+                          })} kr
                         </span>
                       </div>
                     </>

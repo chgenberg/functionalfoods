@@ -8,6 +8,7 @@ import {
   SUMMER_EBOOK_CAMPAIGN_ID,
 } from "@/app/lib/campaigns/summer-ebooks";
 import { getCourseEffectivePrice } from "@/app/lib/course-pricing";
+import { filterCouponItems } from "@/app/lib/coupon-applicability";
 import bcrypt from "bcryptjs";
 
 export const dynamic = "force-dynamic";
@@ -319,10 +320,7 @@ export async function POST(req: NextRequest) {
             Array.isArray(coupon.applicableCourseIds)
               ? (coupon.applicableCourseIds as string[])
               : null;
-          const applicableItems =
-            applicableIds && applicableIds.length > 0
-              ? pricedItems.filter((i) => applicableIds.includes(i.id))
-              : pricedItems;
+          const applicableItems = filterCouponItems(validatedItems, applicableIds);
           const applicableSubtotalExVat = applicableItems.reduce(
             (sum, i) => sum + Math.round(i.price * 100) * i.quantity,
             0,
@@ -332,11 +330,13 @@ export async function POST(req: NextRequest) {
             const grossInOre = Math.round(i.price * (1 + itemVatRate) * 100);
             return sum + grossInOre * i.quantity;
           }, 0);
+          const normalizedCouponType = String(coupon.type || "").toUpperCase();
+          const isPercentage =
+            normalizedCouponType === "PERCENTAGE" || normalizedCouponType === "PERCENT";
 
           if (applicableSubtotalGross > 0) {
-            if (coupon.type === "percent") {
-              // Stripe applies percent_off to gross line items, so compute gross discount for logging/consistency.
-              discountAmount = Math.floor(
+            if (isPercentage) {
+              discountAmount = Math.round(
                 applicableSubtotalGross * (coupon.amount / 100),
               );
             } else {
@@ -345,27 +345,20 @@ export async function POST(req: NextRequest) {
                 applicableSubtotalExVat > 0
                   ? applicableSubtotalGross / applicableSubtotalExVat
                   : 1;
-              discountAmount = Math.floor(coupon.amount * 100 * vatMultiplier);
+              discountAmount = Math.round(coupon.amount * 100 * vatMultiplier);
             }
             if (discountAmount > applicableSubtotalGross)
               discountAmount = applicableSubtotalGross;
 
-            // Create a one-time Stripe coupon for the exact amount off if fixed, or percent_off if percent
+            // Always use the calculated amount. A Stripe percent_off coupon would
+            // otherwise discount non-applicable products in a mixed cart too.
             if (discountAmount > 0) {
-              if (coupon.type === "percent") {
-                const createdCoupon = await stripe.coupons.create({
-                  percent_off: coupon.amount,
-                  duration: "once",
-                });
-                stripeDiscount = { coupon: createdCoupon.id };
-              } else {
-                const createdCoupon = await stripe.coupons.create({
-                  amount_off: discountAmount,
-                  currency: "sek",
-                  duration: "once",
-                });
-                stripeDiscount = { coupon: createdCoupon.id };
-              }
+              const createdCoupon = await stripe.coupons.create({
+                amount_off: discountAmount,
+                currency: "sek",
+                duration: "once",
+              });
+              stripeDiscount = { coupon: createdCoupon.id };
             }
           }
         }

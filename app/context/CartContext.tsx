@@ -1,5 +1,6 @@
 "use client";
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { filterCouponItems } from '@/app/lib/coupon-applicability';
 
 export interface CartItem {
   id: string;
@@ -91,7 +92,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     if (appliedCoupon && items.length > 0) {
       const applicableItems = appliedCoupon.appliesTo === 'all'
         ? pricedItems
-        : pricedItems.filter(i => (appliedCoupon.appliesTo as string[]).includes(i.id));
+        : filterCouponItems(pricedItems, appliedCoupon.appliesTo);
       const applicableSubtotal = applicableItems.reduce((s, i) => s + i.price * i.quantity, 0);
       if (applicableSubtotal > 0) {
         // Normalize type for comparison (handle PERCENTAGE, percent, PERCENT, etc.)
@@ -99,16 +100,10 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         const isPercentage = normalizedType === 'PERCENTAGE' || normalizedType === 'PERCENT';
         
         if (isPercentage) {
-          newDiscount = Math.round(applicableSubtotal * (appliedCoupon.amount / 100));
+          newDiscount = Math.round(applicableSubtotal * (appliedCoupon.amount / 100) * 100) / 100;
         } else {
-          const applicableSubtotalInclVat = applicableItems.reduce((sum, item) => {
-            const vatMultiplier = item.type === 'book' ? 1.06 : 1.25;
-            return sum + item.price * item.quantity * vatMultiplier;
-          }, 0);
-          const effectiveVatMultiplier =
-            applicableSubtotal > 0 ? applicableSubtotalInclVat / applicableSubtotal : 1;
-          const fixedDiscountInclVat = Math.ceil(appliedCoupon.amount * 1.25);
-          newDiscount = Math.round((fixedDiscountInclVat / effectiveVatMultiplier) * 100) / 100;
+          // Fasta rabattbelopp lagras exklusive moms, precis som produktpriserna.
+          newDiscount = Math.round(Math.min(applicableSubtotal, appliedCoupon.amount) * 100) / 100;
         }
         if (newDiscount > applicableSubtotal) newDiscount = applicableSubtotal;
       }

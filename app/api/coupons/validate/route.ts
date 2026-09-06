@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
+import { filterCouponItems } from '@/app/lib/coupon-applicability';
 
 const prisma = new PrismaClient();
 
@@ -13,9 +14,7 @@ interface Item {
 }
 
 function computeDiscountForItems(items: Item[], type: string, amount: number, applicableCourseIds?: string[] | null) {
-  const applicableItems = Array.isArray(applicableCourseIds) && applicableCourseIds.length > 0
-    ? items.filter((i) => applicableCourseIds.includes(i.id))
-    : items;
+  const applicableItems = filterCouponItems(items, applicableCourseIds);
 
   const applicableSubtotal = applicableItems.reduce((sum, i) => sum + i.price * i.quantity, 0);
   if (applicableSubtotal <= 0) return { discount: 0, applicableSubtotal: 0 };

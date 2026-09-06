@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/app/lib/database';
 import { sveaPayment, SveaOrderItem } from '@/app/lib/svea-payment';
+import { filterCouponItems } from '@/app/lib/coupon-applicability';
 // import { withRateLimit, checkoutRateLimit } from '@/app/lib/rate-limit';
 
 export const dynamic = 'force-dynamic';
@@ -48,10 +49,12 @@ export async function POST(req: NextRequest) {
         });
 
         if (coupon) {
+          const applicableItems = filterCouponItems(items, coupon.applicableCourseIds);
+          const applicableSubtotal = applicableItems.reduce((sum, item) => sum + Math.round(item.price * 100) * item.quantity, 0);
           if (coupon.type === 'percent') {
-            discountAmount = Math.round(subtotal * (coupon.amount / 100));
+            discountAmount = Math.round(applicableSubtotal * (coupon.amount / 100));
           } else {
-            discountAmount = Math.round(coupon.amount * 100); // Convert to öre
+            discountAmount = Math.min(applicableSubtotal, Math.round(coupon.amount * 100)); // Convert to öre
           }
         }
       }
