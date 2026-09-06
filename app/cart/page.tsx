@@ -776,11 +776,11 @@ export default function CartPage() {
 
                   const bookTaxableBase = Math.max(
                     0,
-                    bookSubtotalExVat - discountExVat * bookDiscountRatio,
+                    bookSubtotalExVat - discount * bookDiscountRatio,
                   );
                   const courseTaxableBase = Math.max(
                     0,
-                    courseSubtotalExVat - discountExVat * courseDiscountRatio,
+                    courseSubtotalExVat - discount * courseDiscountRatio,
                   );
 
                   const bookVat =
@@ -792,7 +792,7 @@ export default function CartPage() {
 
                   const totalInclVat =
                     Math.round(
-                      (Math.max(0, subtotalExVat - discountExVat) + vatAmount) *
+                      (Math.max(0, subtotalExVat - discount) + vatAmount) *
                         100,
                     ) / 100;
 
@@ -814,11 +814,14 @@ export default function CartPage() {
                         </span>
                       </div>
 
-                      {discountExVat > 0 && (
+                      {discount > 0 && (
                         <div className="flex justify-between text-xs sm:text-sm">
                           <span className="text-[#93C560]">Rabatt (exkl. moms)</span>
                           <span className="text-[#93C560] whitespace-nowrap">
-                            -{discountExVat.toLocaleString("sv-SE")} kr
+                            -{discount.toLocaleString("sv-SE", {
+                              minimumFractionDigits: Number.isInteger(discount) ? 0 : 2,
+                              maximumFractionDigits: 2,
+                            })} kr
                           </span>
                         </div>
                       )}
