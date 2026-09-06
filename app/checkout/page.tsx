@@ -357,7 +357,6 @@ export default function Checkout() {
   );
 
   // Distribute discount proportionally
-  const discountExVat = discount;
   const discountableItems = appliedCoupon?.appliesTo === 'all'
     ? campaignItems
     : filterCouponItems(campaignItems, appliedCoupon?.appliesTo);
@@ -376,7 +375,7 @@ export default function Checkout() {
   const courseVat = Math.round(courseTaxableBase * COURSE_VAT_RATE * 100) / 100;
   const vatAmount = Math.round((bookVat + courseVat) * 100) / 100;
 
-  const taxableBaseExVat = Math.max(0, subtotalExVat - discountExVat);
+  const taxableBaseExVat = Math.max(0, subtotalExVat - discount);
   const totalInclVat = Math.round((taxableBaseExVat + vatAmount) * 100) / 100;
 
   // Determine which VAT label to show
@@ -804,7 +803,7 @@ export default function Checkout() {
                     <div className="flex justify-between text-xs sm:text-sm">
                       <span className="text-gray-600">Rabatt</span>
                       <span className="text-green-600 whitespace-nowrap">
-                        -{discountExVat.toLocaleString()} kr
+                        -{discount.toLocaleString('sv-SE', { minimumFractionDigits: Number.isInteger(discount) ? 0 : 2, maximumFractionDigits: 2 })} kr
                       </span>
                     </div>
                   )}
