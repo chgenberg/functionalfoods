@@ -330,11 +330,13 @@ export async function POST(req: NextRequest) {
             const grossInOre = Math.round(i.price * (1 + itemVatRate) * 100);
             return sum + grossInOre * i.quantity;
           }, 0);
+          const normalizedCouponType = String(coupon.type || "").toUpperCase();
+          const isPercentage =
+            normalizedCouponType === "PERCENTAGE" || normalizedCouponType === "PERCENT";
 
           if (applicableSubtotalGross > 0) {
-            if (coupon.type === "percent") {
-              // Stripe applies percent_off to gross line items, so compute gross discount for logging/consistency.
-              discountAmount = Math.floor(
+            if (isPercentage) {
+              discountAmount = Math.round(
                 applicableSubtotalGross * (coupon.amount / 100),
               );
             } else {
@@ -343,7 +345,7 @@ export async function POST(req: NextRequest) {
                 applicableSubtotalExVat > 0
                   ? applicableSubtotalGross / applicableSubtotalExVat
                   : 1;
-              discountAmount = Math.floor(coupon.amount * 100 * vatMultiplier);
+              discountAmount = Math.round(coupon.amount * 100 * vatMultiplier);
             }
             if (discountAmount > applicableSubtotalGross)
               discountAmount = applicableSubtotalGross;
