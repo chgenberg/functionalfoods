@@ -26,6 +26,7 @@ import {
   getStoredSummerEbookCampaignSource,
   hasSummerEbookBundle,
 } from "../lib/campaigns/summer-ebooks";
+import { filterCouponItems } from '../lib/coupon-applicability';
 
 const RECOVERED_ORDER_STORAGE_KEY = "checkout_recovered_from_order_id";
 
@@ -357,10 +358,14 @@ export default function Checkout() {
 
   // Distribute discount proportionally
   const discountExVat = discount;
-  const bookDiscountRatio =
-    subtotalExVat > 0 ? bookSubtotalExVat / subtotalExVat : 0;
-  const courseDiscountRatio =
-    subtotalExVat > 0 ? courseSubtotalExVat / subtotalExVat : 0;
+  const discountableItems = appliedCoupon?.appliesTo === 'all'
+    ? campaignItems
+    : filterCouponItems(campaignItems, appliedCoupon?.appliesTo);
+  const discountableBookSubtotal = discountableItems.filter(item => item.type === 'book').reduce((sum, item) => sum + item.price * item.quantity, 0);
+  const discountableCourseSubtotal = discountableItems.filter(item => item.type === 'course').reduce((sum, item) => sum + item.price * item.quantity, 0);
+  const discountableSubtotal = discountableBookSubtotal + discountableCourseSubtotal;
+  const bookDiscountRatio = discountableSubtotal > 0 ? discountableBookSubtotal / discountableSubtotal : 0;
+  const courseDiscountRatio = discountableSubtotal > 0 ? discountableCourseSubtotal / discountableSubtotal : 0;
   const bookDiscount = discount * bookDiscountRatio;
   const courseDiscount = discount * courseDiscountRatio;
 
@@ -818,7 +823,7 @@ export default function Checkout() {
                       Totalt (inkl. moms)
                     </span>
                     <span className="text-base sm:text-lg font-bold text-gray-900">
-                      {Math.round(totalInclVat).toLocaleString()} kr
+                      {totalInclVat.toLocaleString('sv-SE', { minimumFractionDigits: Number.isInteger(totalInclVat) ? 0 : 2, maximumFractionDigits: 2 })} kr
                     </span>
                   </div>
                 </div>
@@ -865,7 +870,7 @@ export default function Checkout() {
           <div className="flex-1">
             <p className="text-xs text-gray-500">Totalt att betala</p>
             <p className="text-lg font-bold text-[#014421]">
-              {Math.round(totalInclVat).toLocaleString()} kr
+              {totalInclVat.toLocaleString('sv-SE', { minimumFractionDigits: Number.isInteger(totalInclVat) ? 0 : 2, maximumFractionDigits: 2 })} kr
             </p>
           </div>
           <button
