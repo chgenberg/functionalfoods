@@ -1,6 +1,10 @@
 "use client";
 import { useEffect, useState } from 'react';
-import { Download, FileSpreadsheet } from 'lucide-react';
+import { Download } from 'lucide-react';
+import { EBOOK_PRODUCTS } from '@/app/lib/ebooks';
+
+const COURSE_TYPE = 'type:course';
+const BOOK_TYPE = 'type:book';
 
 interface Coupon {
   id: string;
@@ -30,7 +34,7 @@ export default function AdminCouponsPage() {
     code: '', type: 'percent', amount: 10, active: true,
     startsAtDate: '', startsAtTime: '00:00',
     expiresAtDate: '', expiresAtTime: '23:59',
-    applicableCourseIds: [] as string[]
+    applicableCourseIds: [] as string[], productScope: 'all'
   });
   const [error, setError] = useState('');
   const [saving, setSaving] = useState(false);
@@ -67,9 +71,24 @@ export default function AdminCouponsPage() {
     setForm({ ...form, applicableCourseIds: list });
   };
 
+  const setProductScope = (scope: 'all' | 'courses' | 'books' | 'specific') => {
+    const current = Array.isArray(form.applicableCourseIds) ? form.applicableCourseIds : [];
+    const next = scope === 'all' ? [] : scope === 'courses' ? [COURSE_TYPE] : scope === 'books' ? [BOOK_TYPE] : current.filter((id: string) => !id.startsWith('type:'));
+    setForm({ ...form, applicableCourseIds: next, productScope: scope });
+  };
+
+  const getProductScope = () => {
+    if (form.productScope) return form.productScope;
+    const ids: string[] = Array.isArray(form.applicableCourseIds) ? form.applicableCourseIds : [];
+    if (ids.length === 0) return 'all';
+    if (ids.length === 1 && ids[0] === COURSE_TYPE) return 'courses';
+    if (ids.length === 1 && ids[0] === BOOK_TYPE) return 'books';
+    return 'specific';
+  };
+
   const openNew = () => { 
     setEditing(null); setShowForm(true);
-    setForm({ code: '', type: 'percent', amount: 10, active: true, startsAtDate: '', startsAtTime: '00:00', expiresAtDate: '', expiresAtTime: '23:59', applicableCourseIds: [] }); 
+    setForm({ code: '', type: 'percent', amount: 10, active: true, startsAtDate: '', startsAtTime: '00:00', expiresAtDate: '', expiresAtTime: '23:59', applicableCourseIds: [], productScope: 'all' }); 
     setError('');
   };
   
@@ -83,7 +102,14 @@ export default function AdminCouponsPage() {
       startsAtTime: startsAtDate ? startsAtDate.toTimeString().slice(0,5) : '00:00',
       expiresAtDate: expiresAtDate ? expiresAtDate.toISOString().slice(0,10) : '',
       expiresAtTime: expiresAtDate ? expiresAtDate.toTimeString().slice(0,5) : '23:59',
-      applicableCourseIds: Array.isArray(c.applicableCourseIds) ? c.applicableCourseIds : []
+      applicableCourseIds: Array.isArray(c.applicableCourseIds) ? c.applicableCourseIds : [],
+      productScope: (() => {
+        const ids = Array.isArray(c.applicableCourseIds) ? c.applicableCourseIds : [];
+        if (ids.length === 0) return 'all';
+        if (ids.length === 1 && ids[0] === COURSE_TYPE) return 'courses';
+        if (ids.length === 1 && ids[0] === BOOK_TYPE) return 'books';
+        return 'specific';
+      })()
     }); 
     setError('');
   };
@@ -152,8 +178,10 @@ export default function AdminCouponsPage() {
 
   const renderAppliesTo = (c: Coupon) => {
     const ids = Array.isArray(c.applicableCourseIds) ? c.applicableCourseIds : [];
-    if (ids.length === 0) return 'Alla kurser';
-    return ids.map(id => courseOptions.find(co => co.id === id)?.name || id).join(', ');
+    if (ids.length === 0) return 'Alla produkter';
+    if (ids.includes(COURSE_TYPE)) return 'Alla program';
+    if (ids.includes(BOOK_TYPE)) return 'Alla e-böcker';
+    return ids.map(id => courseOptions.find(co => co.id === id)?.name || EBOOK_PRODUCTS[id]?.name || id).join(', ');
   };
 
   if (loading) {
@@ -319,8 +347,16 @@ export default function AdminCouponsPage() {
               </div>
 
               <div>
-                <label className="block text-xs text-[var(--text-secondary)] uppercase mb-2">Gäller för kurser</label>
-                <div className="flex flex-wrap gap-2">
+                <label className="block text-xs text-[var(--text-secondary)] uppercase mb-2">Gäller för produkter</label>
+                <select value={getProductScope()} onChange={e => setProductScope(e.target.value as 'all' | 'courses' | 'books' | 'specific')} className="w-full px-3 py-2 text-sm border border-[var(--border-light)] rounded-lg mb-3">
+                  <option value="all">Alla produkter</option>
+                  <option value="courses">Alla program</option>
+                  <option value="books">Alla e-böcker</option>
+                  <option value="specific">Välj enskilda produkter</option>
+                </select>
+                {getProductScope() === 'specific' && <>
+                <p className="text-xs font-medium mb-2">Program</p>
+                <div className="flex flex-wrap gap-2 mb-3">
                   {courseOptions.map(c => {
                     const selected = Array.isArray(form.applicableCourseIds) && form.applicableCourseIds.includes(c.id);
                     return (
@@ -331,7 +367,15 @@ export default function AdminCouponsPage() {
                     );
                   })}
                 </div>
-                <p className="text-xs text-[var(--text-secondary)] mt-1">Lämna tomt för alla kurser</p>
+                <p className="text-xs font-medium mb-2">E-böcker</p>
+                <div className="flex flex-wrap gap-2">
+                  {Object.values(EBOOK_PRODUCTS).map(book => {
+                    const selected = Array.isArray(form.applicableCourseIds) && form.applicableCourseIds.includes(book.id);
+                    return <button key={book.id} type="button" onClick={() => toggleCourse(book.id)} className={`px-3 py-1.5 rounded text-xs border transition-colors ${selected ? 'bg-[var(--primary-green)] text-white border-[var(--primary-green)]' : 'bg-white border-[var(--border-light)] hover:border-[var(--primary-green)]'}`}>{book.name.replace(/ – E-bok.*$/, '')}</button>;
+                  })}
+                </div>
+                <p className="text-xs text-[var(--text-secondary)] mt-2">Välj minst en produkt.</p>
+                </>}
               </div>
 
               <label className="flex items-center gap-2">
@@ -342,7 +386,7 @@ export default function AdminCouponsPage() {
             
             <div className="p-5 border-t border-[var(--border-light)] flex justify-end gap-2">
               <button onClick={closeForm} className="px-4 py-2 text-sm text-[var(--text-secondary)] hover:bg-gray-100 rounded-lg">Avbryt</button>
-              <button onClick={save} disabled={saving || !form.code || !form.amount} className="px-4 py-2 text-sm bg-[var(--primary-green)] text-white rounded-lg hover:bg-[#012a14] disabled:opacity-50">
+              <button onClick={save} disabled={saving || !form.code || !form.amount || (getProductScope() === 'specific' && form.applicableCourseIds.length === 0)} className="px-4 py-2 text-sm bg-[var(--primary-green)] text-white rounded-lg hover:bg-[#012a14] disabled:opacity-50">
                 {saving ? 'Sparar...' : 'Spara'}
               </button>
             </div>

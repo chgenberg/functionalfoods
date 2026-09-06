@@ -12,6 +12,7 @@ import {
   SUMMER_EBOOK_CAMPAIGN_ID,
   SUMMER_EBOOK_CAMPAIGN_TAG,
 } from "@/app/lib/campaigns/summer-ebooks";
+import { filterCouponItems } from "@/app/lib/coupon-applicability";
 import { getCourseEffectivePrice } from "@/app/lib/course-pricing";
 import bcrypt from "bcryptjs";
 import type {
@@ -436,19 +437,25 @@ export async function POST(req: NextRequest) {
           });
           if (coupon) {
             if (!coupon.usageLimit || coupon.timesUsed < coupon.usageLimit) {
+              const applicableItems = filterCouponItems(validatedItems, coupon.applicableCourseIds);
+              const applicableSubtotal = applicableItems.reduce((sum, item) => {
+                const vatRate = item.vatRate || (item.type === "book" ? 0.06 : 0.25);
+                return sum + SveaCheckoutService.formatPriceToMinorUnits(item.price * (1 + vatRate)) * item.quantity;
+              }, 0);
               const couponType = String(coupon.type || "").toUpperCase();
               const isPercentage =
                 couponType === "PERCENTAGE" || couponType === "PERCENT";
               const isFixed = couponType === "FIXED" || couponType === "AMOUNT";
 
               if (isPercentage) {
-                discountAmount = Math.round(subtotal * (coupon.amount / 100));
+                discountAmount = Math.round(applicableSubtotal * (coupon.amount / 100));
               } else if (isFixed) {
                 discountAmount = SveaCheckoutService.formatPriceToMinorUnits(
                   coupon.amount,
                 );
               }
-              appliedCoupon = coupon;
+              discountAmount = Math.min(discountAmount, applicableSubtotal);
+              if (discountAmount > 0) appliedCoupon = coupon;
             }
           }
         } catch {}
@@ -761,6 +768,11 @@ export async function POST(req: NextRequest) {
         if (coupon) {
           // Check usage limit
           if (!coupon.usageLimit || coupon.timesUsed < coupon.usageLimit) {
+            const applicableItems = filterCouponItems(validatedItems, coupon.applicableCourseIds);
+            const applicableSubtotal = applicableItems.reduce((sum, item) => {
+              const vatRate = item.vatRate || (item.type === "book" ? 0.06 : 0.25);
+              return sum + SveaCheckoutService.formatPriceToMinorUnits(item.price * (1 + vatRate)) * item.quantity;
+            }, 0);
             // subtotal är nu redan inkl. moms, så vi applicerar rabatt direkt
             const couponType = String(coupon.type || "").toUpperCase();
             const isPercentage =
@@ -769,7 +781,7 @@ export async function POST(req: NextRequest) {
 
             if (isPercentage) {
               // subtotal är inkl moms i öre, räkna rabatt på det
-              discountAmount = Math.round(subtotal * (coupon.amount / 100));
+              discountAmount = Math.round(applicableSubtotal * (coupon.amount / 100));
               // Runda NER rabatten till närmsta krona (så kunden betalar ett jämnt belopp)
               const discountInKr = Math.floor(discountAmount / 100);
               discountAmount = discountInKr * 100;
@@ -779,7 +791,8 @@ export async function POST(req: NextRequest) {
               const roundedDiscountInKr = Math.ceil(fixedDiscountInKr);
               discountAmount = Math.round(roundedDiscountInKr * 100);
             }
-            appliedCoupon = coupon;
+            discountAmount = Math.min(discountAmount, applicableSubtotal);
+            if (discountAmount > 0) appliedCoupon = coupon;
 
             console.log(
               `💰 Coupon applied: ${coupon.code}, Type: ${coupon.type}, Amount: ${coupon.amount}${isPercentage ? "%" : " kr"}, Discount: ${discountAmount} öre (${discountAmount / 100} kr)`,
